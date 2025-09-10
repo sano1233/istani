@@ -2,4 +2,4 @@ User-agent: *
 Disallow:
 
 # Provide the location of your sitemap
-Sitemap: https://istani.org/sitemap.xml
+Sitemap: https://istaniorg.vercel.app/sitemap.xml
