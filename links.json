@@ -1,6 +1,6 @@
 {
   "Storefronts": [
-    {"label": "ISTANI Store", "url": "http://istani.store"},
+    {"label": "ISTANI Store", "url": "https://ISTANI.STORE"},
     {"label": "ISTANI.org", "url": "https://istani.org"},
     {"label": "Google business page", "url": "https://g.co/kgs/TaZrbwz"},
     {"label": "Google search listing", "url": "https://www.google.com/gasearch?q=ISTANI%20FiT&source=sh/x/gs/m2/5#ebo=0&mpd=~2482390338281051605/promote/photos/mediatool"}
@@ -11,14 +11,9 @@
     {"label": "Medium Article: Science-Backed Beginner Gym Kit", "url": "https://medium.com/@istanifit/istanis-science-backed-beginner-gym-kit-clarity-for-the-confused-newcomer-f1b912431195"}
   ],
   "Products": [
-    {"label": "Product Beacons", "url": "https://istani.store/shop/d70c9ba1-e5c5-4fbb-bb22-48bfc03924ad"},
-    {"label": "Free 30 day plan", "url": "https://account.beacons.ai/account/home/store?b=f1d2ed3f-8190-420d-bc32-e45c6c36d7f9"},
-    {"label": "Beacons builder", "url": "https://account.beacons.ai/website/home/builder/b7bf199a-0a30-43d3-b7a3-f834854afef6?pageId=homepage&blockId=59859624-9090-450b-9d02-6b35ad7d9e9c"},
     {"label": "Payhip Product", "url": "https://payhip.com/b/MG3tn"},
     {"label": "Payhip Storefront", "url": "https://payhip.com/ISTANI"},
-    {"label": "Stripe Checkout", "url": "https://buy.stripe.com/8x25kE4VB3Vf5oy0F3cwg00"},
-    {"label": "Beacons Link 1", "url": "https://bcns.link/piHHEu"},
-    {"label": "Beacons Link 2", "url": "https://istani.bcns.link/Ai"}
+    {"label": "Stripe Checkout", "url": "https://buy.stripe.com/8x25kE4VB3Vf5oy0F3cwg00"}
   ],
   "Support": [
     {"label": "Buy Me a Coffee", "url": "https://buymeacoffee.com/istanifitn"}
@@ -39,7 +34,6 @@
   ],
   "Contact": [
     {"label": "Customer Support", "url": "https://m.me/739355429091524?is_ai=1"},
-    {"label": "Beacons email", "url": "mailto:istani@my.beacons.email"},
     {"label": "Enterprise email", "url": "mailto:enterprise@istani.store"}
   ]
 }
