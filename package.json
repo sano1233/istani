@@ -1,12 +1,4 @@
 {
- codex/add-adsense-meta-tag-and-ads.txt-oavr8k
-  "name": "istani-site",
-  "version": "1.0.0",
-  "description": "Static site for istani.org",
-  "private": true,
-  "scripts": {
-    "test": "echo \"No tests specified\""
-  }
   "name": "istani.org",
   "version": "1.0.0",
   "description": "",
@@ -25,5 +17,4 @@
   "keywords": [],
   "author": "",
   "license": "ISC"
-main
 }
