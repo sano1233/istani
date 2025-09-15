@@ -11,3 +11,7 @@ git push -u origin main
 rm -f .git/index.lock
 git config --global user.name "Sano"
 git config --global user.email ".com"
+
+## Security
+
+Requests are filtered with an Arcjet-powered Netlify function at `netlify/functions/protect.mjs` to block common attacks and unwanted bots.
