@@ -10,7 +10,7 @@ Use the provided `deploy.sh` helper script to reproduce the production build loc
 ./deploy.sh
 ```
 
-The script ensures dependencies are installed (when `package-lock.json` is missing), runs the test suite, and triggers the bundled production build.
+The script ensures dependencies are installed (when the `node_modules` directory is missing), runs the test suite, and triggers the bundled production build.
 
 ## Security
 
