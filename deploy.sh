@@ -20,4 +20,8 @@ npm test
 echo "Building production bundle..."
 npm run build
 
-echo "Build artifacts are available in istani-rebuild/assets"
+if [ -d istani-rebuild/assets ]; then
+  echo "Build artifacts are available in istani-rebuild/assets"
+else
+  echo "Warning: expected build output directory 'istani-rebuild/assets' not found."
+fi
