@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const SITE_URL = 'https://istani.org/links.html';
+const SITE_URL = process.env.SITE_URL || 'https://istani.org/links.html';
 const linksPath = path.join(__dirname, '..', 'links.json');
 const outPath = path.join(__dirname, '..', 'links.html');
 
