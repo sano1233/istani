@@ -9,8 +9,11 @@ if ! command -v npm >/dev/null 2>&1; then
   exit 1
 fi
 
-if [ ! -d node_modules ]; then
-  echo "Installing dependencies..."
+if [ -f package-lock.json ]; then
+  echo "Installing dependencies with npm ci..."
+  npm ci
+else
+  echo "Installing dependencies with npm install..."
   npm install
 fi
 
