@@ -1,0 +1,176 @@
+name: Auto Fix Failing PRs and Merge
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 * * * *"  # hourly; adjust as desired
+
+concurrency:
+  group: auto-fix-and-merge
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  checks: read
+  statuses: read
+
+jobs:
+  scan-and-fix:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (shallow)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install GitHub CLI
+        uses: cli/cli@v2
+        with:
+          version: latest
+
+      - name: List open PRs (JSON)
+        id: prlist
+        run: |
+          gh pr list --state open --json number,headRefName,baseRefName,isDraft,title,author,headRepository > prs.json
+          cat prs.json
+
+      - name: Filter candidate PR numbers
+        id: filter
+        run: |
+          node <<'EOF'
+          const fs = require('fs');
+          const prs = JSON.parse(fs.readFileSync('prs.json','utf8'));
+          // Criteria: open, not draft, base=main, same owner repo (avoid untrusted forks)
+          const candidates = prs.filter(pr => !pr.isDraft && pr.baseRefName === 'main' && pr.headRepository?.owner?.login === process.env.GITHUB_REPOSITORY.split('/')[0])
+            .map(pr => pr.number);
+          process.stdout.write(`CANDIDATES=${candidates.join(',')}`);
+          EOF
+
+      - name: Export candidates
+        run: echo "CANDIDATES=$(grep -o 'CANDIDATES=.*' filter || true | sed 's/^CANDIDATES=//')" >> $GITHUB_ENV
+
+      - name: Show candidates
+        run: echo "Candidates: $CANDIDATES"
+
+      - name: Process PRs
+        if: env.CANDIDATES != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -e
+          IFS=',' read -ra ARR <<< "$CANDIDATES"
+          for PR in "${ARR[@]}"; do
+            echo "\n--- Processing PR #$PR ---"
+            gh pr view $PR --json headRefName > pr.json
+            BRANCH=$(jq -r '.headRefName' pr.json)
+
+            echo "Cloning branch $BRANCH for PR #$PR"
+            rm -rf workdir_$PR
+            git clone --filter=blob:none --depth=100 https://github.com/${GITHUB_REPOSITORY}.git workdir_$PR
+            cd workdir_$PR
+            git fetch origin $BRANCH:$BRANCH
+            git checkout $BRANCH
+
+            if [ -f package-lock.json ]; then npm ci || npm install; else npm install; fi
+
+            AUTO_FIX_APPLIED=0
+            # Lint (non-blocking first pass)
+            if npm run | grep -q "lint"; then
+              echo "Running lint..." || true
+              npm run lint || true
+            fi
+
+            # Attempt auto-fixes if scripts exist
+            if npm run | grep -q "lint:fix"; then
+              echo "Applying lint:fix"; npm run lint:fix || true; AUTO_FIX_APPLIED=1; fi
+            if npm run | grep -q "format"; then
+              echo "Applying format"; npm run format || true; AUTO_FIX_APPLIED=1; fi
+
+            # Type check / build
+            BUILD_OK=0
+            if npm run | grep -q "build"; then
+              echo "Running build"; npm run build || BUILD_OK=1; fi
+
+            # Tests (optional) - only block if present
+            TEST_OK=0
+            if npm run | grep -q "test"; then
+              echo "Running tests"; npm test -- --watch=false || TEST_OK=$?; fi
+
+            if [ $BUILD_OK -ne 0 ]; then
+              echo "Build failed (non-style issue) - skipping merge for PR #$PR"; cd ..; continue; fi
+            if [ $TEST_OK -ne 0 ]; then
+              echo "Tests failed - skipping merge for PR #$PR"; cd ..; continue; fi
+
+            # Commit changes if diff exists
+            if ! git diff --quiet; then
+              echo "Committing auto-fix changes";
+              git config user.name "auto-merge-bot";
+              git config user.email "actions@users.noreply.github.com";
+              git add -A;
+              git commit -m "chore(auto-fix): apply automated lint/format fixes" || true;
+              git push origin $BRANCH;
+            else
+              echo "No code changes to commit";
+            fi
+
+            # Merge (squash) and delete branch
+            echo "Attempting merge for PR #$PR";
+            if gh pr merge $PR --squash --delete-branch --admin --auto; then
+              echo "Merged PR #$PR";
+            else
+              echo "Merge attempt failed for PR #$PR";
+            fi
+            cd ..
+          done
+
+      - name: Summary
+        run: echo "Auto-fix run complete." 
+
+  deploy:
+    needs: scan-and-fix
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install deps
+        run: npm ci || npm install
+      - name: Build
+        run: |
+          if npm run | grep -q "build"; then npm run build; else echo "No build script"; fi
+      - name: Deploy (Vercel)
+        if: env.VERCEL_TOKEN
+        run: |
+          npm i -g vercel
+          vercel pull --yes --environment=production --token $VERCEL_TOKEN
+          vercel deploy --prod --token $VERCEL_TOKEN
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      - name: Deploy (Netlify)
+        if: env.NETLIFY_AUTH_TOKEN
+        run: |
+          npm i -g netlify-cli
+          netlify deploy --dir=dist --prod
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
+# Notes:
+# - Provide VERCEL_* or NETLIFY_* secrets in repository settings for deploy.
+# - Only merges PRs from same-owner branches targeting main.
+# - Skips PRs whose failures are not auto-fixable (build/tests still failing).
+# - Adjust schedule or remove if you only want manual dispatch.
