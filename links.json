@@ -1,5 +1,6 @@
 {
   "Storefronts": [
+    {"label": "FreeFit concept site", "url": "https://freefit.my.canva.site/"},
     {"label": "ISTANI Store", "url": "https://ISTANI.STORE"},
     {"label": "ISTANI.org", "url": "https://istani.org"},
     {"label": "Google business page", "url": "https://g.co/kgs/TaZrbwz"},
@@ -16,7 +17,8 @@
     {"label": "Stripe Checkout", "url": "https://buy.stripe.com/8x25kE4VB3Vf5oy0F3cwg00"}
   ],
   "Support": [
-    {"label": "Buy Me a Coffee", "url": "https://buymeacoffee.com/istanifitn"}
+    {"label": "Buy Me a Coffee", "url": "https://buymeacoffee.com/istanifitn"},
+    {"label": "Donate with PayPal", "url": "https://www.paypal.com/donate?campaign_id=TB2RPVKE469QE"}
   ],
   "Social": [
     {"label": "Threads", "url": "https://www.threads.net/@istani333"},
@@ -31,6 +33,10 @@
     {"label": "Pinterest", "url": "https://pin.it/1v3aIbWur"},
     {"label": "Snapchat", "url": "https://snapchat.com/t/yv8cIQBf"},
     {"label": "Discord", "url": "https://discord.gg/5bWxxkU3"}
+  ],
+  "Domain Nameservers": [
+    {"label": "Primary nameserver", "value": "adaline.ns.cloudflare.com"},
+    {"label": "Secondary nameserver", "value": "ezra.ns.cloudflare.com"}
   ],
   "Contact": [
     {"label": "Customer Support", "url": "https://m.me/739355429091524?is_ai=1"},
