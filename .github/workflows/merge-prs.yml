@@ -1,30 +1,21 @@
-name: Merge PRs (manual)
+name: Merge PRs (Disabled)
 
 on:
   workflow_dispatch:
     inputs:
-      prs:
-        description: "Space-separated PR numbers (oldest→newest)"
+      note:
+        description: 'This workflow is intentionally disabled to prevent automated merges.'
         required: false
-        default: "39 40 41 44 45 49"
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
+  pull-requests: read
 
 jobs:
-  merge:
+  disabled:
     runs-on: ubuntu-latest
     steps:
-      - name: Use gh
-        run: gh --version
-      - name: Merge PRs sequentially
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PRS: ${{ github.event.inputs.prs }}
+      - name: Show notice
         run: |
-          bash -lc '
-          for pr in ${PRS}; do
-            echo "Merging #${pr}…"
-            gh pr merge "${pr}" --squash --delete-branch
-          done'
+          echo 'Automated PR merging has been disabled.'
+          echo 'Merge changes manually after reviewing CI results.'
