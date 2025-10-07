@@ -12,6 +12,14 @@ Use the provided `deploy.sh` helper script to reproduce the production build loc
 
 The script ensures dependencies are installed (when the `node_modules` directory is missing), runs the test suite, and triggers the bundled production build.
 
+## Tooling
+
+Some development utilities expect the `@openai/codex` CLI to be available globally. Install it with:
+
+```bash
+npm i -g @openai/codex
+```
+
 ## Security
 
 Requests are filtered with an Arcjet-powered Netlify function at `netlify/functions/protect.mjs` to block common attacks and unwanted bots.
