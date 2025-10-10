@@ -23,3 +23,19 @@ npm i -g @openai/codex
 ## Security
 
 Requests are filtered with an Arcjet-powered Netlify function at `netlify/functions/protect.mjs` to block common attacks and unwanted bots.
+
+## Automated PR reviews
+
+Use the `scripts/auto-review.mjs` helper to request an OpenAI-powered code review before merging pull requests. It relies on the GitHub CLI and the `OPENAI_API_KEY` environment variable:
+
+```bash
+OPENAI_API_KEY=sk-your-key node scripts/auto-review.mjs 123
+```
+
+Pass `--merge` to automatically squash-merge the pull request when the model issues an approval with no blocking concerns:
+
+```bash
+OPENAI_API_KEY=sk-your-key node scripts/auto-review.mjs 123 --merge
+```
+
+The reviewer summarizes the change, lists any concerns, surfaces recommended checks, and exits with a non-zero status if merging is blocked.
