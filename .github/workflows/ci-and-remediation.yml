@@ -37,7 +37,7 @@ jobs:
       - name: Run lint
         if: ${{ hashFiles('package.json') != '' }}
         run: |
-          if npm run | grep -q "lint"; then
+          if npm run 2>&1 | grep -q "lint"; then
             npm run lint -- --max-warnings=0
           else
             echo "No lint script defined; skipping"
@@ -46,8 +46,8 @@ jobs:
       - name: Run tests
         if: ${{ hashFiles('package.json') != '' }}
         run: |
-          if npm run | grep -q "test"; then
-            npm test -- --watch=false
+          if npm run 2>&1 | grep -q "test"; then
+            npm test
           else
             echo "No test script defined; skipping"
           fi
@@ -55,7 +55,7 @@ jobs:
       - name: Build project
         if: ${{ hashFiles('package.json') != '' }}
         run: |
-          if npm run | grep -q "build"; then
+          if npm run 2>&1 | grep -q "build"; then
             npm run build
           else
             echo "No build script defined; skipping"
