@@ -1,41 +1,25 @@
-## ISTANI
+# ISTANI
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/06176c52-805a-4be2-a8eb-732e5ab0f184/deploy-status)](https://app.netlify.com/projects/istani/deploys)
+A Next.js 14 application for browsing curated ISTANI fitness imagery sourced from Pexels and Unsplash with Supabase-backed curation.
 
-## Deployment workflow
+## Getting started
 
-Use the provided `deploy.sh` helper script to reproduce the production build locally:
+1. **Database** – run `db/001_create_image_assets.sql` against your Supabase project.
+2. **Environment** – copy `.env.example` to `.env.local`, fill in your Supabase and image API keys, and configure the same values in Vercel.
+3. **Install** – run `npm ci` to install dependencies.
+4. **Develop** – start the local dev server with `npm run dev`.
+5. **Optional seeding** – populate curated images locally with `npm run seed:images`.
+6. **Protected refresh route** – send a `POST` to `/api/images/refresh` with header `x-admin-token: ADMIN_REFRESH_TOKEN` to refresh curated assets on demand.
 
-```bash
-./deploy.sh
-```
+## Scripts
 
-The script ensures dependencies are installed (when the `node_modules` directory is missing), runs the test suite, and triggers the bundled production build.
+- `npm run format` – format the codebase with Prettier.
+- `npm run format:check` – verify formatting.
+- `npm run lint` – run ESLint with Next.js rules.
+- `npm run typecheck` – perform a TypeScript typecheck.
+- `npm run build` – create a production build.
+- `npm run seed:images` – upsert curated image metadata into Supabase using API data.
 
-## Tooling
+## Deployment
 
-Some development utilities expect the `@openai/codex` CLI to be available globally. Install it with:
-
-```bash
-npm i -g @openai/codex
-```
-
-## Security
-
-Requests are filtered with an Arcjet-powered Netlify function at `netlify/functions/protect.mjs` to block common attacks and unwanted bots.
-
-## Automated PR reviews
-
-Use the `scripts/auto-review.mjs` helper to request an OpenAI-powered code review before merging pull requests. It relies on the GitHub CLI and the `OPENAI_API_KEY` environment variable:
-
-```bash
-OPENAI_API_KEY=sk-your-key node scripts/auto-review.mjs 123
-```
-
-Pass `--merge` to automatically squash-merge the pull request when the model issues an approval with no blocking concerns:
-
-```bash
-OPENAI_API_KEY=sk-your-key node scripts/auto-review.mjs 123 --merge
-```
-
-The reviewer summarizes the change, lists any concerns, surfaces recommended checks, and exits with a non-zero status if merging is blocked.
+Deploy to Vercel. The included GitHub Actions workflows run formatting checks, linting, typechecking, builds, and CodeQL analysis on every push and pull request.
