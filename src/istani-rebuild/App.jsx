@@ -87,6 +87,26 @@ const IstaniCompleteProduct = () => {
   const [notificationPermission, setNotificationPermission] = useState('default');
   const [streak, setStreak] = useState(0);
 
+  const calculateStreak = useCallback(() => {
+    if (completedDays.length === 0) {
+      setStreak(0);
+      return;
+    }
+
+    const sortedDays = [...completedDays].sort((a, b) => a - b);
+    let currentStreak = 1;
+
+    for (let i = 1; i < sortedDays.length; i += 1) {
+      if (sortedDays[i] === sortedDays[i - 1] + 1) {
+        currentStreak += 1;
+      } else {
+        break;
+      }
+    }
+
+    setStreak(currentStreak);
+  }, [completedDays]);
+
   useEffect(() => {
     try {
       localStorage.setItem('istani_current_day', String(currentDay));
@@ -150,26 +170,6 @@ const IstaniCompleteProduct = () => {
       setNotificationPermission(Notification.permission);
     }
   }, []);
-
-  const calculateStreak = useCallback(() => {
-    if (completedDays.length === 0) {
-      setStreak(0);
-      return;
-    }
-
-    const sortedDays = [...completedDays].sort((a, b) => a - b);
-    let currentStreak = 1;
-
-    for (let i = 1; i < sortedDays.length; i += 1) {
-      if (sortedDays[i] === sortedDays[i - 1] + 1) {
-        currentStreak += 1;
-      } else {
-        break;
-      }
-    }
-
-    setStreak(currentStreak);
-  }, [completedDays]);
 
   useEffect(() => {
     calculateStreak();
