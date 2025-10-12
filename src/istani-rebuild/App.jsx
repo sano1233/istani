@@ -157,15 +157,14 @@ const IstaniCompleteProduct = () => {
       return;
     }
 
-    const sortedDays = [...completedDays].sort((a, b) => a - b);
+    const uniqueDays = new Set(completedDays);
+    const latestDay = Math.max(...uniqueDays);
     let currentStreak = 1;
+    let dayToCheck = latestDay - 1;
 
-    for (let i = 1; i < sortedDays.length; i += 1) {
-      if (sortedDays[i] === sortedDays[i - 1] + 1) {
-        currentStreak += 1;
-      } else {
-        break;
-      }
+    while (uniqueDays.has(dayToCheck)) {
+      currentStreak += 1;
+      dayToCheck -= 1;
     }
 
     setStreak(currentStreak);
