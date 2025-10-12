@@ -6,3 +6,21 @@ yarn-error.log*
 
 # Build artifacts
 istani-rebuild/assets/
+
+# Java build artifacts
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.log
+.settings/
+.project
+.classpath
+*.iml
+.idea/
+
+# Maven
+.mvn/
+mvnw
+mvnw.cmd
