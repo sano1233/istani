@@ -1,6 +1,5 @@
 {
   "Storefronts": [
-    {"label": "FreeFit concept site", "url": "https://freefit.my.canva.site/"},
     {"label": "ISTANI Store", "url": "https://ISTANI.STORE"},
     {"label": "ISTANI.org", "url": "https://istani.org"},
     {"label": "Google business page", "url": "https://g.co/kgs/TaZrbwz"},
@@ -33,10 +32,6 @@
     {"label": "Pinterest", "url": "https://pin.it/1v3aIbWur"},
     {"label": "Snapchat", "url": "https://snapchat.com/t/yv8cIQBf"},
     {"label": "Discord", "url": "https://discord.gg/5bWxxkU3"}
-  ],
-  "Domain Nameservers": [
-    {"label": "Primary nameserver", "value": "adaline.ns.cloudflare.com"},
-    {"label": "Secondary nameserver", "value": "ezra.ns.cloudflare.com"}
   ],
   "Contact": [
     {"label": "Customer Support", "url": "https://m.me/739355429091524?is_ai=1"},
