@@ -24,3 +24,26 @@ target/
 .mvn/
 mvnw
 mvnw.cmd
+
+# AI Agent
+ai-agent/.env
+ai-agent/node_modules
+ai-agent/logs/
+ai-agent/*.log
+ai-agent/.env.local
+ai-agent/.env.*.local
+
+# Docker
+ai-agent/docker-compose.override.yml
+
+# Monitoring data
+ai-agent/monitoring/*.db
+ai-agent/monitoring/*.sqlite
+
+# Temporary files
+*.tmp
+*.temp
+.DS_Store
+.vscode/
+*.swp
+*.swo
