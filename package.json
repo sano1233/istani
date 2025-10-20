@@ -7,7 +7,16 @@
     "build:istani-rebuild": "node scripts/build-istani-rebuild.mjs",
     "test": "echo \"No tests specified\"",
     "generate:links": "node scripts/buildLinksPage.js",
-    "post": "node scripts/postToSocials.js"
+    "post": "node scripts/postToSocials.js",
+    "agent:install": "cd ai-agent && npm install",
+    "agent:start": "cd ai-agent && npm start",
+    "agent:dev": "cd ai-agent && npm run dev",
+    "agent:cli": "cd ai-agent && npm run cli",
+    "agent:process": "cd ai-agent && npm run cli process",
+    "agent:process-all": "cd ai-agent && npm run cli process-all",
+    "agent:stats": "cd ai-agent && npm run cli stats",
+    "agent:docker:build": "cd ai-agent && npm run docker:build",
+    "agent:docker:run": "cd ai-agent && npm run docker:run"
   },
   "engines": {
     "node": ">=18"

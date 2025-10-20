@@ -1,0 +1,47 @@
+{
+  "name": "@istani/autonomous-ai-agent",
+  "version": "1.0.0",
+  "description": "Ultra-secured autonomous AI agent for automated PR handling, code review, build, test, and deploy",
+  "type": "module",
+  "main": "./core/agent.mjs",
+  "bin": {
+    "istani-agent": "./cli/index.mjs"
+  },
+  "scripts": {
+    "start": "node server/webhook-server.mjs",
+    "cli": "node cli/index.mjs",
+    "dev": "NODE_ENV=development nodemon server/webhook-server.mjs",
+    "test": "echo \"Tests coming soon\" && exit 0",
+    "docker:build": "docker build -t istani-ai-agent .",
+    "docker:run": "docker run -p 3001:3001 --env-file .env istani-ai-agent"
+  },
+  "keywords": [
+    "ai",
+    "agent",
+    "autonomous",
+    "github",
+    "automation",
+    "claude",
+    "code-review",
+    "ci-cd",
+    "devops"
+  ],
+  "author": "ISTANI Team",
+  "license": "MIT",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.32.1",
+    "@octokit/auth-app": "^7.1.3",
+    "@octokit/rest": "^21.0.2",
+    "chalk": "^5.3.0",
+    "cli-table3": "^0.6.5",
+    "commander": "^12.1.0",
+    "express": "^4.21.2",
+    "ora": "^8.1.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
