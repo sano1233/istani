@@ -6,8 +6,10 @@
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Node](https://img.shields.io/badge/node-%3E%3D18-brightgreen.svg)
 ![Powered by Claude](https://img.shields.io/badge/Powered%20by-Claude%20AI-blueviolet.svg)
+![GitHub Copilot](https://img.shields.io/badge/GitHub-Copilot-green.svg)
+![OpenAI Codex](https://img.shields.io/badge/OpenAI-Codex-orange.svg)
 
-**Ultra-Secured Autonomous AI Agent for Automated PR Handling, Code Review, Build, Test, and Deploy**
+**Ultra-Secured Autonomous AI Agent with Multi-Model AI (Claude + Copilot + Codex) for Automated PR Handling, Code Review, Build, Test, Deploy, and Auto-Fix**
 
 [Features](#features) • [Quick Start](#quick-start) • [Documentation](#documentation) • [Configuration](#configuration) • [API](#api) • [Security](#security)
 
@@ -19,7 +21,9 @@
 
 ### Core Capabilities
 
-- **🔍 Intelligent Code Review** - Powered by Claude AI for comprehensive code analysis
+- **🤖 Multi-Model AI System** - Uses Claude AI, GitHub Copilot, and Codex working together
+- **🔍 Intelligent Code Review** - Comprehensive analysis with consensus from multiple AI models
+- **🔧 Automatic Error Resolution** - Detects and fixes errors automatically
 - **🏗️ Automated Build & Test** - Automatically runs builds and tests on every PR
 - **🔒 Security Scanning** - Detects secrets, vulnerabilities, and security issues
 - **🚀 Automated Deployment** - Deploys to Vercel and Netlify automatically
@@ -31,14 +35,32 @@
 
 ### Advanced Features
 
-- **🧠 Learning System** - Improves code review quality over time
-- **📝 Comprehensive Reporting** - Detailed reports on every PR
+- **🧠 Multi-Model Consensus** - Cross-validation between AI models for higher accuracy
+- **🔧 Auto-Fix Errors** - Automatically fixes linting, type, and syntax errors
+- **💡 Smart Code Suggestions** - Enhanced suggestions from Claude, Copilot, and Codex
+- **📝 Comprehensive Reporting** - Detailed reports on every PR with multi-model insights
 - **🔔 Smart Notifications** - Integrates with Slack, Discord, and email
-- **🎮 Bot Commands** - Control the agent via PR comments (`/review`, `/deploy`, `/stats`)
+- **🎮 Bot Commands** - Control the agent via PR comments (`/review`, `/deploy`, `/fix`, `/stats`)
 - **📈 Analytics** - Track build success rates, deployment frequency, and more
 - **🔄 Self-Healing** - Automatically retries failed operations
 - **🐳 Docker Ready** - Full containerization support
 - **☁️ Cloud Native** - Deploy to any cloud platform
+
+### 🎯 Multi-Model AI Features
+
+The agent leverages **three powerful AI models** working together:
+
+| Model | Purpose | Strengths |
+|-------|---------|-----------|
+| **Claude AI** | Primary code review | Deep analysis, security, architecture review |
+| **GitHub Copilot** | Code suggestions | Contextual completions, best practices |
+| **OpenAI Codex** | Error fixing | Advanced debugging, auto-fix generation |
+
+**Benefits:**
+- **Higher Accuracy** - Cross-validation catches more issues
+- **Better Fixes** - Multiple AI models generate and rank solutions
+- **Consensus Decisions** - 70% approval threshold for confidence
+- **Auto-Fix Errors** - Automatically resolves detected issues
 
 ---
 
@@ -48,7 +70,8 @@
 
 - Node.js >= 18
 - GitHub account with admin access to your repository
-- Anthropic API key ([Get one here](https://console.anthropic.com/))
+- **Anthropic API key** ([Get one here](https://console.anthropic.com/)) - Required
+- **OpenAI API key** ([Get one here](https://platform.openai.com/api-keys)) - Required for Codex/Copilot
 - Vercel account ([Sign up](https://vercel.com/signup))
 - Netlify account ([Sign up](https://app.netlify.com/signup))
 
@@ -109,20 +132,32 @@ docker-compose down
 Create a `.env` file with the following variables:
 
 ```bash
-# Required
-ANTHROPIC_API_KEY=sk-ant-api03-xxx
+# Required AI Models
+ANTHROPIC_API_KEY=sk-ant-api03-xxx  # Claude AI
+OPENAI_API_KEY=sk-xxx                # Codex/Copilot
+
+# Required GitHub & Deployment
 GITHUB_TOKEN=ghp_xxx
 GITHUB_OWNER=your-username
 GITHUB_REPO=your-repo
 VERCEL_TOKEN=xxx
 NETLIFY_TOKEN=xxx
 
-# Optional
+# Optional - Model Configuration
+CLAUDE_ENABLED=true
+COPILOT_ENABLED=true
+CODEX_ENABLED=true
+AUTO_FIX_ENABLED=true
+
+# Optional - Agent Settings
 GITHUB_WEBHOOK_SECRET=your-secret
 AGENT_AUTO_MERGE=true
 AGENT_AUTO_DEPLOY=true
 CLAUDE_MODEL=claude-sonnet-4-5-20250929
+OPENAI_MODEL=gpt-4-turbo-preview
 ```
+
+See [Copilot & Codex Integration Guide](docs/COPILOT_CODEX_INTEGRATION.md) for detailed setup.
 
 See [.env.example](ai-agent/.env.example) for all available options.
 
