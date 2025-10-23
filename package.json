@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@arcjet/node": "^1.0.0-beta.11",
+    "@supabase/supabase-js": "^2.76.1",
     "@vercel/analytics": "^1.5.0",
     "axios": "^1.12.0",
     "lucide-react": "^0.363.0",
