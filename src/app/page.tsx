@@ -88,23 +88,39 @@ export default function Home() {
               <div className="text-2xl">💪</div>
               <span className="text-xl font-semibold tracking-tight">Istani Fitness</span>
             </a>
-            <a
-              href={process.env.NEXT_PUBLIC_SUPPORT_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 px-6 py-2 text-sm font-semibold text-black transition-transform hover:scale-105"
-            >
-              ☕ Support Us
-            </a>
+            <div className="flex items-center gap-3">
+              <a href="/learn" className="text-sm text-gray-400 hover:text-white">
+                📚 Learn
+              </a>
+              <a
+                href="/auth"
+                className="rounded-full bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-2 text-sm font-semibold text-white transition-transform hover:scale-105"
+              >
+                Sign In / Sign Up
+              </a>
+              <a
+                href={process.env.NEXT_PUBLIC_SUPPORT_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 px-6 py-2 text-sm font-semibold text-black transition-transform hover:scale-105"
+              >
+                ☕ Support Us
+              </a>
+            </div>
           </div>
         </div>
       </nav>
 
-      {/* Google AdSense Placeholder */}
+      {/* Google AdSense */}
       <div className="mx-auto mt-20 max-w-7xl px-6 py-4">
-        <div className="rounded-lg border border-white/10 bg-white/5 p-4 text-center text-sm text-gray-400">
-          [Google Ads Space]
-        </div>
+        <ins
+          className="adsbygoogle"
+          style={{ display: 'block' }}
+          data-ad-client={process.env.NEXT_PUBLIC_GOOGLE_ADS_CLIENT}
+          data-ad-slot="auto"
+          data-ad-format="auto"
+          data-full-width-responsive="true"
+        />
       </div>
 
       {/* Main Content */}
