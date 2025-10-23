@@ -152,6 +152,54 @@ export default function Dashboard() {
     }
   };
 
+  const generateMultiAgentPlan = async () => {
+    if (!user || !profile) {
+      setMessage('Please complete your profile first!');
+      return;
+    }
+
+    if (!profile.age || !profile.gender || !profile.height || !profile.weight || !profile.activity_level || !profile.fitness_goal) {
+      setMessage('Please fill in all profile fields to generate a plan!');
+      setActiveTab('profile');
+      return;
+    }
+
+    setGeneratingPlan(true);
+    setMessage('🤖 Multi-agent system working: Planner → Exercise Specialist → Nutrition Expert → Quality Control...');
+
+    try {
+      const response = await fetch('/api/multi-agent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: user.id,
+          goal: `Create complete fitness program for ${profile.fitness_goal}`,
+          userProfile: {
+            age: profile.age,
+            gender: profile.gender,
+            height: profile.height,
+            weight: profile.weight,
+            activityLevel: profile.activity_level,
+            fitnessGoal: profile.fitness_goal,
+          },
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setMessage(`✅ ${data.message}\n\n${Object.entries(data.agentDetails).map(([k, v]) => `• ${k}: ${v}`).join('\n')}`);
+        checkUser(); // Refresh plans
+      } else {
+        setMessage('❌ Error: ' + data.error);
+      }
+    } catch (error: any) {
+      setMessage('❌ Error generating multi-agent plan: ' + error.message);
+    } finally {
+      setGeneratingPlan(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center bg-gradient-to-br from-gray-900 via-black to-purple-900 text-white">
@@ -370,17 +418,29 @@ export default function Dashboard() {
         {/* Workout Plans Tab */}
         {activeTab === 'workout' && (
           <div>
-            <div className="mb-6 flex items-center justify-between">
+            <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
               <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
                 Workout Plans
               </h2>
-              <button
-                onClick={() => generatePlan('workout')}
-                disabled={generatingPlan}
-                className="rounded-full bg-gradient-to-r from-blue-600 to-cyan-600 px-6 py-3 font-semibold transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {generatingPlan ? '🤖 Generating...' : '✨ Generate Workout Plan (FREE)'}
-              </button>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => generatePlan('workout')}
+                  disabled={generatingPlan}
+                  className="rounded-full bg-gradient-to-r from-blue-600 to-cyan-600 px-6 py-3 font-semibold transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg hover:shadow-blue-500/50"
+                >
+                  {generatingPlan ? '🤖 Generating...' : '✨ Quick Workout Plan'}
+                </button>
+                <button
+                  onClick={generateMultiAgentPlan}
+                  disabled={generatingPlan}
+                  className="rounded-full bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-3 font-semibold transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg hover:shadow-purple-500/50 relative"
+                >
+                  <span className="absolute -top-2 -right-2 rounded-full bg-yellow-500 px-2 py-1 text-xs font-bold text-black">
+                    NEW
+                  </span>
+                  {generatingPlan ? '🤖 4 Agents Working...' : '🚀 Multi-Agent Plan'}
+                </button>
+              </div>
             </div>
 
             <div className="space-y-4">
@@ -414,17 +474,29 @@ export default function Dashboard() {
         {/* Meal Plans Tab */}
         {activeTab === 'meal' && (
           <div>
-            <div className="mb-6 flex items-center justify-between">
+            <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
               <h2 className="text-3xl font-bold bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
                 Meal Plans
               </h2>
-              <button
-                onClick={() => generatePlan('meal')}
-                disabled={generatingPlan}
-                className="rounded-full bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-3 font-semibold transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {generatingPlan ? '🤖 Generating...' : '✨ Generate Meal Plan (FREE)'}
-              </button>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => generatePlan('meal')}
+                  disabled={generatingPlan}
+                  className="rounded-full bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-3 font-semibold transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg hover:shadow-green-500/50"
+                >
+                  {generatingPlan ? '🤖 Generating...' : '✨ Quick Meal Plan'}
+                </button>
+                <button
+                  onClick={generateMultiAgentPlan}
+                  disabled={generatingPlan}
+                  className="rounded-full bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-3 font-semibold transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg hover:shadow-purple-500/50 relative"
+                >
+                  <span className="absolute -top-2 -right-2 rounded-full bg-yellow-500 px-2 py-1 text-xs font-bold text-black">
+                    NEW
+                  </span>
+                  {generatingPlan ? '🤖 4 Agents Working...' : '🚀 Multi-Agent Plan'}
+                </button>
+              </div>
             </div>
 
             <div className="space-y-4">

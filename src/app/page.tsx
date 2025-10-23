@@ -89,12 +89,15 @@ export default function Home() {
               <span className="text-xl font-semibold tracking-tight">Istani Fitness</span>
             </a>
             <div className="flex items-center gap-3">
-              <a href="/learn" className="text-sm text-gray-400 hover:text-white">
+              <a href="/exercises" className="text-sm text-gray-400 hover:text-white transition-colors">
+                💪 Exercises
+              </a>
+              <a href="/learn" className="text-sm text-gray-400 hover:text-white transition-colors">
                 📚 Learn
               </a>
               <a
                 href="/auth"
-                className="rounded-full bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-2 text-sm font-semibold text-white transition-transform hover:scale-105"
+                className="rounded-full bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-2 text-sm font-semibold text-white transition-all hover:scale-105 hover:shadow-lg hover:shadow-purple-500/50"
               >
                 Sign In / Sign Up
               </a>
@@ -102,7 +105,7 @@ export default function Home() {
                 href={process.env.NEXT_PUBLIC_SUPPORT_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 px-6 py-2 text-sm font-semibold text-black transition-transform hover:scale-105"
+                className="rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 px-6 py-2 text-sm font-semibold text-black transition-all hover:scale-105 hover:shadow-lg hover:shadow-yellow-500/50"
               >
                 ☕ Support Us
               </a>
@@ -123,16 +126,64 @@ export default function Home() {
         />
       </div>
 
+      {/* Hero Section */}
+      <section className="mx-auto max-w-7xl px-6 py-20">
+        <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-purple-900/50 via-pink-900/30 to-blue-900/50 p-12 backdrop-blur-xl">
+          {/* Animated background */}
+          <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 via-pink-600/20 to-blue-600/20 animate-pulse"></div>
+
+          <div className="relative z-10 text-center">
+            <div className="mb-6 text-7xl animate-bounce">💪</div>
+            <h1 className="mb-6 text-6xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+              Autonomous AI Fitness Platform
+            </h1>
+            <p className="mb-8 text-2xl text-gray-300">
+              Multi-agent AI system • FREE unlimited plans • Scientific approach
+            </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <a
+                href="/auth"
+                className="rounded-full bg-gradient-to-r from-purple-600 to-pink-600 px-8 py-4 text-lg font-semibold transition-all hover:scale-105 hover:shadow-xl hover:shadow-purple-500/50"
+              >
+                🚀 Start Free Now
+              </a>
+              <a
+                href="/exercises"
+                className="rounded-full border-2 border-purple-400 px-8 py-4 text-lg font-semibold text-purple-400 transition-all hover:bg-purple-400 hover:text-white hover:scale-105"
+              >
+                📚 Exercise Library
+              </a>
+            </div>
+
+            {/* Stats */}
+            <div className="mt-12 grid gap-6 md:grid-cols-3">
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl">
+                <div className="mb-2 text-4xl font-bold text-purple-400">FREE</div>
+                <div className="text-sm text-gray-400">Unlimited AI Plans</div>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl">
+                <div className="mb-2 text-4xl font-bold text-blue-400">4</div>
+                <div className="text-sm text-gray-400">Specialized AI Agents</div>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl">
+                <div className="mb-2 text-4xl font-bold text-pink-400">100%</div>
+                <div className="text-sm text-gray-400">Science-Based</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Main Content */}
       <main className="mx-auto max-w-7xl px-6 py-12">
         {!activeCalculator ? (
           <>
             <div className="text-center mb-12">
-              <h1 className="mb-4 text-5xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                Autonomous Fitness Calculator
-              </h1>
+              <h2 className="mb-4 text-4xl font-bold text-white">
+                Free Fitness Calculators
+              </h2>
               <p className="text-xl text-gray-300">
-                AI-Powered fitness calculations for your health journey
+                Get instant calculations for your fitness metrics
               </p>
             </div>
 
