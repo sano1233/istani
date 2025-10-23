@@ -2,6 +2,7 @@
   "name": "istani.org",
   "version": "1.0.0",
   "description": "",
+  "private": true,
   "scripts": {
     "build": "npm run build:istani-rebuild",
     "build:istani-rebuild": "node scripts/build-istani-rebuild.mjs",
