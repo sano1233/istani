@@ -95,6 +95,25 @@ const IstaniCompleteProduct = () => {
     }
   }, [currentDay]);
 
+  const calculateStreak = useCallback(() => {
+    if (completedDays.length === 0) {
+      setStreak(0);
+      return;
+    }
+
+    const uniqueDays = new Set(completedDays);
+    const latestDay = Math.max(...uniqueDays);
+    let currentStreak = 1;
+    let dayToCheck = latestDay - 1;
+
+    while (uniqueDays.has(dayToCheck)) {
+      currentStreak += 1;
+      dayToCheck -= 1;
+    }
+
+    setStreak(currentStreak);
+  }, [completedDays]);
+
   useEffect(() => {
     try {
       localStorage.setItem('istani_completed_days', JSON.stringify(completedDays));
@@ -150,25 +169,6 @@ const IstaniCompleteProduct = () => {
       setNotificationPermission(Notification.permission);
     }
   }, []);
-
-  const calculateStreak = useCallback(() => {
-    if (completedDays.length === 0) {
-      setStreak(0);
-      return;
-    }
-
-    const uniqueDays = new Set(completedDays);
-    const latestDay = Math.max(...uniqueDays);
-    let currentStreak = 1;
-    let dayToCheck = latestDay - 1;
-
-    while (uniqueDays.has(dayToCheck)) {
-      currentStreak += 1;
-      dayToCheck -= 1;
-    }
-
-    setStreak(currentStreak);
-  }, [completedDays]);
 
   useEffect(() => {
     calculateStreak();
