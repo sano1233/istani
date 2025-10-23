@@ -57,6 +57,21 @@ export default function AuthPage() {
 
           if (profileError) throw profileError;
 
+          // Send admin notification about new signup
+          try {
+            await fetch('/api/notify-admin', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                type: 'signup',
+                userEmail: email,
+                userName: fullName,
+              }),
+            });
+          } catch (error) {
+            console.error('Admin notification failed:', error);
+          }
+
           setMessage('Account created! Please check your email to verify your account.');
         }
       }

@@ -224,6 +224,24 @@ export async function POST(req: NextRequest) {
       tokens_used: finalPlan.length
     });
 
+    // Notify admin of multi-agent plan generation
+    fetch('/api/notify-admin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type: 'plan_generated',
+        userEmail: 'user@example.com',
+        userName: 'User',
+        details: {
+          planType: 'complete-program',
+          agentType: 'Multi-Agent (4 agents)',
+          age: userProfile.age,
+          gender: userProfile.gender,
+          fitnessGoal: userProfile.fitnessGoal,
+        },
+      }),
+    }).catch(console.error);
+
     return NextResponse.json({
       success: true,
       plan: data,

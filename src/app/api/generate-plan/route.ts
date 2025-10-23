@@ -130,6 +130,24 @@ Provide 4-5 meals with specific foods, portions, and macros.`;
       tokens_used: generatedText.length
     });
 
+    // Notify admin of plan generation (async, don't wait)
+    fetch('/api/notify-admin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type: 'plan_generated',
+        userEmail: 'user@example.com', // Get from session
+        userName: 'User',
+        details: {
+          planType,
+          agentType: 'Single Agent',
+          age: userProfile.age,
+          gender: userProfile.gender,
+          fitnessGoal: userProfile.fitnessGoal,
+        },
+      }),
+    }).catch(console.error);
+
     return NextResponse.json({
       success: true,
       plan: data,

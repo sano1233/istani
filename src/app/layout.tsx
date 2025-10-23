@@ -14,10 +14,23 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Istani Fitness - AI-Powered Autonomous Fitness Platform",
-  description: "Get personalized workout plans, meal plans, and fitness coaching powered by free AI. Track your progress and achieve your fitness goals with Istani Fitness.",
-  keywords: "fitness, workout plans, meal plans, AI fitness, free fitness app, TDEE calculator, BMI calculator, fitness tracker",
-  authors: [{ name: "Istani" }],
+  title: "Istani Fitness - Enterprise AI Fitness Platform | 100% Free",
+  description: "Get personalized workout plans, meal plans, and fitness coaching powered by free multi-agent AI. Track your progress and achieve your fitness goals with Istani Fitness. 4 specialized AI agents working together for optimal results.",
+  keywords: "fitness, workout plans, meal plans, AI fitness, free fitness app, TDEE calculator, BMI calculator, fitness tracker, multi-agent AI, autonomous fitness, enterprise fitness platform",
+  authors: [{ name: "Istani", url: "https://istani.store" }],
+  metadataBase: new URL('https://istani.store'),
+  openGraph: {
+    title: "Istani Fitness - Enterprise AI Fitness Platform",
+    description: "Multi-agent AI system for personalized fitness plans. 100% FREE forever.",
+    url: "https://istani.store",
+    siteName: "Istani Fitness",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Istani Fitness - AI-Powered Fitness",
+    description: "Get FREE personalized workout and meal plans from our multi-agent AI system",
+  },
   other: {
     'google-adsense-account': process.env.NEXT_PUBLIC_GOOGLE_ADS_CLIENT || '',
   },
