@@ -164,11 +164,14 @@ const IstaniCompleteProduct = () => {
     return () => clearInterval(interval);
   }, [timerRunning, timerSeconds]);
 
+  const isBrowser = typeof window !== 'undefined';
+  const hasNotificationSupport = isBrowser && 'Notification' in window;
+
   useEffect(() => {
-    if ('Notification' in window) {
+    if (hasNotificationSupport) {
       setNotificationPermission(Notification.permission);
     }
-  }, []);
+  }, [hasNotificationSupport]);
 
   useEffect(() => {
     calculateStreak();
@@ -469,7 +472,7 @@ const IstaniCompleteProduct = () => {
   const progress = (completedDays.length / 7) * 100;
 
   const sendNotification = (title, body) => {
-    if ('Notification' in window && Notification.permission === 'granted') {
+    if (hasNotificationSupport && Notification.permission === 'granted') {
       try {
         new Notification(title, { body, icon: '/favicon.ico' });
       } catch (error) {
@@ -479,7 +482,7 @@ const IstaniCompleteProduct = () => {
   };
 
   const requestNotificationPermission = async () => {
-    if ('Notification' in window && Notification.permission === 'default') {
+    if (hasNotificationSupport && Notification.permission === 'default') {
       try {
         const permission = await Notification.requestPermission();
         setNotificationPermission(permission);
@@ -588,6 +591,10 @@ const IstaniCompleteProduct = () => {
   };
 
   const resetProgress = () => {
+    if (!isBrowser) {
+      return;
+    }
+
     if (window.confirm('Are you sure you want to reset ALL progress? This cannot be undone.')) {
       try {
         localStorage.removeItem('istani_current_day');
