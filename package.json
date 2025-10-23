@@ -9,27 +9,27 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@ai-sdk/google": "^2.0.23",
-    "@ai-sdk/openai": "^2.0.53",
+    "@ai-sdk/google": "^0.0.55",
+    "@ai-sdk/openai": "^0.0.66",
     "@google/generative-ai": "^0.24.1",
     "@huggingface/inference": "^4.12.0",
     "@vercel/blob": "^2.0.0",
-    "ai": "^5.0.76",
+    "ai": "3.4.33",
     "nanoid": "^5.1.6",
-    "next": "16.0.0",
+    "next": "15.1.6",
     "octokit": "^5.0.4",
-    "react": "19.2.0",
-    "react-dom": "19.2.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "sharp": "^0.34.4",
-    "zod": "^4.1.12"
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
     "eslint": "^9",
-    "eslint-config-next": "16.0.0",
+    "eslint-config-next": "15.1.6",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
