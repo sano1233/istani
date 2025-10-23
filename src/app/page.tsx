@@ -45,15 +45,15 @@ export default function Home() {
             </div>
 
             <h1 className="mb-6 text-5xl font-bold leading-tight tracking-tight sm:text-6xl md:text-7xl">
-              Stop Wasting Hours on{' '}
+              The World's Most Powerful{' '}
               <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                Repetitive Tasks
+                Business AI Platform
               </span>
+              {' '}Completely Free
             </h1>
 
             <p className="mx-auto mb-8 max-w-2xl text-xl leading-relaxed text-gray-300">
-              Get more done in <span className="font-semibold text-white">10 minutes</span> than most people do in{' '}
-              <span className="font-semibold text-white">10 hours</span>. Istani is your autonomous AI that thinks, learns, and executes—while you focus on what actually matters.
+              Better than Replit, Palantir, Oracle, and Anduril. <span className="font-semibold text-white">Istani AI</span> solves every business challenge with autonomous AI that learns your business, integrates with your tools, and evolves as you grow.
             </p>
 
             <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
@@ -93,33 +93,33 @@ export default function Home() {
         {/* Value Propositions */}
         <section className="border-t border-white/10 bg-gradient-to-b from-black to-gray-900 px-6 py-20">
           <div className="mx-auto max-w-6xl">
-            <h2 className="mb-4 text-center text-3xl font-bold">What You Get</h2>
+            <h2 className="mb-4 text-center text-3xl font-bold">Enterprise Solutions. Zero Cost.</h2>
             <p className="mx-auto mb-12 max-w-2xl text-center text-gray-400">
-              Not just another chatbot. This is a complete autonomous system that actually solves problems.
+              Real business tools that actually work. Not a demo. Not a trial. Forever free for every entrepreneur worldwide.
             </p>
 
             <div className="grid gap-6 md:grid-cols-3">
               <div className="group rounded-2xl border border-white/10 bg-gradient-to-br from-blue-950/50 to-black p-6 transition-all hover:border-blue-500/50 hover:shadow-xl hover:shadow-blue-500/20">
-                <div className="mb-4 text-4xl">⚡</div>
-                <h3 className="mb-2 text-xl font-semibold text-blue-400">10x Your Productivity</h3>
+                <div className="mb-4 text-4xl">🤖</div>
+                <h3 className="mb-2 text-xl font-semibold text-blue-400">AI Receptionist & Automation</h3>
                 <p className="text-gray-400">
-                  Code, write, research, analyze—all at speeds that make your competition look like they're standing still.
+                  Fully autonomous customer service that learns your business, handles inquiries 24/7, and integrates with your existing systems.
                 </p>
               </div>
 
               <div className="group rounded-2xl border border-white/10 bg-gradient-to-br from-purple-950/50 to-black p-6 transition-all hover:border-purple-500/50 hover:shadow-xl hover:shadow-purple-500/20">
-                <div className="mb-4 text-4xl">🧠</div>
-                <h3 className="mb-2 text-xl font-semibold text-purple-400">Actually Thinks for You</h3>
+                <div className="mb-4 text-4xl">📊</div>
+                <h3 className="mb-2 text-xl font-semibold text-purple-400">Business Intelligence & Strategy</h3>
                 <p className="text-gray-400">
-                  Advanced reasoning, problem-solving, and decision-making powered by Gemini 2.0. It's like having a genius on demand.
+                  Financial analysis, market research, competitive intelligence, and strategic planning powered by open source AI models.
                 </p>
               </div>
 
               <div className="group rounded-2xl border border-white/10 bg-gradient-to-br from-green-950/50 to-black p-6 transition-all hover:border-green-500/50 hover:shadow-xl hover:shadow-green-500/20">
-                <div className="mb-4 text-4xl">🎯</div>
-                <h3 className="mb-2 text-xl font-semibold text-green-400">Zero Learning Curve</h3>
+                <div className="mb-4 text-4xl">🔧</div>
+                <h3 className="mb-2 text-xl font-semibold text-green-400">Code & Technical Solutions</h3>
                 <p className="text-gray-400">
-                  Just talk to it. No courses, no manuals, no complexity. It adapts to you, not the other way around.
+                  Full stack development, API integration, database design, and technical problem solving. Better than paid coding assistants.
                 </p>
               </div>
             </div>
@@ -135,22 +135,22 @@ export default function Home() {
               <div className="rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
                 <div className="mb-2 text-3xl">🤖</div>
                 <div className="text-sm font-semibold">Gemini 2.0</div>
-                <div className="text-xs text-gray-500">Google's Latest</div>
+                <div className="text-xs text-gray-500">Quantum AI</div>
               </div>
               <div className="rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
-                <div className="mb-2 text-3xl">🏗️</div>
-                <div className="text-sm font-semibold">Claude Code</div>
-                <div className="text-xs text-gray-500">Anthropic</div>
+                <div className="mb-2 text-3xl">🔓</div>
+                <div className="text-sm font-semibold">100% Free</div>
+                <div className="text-xs text-gray-500">Forever</div>
               </div>
               <div className="rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
                 <div className="mb-2 text-3xl">🔗</div>
                 <div className="text-sm font-semibold">MCP Protocol</div>
-                <div className="text-xs text-gray-500">7 Integrations</div>
+                <div className="text-xs text-gray-500">8 Integrations</div>
               </div>
               <div className="rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
-                <div className="mb-2 text-3xl">⚡</div>
-                <div className="text-sm font-semibold">Next.js 15</div>
-                <div className="text-xs text-gray-500">Ultra-Fast</div>
+                <div className="mb-2 text-3xl">🛡️</div>
+                <div className="text-sm font-semibold">Enterprise Security</div>
+                <div className="text-xs text-gray-500">Military Grade</div>
               </div>
             </div>
           </div>
@@ -286,7 +286,7 @@ export default function Home() {
           </form>
 
           <p className="mt-4 text-center text-xs text-gray-600">
-            Powered by Gemini 2.0 • Enterprise AI • Autonomous Reasoning
+            Powered by Gemini 2.0 Flash • Quantum Intelligence • Autonomous Reasoning
           </p>
         </div>
       </main>
