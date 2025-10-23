@@ -22,7 +22,8 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
-          ref: ${{ github.head_ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
+          ref: ${{ github.event.pull_request.head.sha || github.event.pull_request.head.ref || github.head_ref || github.ref }}
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -73,23 +74,42 @@ jobs:
             echo "has_changes=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Commit auto-fixes
-        if: steps.git-check.outputs.has_changes == 'true'
+      - name: Commit auto-fixes (only when PR is from same repo)
+        if: steps.git-check.outputs.has_changes == 'true' && github.event.pull_request.head.repo.full_name == github.repository
         run: |
           git add -A
-          git commit -m "Auto-fix: Apply code formatting and fixes [bot]"
+          git commit -m "Auto-fix: Apply code formatting and fixes [bot]" || echo "No changes to commit"
           git push
 
+      - name: Notify contributor to apply fixes (for forked PRs)
+        if: steps.git-check.outputs.has_changes == 'true' && github.event.pull_request.head.repo.full_name != github.repository
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: "Automated formatting/spotfixes were suggested but I cannot push to forked PR branches. Please apply the formatting locally and push, or re-run CI with a branch in this repository."
+            })
+
       - name: Re-run tests after fixes
-        if: steps.git-check.outputs.has_changes == 'true'
+        if: steps.git-check.outputs.has_changes == 'true' && github.event.pull_request.head.repo.full_name == github.repository
         run: mvn test
+
+      - name: Install GitHub CLI
+        if: github.event_name == 'pull_request'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gh
 
       - name: Enable auto-merge
         if: github.event_name == 'pull_request'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh pr merge ${{ github.event.pull_request.number }} --auto --squash || echo "Auto-merge could not be enabled (may require admin setup)"
+          echo "$GH_TOKEN" | gh auth login --with-token
+          gh pr merge ${{ github.event.pull_request.number }} --auto --squash || echo "Auto-merge could not be enabled (may require admin setup or additional permissions)"
 
   code-quality-gate:
     runs-on: ubuntu-latest
@@ -99,7 +119,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+          repository: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
+          ref: ${{ github.event.pull_request.head.sha || github.event.pull_request.head.ref || github.head_ref || github.ref }}
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
