@@ -59,6 +59,12 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2695159317297870"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
+        <Script
           id="schema-org"
           type="application/ld+json"
           dangerouslySetInnerHTML={{
