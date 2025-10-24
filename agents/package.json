@@ -1,0 +1,33 @@
+{
+  "name": "multi-agent-code-review",
+  "version": "1.0.0",
+  "description": "Multi-agent automated code review system powered by Claude AI",
+  "main": "orchestrator.js",
+  "scripts": {
+    "review": "node orchestrator.js",
+    "security": "node security-agent.js",
+    "quality": "node code-quality-agent.js",
+    "test": "node test-agent.js",
+    "performance": "node performance-agent.js",
+    "docs": "node documentation-agent.js",
+    "architecture": "node architecture-agent.js",
+    "fix": "node auto-fix-agent.js",
+    "merge": "node merge-decision-agent.js"
+  },
+  "keywords": [
+    "code-review",
+    "automation",
+    "ai",
+    "claude",
+    "github-actions",
+    "multi-agent"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.24.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
