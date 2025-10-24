@@ -1,0 +1,15 @@
+/* Minimal WordPress-like theme overrides for Pico.css */
+:root{--brand:#0a7;--text:#111;--muted:#666;--bg:#fff;--surface:#f5f7f9}
+html,body{background:var(--bg);color:var(--text)}
+header.site-header{padding:1.25rem 0;border-bottom:1px solid #e5e7eb;background:var(--bg)}
+.header-wrap{display:flex;align-items:center;gap:1rem;justify-content:space-between}
+nav.menu a{padding:.5rem .75rem;border-radius:.5rem}nav.menu a[aria-current]{background:#eef2f7}
+.hero{padding:3.5rem 0 2rem 0}
+.hero h1{margin:0 0 .5rem 0;font-size:2rem}
+.grid{display:grid;gap:1.25rem}
+@media(min-width:768px){.grid.cols-3{grid-template-columns:repeat(3,1fr)}}
+.card{border:1px solid #e5e7eb;border-radius:1rem;padding:1rem;background:var(--surface)}
+footer{margin-top:3rem;padding:2rem 0;border-top:1px solid #e5e7eb;color:var(--muted)}
+.btn{display:inline-block;padding:.6rem 1rem;border:1px solid #0a7;border-radius:.75rem;text-decoration:none}
+.btn:hover{filter:saturate(120%)}
+.article-meta{font-size:.9rem;color:var(--muted)}
