@@ -1,0 +1,394 @@
+name: Enhanced Multi-Agent Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  checks: write
+
+jobs:
+  # Agent 1: Security Review
+  security-review:
+    name: 🔒 Security Agent
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    outputs:
+      security-status: ${{ steps.security-check.outputs.status }}
+      security-report: ${{ steps.security-check.outputs.report }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: TruffleHog Secret Scan
+        uses: trufflesecurity/trufflehog@main
+        with:
+          extra_args: --only-verified
+
+      - name: Dependency Security Check
+        run: |
+          npm audit --audit-level=moderate || echo "Security vulnerabilities found"
+
+      - name: Security Agent Analysis
+        id: security-check
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          node agents/security-agent.js \
+            --pr=${{ github.event.pull_request.number }} \
+            --output=security-report.json
+
+      - name: Upload Security Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-report
+          path: security-report.json
+
+  # Agent 2: Code Quality Review
+  code-quality-review:
+    name: ✨ Code Quality Agent
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    outputs:
+      quality-status: ${{ steps.quality-check.outputs.status }}
+      quality-report: ${{ steps.quality-check.outputs.report }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: ESLint Analysis
+        run: npm run lint || true
+
+      - name: Code Quality Agent Analysis
+        id: quality-check
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          node agents/code-quality-agent.js \
+            --pr=${{ github.event.pull_request.number }} \
+            --output=quality-report.json
+
+      - name: Upload Quality Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: quality-report
+          path: quality-report.json
+
+  # Agent 3: Test Automation
+  test-automation:
+    name: 🧪 Test Agent
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    outputs:
+      test-status: ${{ steps.test-run.outputs.status }}
+      coverage: ${{ steps.test-run.outputs.coverage }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Tests with Coverage
+        id: test-run
+        run: |
+          npm test -- --coverage --json --outputFile=test-results.json || true
+          echo "status=$?" >> $GITHUB_OUTPUT
+
+      - name: Test Agent Analysis
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          node agents/test-agent.js \
+            --pr=${{ github.event.pull_request.number }} \
+            --test-results=test-results.json \
+            --output=test-report.json
+
+      - name: Upload Test Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: test-report.json
+
+  # Agent 4: Performance Review
+  performance-review:
+    name: ⚡ Performance Agent
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    outputs:
+      performance-status: ${{ steps.perf-check.outputs.status }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build and Analyze Bundle
+        run: |
+          npm run build
+          npx webpack-bundle-analyzer stats.json --mode static --report bundle-report.html || true
+
+      - name: Performance Agent Analysis
+        id: perf-check
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          node agents/performance-agent.js \
+            --pr=${{ github.event.pull_request.number }} \
+            --output=performance-report.json
+
+      - name: Upload Performance Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-report
+          path: performance-report.json
+
+  # Agent 5: Documentation Review
+  documentation-review:
+    name: 📚 Documentation Agent
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    outputs:
+      docs-status: ${{ steps.docs-check.outputs.status }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Documentation Agent Analysis
+        id: docs-check
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          node agents/documentation-agent.js \
+            --pr=${{ github.event.pull_request.number }} \
+            --output=docs-report.json
+
+      - name: Upload Documentation Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-report
+          path: docs-report.json
+
+  # Agent 6: Architecture Review
+  architecture-review:
+    name: 🏗️ Architecture Agent
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    outputs:
+      arch-status: ${{ steps.arch-check.outputs.status }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Architecture Agent Analysis
+        id: arch-check
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          node agents/architecture-agent.js \
+            --pr=${{ github.event.pull_request.number }} \
+            --output=architecture-report.json
+
+      - name: Upload Architecture Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: architecture-report
+          path: architecture-report.json
+
+  # Orchestrator: Combine all agent results
+  orchestrator:
+    name: 🎯 Review Orchestrator
+    runs-on: ubuntu-latest
+    needs: [security-review, code-quality-review, test-automation, performance-review, documentation-review, architecture-review]
+    if: always()
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download all reports
+        uses: actions/download-artifact@v4
+        with:
+          path: reports/
+
+      - name: Orchestrate Reviews
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          node agents/orchestrator.js \
+            --pr=${{ github.event.pull_request.number }} \
+            --reports-dir=reports/ \
+            --generate-summary
+
+      - name: Post Comprehensive Review
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const summary = fs.readFileSync('final-review-summary.md', 'utf8');
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body: summary
+            });
+
+  # Auto-fix agent
+  auto-fix:
+    name: 🔧 Auto-Fix Agent
+    runs-on: ubuntu-latest
+    needs: [orchestrator]
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download all reports
+        uses: actions/download-artifact@v4
+        with:
+          path: reports/
+
+      - name: Auto-Fix Issues
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          node agents/auto-fix-agent.js \
+            --pr=${{ github.event.pull_request.number }} \
+            --reports-dir=reports/ \
+            --apply-fixes
+
+      - name: Commit fixes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add -A
+          if git diff --staged --quiet; then
+            echo "No fixes to commit"
+          else
+            git commit -m "🤖 Auto-fix: Applied automated fixes from agent review"
+            git push
+          fi
+
+  # Auto-merge decision
+  auto-merge:
+    name: 🚀 Auto-Merge Decision
+    runs-on: ubuntu-latest
+    needs: [orchestrator, auto-fix]
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Evaluate Merge Decision
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          node agents/merge-decision-agent.js \
+            --pr=${{ github.event.pull_request.number }}
+
+      - name: Auto-merge if approved
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const decision = JSON.parse(fs.readFileSync('merge-decision.json', 'utf8'));
+
+            if (decision.shouldMerge) {
+              await github.rest.pulls.merge({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: context.payload.pull_request.number,
+                merge_method: 'squash',
+                commit_title: `${decision.commitTitle} (#${context.payload.pull_request.number})`,
+                commit_message: decision.commitMessage
+              });
+
+              console.log('✅ PR auto-merged successfully');
+            } else {
+              console.log('❌ PR not ready for auto-merge:', decision.reason);
+            }
+
+  # Command handler for bot commands
+  command-handler:
+    name: 🎮 Command Handler
+    runs-on: ubuntu-latest
+    if: github.event_name == 'issue_comment' && contains(github.event.comment.body, '/agent')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Parse and Execute Command
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          node agents/command-handler.js \
+            --comment="${{ github.event.comment.body }}" \
+            --pr=${{ github.event.issue.number }}

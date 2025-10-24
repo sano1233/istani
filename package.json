@@ -1,41 +1,46 @@
 {
-  "name": "istani.org",
-  "version": "1.0.0",
-  "description": "",
+  "name": "istani-fitness-enterprises",
+  "version": "2.0.0",
+  "description": "Istani Fitness Enterprises - AI-Powered Fitness Platform",
   "scripts": {
-    "build": "npm run build:istani-rebuild",
-    "build:istani-rebuild": "node scripts/build-istani-rebuild.mjs",
-    "test": "echo \"No tests specified\"",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "fitness:dev": "next dev --experimental-app",
+    "build:old": "node scripts/build-istani-rebuild.mjs",
     "generate:links": "node scripts/buildLinksPage.js",
     "post": "node scripts/postToSocials.js",
-    "agent:install": "cd ai-agent && npm install",
-    "agent:start": "cd ai-agent && npm start",
-    "agent:dev": "cd ai-agent && npm run dev",
-    "agent:cli": "cd ai-agent && npm run cli",
-    "agent:process": "cd ai-agent && npm run cli process",
-    "agent:process-all": "cd ai-agent && npm run cli process-all",
-    "agent:stats": "cd ai-agent && npm run cli stats",
-    "agent:docker:build": "cd ai-agent && npm run docker:build",
-    "agent:docker:run": "cd ai-agent && npm run docker:run"
+    "agent:install": "cd agents && npm install",
+    "test": "echo \"No tests specified\""
   },
   "engines": {
     "node": ">=18"
   },
   "dependencies": {
     "@arcjet/node": "^1.0.0-beta.11",
+    "@elevenlabs/elevenlabs-js": "^0.10.1",
     "@supabase/supabase-js": "^2.76.1",
     "@vercel/analytics": "^1.5.0",
     "axios": "^1.12.0",
+    "dotenv": "^16.4.7",
     "lucide-react": "^0.363.0",
+    "next": "^14.2.0",
     "openai": "^4.104.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "unsplash-js": "^7.0.20"
+    "unsplash-js": "^7.0.20",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.16",
+    "typescript": "^5.7.3",
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.0.6"
   },
   "devDependencies": {
     "esbuild": "^0.25.0"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "keywords": ["fitness", "ai", "health", "wellness", "training"],
+  "author": "Istani Fitness Enterprises",
+  "license": "MIT"
 }

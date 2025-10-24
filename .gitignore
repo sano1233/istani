@@ -47,3 +47,5 @@ ai-agent/monitoring/*.sqlite
 .vscode/
 *.swp
 *.swo
+.env.local
+.env
