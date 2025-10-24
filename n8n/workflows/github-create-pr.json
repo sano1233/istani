@@ -1,0 +1,81 @@
+{
+  "name": "GitHub Auto-Create PR",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "github-create-pr",
+        "responseMode": "lastNode",
+        "options": { "responseCode": 200 }
+      },
+      "id": "WebhookPR",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [260, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const crypto = require('crypto');\nconst headers = $json.headers || {};\nconst secret = process.env.N8N_ISTANI_SHARED_SECRET || '';\nconst sig = headers['x-istani-signature'] || headers['X-Istani-Signature'] || '';\nconst body = JSON.stringify($json.body || {});\nconst calc = secret ? crypto.createHmac('sha256', secret).update(body).digest('hex') : '';\nif (secret && sig !== calc) {\n  return [{ ok: false, reason: 'bad-signature' }];\n}\nconst data = $json.body || {};\nreturn [{\n  ok: true,\n  branch: data.branch || 'automated/pr-' + Date.now(),\n  title: data.title || 'Automated PR',\n  body: data.body || 'Auto-generated PR',\n  base: data.base || 'main'\n}];"
+      },
+      "id": "VerifyPR",
+      "name": "Verify Signature",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.github.com/repos/{{ $env.GITHUB_REPO || 'sano1233/istani' }}/pulls",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=token {{ $env.GITHUB_TOKEN }}"
+            },
+            {
+              "name": "Accept",
+              "value": "application/vnd.github.v3+json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "head",
+              "value": "={{ $json.branch }}"
+            },
+            {
+              "name": "base",
+              "value": "={{ $json.base }}"
+            },
+            {
+              "name": "title",
+              "value": "={{ $json.title }}"
+            },
+            {
+              "name": "body",
+              "value": "={{ $json.body }}"
+            }
+          ]
+        }
+      },
+      "id": "CreatePR",
+      "name": "Create GitHub PR",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [660, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": { "main": [ [ { "node": "Verify Signature", "type": "main", "index": 0 } ] ] },
+    "Verify Signature": { "main": [ [ { "node": "Create GitHub PR", "type": "main", "index": 0 } ] ] }
+  },
+  "active": true,
+  "settings": { "executionOrder": "v1" }
+}
