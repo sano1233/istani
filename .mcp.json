@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "hf-mcp-server": {
+      "type": "http",
+      "url": "https://huggingface.co/mcp",
+      "description": "Hugging Face MCP Server - Access models, datasets, and spaces"
+    }
+  }
+}
