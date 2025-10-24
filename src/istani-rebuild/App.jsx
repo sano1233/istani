@@ -20,64 +20,27 @@ import {
   Calendar,
   Clock
 } from 'lucide-react';
+import { useSafeLocalStorage } from './hooks/useSafeLocalStorage';
 
 const IstaniCompleteProduct = () => {
-  const [currentDay, setCurrentDay] = useState(() => {
-    try {
-      const saved = localStorage.getItem('istani_current_day');
-      return saved ? parseInt(saved, 10) : 1;
-    } catch (error) {
-      console.error('Error loading current day:', error);
-      return 1;
-    }
-  });
-
-  const [completedDays, setCompletedDays] = useState(() => {
-    try {
-      const saved = localStorage.getItem('istani_completed_days');
-      return saved ? JSON.parse(saved) : [];
-    } catch (error) {
-      console.error('Error loading completed days:', error);
-      return [];
-    }
-  });
-
-  const [notes, setNotes] = useState(() => {
-    try {
-      const saved = localStorage.getItem('istani_notes');
-      return saved ? JSON.parse(saved) : {};
-    } catch (error) {
-      console.error('Error loading notes:', error);
-      return {};
-    }
-  });
-
-  const [showWelcome, setShowWelcome] = useState(() => {
-    try {
-      const saved = localStorage.getItem('istani_welcome_seen');
-      return saved !== 'true';
-    } catch (error) {
-      return true;
-    }
-  });
-
-  const [startDate, setStartDate] = useState(() => {
-    try {
-      const saved = localStorage.getItem('istani_start_date');
-      return saved || new Date().toISOString();
-    } catch (error) {
-      return new Date().toISOString();
-    }
-  });
-
-  const [completionDates, setCompletionDates] = useState(() => {
-    try {
-      const saved = localStorage.getItem('istani_completion_dates');
-      return saved ? JSON.parse(saved) : {};
-    } catch (error) {
-      return {};
-    }
-  });
+  const [currentDay, setCurrentDay] = useSafeLocalStorage('istani_current_day', 1);
+  const [completedDays, setCompletedDays] = useSafeLocalStorage(
+    'istani_completed_days',
+    () => []
+  );
+  const [notes, setNotes] = useSafeLocalStorage('istani_notes', () => ({}));
+  const [showWelcome, setShowWelcome] = useSafeLocalStorage(
+    'istani_welcome_seen',
+    true
+  );
+  const [startDate, setStartDate] = useSafeLocalStorage(
+    'istani_start_date',
+    () => new Date().toISOString()
+  );
+  const [completionDates, setCompletionDates] = useSafeLocalStorage(
+    'istani_completion_dates',
+    () => ({})
+  );
 
   const [activeTimer, setActiveTimer] = useState(null);
   const [timerSeconds, setTimerSeconds] = useState(0);
@@ -86,14 +49,6 @@ const IstaniCompleteProduct = () => {
   const [showStatsModal, setShowStatsModal] = useState(false);
   const [notificationPermission, setNotificationPermission] = useState('default');
   const [streak, setStreak] = useState(0);
-
-  useEffect(() => {
-    try {
-      localStorage.setItem('istani_current_day', String(currentDay));
-    } catch (error) {
-      console.error('Error saving current day:', error);
-    }
-  }, [currentDay]);
 
   const calculateStreak = useCallback(() => {
     if (completedDays.length === 0) {
@@ -115,37 +70,8 @@ const IstaniCompleteProduct = () => {
   }, [completedDays]);
 
   useEffect(() => {
-    try {
-      localStorage.setItem('istani_completed_days', JSON.stringify(completedDays));
-      calculateStreak();
-    } catch (error) {
-      console.error('Error saving completed days:', error);
-    }
+    calculateStreak();
   }, [completedDays, calculateStreak]);
-
-  useEffect(() => {
-    try {
-      localStorage.setItem('istani_notes', JSON.stringify(notes));
-    } catch (error) {
-      console.error('Error saving notes:', error);
-    }
-  }, [notes]);
-
-  useEffect(() => {
-    try {
-      localStorage.setItem('istani_completion_dates', JSON.stringify(completionDates));
-    } catch (error) {
-      console.error('Error saving completion dates:', error);
-    }
-  }, [completionDates]);
-
-  useEffect(() => {
-    try {
-      localStorage.setItem('istani_start_date', startDate);
-    } catch (error) {
-      console.error('Error saving start date:', error);
-    }
-  }, [startDate]);
 
   useEffect(() => {
     let interval;
@@ -534,7 +460,6 @@ const IstaniCompleteProduct = () => {
 
   const handleWelcomeComplete = () => {
     try {
-      localStorage.setItem('istani_welcome_seen', 'true');
       setShowWelcome(false);
     } catch (error) {
       console.error('Error saving welcome status:', error);
