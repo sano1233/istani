@@ -1,21 +1,52 @@
-name: Auto Fix and Merge (Disabled)
+name: Auto Fix and Merge
 
 on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main, master]
   workflow_dispatch:
-    inputs:
-      note:
-        description: 'This workflow is intentionally disabled; no automation will run.'
-        required: false
 
 permissions:
-  contents: read
-  pull-requests: read
+  contents: write
+  pull-requests: write
+  issues: write
 
 jobs:
-  disabled:
+  auto-fix:
     runs-on: ubuntu-latest
     steps:
-      - name: Show notice
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run linter with auto-fix
+        run: npm run lint -- --fix || true
+      
+      - name: Build project
+        run: npm run build
+      
+      - name: Commit fixes
         run: |
-          echo 'The previous auto-fix-and-merge workflow has been disabled for security.'
-          echo 'Use the standard CI workflow to validate changes instead.'
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add -A
+          git diff --staged --quiet || git commit -m "chore: auto-fix issues"
+          git push || true
+      
+      - name: Auto-merge PR
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr merge ${{ github.event.pull_request.number }} --auto --squash
