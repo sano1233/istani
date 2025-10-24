@@ -49,3 +49,4 @@ ai-agent/monitoring/*.sqlite
 *.swo
 .env.local
 .env
+.next/

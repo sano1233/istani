@@ -6,20 +6,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "fitness:dev": "next dev --experimental-app",
-    "build:old": "node scripts/build-istani-rebuild.mjs",
-    "generate:links": "node scripts/buildLinksPage.js",
-    "post": "node scripts/postToSocials.js",
-    "agent:install": "cd agents && npm install",
-    "test": "echo \"No tests specified\""
+    "lint": "next lint"
   },
   "engines": {
     "node": ">=18"
   },
   "dependencies": {
     "@arcjet/node": "^1.0.0-beta.11",
-    "@elevenlabs/elevenlabs-js": "^0.10.1",
+    "@elevenlabs/elevenlabs-js": "^2.20.1",
     "@supabase/supabase-js": "^2.76.1",
     "@vercel/analytics": "^1.5.0",
     "axios": "^1.12.0",
@@ -29,18 +23,13 @@
     "openai": "^4.104.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "unsplash-js": "^7.0.20",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.49",
-    "tailwindcss": "^3.4.16",
-    "typescript": "^5.7.3",
-    "@types/node": "^22.10.2",
-    "@types/react": "^19.0.6"
+    "tailwindcss": "^3.4.16"
   },
   "devDependencies": {
-    "esbuild": "^0.25.0"
-  },
-  "keywords": ["fitness", "ai", "health", "wellness", "training"],
-  "author": "Istani Fitness Enterprises",
-  "license": "MIT"
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.0.6",
+    "typescript": "^5.7.3"
+  }
 }
