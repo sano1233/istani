@@ -1,0 +1,54 @@
+{
+  "name": "istani.org",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "npm run build:istani-rebuild",
+    "build:istani-rebuild": "node scripts/build-istani-rebuild.mjs",
+    "test": "echo \"No tests specified\" && exit 0",
+    "lint": "eslint . --ext .js,.jsx,.mjs,.ts,.tsx",
+    "lint:fix": "eslint . --fix --ext .js,.jsx,.mjs,.ts,.tsx",
+    "format": "prettier --write \"**/*.{js,jsx,mjs,ts,tsx,json,css,md,html,yml,yaml}\"",
+    "format:check": "prettier --check \"**/*.{js,jsx,mjs,ts,tsx,json,css,md,html,yml,yaml}\"",
+    "typecheck": "tsc --noEmit || echo 'No TypeScript config'",
+    "precommit": "npm run format && npm run lint:fix && npm test",
+    "ci": "npm run format:check && npm run lint && npm run typecheck && npm test && npm run build",
+    "generate:links": "node scripts/buildLinksPage.js",
+    "post": "node scripts/postToSocials.js",
+    "agent:install": "cd ai-agent && npm install",
+    "agent:start": "cd ai-agent && npm start",
+    "agent:dev": "cd ai-agent && npm run dev",
+    "agent:cli": "cd ai-agent && npm run cli",
+    "agent:process": "cd ai-agent && npm run cli process",
+    "agent:process-all": "cd ai-agent && npm run cli process-all",
+    "agent:stats": "cd ai-agent && npm run cli stats",
+    "agent:docker:build": "cd ai-agent && npm run docker:build",
+    "agent:docker:run": "cd ai-agent && npm run docker:run"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@arcjet/node": "^1.0.0-beta.11",
+    "@vercel/analytics": "^1.5.0",
+    "axios": "^1.12.0",
+    "lucide-react": "^0.363.0",
+    "openai": "^4.104.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "unsplash-js": "^7.0.20"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react": "^7.35.0",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "eslint-plugin-security": "^3.0.1",
+    "prettier": "^3.3.3",
+    "husky": "^9.1.5",
+    "lint-staged": "^15.2.10"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
