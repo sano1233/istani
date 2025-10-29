@@ -226,7 +226,7 @@ export async function POST(req: NextRequest) {
       generation_type: 'multi-agent-plan',
       prompt: `Goal: ${goal}`,
       response: safeText.substring(0, 1000),
-      tokens_used: safeText.length,\n      flagged: flagged ? true : false
+      tokens_used: safeText.length
     });
 
     // Notify admin of multi-agent plan generation

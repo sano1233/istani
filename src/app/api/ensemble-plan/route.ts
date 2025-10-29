@@ -176,7 +176,6 @@ export async function POST(req: NextRequest) {
       prompt: prompt.substring(0, 500),
       response: safeText.substring(0, 1000),
       tokens_used: safeText.length,
-      flagged: flagged ? true : false,
     });
 
     return NextResponse.json({

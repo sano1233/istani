@@ -142,7 +142,6 @@ Provide 4-5 meals with specific foods, portions, and macros.`;
       prompt: prompt.substring(0, 500),
       response: safeText.substring(0, 1000),
       tokens_used: safeText.length,
-      flagged: flagged ? true : false,
     });
 
     // Notify admin of plan generation (async, don't wait)
