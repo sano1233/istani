@@ -26,11 +26,20 @@ export function middleware(request: NextRequest) {
   response.headers.set('Content-Security-Policy', csp);
 
   // CORS headers for API routes
-  if (request.nextUrl.pathname.startsWith('/api/')) {
-    const allowed = process.env.NEXT_PUBLIC_HOME_URL || '*';
+  const isApi = request.nextUrl.pathname.startsWith('/api/');
+  if (isApi) {
+    const allowed = process.env.NEXT_PUBLIC_HOME_URL || 'https://istani.store';
     response.headers.set('Access-Control-Allow-Origin', allowed);
+    response.headers.set('Vary', 'Origin');
     response.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
     response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+    if (request.method === 'OPTIONS') {
+      return new NextResponse(null, {
+        status: 204,
+        headers: response.headers,
+      });
+    }
   }
 
   // Log requests

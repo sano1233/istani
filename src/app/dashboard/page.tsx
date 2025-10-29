@@ -36,6 +36,11 @@ export default function Dashboard() {
   const [message, setMessage] = useState('');
   const [ensembleLoading, setEnsembleLoading] = useState(false);
   const [flaggedInfo, setFlaggedInfo] = useState<{ flagged: boolean; reasons?: string[] } | null>(null);
+  const isPlanFlagged = (text?: string) => {
+    if (!text) return false;
+    const t = text.toLowerCase();
+    return t.includes('[unsafe-substance]') || t.includes('disclaimer: this ai-generated plan');
+  };
 
   const router = useRouter();
   const supabase = createClient();
@@ -523,7 +528,12 @@ export default function Dashboard() {
                   <div key={plan.id} className="rounded-2xl border border-white/10 bg-white/5 p-6">
                     <div className="mb-4 flex items-start justify-between">
                       <div>
-                        <h3 className="text-xl font-semibold text-blue-400">{plan.name}</h3>
+                        <h3 className="text-xl font-semibold text-blue-400 flex items-center gap-2">
+                          <span>{plan.name}</span>
+                          {isPlanFlagged(plan.description) && (
+                            <span className="rounded-full bg-yellow-500/20 px-2 py-0.5 text-xs font-semibold text-yellow-300 border border-yellow-500/40">Safety flags</span>
+                          )}
+                        </h3>
                         <p className="text-sm text-gray-400">
                           Created: {new Date(plan.created_at).toLocaleDateString()}
                         </p>
@@ -579,7 +589,12 @@ export default function Dashboard() {
                   <div key={plan.id} className="rounded-2xl border border-white/10 bg-white/5 p-6">
                     <div className="mb-4 flex items-start justify-between">
                       <div>
-                        <h3 className="text-xl font-semibold text-green-400">{plan.name}</h3>
+                        <h3 className="text-xl font-semibold text-green-400 flex items-center gap-2">
+                          <span>{plan.name}</span>
+                          {isPlanFlagged(plan.description) && (
+                            <span className="rounded-full bg-yellow-500/20 px-2 py-0.5 text-xs font-semibold text-yellow-300 border border-yellow-500/40">Safety flags</span>
+                          )}
+                        </h3>
                         <p className="text-sm text-gray-400">
                           Created: {new Date(plan.created_at).toLocaleDateString()}
                           {plan.daily_calories && ` • ${plan.daily_calories} calories/day`}
