@@ -34,6 +34,8 @@ export default function Dashboard() {
   const [workoutPlans, setWorkoutPlans] = useState<GeneratedPlan[]>([]);
   const [mealPlans, setMealPlans] = useState<GeneratedPlan[]>([]);
   const [message, setMessage] = useState('');
+  const [ensembleLoading, setEnsembleLoading] = useState(false);
+  const [flaggedInfo, setFlaggedInfo] = useState<{ flagged: boolean; reasons?: string[] } | null>(null);
 
   const router = useRouter();
   const supabase = createClient();
@@ -150,6 +152,53 @@ export default function Dashboard() {
       setMessage('❌ Error generating plan: ' + error.message);
     } finally {
       setGeneratingPlan(false);
+    }
+  };
+
+  const generateEnsemble = async (planType: 'workout' | 'meal') => {
+    if (!user || !profile) {
+      setMessage('Please complete your profile first!');
+      return;
+    }
+    if (!profile.age || !profile.gender || !profile.height || !profile.weight || !profile.activity_level || !profile.fitness_goal) {
+      setMessage('Please fill in all profile fields to generate a plan!');
+      setActiveTab('profile');
+      return;
+    }
+
+    setEnsembleLoading(true);
+    setFlaggedInfo(null);
+    setMessage(`Running Claude + Gemini ensemble for your ${planType} plan...`);
+
+    try {
+      const res = await fetch('/api/ensemble-plan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: user.id,
+          planType,
+          userProfile: {
+            age: profile.age,
+            gender: profile.gender,
+            height: profile.height,
+            weight: profile.weight,
+            activityLevel: profile.activity_level,
+            fitnessGoal: profile.fitness_goal,
+          },
+        }),
+      });
+      const data = await res.json();
+      if (data?.success) {
+        setMessage('Ensemble plan generated successfully.');
+        if (data.flagged) setFlaggedInfo({ flagged: true, reasons: data.reasons });
+        checkUser();
+      } else {
+        setMessage('Error generating ensemble plan: ' + (data?.error || 'Unknown error'));
+      }
+    } catch (e: any) {
+      setMessage('Error generating ensemble plan: ' + e.message);
+    } finally {
+      setEnsembleLoading(false);
     }
   };
 
@@ -412,6 +461,15 @@ export default function Dashboard() {
                   <option value="athletic_performance">Athletic Performance</option>
                 </select>
               </div>
+              <div className="mt-2">
+                <button
+                  onClick={() => generateEnsemble('workout')}
+                  disabled={ensembleLoading}
+                  className="rounded-full bg-gradient-to-r from-indigo-600 to-fuchsia-600 px-6 py-2 text-sm font-semibold transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg hover:shadow-indigo-500/50"
+                >
+                  {ensembleLoading ? 'Ensemble Running...' : 'Claude + Gemini Ensemble'}
+                </button>
+              </div>
             </div>
           </div>
         )}
@@ -440,6 +498,15 @@ export default function Dashboard() {
                     NEW
                   </span>
                   {generatingPlan ? '🤖 4 Agents Working...' : '🚀 Multi-Agent Plan'}
+                </button>
+              </div>
+              <div className="mt-2">
+                <button
+                  onClick={() => generateEnsemble('meal')}
+                  disabled={ensembleLoading}
+                  className="rounded-full bg-gradient-to-r from-teal-600 to-cyan-600 px-6 py-2 text-sm font-semibold transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg hover:shadow-teal-500/50"
+                >
+                  {ensembleLoading ? 'Ensemble Running...' : 'Claude + Gemini Ensemble'}
                 </button>
               </div>
             </div>
