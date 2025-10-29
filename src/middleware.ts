@@ -13,10 +13,22 @@ export function middleware(request: NextRequest) {
   response.headers.set('X-XSS-Protection', '1; mode=block');
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
   response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  // Content Security Policy - strict by default
+  const csp = [
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-inline' https://pagead2.googlesyndication.com",
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' data: https://pagead2.googlesyndication.com https://tpc.googlesyndication.com",
+    "font-src 'self' data:",
+    "connect-src 'self' https://api.anthropic.com https://generativelanguage.googleapis.com https://openrouter.ai https://*.supabase.co",
+    "frame-ancestors 'none'",
+  ].join('; ');
+  response.headers.set('Content-Security-Policy', csp);
 
   // CORS headers for API routes
   if (request.nextUrl.pathname.startsWith('/api/')) {
-    response.headers.set('Access-Control-Allow-Origin', '*');
+    const allowed = process.env.NEXT_PUBLIC_HOME_URL || '*';
+    response.headers.set('Access-Control-Allow-Origin', allowed);
     response.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
     response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   }

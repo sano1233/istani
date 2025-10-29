@@ -19,10 +19,11 @@ export async function POST(req: NextRequest) {
     await sendAdminNotification(notification);
 
     return NextResponse.json({ success: true });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Admin notification error:', error);
+    const message = error instanceof Error ? error.message : 'An unknown error occurred';
     return NextResponse.json(
-      { error: 'Failed to send notification', message: error.message },
+      { error: 'Failed to send notification', message },
       { status: 500 }
     );
   }

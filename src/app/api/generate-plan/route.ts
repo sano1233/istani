@@ -1,9 +1,12 @@
-import { HfInference } from '@huggingface/inference';
+import { generateText, getProviderFromEnv } from '@/lib/llm';
+import { rateLimitFromRequest } from '@/lib/rate-limit';
+import { safetyFilter } from '@/lib/safety';
+import { GeneratePlanRequestSchema } from '@/lib/schemas';
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
 
-// Initialize Hugging Face (FREE - no cost to you!)
-const hf = new HfInference(process.env.HUGGINGFACE_API_KEY);
+// Provider selected via env `LLM_PROVIDER` (huggingface | gemini | claude)
+const provider = getProviderFromEnv();
 
 // Initialize Supabase
 const supabase = createClient(
@@ -16,6 +19,8 @@ export const runtime = 'edge';
 interface GeneratePlanRequest {
   userId: string;
   planType: 'workout' | 'meal';
+  provider?: 'huggingface' | 'gemini' | 'claude' | 'openrouter';
+  model?: string; // optional (e.g., for openrouter)
   userProfile: {
     age: number;
     gender: string;
@@ -42,8 +47,18 @@ For nutrition:
 
 export async function POST(req: NextRequest) {
   try {
-    const body: GeneratePlanRequest = await req.json();
+    // Basic rate limiting per IP
+    const rl = rateLimitFromRequest('/api/generate-plan', req.headers);
+    if (!rl.allowed) {
+      return NextResponse.json({ error: 'Too Many Requests' }, { status: 429 });
+    }
+    const parsed = GeneratePlanRequestSchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Invalid request', issues: parsed.error.issues }, { status: 400 });
+    }
+    const body = parsed.data;
     const { userId, planType, userProfile } = body;
+    const selectedProvider = (body.provider as any) || provider;
 
     // Calculate TDEE
     let bmr;
@@ -84,18 +99,17 @@ Breakfast (7am):
 Provide 4-5 meals with specific foods, portions, and macros.`;
     }
 
-    // Call Hugging Face FREE model (no cost!)
-    const response = await hf.textGeneration({
-      model: 'mistralai/Mistral-7B-Instruct-v0.2',
-      inputs: prompt,
-      parameters: {
-        max_new_tokens: 1000,
-        temperature: 0.7,
-        top_p: 0.95,
-      }
+    // Generate with selected provider (HuggingFace, Gemini, or Claude)
+    const generatedText = await generateText({
+      provider: selectedProvider,
+      model: body.model,
+      prompt,
+      maxTokens: 1000,
+      temperature: 0.7,
+      topP: 0.95,
     });
 
-    const generatedText = response.generated_text;
+    const { safeText, flagged, reasons } = safetyFilter(generatedText, planType);
 
     // Save to database
     const tableName = planType === 'workout' ? 'workout_plans' : 'meal_plans';
@@ -103,12 +117,12 @@ Provide 4-5 meals with specific foods, portions, and macros.`;
     const planData = {
       user_id: userId,
       name: `${planType === 'workout' ? 'Workout' : 'Meal'} Plan - ${new Date().toLocaleDateString()}`,
-      description: generatedText,
+      description: safeText,
       ...(planType === 'workout'
-        ? { exercises: [{ content: generatedText }] }
+        ? { exercises: [{ content: safeText }] }
         : {
             daily_calories: targetCalories,
-            meals: [{ content: generatedText }]
+            meals: [{ content: safeText }]
           }
       )
     };
@@ -126,8 +140,9 @@ Provide 4-5 meals with specific foods, portions, and macros.`;
       user_id: userId,
       generation_type: planType,
       prompt: prompt.substring(0, 500),
-      response: generatedText.substring(0, 1000),
-      tokens_used: generatedText.length
+      response: safeText.substring(0, 1000),
+      tokens_used: safeText.length,
+      flagged: flagged ? true : false,
     });
 
     // Notify admin of plan generation (async, don't wait)
@@ -151,14 +166,17 @@ Provide 4-5 meals with specific foods, portions, and macros.`;
     return NextResponse.json({
       success: true,
       plan: data,
+      flagged,
+      reasons: flagged ? reasons : undefined,
       message: `Your ${planType} plan is ready!`
-    });
+    }, { headers: { 'Cache-Control': 'no-store' } });
 
-  } catch (error: any) {
+  } catch (error) {
     console.error('Generation Error:', error);
+    const message = error instanceof Error ? error.message : 'An unknown error occurred';
     return NextResponse.json(
-      { error: 'Failed to generate plan', message: error.message },
-      { status: 500 }
+      { error: 'Failed to generate plan', message },
+      { status: 500, headers: { 'Cache-Control': 'no-store' } }
     );
   }
 }

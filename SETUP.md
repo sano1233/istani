@@ -55,8 +55,19 @@ NEXT_PUBLIC_SUPABASE_URL=https://kxsmgrlpojdsgvjdodda.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key_from_supabase
 SUPABASE_SERVICE_ROLE_KEY=your_service_role_key_from_supabase
 
-# Google Gemini API (ALREADY CONFIGURED - DON'T CHANGE)
-GOOGLE_GENERATIVE_AI_API_KEY=AIzaSyDcIs4VI_HHPdFW0t9cq-d9NPFpuZCDksM
+# Google Gemini API
+GOOGLE_GENERATIVE_AI_API_KEY=your_gemini_api_key
+
+# Anthropic Claude API (optional)
+ANTHROPIC_API_KEY=your_anthropic_api_key
+
+# LLM provider selection: huggingface | gemini | claude
+LLM_PROVIDER=gemini
+
+# OpenRouter (optional, unified access to many models)
+OPENROUTER_API_KEY=your_openrouter_api_key
+# Default model for OpenRouter if not passed per request
+OPENROUTER_MODEL=qwen/qwen-2.5-coder-32b-instruct
 
 # Google AdSense (ALREADY CONFIGURED - DON'T CHANGE)
 NEXT_PUBLIC_GOOGLE_ADS_CLIENT=ca-pub-2695159317297870
@@ -91,7 +102,11 @@ git push origin master
 | `NEXT_PUBLIC_SUPABASE_URL` | `https://kxsmgrlpojdsgvjdodda.supabase.co` |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Your anon key from Supabase |
 | `SUPABASE_SERVICE_ROLE_KEY` | Your service role key from Supabase |
-| `GOOGLE_GENERATIVE_AI_API_KEY` | `AIzaSyDcIs4VI_HHPdFW0t9cq-d9NPFpuZCDksM` |
+| `GOOGLE_GENERATIVE_AI_API_KEY` | Your Gemini API key |
+| `ANTHROPIC_API_KEY` | Your Anthropic API key |
+| `OPENROUTER_API_KEY` | Your OpenRouter API key |
+| `OPENROUTER_MODEL` | Default OpenRouter model (e.g., `qwen/qwen-2.5-coder-32b-instruct`) |
+| `LLM_PROVIDER` | `huggingface`, `gemini`, `claude`, or `openrouter` |
 | `NEXT_PUBLIC_GOOGLE_ADS_CLIENT` | `ca-pub-2695159317297870` |
 | `NEXT_PUBLIC_HOME_URL` | `https://istani.store` |
 | `NEXT_PUBLIC_SUPPORT_URL` | `https://buymeacoffee.com/istanifitn` |

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { createClient } from '@/lib/supabase-client';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -75,8 +76,9 @@ export default function AuthPage() {
           setMessage('Account created! Please check your email to verify your account.');
         }
       }
-    } catch (error: any) {
-      setMessage(error.message || 'An error occurred');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'An unknown error occurred';
+      setMessage(message);
     } finally {
       setLoading(false);
     }
@@ -88,11 +90,11 @@ export default function AuthPage() {
       <nav className="fixed top-0 z-50 w-full border-b border-white/10 bg-black/80 backdrop-blur-xl">
         <div className="mx-auto max-w-7xl px-6 py-4">
           <div className="flex items-center justify-between">
-            <a href="/" className="flex items-center gap-2 transition-colors hover:text-purple-400">
+            <Link href="/" className="flex items-center gap-2 transition-colors hover:text-purple-400">
               <div className="text-2xl">💪</div>
               <span className="text-xl font-semibold tracking-tight">Istani Fitness</span>
             </a>
-            <a href="https://istani.store" className="text-sm text-gray-400 hover:text-white">
+            <Link href="https://istani.store" className="text-sm text-gray-400 hover:text-white">
               ← Back to Store
             </a>
           </div>

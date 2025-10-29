@@ -13,11 +13,14 @@ class MonitoringService {
   private logs: ErrorLog[] = [];
 
   log(level: ErrorLog['level'], message: string, context?: any) {
+    // avoid leaking secrets in logs
+    const { redactSecrets } = require('@/lib/redact');
+    const safeContext = context ? redactSecrets(context) : undefined;
     const log: ErrorLog = {
       timestamp: new Date().toISOString(),
       level,
       message,
-      context,
+      context: safeContext,
     };
 
     this.logs.push(log);
@@ -92,10 +95,9 @@ export async function healthCheck(): Promise<{ status: 'healthy' | 'degraded' | 
 
   try {
     // Check if environment variables are set
-    if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.HUGGINGFACE_API_KEY) {
-      checks.supabase = 'configured';
-      checks.huggingface = 'configured';
-    }
+    if (process.env.NEXT_PUBLIC_SUPABASE_URL) checks.supabase = 'configured';
+    // Do not reference secret env vars here to avoid accidental leak in client bundles
+    checks.huggingface = process.env.HUGGINGFACE_API_KEY ? 'configured' : 'unknown';
 
     return { status: 'healthy', checks };
   } catch (error) {

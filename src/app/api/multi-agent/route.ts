@@ -1,10 +1,12 @@
-import { HfInference } from '@huggingface/inference';
+import { generateText, getProviderFromEnv } from '@/lib/llm';
+import { rateLimitFromRequest } from '@/lib/rate-limit';
+import { validateInput } from '@/lib/security';
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
 import { searchExercises } from '@/lib/exercise-library';
 
-// Initialize Hugging Face (FREE - no cost!)
-const hf = new HfInference(process.env.HUGGINGFACE_API_KEY);
+// Select provider via env `LLM_PROVIDER` (huggingface | gemini | claude)
+let provider = getProviderFromEnv();
 
 // Initialize Supabase
 const supabase = createClient(
@@ -17,6 +19,8 @@ export const runtime = 'edge';
 interface MultiAgentRequest {
   userId: string;
   goal: string;
+  provider?: 'huggingface' | 'gemini' | 'claude' | 'openrouter';
+  model?: string;
   userProfile: {
     age: number;
     gender: string;
@@ -27,8 +31,10 @@ interface MultiAgentRequest {
   };
 }
 
+type UserProfile = MultiAgentRequest['userProfile'];
+
 // AGENT 1: Planner Agent - Decomposes goals into tasks
-async function plannerAgent(goal: string, profile: any): Promise<string> {
+async function plannerAgent(goal: string, profile: UserProfile): Promise<string> {
   const prompt = `You are a Fitness Planning Agent. Analyze the user's goal and create a structured plan.
 
 User Goal: ${goal}
@@ -43,21 +49,17 @@ Format:
 2. [Task category]: [Specific action]
 ...`;
 
-  const response = await hf.textGeneration({
-    model: 'mistralai/Mistral-7B-Instruct-v0.2',
-    inputs: prompt,
-    parameters: {
-      max_new_tokens: 500,
-      temperature: 0.7,
-      top_p: 0.9,
-    }
+  return await generateText({
+    provider,
+    prompt,
+    maxTokens: 500,
+    temperature: 0.7,
+    topP: 0.9,
   });
-
-  return response.generated_text;
 }
 
 // AGENT 2: Exercise Specialist - Recommends exercises using RAG
-async function exerciseAgent(plan: string, profile: any): Promise<string> {
+async function exerciseAgent(plan: string, profile: UserProfile): Promise<string> {
   // Extract muscle groups or exercise types from plan
   const muscles = ['chest', 'back', 'legs', 'shoulders', 'arms', 'core'];
   const relevantMuscles = muscles.filter(m => plan.toLowerCase().includes(m));
@@ -81,21 +83,17 @@ User: ${profile.age}yo ${profile.gender}, goal: ${profile.fitnessGoal}
 
 Provide specific exercise selections, sets, reps, and form cues. Focus on safety and effectiveness.`;
 
-  const response = await hf.textGeneration({
-    model: 'mistralai/Mistral-7B-Instruct-v0.2',
-    inputs: prompt,
-    parameters: {
-      max_new_tokens: 800,
-      temperature: 0.6,
-      top_p: 0.9,
-    }
+  return await generateText({
+    provider,
+    prompt,
+    maxTokens: 800,
+    temperature: 0.6,
+    topP: 0.9,
   });
-
-  return response.generated_text;
 }
 
 // AGENT 3: Nutrition Specialist - Creates meal plans
-async function nutritionAgent(plan: string, profile: any): Promise<string> {
+async function nutritionAgent(plan: string, profile: UserProfile): Promise<string> {
   // Calculate TDEE
   let bmr;
   if (profile.gender === 'male') {
@@ -127,17 +125,13 @@ User: ${profile.age}yo ${profile.gender}, goal: ${profile.fitnessGoal}
 
 Create a full day meal plan with 4-5 meals. Include specific foods, portions, and macros for each meal. Focus on whole foods and balanced nutrition.`;
 
-  const response = await hf.textGeneration({
-    model: 'mistralai/Mistral-7B-Instruct-v0.2',
-    inputs: prompt,
-    parameters: {
-      max_new_tokens: 1000,
-      temperature: 0.7,
-      top_p: 0.9,
-    }
+  return await generateText({
+    provider,
+    prompt,
+    maxTokens: 1000,
+    temperature: 0.7,
+    topP: 0.9,
   });
-
-  return response.generated_text;
 }
 
 // AGENT 4: Quality Control - Reviews and synthesizes outputs
@@ -161,23 +155,34 @@ Create a final comprehensive plan that:
 
 Format as a complete, ready-to-follow program.`;
 
-  const response = await hf.textGeneration({
-    model: 'mistralai/Mistral-7B-Instruct-v0.2',
-    inputs: prompt,
-    parameters: {
-      max_new_tokens: 1200,
-      temperature: 0.5,
-      top_p: 0.9,
-    }
+  return await generateText({
+    provider,
+    prompt,
+    maxTokens: 1200,
+    temperature: 0.5,
+    topP: 0.9,
   });
-
-  return response.generated_text;
 }
 
 export async function POST(req: NextRequest) {
   try {
+    // Basic rate limiting per IP
+    const rl = rateLimitFromRequest('/api/multi-agent', req.headers);
+    if (!rl.allowed) {
+      return NextResponse.json({ error: 'Too Many Requests' }, { status: 429 });
+    }
+
     const body: MultiAgentRequest = await req.json();
     const { userId, goal, userProfile } = body;
+    if (body.provider && ['huggingface', 'gemini', 'claude', 'openrouter'].includes(body.provider)) {
+      provider = body.provider as any;
+    }
+
+    // Guardrail: sanitize and validate user free-text goal
+    const v = validateInput(goal || '');
+    if (!v.isValid) {
+      return NextResponse.json({ error: 'Invalid input', reason: v.reason }, { status: 400 });
+    }
 
     // MULTI-AGENT ORCHESTRATION
     // Step 1: Planner creates high-level plan
@@ -194,7 +199,7 @@ export async function POST(req: NextRequest) {
 
     // Step 4: Quality control synthesizes everything
     console.log('🤖 Agent 4: Quality control...');
-    const finalPlan = await qualityAgent(plan, exercisePlan, nutritionPlan);
+    const finalPlanRaw = await qualityAgent(plan, exercisePlan, nutritionPlan);\n    const { safeText, flagged, reasons } = safetyFilter(finalPlanRaw, 'workout');
 
     // Save to database
     const { data, error } = await supabase
@@ -202,12 +207,12 @@ export async function POST(req: NextRequest) {
       .insert({
         user_id: userId,
         name: `Multi-Agent Fitness Plan - ${new Date().toLocaleDateString()}`,
-        description: finalPlan,
+        description: safeText,
         exercises: [{
           planner: plan,
           exercise_specialist: exercisePlan,
           nutrition_specialist: nutritionPlan,
-          final: finalPlan
+          final: safeText
         }]
       })
       .select()
@@ -220,8 +225,8 @@ export async function POST(req: NextRequest) {
       user_id: userId,
       generation_type: 'multi-agent-plan',
       prompt: `Goal: ${goal}`,
-      response: finalPlan.substring(0, 1000),
-      tokens_used: finalPlan.length
+      response: safeText.substring(0, 1000),
+      tokens_used: safeText.length,\n      flagged: flagged ? true : false
     });
 
     // Notify admin of multi-agent plan generation
@@ -242,23 +247,13 @@ export async function POST(req: NextRequest) {
       }),
     }).catch(console.error);
 
-    return NextResponse.json({
-      success: true,
-      plan: data,
-      message: '✅ Multi-agent system created your personalized plan!',
-      agentDetails: {
-        planner: 'Analyzed your goal and created high-level plan',
-        exerciseSpecialist: 'Selected exercises from library using RAG',
-        nutritionSpecialist: 'Calculated macros and created meal plan',
-        qualityControl: 'Reviewed and synthesized all outputs'
-      }
-    });
+    return NextResponse.json({ success: true, plan: data, flagged, reasons: flagged ? reasons : undefined, message: 'Multi-agent system created your personalized plan!', agentDetails: { planner: 'Analyzed your goal and created high-level plan', exerciseSpecialist: 'Selected exercises from library using RAG', nutritionSpecialist: 'Calculated macros and created meal plan', qualityControl: 'Reviewed and synthesized all outputs' } }, { headers: { 'Cache-Control': 'no-store' } });
 
-  } catch (error: any) {
+  } catch (error) {
     console.error('Multi-Agent Error:', error);
+    const message = error instanceof Error ? error.message : 'An unknown error occurred';
     return NextResponse.json(
-      { error: 'Failed to generate multi-agent plan', message: error.message },
-      { status: 500 }
-    );
+      { error: 'Failed to generate multi-agent plan', message },
+      { status: 500, headers: { 'Cache-Control': 'no-store' } })
   }
 }

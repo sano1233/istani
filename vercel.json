@@ -8,6 +8,11 @@
     "NEXT_PUBLIC_SUPABASE_ANON_KEY": "@next_public_supabase_anon_key",
     "SUPABASE_SERVICE_ROLE_KEY": "@supabase_service_role_key",
     "HUGGINGFACE_API_KEY": "@huggingface_api_key",
+    "GOOGLE_GENERATIVE_AI_API_KEY": "@google_generative_ai_api_key",
+    "ANTHROPIC_API_KEY": "@anthropic_api_key",
+    "OPENROUTER_API_KEY": "@openrouter_api_key",
+    "OPENROUTER_MODEL": "qwen/qwen-2.5-coder-32b-instruct",
+    "LLM_PROVIDER": "huggingface",
     "NEXT_PUBLIC_GOOGLE_ADS_CLIENT": "@next_public_google_ads_client",
     "NEXT_PUBLIC_HOME_URL": "https://istani.store",
     "NEXT_PUBLIC_SUPPORT_URL": "https://buymeacoffee.com/istanifitn"

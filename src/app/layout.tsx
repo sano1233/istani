@@ -25,11 +25,22 @@ export const metadata: Metadata = {
     url: "https://istani.store",
     siteName: "Istani Fitness",
     type: "website",
+    images: [
+      {
+        url: "/api/og?title=Istani%20Fitness&subtitle=AI%20Plans%20with%20Claude%20%2B%20Gemini",
+        width: 1200,
+        height: 630,
+        alt: "Istani Fitness - AI-Powered Plans",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Istani Fitness - AI-Powered Fitness",
     description: "Get FREE personalized workout and meal plans from our multi-agent AI system",
+    images: [
+      "/api/og?title=Istani%20Fitness&subtitle=AI%20Plans%20with%20Claude%20%2B%20Gemini",
+    ],
   },
   other: {
     'google-adsense-account': process.env.NEXT_PUBLIC_GOOGLE_ADS_CLIENT || '',
