@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
     // Basic rate limiting per IP
     const rl = rateLimitFromRequest('/api/generate-plan', req.headers);
     if (!rl.allowed) {
-      return NextResponse.json({ error: 'Too Many Requests' }, { status: 429 });
+      return new NextResponse(JSON.stringify({ error: 'Too Many Requests' }), { status: 429, headers: { 'Content-Type': 'application/json', 'X-RateLimit-Remaining': '0' } });
     }
     const parsed = GeneratePlanRequestSchema.safeParse(await req.json());
     if (!parsed.success) {
@@ -165,6 +165,7 @@ Provide 4-5 meals with specific foods, portions, and macros.`;
     return NextResponse.json({
       success: true,
       plan: data,
+      rateLimit: { remaining: rl.remaining, resetAt: rl.resetAt },
       flagged,
       reasons: flagged ? reasons : undefined,
       message: `Your ${planType} plan is ready!`

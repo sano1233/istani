@@ -104,7 +104,7 @@ export async function POST(req: NextRequest) {
     // Basic rate limiting per IP
     const rl = rateLimitFromRequest('/api/ensemble-plan', req.headers);
     if (!rl.allowed) {
-      return NextResponse.json({ error: 'Too Many Requests' }, { status: 429 });
+      return new NextResponse(JSON.stringify({ error: 'Too Many Requests' }), { status: 429, headers: { 'Content-Type': 'application/json', 'X-RateLimit-Remaining': '0' } });
     }
     const parsed = EnsemblePlanRequestSchema.safeParse(await req.json());
     if (!parsed.success) {
@@ -156,8 +156,8 @@ export async function POST(req: NextRequest) {
       name: `${planType === 'workout' ? 'Workout' : 'Meal'} Plan (Ensemble) - ${new Date().toLocaleDateString()}`,
       description: safeText,
       ...(planType === 'workout'
-        ? { exercises: [{ sources: fanout, content: safeText }] }
-        : { daily_calories: targets.calories, meals: [{ sources: fanout, content: safeText }] }
+        ? { exercises: [{ sources: fanout, content: safeText, flagged, reasons }] }
+        : { daily_calories: targets.calories, meals: [{ sources: fanout, content: safeText, flagged, reasons }] }
       )
     };
 
@@ -186,6 +186,7 @@ export async function POST(req: NextRequest) {
       flagged,
       reasons: flagged ? reasons : undefined,
       message: 'Ensemble plan generated successfully',
+      rateLimit: { remaining: rl.remaining, resetAt: rl.resetAt },
     }, { headers: { 'Cache-Control': 'no-store' } });
 
   } catch (error) {

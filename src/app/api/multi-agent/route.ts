@@ -169,7 +169,7 @@ export async function POST(req: NextRequest) {
     // Basic rate limiting per IP
     const rl = rateLimitFromRequest('/api/multi-agent', req.headers);
     if (!rl.allowed) {
-      return NextResponse.json({ error: 'Too Many Requests' }, { status: 429 });
+      return new NextResponse(JSON.stringify({ error: 'Too Many Requests' }), { status: 429, headers: { 'Content-Type': 'application/json', 'X-RateLimit-Remaining': '0' } });
     }
 
     const body: MultiAgentRequest = await req.json();
@@ -247,7 +247,7 @@ export async function POST(req: NextRequest) {
       }),
     }).catch(console.error);
 
-    return NextResponse.json({ success: true, plan: data, flagged, reasons: flagged ? reasons : undefined, message: 'Multi-agent system created your personalized plan!', agentDetails: { planner: 'Analyzed your goal and created high-level plan', exerciseSpecialist: 'Selected exercises from library using RAG', nutritionSpecialist: 'Calculated macros and created meal plan', qualityControl: 'Reviewed and synthesized all outputs' } }, { headers: { 'Cache-Control': 'no-store' } });
+    return NextResponse.json({ success: true, plan: data, rateLimit: { remaining: rl.remaining, resetAt: rl.resetAt }, flagged, reasons: flagged ? reasons : undefined, message: 'Multi-agent system created your personalized plan!', agentDetails: { planner: 'Analyzed your goal and created high-level plan', exerciseSpecialist: 'Selected exercises from library using RAG', nutritionSpecialist: 'Calculated macros and created meal plan', qualityControl: 'Reviewed and synthesized all outputs' } }, { headers: { 'Cache-Control': 'no-store' } });
 
   } catch (error) {
     console.error('Multi-Agent Error:', error);
