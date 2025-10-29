@@ -41,22 +41,21 @@ jobs:
               '- Confirm no secrets appear in logs or client bundles (CI checks).',
             ].join('\n');
 
+            let pr;
             if (existing.data.length > 0) {
-              core.info(`PR already open: ${existing.data[0].html_url}`);
-              core.setOutput('pr_url', existing.data[0].html_url);
+              pr = existing.data[0];
+              core.info(`PR already open: ${pr.html_url}`);
             } else {
-              const pr = await github.rest.pulls.create({
-                owner,
-                repo,
-                title: 'Secure Ensemble Guardrails (Claude + Gemini) — Auto PR',
-                head,
-                base,
-                body,
-                draft: false,
-              });
-              core.info(`PR created: ${pr.data.html_url}`);
-              core.setOutput('pr_url', pr.data.html_url);
+              const created = await github.rest.pulls.create({ owner, repo, title: 'Secure Ensemble Guardrails (Claude + Gemini) — Auto PR', head, base, body, draft: false });
+              pr = created.data;
+              core.info(`PR created: ${pr.html_url}`);
             }
+            // Ensure automerge label exists on PR
+            try {
+              await github.rest.issues.addLabels({ owner, repo, issue_number: pr.number, labels: ['automerge'] });
+            } catch (e) {
+              core.warning(`Could not add label: ${e.message}`);
+            }
+            core.setOutput('pr_url', pr.html_url);
       - name: PR URL
         run: echo "PR URL: ${{ steps.create-or-update-pr.outputs.pr_url }}"
-
