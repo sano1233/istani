@@ -23,6 +23,8 @@ interface GeneratedPlan {
   description: string;
   created_at: string;
   daily_calories?: number;
+  exercises?: any;
+  meals?: any;
 }
 
 export default function Dashboard() {
@@ -530,7 +532,7 @@ export default function Dashboard() {
                       <div>
                         <h3 className="text-xl font-semibold text-blue-400 flex items-center gap-2">
                           <span>{plan.name}</span>
-                          {isPlanFlagged(plan.description) && (
+                          {(isPlanFlagged(plan.description) || (plan as any)?.exercises?.[0]?.flagged) && (
                             <span className="rounded-full bg-yellow-500/20 px-2 py-0.5 text-xs font-semibold text-yellow-300 border border-yellow-500/40">Safety flags</span>
                           )}
                         </h3>
@@ -591,7 +593,7 @@ export default function Dashboard() {
                       <div>
                         <h3 className="text-xl font-semibold text-green-400 flex items-center gap-2">
                           <span>{plan.name}</span>
-                          {isPlanFlagged(plan.description) && (
+                          {(isPlanFlagged(plan.description) || (plan as any)?.meals?.[0]?.flagged) && (
                             <span className="rounded-full bg-yellow-500/20 px-2 py-0.5 text-xs font-semibold text-yellow-300 border border-yellow-500/40">Safety flags</span>
                           )}
                         </h3>
