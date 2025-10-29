@@ -6,3 +6,4 @@ node_modules/
 ai-brain/node_modules/
 ai-brain/package-lock.json
 .env
+.vercel
