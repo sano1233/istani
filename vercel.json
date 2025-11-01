@@ -1,0 +1,42 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "server.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "site/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "server.js"
+    },
+    {
+      "src": "/fitness.html",
+      "dest": "site/fitness.html"
+    },
+    {
+      "src": "/css/(.*)",
+      "dest": "site/css/$1"
+    },
+    {
+      "src": "/js/(.*)",
+      "dest": "site/js/$1"
+    },
+    {
+      "src": "/images/(.*)",
+      "dest": "site/images/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "site/fitness.html"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
+}
