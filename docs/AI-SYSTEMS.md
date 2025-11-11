@@ -292,7 +292,7 @@ const motivationImage = await ImageGenerationAPI.generateMotivationalImage({
 
 ## 📞 Contact & Support
 
-**Email**: istani.store@proton.me
+**Email**: istaniDOTstore@proton.me
 **Donations**: [buymeacoffee.com/istanifitn](https://buymeacoffee.com/istanifitn)
 **Google Stitch Project**: [12262529591791741168](https://stitch.withgoogle.com/projects/12262529591791741168)
 
