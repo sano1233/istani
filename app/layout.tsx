@@ -1,8 +1,5 @@
 import type { Metadata } from 'next'
-import { Space_Grotesk } from 'next/font/google'
 import './globals.css'
-
-const spaceGrotesk = Space_Grotesk({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Istani Fitness - Transform Your Body',
@@ -18,11 +15,15 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <head>
         <link
+          href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap"
+          rel="stylesheet"
+        />
+        <link
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
           rel="stylesheet"
         />
       </head>
-      <body className={spaceGrotesk.className}>{children}</body>
+      <body className="font-display">{children}</body>
     </html>
   )
 }
