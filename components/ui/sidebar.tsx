@@ -12,6 +12,7 @@ import {
   Users,
   Settings,
   LogOut,
+  Droplets,
 } from 'lucide-react'
 
 interface SidebarProps {
@@ -25,6 +26,7 @@ export function Sidebar({ onLogout }: SidebarProps) {
     { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
     { name: 'Workouts', href: '/dashboard/workouts', icon: Dumbbell },
     { name: 'Nutrition', href: '/dashboard/nutrition', icon: UtensilsCrossed },
+    { name: 'Water', href: '/dashboard/water', icon: Droplets },
     { name: 'Progress', href: '/dashboard/progress', icon: TrendingUp },
     { name: 'Shop', href: '/products', icon: ShoppingBag },
     { name: 'Coaching', href: '/coaching', icon: Users },
