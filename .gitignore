@@ -5,3 +5,4 @@ node_modules/
 .DS_Store
 ai-brain/node_modules/
 ai-brain/package-lock.json
+.env.local
