@@ -1,7 +1,9 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { Sidebar } from '@/components/ui/sidebar'
+import { AchievementToast } from '@/components/achievement-toast'
 import { createClient } from '@/lib/supabase/client'
 
 export default function DashboardLayout({
@@ -10,6 +12,14 @@ export default function DashboardLayout({
   children: React.ReactNode
 }) {
   const router = useRouter()
+  const [userId, setUserId] = useState<string | null>(null)
+
+  useEffect(() => {
+    const supabase = createClient()
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) setUserId(user.id)
+    })
+  }, [])
 
   const handleLogout = async () => {
     const supabase = createClient()
@@ -24,6 +34,7 @@ export default function DashboardLayout({
       <main className="ml-64 flex-1 p-8">
         {children}
       </main>
+      {userId && <AchievementToast userId={userId} />}
     </div>
   )
 }

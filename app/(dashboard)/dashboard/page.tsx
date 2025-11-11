@@ -2,6 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Dumbbell, TrendingUp, Target, Zap } from 'lucide-react'
 import { redirect } from 'next/navigation'
+import { CoachingMessages } from '@/components/coaching-messages'
+import { DailyCheckInTrigger } from '@/components/daily-checkin-modal'
 
 export const metadata = {
   title: 'Dashboard - Istani Fitness',
@@ -61,6 +63,14 @@ export default async function DashboardPage() {
     .limit(1)
     .single()
 
+  // Get recent coaching messages
+  const { data: coachingMessages } = await supabase
+    .from('coaching_messages')
+    .select('*')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false })
+    .limit(5)
+
   return (
     <div>
       <div className="mb-8">
@@ -71,6 +81,14 @@ export default async function DashboardPage() {
           Here's your fitness overview for today
         </p>
       </div>
+
+      {/* AI Coaching Messages */}
+      {coachingMessages && coachingMessages.length > 0 && (
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-4">Your AI Coach Says...</h2>
+          <CoachingMessages messages={coachingMessages} />
+        </div>
+      )}
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -244,6 +262,9 @@ export default async function DashboardPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Daily Check-In Trigger */}
+      <DailyCheckInTrigger userId={user.id} />
     </div>
   )
 }
