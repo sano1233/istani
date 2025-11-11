@@ -49,11 +49,11 @@ export async function POST(request: NextRequest) {
         const { data: order, error: orderError } = await supabaseAdmin
           .from('orders')
           .insert({
-            user_id: session.metadata?.user_id || 'guest',
+            user_id: session.metadata?.user_id || null,
             status: 'processing',
             total_amount: session.amount_total! / 100, // Convert from cents
             stripe_payment_intent_id: session.payment_intent as string,
-          })
+          } as any)
           .select()
           .single()
 
@@ -73,10 +73,10 @@ export async function POST(request: NextRequest) {
             .from('order_items')
             .insert({
               order_id: order.id,
-              product_id: 'temp', // You'd want to store product_id in metadata
+              product_id: null, // You'd want to store product_id in metadata
               quantity: item.quantity || 1,
               price_at_time: unitAmount / 100,
-            })
+            } as any)
         }
 
         console.log('Order created successfully:', order.id)
