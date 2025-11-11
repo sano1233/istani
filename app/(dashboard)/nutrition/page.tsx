@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import { MealLogger } from '@/components/meal-logger'
 import { MacroTracker } from '@/components/macro-tracker'
 import { NutritionRecommendations } from '@/components/nutrition-recommendations'
-import { calculateTDEE, calculateMacros } from '@/lib/fitness-calculations'
+import { calculateBMR, calculateTDEE, calculateCalorieTarget, calculateMacros } from '@/lib/fitness-calculations'
 
 export default async function NutritionPage() {
   const supabase = await createClient()
@@ -21,18 +21,39 @@ export default async function NutritionPage() {
   // Calculate daily macro targets
   let macroTargets = { protein: 150, carbs: 200, fats: 60, calories: 2000 }
   if (profile?.current_weight_kg && profile?.height_cm && profile?.age) {
-    const tdee = calculateTDEE(
+    // Map profile goals to fitness calculation goals
+    const goalMap: Record<string, 'weight_loss' | 'muscle_gain' | 'maintenance' | 'athletic_performance'> = {
+      'fat_loss': 'weight_loss',
+      'muscle_gain': 'muscle_gain',
+      'maintain_weight': 'maintenance',
+      'improve_endurance': 'athletic_performance',
+      'general_fitness': 'maintenance',
+    }
+    const fitnessGoal = goalMap[profile.primary_goal || 'maintain_weight'] || 'maintenance'
+
+    // Calculate BMR, TDEE, and calorie target
+    const bmr = calculateBMR(
       profile.current_weight_kg,
       profile.height_cm,
       profile.age,
-      profile.gender || 'male',
-      profile.activity_level || 'moderate'
+      profile.gender || 'male'
     )
-    macroTargets = calculateMacros(
-      tdee,
-      profile.primary_goal || 'maintain_weight',
-      profile.current_weight_kg
+    const tdee = calculateTDEE(bmr, profile.activity_level || 'moderate')
+    const calorieTarget = calculateCalorieTarget(tdee, fitnessGoal)
+
+    // Calculate macros
+    const macros = calculateMacros(
+      profile.current_weight_kg,
+      calorieTarget,
+      fitnessGoal
     )
+
+    macroTargets = {
+      protein: macros.protein_g,
+      carbs: macros.carbs_g,
+      fats: macros.fats_g,
+      calories: calorieTarget,
+    }
   }
 
   // Get today's meals
