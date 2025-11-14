@@ -1,0 +1,74 @@
+name: Label Issues
+
+on:
+  issues:
+    types:
+      - opened
+      - transferred
+
+permissions:
+  issues: write
+
+jobs:
+  label-issue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Label based on source repository, template field, or title
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Define the mapping from repo/template value to label
+            const labelMap = {
+              'supabase/auth-js': 'auth-js',
+              'supabase/functions-js': 'functions-js',
+              'supabase/postgrest-js': 'postgrest-js',
+              'supabase/storage-js': 'storage-js',
+              'supabase/realtime-js': 'realtime-js',
+              'auth-js': 'auth-js',
+              'functions-js': 'functions-js',
+              'postgrest-js': 'postgrest-js',
+              'storage-js': 'storage-js',
+              'realtime-js': 'realtime-js',
+            };
+
+            let labels = [];
+
+            const oldRepoFullName = context.payload.changes?.old_repository?.full_name;
+            if (oldRepoFullName) {
+              const fullNameLower = (oldRepoFullName || '').toLowerCase();
+              const shortName = fullNameLower.split('/')?.[1];
+              console.log('old_repository', fullNameLower, shortName);
+              const transferLabel = labelMap[fullNameLower] || labelMap[shortName];
+              if (transferLabel) labels.push(transferLabel);
+            } else {
+              // Label based on "Library affected" field in the issue body
+              const body = context.payload.issue.body || '';
+              const match = body.match(/### Library affected\s*\n+([\s\S]*?)(\n###|\n$)/i);
+              if (match) {
+                const libsRaw = match[1];
+                // Split by comma, semicolon, or newlines
+                const libs = libsRaw.split(/,|;|\n/).map(s => s.trim().toLowerCase()).filter(Boolean);
+                for (const lib of libs) {
+                  if (labelMap[lib]) labels.push(labelMap[lib]);
+                }
+              }
+              // Check the title for "[migration]"
+              const title = context.payload.issue.title || '';
+              if (title.toLowerCase().includes('[migration]')) {
+                labels.push('migration');
+              }
+            }
+
+            // Remove duplicates
+            labels = [...new Set(labels)];
+
+            if (labels.length > 0) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.issue.number,
+                labels,
+              });
+            } else {
+              console.log('No matching label found; no label added.');
+            }

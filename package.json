@@ -1,0 +1,26 @@
+{
+  "name": "istani-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Unified monorepo for all ISTANI projects",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "test": "echo \"Run tests in individual packages\"",
+    "build": "echo \"Build all packages\"",
+    "clean": "rm -rf node_modules packages/*/node_modules",
+    "lint": "echo \"Lint all packages\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sano1233/istani.git"
+  },
+  "author": "sano1233",
+  "license": "MIT",
+  "devDependencies": {},
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}
