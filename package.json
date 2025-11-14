@@ -2,15 +2,19 @@
   "name": "istani-monorepo",
   "version": "1.0.0",
   "private": true,
-  "description": "Unified monorepo for all ISTANI projects",
+  "description": "Unified monorepo for ISTANI Fitness Enterprise",
   "workspaces": [
     "packages/*"
   ],
   "scripts": {
-    "test": "echo \"Run tests in individual packages\"",
-    "build": "echo \"Build all packages\"",
-    "clean": "rm -rf node_modules packages/*/node_modules",
-    "lint": "echo \"Lint all packages\""
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "clean": "turbo run clean && rm -rf node_modules packages/*/node_modules .turbo",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "fitness:dev": "npm run dev --workspace=@istani/fitness-app",
+    "fitness:build": "npm run build --workspace=@istani/fitness-app"
   },
   "repository": {
     "type": "git",
@@ -18,9 +22,14 @@
   },
   "author": "sano1233",
   "license": "MIT",
-  "devDependencies": {},
+  "devDependencies": {
+    "prettier": "^3.2.5",
+    "turbo": "^2.3.3",
+    "typescript": "^5.8.3"
+  },
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=9.0.0"
-  }
+  },
+  "packageManager": "npm@10.2.5"
 }
