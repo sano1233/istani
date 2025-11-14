@@ -1,10 +1,9 @@
-node_modules/
-.next/
 .env
 .env.local
+.env.*
+node_modules
+.git
 *.log
 .DS_Store
-ai-brain/node_modules/
+ai-brain/node_modules
 ai-brain/package-lock.json
-.env
-.vercel

@@ -3,7 +3,9 @@
 Multi-AI analysis with auto-resolution and auto-merge.
 
 ## Setup
-Add to GitHub Secrets: `GEMINI_API_KEY`, `ANTHROPIC_API_KEY`, `QWEN_API_KEY`
+All secrets are managed through the unified GitHub environment: `unified-software-automated-developer-and-deployer`
+
+See [Environment Setup Guide](../.github/ENVIRONMENT-SETUP.md) for configuration details.
 
 ## Features
 - Auto PR analysis (Gemini, Claude, Qwen)
