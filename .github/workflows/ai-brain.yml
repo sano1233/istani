@@ -1,3 +1,5 @@
+gemini error: Command failed: node ai-brain/gemini-helper.js "Resolve the merge conflict in .github/workflows/ai-brain.yml. The file contains Git conflict markers (<<<<<<<, =======, >>>>>>>). Return ONLY the complete resolved file content without any conflict markers or explanations:
+
 name: AI Brain PR Handler
 
 on:
@@ -12,8 +14,12 @@ permissions:
 jobs:
   analyze:
     runs-on: ubuntu-latest
+<<<<<<< HEAD
     # Use unified GitHub environment for all secrets
     environment: automated-development
+=======
+    environment: unified-software-automated-developer-and-deployer
+>>>>>>> origin/main
     steps:
       - uses: actions/checkout@v4
         with:
@@ -32,8 +38,8 @@ jobs:
 
       - name: Validate secrets configuration
         run: |
-          echo "Checking secrets health..."
-          node config/health-check.js || echo "Warning: Some optional secrets are not configured"
+          echo \"Checking secrets health...\"
+          node config/health-check.js || echo \"Warning: Some optional secrets are not configured\"
         env:
           # AI Services
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -55,8 +61,8 @@ jobs:
 
       - name: Configure Git
         run: |
-          git config --global user.name "AI Brain Bot"
-          git config --global user.email "ai-brain@istani.org"
+          git config --global user.name \"AI Brain Bot\"
+          git config --global user.email \"ai-brain@istani.org\"
 
       - name: Run AI Brain Analysis
         env:
@@ -84,3 +90,5 @@ jobs:
           # Environment
           NODE_ENV: production
         run: node ai-brain/pr-handler.js ${{ github.event.pull_request.number }}
+"
+/bin/sh: 1: Bad substitution

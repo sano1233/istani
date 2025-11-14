@@ -1,5 +1,6 @@
 {
   "name": "istani-fitness",
+<<<<<<< HEAD
   "version": "2.0.0",
   "description": "Complete full-stack fitness e-commerce platform",
   "private": true,
@@ -43,4 +44,38 @@
   },
   "author": "Istani Fitness <istaniDOTstore@proton.me>",
   "license": "MIT"
+=======
+  "version": "1.0.0",
+  "description": "Science-backed fitness platform powered by AI",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "build": "echo 'Static site ready'",
+    "serve": "node server.js"
+  },
+  "keywords": [
+    "fitness",
+    "ai",
+    "workout",
+    "nutrition",
+    "training"
+  ],
+  "author": "Istani",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "dotenv": "^16.3.1",
+    "axios": "^1.6.2",
+    "cors": "^2.8.5",
+    "@supabase/supabase-js": "^2.39.0",
+    "body-parser": "^1.20.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+>>>>>>> origin/main
 }

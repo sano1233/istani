@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<<<<<<< HEAD
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -472,5 +473,509 @@
       }
     });
   </script>
+=======
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Istani Fitness - Science-Backed Training & AI-Powered Coaching</title>
+    <meta name="description" content="Transform your body with evidence-based fitness programs, AI-powered coaching, and personalized nutrition plans. Start your journey today.">
+    <link rel="stylesheet" href="css/fitness.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav-ios">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                    <path d="M16 4L28 10V22L16 28L4 22V10L16 4Z" stroke="url(#gradient)" stroke-width="2" fill="none"/>
+                    <defs>
+                        <linearGradient id="gradient" x1="4" y1="4" x2="28" y2="28">
+                            <stop offset="0%" style="stop-color:#06b6d4"/>
+                            <stop offset="100%" style="stop-color:#3b82f6"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <span>Istani Fitness</span>
+            </div>
+            <div class="nav-links">
+                <a href="#hero" class="nav-link active">Home</a>
+                <a href="#programs" class="nav-link">Programs</a>
+                <a href="#ai-coach" class="nav-link">AI Coach</a>
+                <a href="#nutrition" class="nav-link">Nutrition</a>
+                <a href="#science" class="nav-link">Science</a>
+            </div>
+            <button class="btn-primary-ios">Start Free Trial</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero-section">
+        <div class="hero-background">
+            <div class="gradient-blur blur-1"></div>
+            <div class="gradient-blur blur-2"></div>
+            <div class="gradient-blur blur-3"></div>
+        </div>
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="badge-icon">⚡</span>
+                <span>AI-Powered Fitness Platform</span>
+            </div>
+            <h1 class="hero-title">
+                Transform Your Body<br/>
+                <span class="gradient-text">With Science & AI</span>
+            </h1>
+            <p class="hero-subtitle">
+                Evidence-based training programs powered by advanced AI. Get personalized workouts,
+                nutrition plans, and real-time coaching tailored to your unique physiology and goals.
+            </p>
+            <div class="hero-cta">
+                <button class="btn-hero-primary" onclick="openAICoach()">
+                    <span>Get Your AI Training Plan</span>
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10 3L9 4L14.29 9.29H3V10.71H14.29L9 16L10 17L17 10L10 3Z"/>
+                    </svg>
+                </button>
+                <button class="btn-hero-secondary" onclick="scrollToPrograms()">
+                    <span>Explore Programs</span>
+                </button>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-card-ios">
+                    <div class="stat-number">50K+</div>
+                    <div class="stat-label">Active Members</div>
+                </div>
+                <div class="stat-card-ios">
+                    <div class="stat-number">98%</div>
+                    <div class="stat-label">Success Rate</div>
+                </div>
+                <div class="stat-card-ios">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">AI Support</div>
+                </div>
+            </div>
+        </div>
+        <div class="hero-image">
+            <div class="phone-mockup">
+                <div class="phone-screen">
+                    <img src="images/fitness/app-preview.svg" alt="Istani Fitness App">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Programs Section -->
+    <section id="programs" class="programs-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Science-Backed Programs</h2>
+                <p class="section-subtitle">Choose from evidence-based training protocols designed by exercise scientists and optimized by AI</p>
+            </div>
+            <div class="programs-grid">
+                <!-- Strength Training -->
+                <div class="program-card-ios">
+                    <div class="program-icon">💪</div>
+                    <h3 class="program-title">Strength & Hypertrophy</h3>
+                    <p class="program-description">
+                        Build muscle and strength using progressive overload principles. Based on research showing
+                        optimal hypertrophy occurs at 6-12 reps with 70-85% 1RM, 3-5 sets per exercise.
+                    </p>
+                    <div class="program-features">
+                        <div class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>Progressive overload tracking</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>Volume optimization (10-20 sets/muscle/week)</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>Periodized training phases</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>AI-adjusted rest periods</span>
+                        </div>
+                    </div>
+                    <div class="program-meta">
+                        <span class="meta-item">🕐 45-60 min</span>
+                        <span class="meta-item">📊 4-6x/week</span>
+                        <span class="meta-item">⚡ Intermediate-Advanced</span>
+                    </div>
+                    <button class="btn-program" onclick="startProgram('strength')">Start Program</button>
+                </div>
+
+                <!-- Fat Loss -->
+                <div class="program-card-ios featured">
+                    <div class="featured-badge">Most Popular</div>
+                    <div class="program-icon">🔥</div>
+                    <h3 class="program-title">Metabolic Fat Loss</h3>
+                    <p class="program-description">
+                        Evidence-based fat loss combining resistance training to preserve muscle mass (crucial during caloric deficit)
+                        with strategic cardio. Research shows resistance training prevents up to 93% of muscle loss during weight loss.
+                    </p>
+                    <div class="program-features">
+                        <div class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>Caloric deficit optimization (-500kcal/day)</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>Muscle-sparing resistance protocols</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>HIIT & LISS cardio integration</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>Protein timing (1.6-2.2g/kg bodyweight)</span>
+                        </div>
+                    </div>
+                    <div class="program-meta">
+                        <span class="meta-item">🕐 40-50 min</span>
+                        <span class="meta-item">📊 5-6x/week</span>
+                        <span class="meta-item">⚡ All Levels</span>
+                    </div>
+                    <button class="btn-program-featured" onclick="startProgram('fatloss')">Start Program</button>
+                </div>
+
+                <!-- Athletic Performance -->
+                <div class="program-card-ios">
+                    <div class="program-icon">⚡</div>
+                    <h3 class="program-title">Athletic Performance</h3>
+                    <p class="program-description">
+                        Enhance power, speed, and explosiveness using plyometrics and Olympic lifting variations.
+                        Studies show complex training increases power output by 4.8% compared to traditional training.
+                    </p>
+                    <div class="program-features">
+                        <div class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>Plyometric progressions</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>Olympic lift variations</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>Speed & agility protocols</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>Sport-specific conditioning</span>
+                        </div>
+                    </div>
+                    <div class="program-meta">
+                        <span class="meta-item">🕐 50-70 min</span>
+                        <span class="meta-item">📊 5-6x/week</span>
+                        <span class="meta-item">⚡ Advanced</span>
+                    </div>
+                    <button class="btn-program" onclick="startProgram('performance')">Start Program</button>
+                </div>
+
+                <!-- Mobility & Recovery -->
+                <div class="program-card-ios">
+                    <div class="program-icon">🧘</div>
+                    <h3 class="program-title">Mobility & Recovery</h3>
+                    <p class="program-description">
+                        Improve flexibility, joint health, and recovery. Research demonstrates static stretching for
+                        15-30 seconds per muscle group increases flexibility by 2-5% per week.
+                    </p>
+                    <div class="program-features">
+                        <div class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>Dynamic mobility routines</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>Myofascial release techniques</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>Active recovery protocols</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">✓</span>
+                            <span>Sleep optimization guidance</span>
+                        </div>
+                    </div>
+                    <div class="program-meta">
+                        <span class="meta-item">🕐 20-30 min</span>
+                        <span class="meta-item">📊 Daily</span>
+                        <span class="meta-item">⚡ All Levels</span>
+                    </div>
+                    <button class="btn-program" onclick="startProgram('mobility')">Start Program</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI Coach Section -->
+    <section id="ai-coach" class="ai-section">
+        <div class="container">
+            <div class="ai-content">
+                <div class="ai-text">
+                    <div class="section-badge">
+                        <span class="badge-icon">🤖</span>
+                        <span>Powered by 15+ AI Models</span>
+                    </div>
+                    <h2 class="section-title">Your Personal AI Coach</h2>
+                    <p class="ai-description">
+                        Get instant workout plans, form corrections, and nutrition advice powered by multiple
+                        specialized AI models trained on exercise science, biomechanics, and nutritional research.
+                    </p>
+                    <div class="ai-features">
+                        <div class="ai-feature">
+                            <div class="ai-feature-icon">📊</div>
+                            <div>
+                                <h4>Personalized Training Plans</h4>
+                                <p>AI analyzes your goals, experience level, and recovery capacity to create optimal programs</p>
+                            </div>
+                        </div>
+                        <div class="ai-feature">
+                            <div class="ai-feature-icon">🎯</div>
+                            <div>
+                                <h4>Real-Time Form Analysis</h4>
+                                <p>Advanced computer vision identifies form issues and provides instant corrections</p>
+                            </div>
+                        </div>
+                        <div class="ai-feature">
+                            <div class="ai-feature-icon">🍎</div>
+                            <div>
+                                <h4>Nutrition Optimization</h4>
+                                <p>Macro tracking and meal planning based on your metabolic profile and goals</p>
+                            </div>
+                        </div>
+                        <div class="ai-feature">
+                            <div class="ai-feature-icon">📈</div>
+                            <div>
+                                <h4>Progress Prediction</h4>
+                                <p>Machine learning forecasts your progress and adjusts training variables accordingly</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn-ai-primary" onclick="openAICoach()">Chat with AI Coach</button>
+                </div>
+                <div class="ai-visual">
+                    <div class="chat-preview">
+                        <div class="chat-header">
+                            <div class="chat-avatar">🤖</div>
+                            <div>
+                                <div class="chat-name">AI Fitness Coach</div>
+                                <div class="chat-status">● Online</div>
+                            </div>
+                        </div>
+                        <div class="chat-messages">
+                            <div class="chat-message user">
+                                How do I break through my bench press plateau at 185lbs?
+                            </div>
+                            <div class="chat-message ai typing">
+                                <div class="typing-indicator">
+                                    <span></span><span></span><span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Nutrition Section -->
+    <section id="nutrition" class="nutrition-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Evidence-Based Nutrition</h2>
+                <p class="section-subtitle">Fuel your body with science-backed nutritional strategies</p>
+            </div>
+            <div class="nutrition-grid">
+                <div class="nutrition-card">
+                    <div class="nutrition-icon">🥩</div>
+                    <h3>Protein Optimization</h3>
+                    <div class="nutrition-stat">1.6-2.2g/kg</div>
+                    <p>Research demonstrates this range maximizes muscle protein synthesis. Distribute across 4-6 meals with 0.4-0.55g/kg per meal.</p>
+                </div>
+                <div class="nutrition-card">
+                    <div class="nutrition-icon">⏰</div>
+                    <h3>Nutrient Timing</h3>
+                    <div class="nutrition-stat">30-120 min</div>
+                    <p>Post-workout anabolic window: Consume protein + carbs within 2 hours post-training to optimize recovery and glycogen replenishment.</p>
+                </div>
+                <div class="nutrition-card">
+                    <div class="nutrition-icon">💧</div>
+                    <h3>Hydration Protocol</h3>
+                    <div class="nutrition-stat">3-4 liters</div>
+                    <p>Optimal hydration improves performance by 2-5%. Drink 500ml 2 hours pre-workout, 200-300ml every 15-20 min during training.</p>
+                </div>
+                <div class="nutrition-card">
+                    <div class="nutrition-icon">🍊</div>
+                    <h3>Micronutrients</h3>
+                    <div class="nutrition-stat">25+ Vitamins</div>
+                    <p>Track key micronutrients: Vitamin D (2000-5000 IU), Omega-3s (2-3g EPA/DHA), Magnesium (400-500mg), Zinc (15-30mg).</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Science Section -->
+    <section id="science" class="science-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Built on Scientific Research</h2>
+                <p class="section-subtitle">Every program is backed by peer-reviewed studies and exercise science</p>
+            </div>
+            <div class="science-content">
+                <div class="science-principles">
+                    <div class="principle-card">
+                        <div class="principle-number">01</div>
+                        <h3>Progressive Overload</h3>
+                        <p>Systematically increase training stress through volume, intensity, or frequency. Studies show 5-10% weekly load increases optimize adaptation while minimizing injury risk.</p>
+                        <div class="principle-citation">Research: Schoenfeld et al. (2017) - Journal of Strength and Conditioning Research</div>
+                    </div>
+                    <div class="principle-card">
+                        <div class="principle-number">02</div>
+                        <h3>Stimulus-Recovery-Adaptation</h3>
+                        <p>Training creates stimulus, recovery allows adaptation. Muscle protein synthesis peaks 24-48 hours post-training. Adequate rest is crucial for hypertrophy.</p>
+                        <div class="principle-citation">Research: Damas et al. (2016) - Sports Medicine</div>
+                    </div>
+                    <div class="principle-card">
+                        <div class="principle-number">03</div>
+                        <h3>Specificity & Variation</h3>
+                        <p>Train specific to your goals (SAID principle) while varying exercises to prevent adaptation plateau. Research shows varied training increases strength by 2-3% more than monotonous protocols.</p>
+                        <div class="principle-citation">Research: Fonseca et al. (2014) - Sports Medicine</div>
+                    </div>
+                    <div class="principle-card">
+                        <div class="principle-number">04</div>
+                        <h3>Periodization</h3>
+                        <p>Structured training phases optimize performance. Linear, undulating, and block periodization all show superior results to non-periodized training (+15-20% strength gains).</p>
+                        <div class="principle-citation">Research: Williams et al. (2017) - Sports Medicine</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-content">
+            <h2 class="cta-title">Ready to Transform Your Fitness?</h2>
+            <p class="cta-subtitle">Join 50,000+ members using AI-powered training to achieve their goals faster</p>
+            <div class="cta-buttons">
+                <button class="btn-cta-primary" onclick="startTrial()">Start Free 14-Day Trial</button>
+                <button class="btn-cta-secondary" onclick="openAICoach()">Talk to AI Coach</button>
+            </div>
+            <div class="cta-features">
+                <span>✓ No credit card required</span>
+                <span>✓ Cancel anytime</span>
+                <span>✓ Full access to all features</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer-ios">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <div class="footer-logo">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                        <path d="M16 4L28 10V22L16 28L4 22V10L16 4Z" stroke="url(#gradient2)" stroke-width="2" fill="none"/>
+                        <defs>
+                            <linearGradient id="gradient2" x1="4" y1="4" x2="28" y2="28">
+                                <stop offset="0%" style="stop-color:#06b6d4"/>
+                                <stop offset="100%" style="stop-color:#3b82f6"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <span>Istani Fitness</span>
+                </div>
+                <p class="footer-tagline">Science-backed fitness powered by AI</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Programs</h4>
+                    <a href="#programs">Strength Training</a>
+                    <a href="#programs">Fat Loss</a>
+                    <a href="#programs">Athletic Performance</a>
+                    <a href="#programs">Mobility</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Features</h4>
+                    <a href="#ai-coach">AI Coach</a>
+                    <a href="#nutrition">Nutrition Plans</a>
+                    <a href="#science">Research</a>
+                    <a href="#">Mobile App</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <a href="#">About Us</a>
+                    <a href="#">Careers</a>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Istani Fitness. All rights reserved.</p>
+            <div class="footer-social">
+                <a href="#" aria-label="Twitter">𝕏</a>
+                <a href="#" aria-label="Instagram">📷</a>
+                <a href="#" aria-label="YouTube">▶️</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- AI Chat Widget -->
+    <div id="ai-chat-widget" class="chat-widget">
+        <button class="chat-fab" onclick="toggleChat()" aria-label="Open AI Coach">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 6C13.1 6 14 6.9 14 8C14 9.1 13.1 10 12 10C10.9 10 10 9.1 10 8C10 6.9 10.9 6 12 6ZM16 15C16 16.66 14.66 18 13 18H11C9.34 18 8 16.66 8 15V14H16V15Z"/>
+            </svg>
+        </button>
+        <div id="chat-panel" class="chat-panel" style="display: none;">
+            <div class="chat-panel-header">
+                <div class="chat-panel-title">
+                    <div class="chat-panel-avatar">🤖</div>
+                    <div>
+                        <div class="chat-panel-name">AI Fitness Coach</div>
+                        <div class="chat-panel-status">● Online - Powered by ElevenLabs</div>
+                    </div>
+                </div>
+                <button onclick="toggleChat()" class="chat-close">✕</button>
+            </div>
+            <div id="chat-panel-messages" class="chat-panel-messages">
+                <div class="chat-message ai">
+                    <div class="message-avatar">🤖</div>
+                    <div class="message-content">
+                        <p>Hi! I'm your AI fitness coach. I can help you with:</p>
+                        <ul>
+                            <li>📊 Creating personalized workout plans</li>
+                            <li>🍎 Nutrition and meal planning</li>
+                            <li>🎯 Form checks and technique advice</li>
+                            <li>📈 Progress tracking and optimization</li>
+                        </ul>
+                        <p>What would you like to work on today?</p>
+                    </div>
+                </div>
+            </div>
+            <div class="chat-panel-input">
+                <input type="text" id="chat-input" placeholder="Ask me anything about fitness..." onkeypress="handleChatKeypress(event)">
+                <button onclick="sendMessage()" class="chat-send-btn">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M2 10L18 2L12 18L10 11L2 10Z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/fitness.js"></script>
+    <script src="js/ai-integration.js"></script>
+>>>>>>> origin/main
 </body>
 </html>

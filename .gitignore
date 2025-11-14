@@ -1,3 +1,5 @@
+gemini error: Command failed: node ai-brain/gemini-helper.js "Resolve the merge conflict in .gitignore. The file contains Git conflict markers (<<<<<<<, =======, >>>>>>>). Return ONLY the complete resolved file content without any conflict markers or explanations:
+
 node_modules/
 .next/
 .env
@@ -5,4 +7,11 @@ node_modules/
 .DS_Store
 ai-brain/node_modules/
 ai-brain/package-lock.json
+<<<<<<< HEAD
 .env.local
+=======
+.env
+.vercel
+>>>>>>> origin/main
+"
+Set GEMINI_API_KEY environment variable
