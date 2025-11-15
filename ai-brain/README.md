@@ -1,11 +1,33 @@
-# AI Brain - Enterprise Grade Automated PR System
+# AI Brain - Unified Full Stack System
 
-Multi-AI analysis with auto-resolution and auto-merge.
+Enterprise automated AI with VS Code, Cursor, Gemini, Claude, Codex, Qwen.
 
-## Setup
-Add to GitHub Secrets: `GEMINI_API_KEY`, `ANTHROPIC_API_KEY`, `QWEN_API_KEY`
+## Usage
+
+**Unified query (all AIs):**
+```bash
+unified.bat "your prompt"
+```
+
+**Individual AIs:**
+```bash
+gemini.bat "prompt"
+claude.bat "prompt"
+codex.bat "prompt"
+qwen.bat "prompt"
+```
+
+## Environment Variables
+```
+GEMINI_API_KEY=your_key
+ANTHROPIC_API_KEY=your_key
+OPENAI_API_KEY=your_key
+QWEN_API_KEY=your_key
+```
 
 ## Features
-- Auto PR analysis (Gemini, Claude, Qwen)
+- Auto PR review & merge
+- VS Code integration
+- Cursor AI support
+- Multi-AI consensus
 - Auto conflict resolution
-- Auto merge on approval
