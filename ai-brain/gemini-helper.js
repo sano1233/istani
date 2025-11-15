@@ -19,5 +19,21 @@ async function chat(prompt) {
   }
 }
 
-const prompt = process.argv.slice(2).join(' ') || 'Hello';
-chat(prompt).catch(err => console.log(`Gemini error: ${err.message}`));
+// Read from stdin if available, otherwise use command line args
+async function getPrompt() {
+  if (process.stdin.isTTY) {
+    // No stdin, use command line arguments
+    return process.argv.slice(2).join(' ') || 'Hello';
+  } else {
+    // Read from stdin
+    return new Promise((resolve) => {
+      let data = '';
+      process.stdin.on('data', chunk => data += chunk);
+      process.stdin.on('end', () => resolve(data.trim() || 'Hello'));
+    });
+  }
+}
+
+getPrompt()
+  .then(prompt => chat(prompt))
+  .catch(err => console.log(`Gemini error: ${err.message}`));

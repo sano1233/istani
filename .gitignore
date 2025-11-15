@@ -6,6 +6,7 @@ node_modules/
 .DS_Store
 ai-brain/node_modules/
 ai-brain/package-lock.json
+ai-brain/.temp-comment.txt
 out/
 dist/
 build/
