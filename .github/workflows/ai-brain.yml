@@ -36,7 +36,7 @@ jobs:
       - name: Run AI Brain Analysis
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.CLAUDE }}
           QWEN_API_KEY: ${{ secrets.QWEN_API_KEY }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node ai-brain/pr-handler.js ${{ github.event.pull_request.number }}
