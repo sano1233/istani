@@ -1,0 +1,31 @@
+{
+  "name": "WP Contact",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "wp-contact",
+        "responseMode": "lastNode",
+        "options": { "responseCode": 200 }
+      },
+      "id": "Webhook",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [260, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const crypto = require('crypto');\nconst headers = $json.headers || {};\nconst secret = process.env.N8N_ISTANI_SHARED_SECRET || '';\nconst sig = headers['x-istani-signature'] || headers['X-Istani-Signature'] || '';\nconst body = JSON.stringify($json.body || {});\nconst calc = secret ? crypto.createHmac('sha256', secret).update(body).digest('hex') : '';\nif (secret && sig !== calc) {\n  return [{ ok: false, reason: 'bad-signature' }];\n}\nreturn [{ ok: true, contact: $json.body || {} }];"
+      },
+      "id": "Code",
+      "name": "Verify and Echo",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [560, 300]
+    }
+  ],
+  "connections": { "Webhook": { "main": [ [ { "node": "Verify and Echo", "type": "main", "index": 0 } ] ] } },
+  "active": true,
+  "settings": { "executionOrder": "v1" }
+}

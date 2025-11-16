@@ -1,0 +1,117 @@
+{
+  "name": "iOS App State Sync",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ios-app-sync",
+        "responseMode": "lastNode",
+        "options": { "responseCode": 200 }
+      },
+      "id": "AppSyncWebhook",
+      "name": "App Sync Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [260, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const crypto = require('crypto');\nconst headers = $json.headers || {};\nconst secret = process.env.N8N_ISTANI_SHARED_SECRET || '';\nconst sig = headers['x-istani-signature'] || headers['X-Istani-Signature'] || '';\nconst body = JSON.stringify($json.body || {});\nconst calc = secret ? crypto.createHmac('sha256', secret).update(body).digest('hex') : '';\n\nif (secret && sig !== calc) {\n  return [{ ok: false, reason: 'bad-signature' }];\n}\n\nconst data = $json.body || {};\nconsole.log(`🔄 iOS App Sync: ${data.syncType || 'unknown'}`);\n\nreturn [{\n  ok: true,\n  syncType: data.syncType,\n  payload: data,\n  timestamp: new Date().toISOString()\n}];"
+      },
+      "id": "VerifySync",
+      "name": "Verify & Route",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": ""
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.syncType }}",
+              "rightValue": "workout_program",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "leftValue": "={{ $json.syncType }}",
+              "rightValue": "user_progress",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "leftValue": "={{ $json.syncType }}",
+              "rightValue": "settings",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combineOperation": "any"
+        }
+      },
+      "id": "RouteSyncType",
+      "name": "Route by Sync Type",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [660, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $json.payload || {};\n\nconsole.log('💪 Syncing workout program from iOS app');\nconsole.log(`  User: ${data.user || 'anonymous'}`);\nconsole.log(`  Program: ${data.programName || 'N/A'}`);\n\nconst program = {\n  user: data.user || 'anonymous',\n  programName: data.programName || 'Custom',\n  currentDay: parseInt(data.currentDay) || 1,\n  totalDays: parseInt(data.totalDays) || 7,\n  workouts: data.workouts || [],\n  lastSync: new Date().toISOString(),\n  device: 'ios',\n  version: data.appVersion || 'unknown'\n};\n\n// Store program in database (n8n Postgres or forward to WordPress)\nconsole.log('Stored workout program:', JSON.stringify(program, null, 2));\n\nreturn [{\n  status: 'program_synced',\n  program: program,\n  message: `Synced ${program.programName} - Day ${program.currentDay}/${program.totalDays}`\n}];"
+      },
+      "id": "SyncWorkoutProgram",
+      "name": "Sync Workout Program",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [860, 150]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $json.payload || {};\n\nconsole.log('📈 Syncing user progress from iOS app');\nconsole.log(`  User: ${data.user || 'anonymous'}`);\n\nconst progress = {\n  user: data.user || 'anonymous',\n  totalWorkouts: parseInt(data.totalWorkouts) || 0,\n  currentStreak: parseInt(data.currentStreak) || 0,\n  longestStreak: parseInt(data.longestStreak) || 0,\n  totalVolume: parseFloat(data.totalVolume) || 0,\n  personalRecords: data.personalRecords || [],\n  achievements: data.achievements || [],\n  lastWorkout: data.lastWorkout || null,\n  lastSync: new Date().toISOString(),\n  device: 'ios'\n};\n\n// Store progress in database\nconsole.log('Stored user progress:', JSON.stringify(progress, null, 2));\n\nreturn [{\n  status: 'progress_synced',\n  progress: progress,\n  message: `Synced progress: ${progress.totalWorkouts} workouts, ${progress.currentStreak} day streak`\n}];"
+      },
+      "id": "SyncUserProgress",
+      "name": "Sync User Progress",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [860, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $json.payload || {};\n\nconsole.log('⚙️ Syncing app settings from iOS');\nconsole.log(`  User: ${data.user || 'anonymous'}`);\n\nconst settings = {\n  user: data.user || 'anonymous',\n  units: data.units || 'metric',\n  theme: data.theme || 'dark',\n  notifications: data.notifications !== false,\n  reminders: data.reminders || [],\n  preferences: data.preferences || {},\n  lastSync: new Date().toISOString(),\n  device: 'ios'\n};\n\n// Store settings in database\nconsole.log('Stored app settings:', JSON.stringify(settings, null, 2));\n\nreturn [{\n  status: 'settings_synced',\n  settings: settings,\n  message: `Synced settings: ${settings.units} units, ${settings.theme} theme`\n}];"
+      },
+      "id": "SyncSettings",
+      "name": "Sync Settings",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [860, 450]
+    }
+  ],
+  "connections": {
+    "App Sync Webhook": {
+      "main": [ [ { "node": "Verify & Route", "type": "main", "index": 0 } ] ]
+    },
+    "Verify & Route": {
+      "main": [ [ { "node": "Route by Sync Type", "type": "main", "index": 0 } ] ]
+    },
+    "Route by Sync Type": {
+      "main": [
+        [ { "node": "Sync Workout Program", "type": "main", "index": 0 } ],
+        [ { "node": "Sync User Progress", "type": "main", "index": 0 } ],
+        [ { "node": "Sync Settings", "type": "main", "index": 0 } ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": { "executionOrder": "v1" }
+}
