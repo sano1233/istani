@@ -1,0 +1,20 @@
+node_modules/
+.next/
+.env
+.env.local
+*.log
+.DS_Store
+ai-brain/node_modules/
+ai-brain/package-lock.json
+ai-brain/.temp-comment.txt
+out/
+dist/
+build/
+.vercel
+.turbo
+
+# AI Platform
+server/node_modules/
+server/.env
+client/node_modules/
+client/dist/
