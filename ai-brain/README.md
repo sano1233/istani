@@ -23,6 +23,7 @@ qwen.bat "prompt"
 ```
 
 ## Environment Variables
+For local development, you can use these environment variables (though GitHub environment is preferred):
 ```
 GEMINI_API_KEY=your_key
 ANTHROPIC_API_KEY=your_key
