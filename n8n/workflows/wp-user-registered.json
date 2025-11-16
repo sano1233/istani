@@ -1,0 +1,31 @@
+{
+  "name": "WP User Registered",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "wp-user-registered",
+        "responseMode": "lastNode",
+        "options": { "responseCode": 200 }
+      },
+      "id": "Webhook2",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [260, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ received: $json.body }];"
+      },
+      "id": "Code2",
+      "name": "Ack",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [560, 300]
+    }
+  ],
+  "connections": { "Webhook": { "main": [ [ { "node": "Ack", "type": "main", "index": 0 } ] ] } },
+  "active": true,
+  "settings": { "executionOrder": "v1" }
+}
