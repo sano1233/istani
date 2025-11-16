@@ -12,6 +12,10 @@ const nextConfig = {
       },
     ],
   },
+  // Skip static generation for auth pages that require runtime environment variables
+  experimental: {
+    missingSuspenseWithCSRBailout: false,
+  },
 }
 
 module.exports = nextConfig
