@@ -1,27 +1,27 @@
-'use client'
+'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 
 interface Achievement {
-  id: string
-  completed: boolean
-  earned_at: string
+  id: string;
+  completed: boolean;
+  earned_at: string;
   achievements: {
-    id: string
-    name: string
-    description: string
-    icon: string
-    category: string
-    points: number
-  }
+    id: string;
+    name: string;
+    description: string;
+    icon: string;
+    category: string;
+    points: number;
+  };
 }
 
 interface AchievementsListProps {
-  achievements: Achievement[]
+  achievements: Achievement[];
 }
 
 export function AchievementsList({ achievements }: AchievementsListProps) {
-  const totalPoints = achievements.reduce((sum, a) => sum + a.achievements.points, 0)
+  const totalPoints = achievements.reduce((sum, a) => sum + a.achievements.points, 0);
 
   const categoryColors: Record<string, string> = {
     workout: 'text-fitness-strength',
@@ -29,7 +29,7 @@ export function AchievementsList({ achievements }: AchievementsListProps) {
     nutrition: 'text-fitness-nutrition',
     progress: 'text-fitness-cardio',
     checkin: 'text-fitness-flexibility',
-  }
+  };
 
   return (
     <Card>
@@ -45,27 +45,25 @@ export function AchievementsList({ achievements }: AchievementsListProps) {
       <CardContent>
         {achievements.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-white/40">
-            <span className="material-symbols-outlined text-6xl mb-4 opacity-40">
-              emoji_events
-            </span>
+            <span className="material-symbols-outlined text-6xl mb-4 opacity-40">emoji_events</span>
             <p className="text-lg mb-2">No achievements yet</p>
             <p className="text-sm">Start your fitness journey to unlock achievements</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {achievements.map((achievement) => {
-              const ach = achievement.achievements
-              const color = categoryColors[ach.category] || 'text-white'
+              const ach = achievement.achievements;
+              const color = categoryColors[ach.category] || 'text-white';
 
               return (
                 <div
                   key={achievement.id}
                   className="flex items-start gap-4 p-4 bg-white/5 border border-primary/20 rounded-lg hover:bg-white/10 transition-colors"
                 >
-                  <div className={`w-12 h-12 flex items-center justify-center rounded-full bg-white/10 flex-shrink-0 ${color}`}>
-                    <span className="material-symbols-outlined text-2xl">
-                      {ach.icon}
-                    </span>
+                  <div
+                    className={`w-12 h-12 flex items-center justify-center rounded-full bg-white/10 flex-shrink-0 ${color}`}
+                  >
+                    <span className="material-symbols-outlined text-2xl">{ach.icon}</span>
                   </div>
 
                   <div className="flex-1 min-w-0">
@@ -77,7 +75,8 @@ export function AchievementsList({ achievements }: AchievementsListProps) {
                     </div>
                     <p className="text-sm text-white/60 mb-2">{ach.description}</p>
                     <p className="text-xs text-white/40">
-                      Earned {new Date(achievement.earned_at).toLocaleDateString('en-US', {
+                      Earned{' '}
+                      {new Date(achievement.earned_at).toLocaleDateString('en-US', {
                         month: 'short',
                         day: 'numeric',
                         year: 'numeric',
@@ -85,11 +84,11 @@ export function AchievementsList({ achievements }: AchievementsListProps) {
                     </p>
                   </div>
                 </div>
-              )
+              );
             })}
           </div>
         )}
       </CardContent>
     </Card>
-  )
+  );
 }

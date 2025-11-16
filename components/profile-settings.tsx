@@ -1,44 +1,38 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
+import { useState } from 'react';
+import { createClient } from '@/lib/supabase/client';
 
 interface Profile {
-  id: string
-  full_name: string | null
-  avatar_url: string | null
-  age: number | null
-  gender: string | null
-  height_cm: number | null
-  current_weight_kg: number | null
-  target_weight_kg: number | null
-  activity_level: string | null
-  primary_goal: string | null
-  fitness_goals: string[] | null
+  id: string;
+  full_name: string | null;
+  avatar_url: string | null;
+  age: number | null;
+  gender: string | null;
+  height_cm: number | null;
+  current_weight_kg: number | null;
+  target_weight_kg: number | null;
+  activity_level: string | null;
+  primary_goal: string | null;
+  fitness_goals: string[] | null;
 }
 
-export function ProfileSettings({
-  profile,
-  userId,
-}: {
-  profile: Profile | null
-  userId: string
-}) {
-  const [fullName, setFullName] = useState(profile?.full_name || '')
-  const [age, setAge] = useState(profile?.age?.toString() || '')
-  const [gender, setGender] = useState(profile?.gender || 'male')
-  const [heightCm, setHeightCm] = useState(profile?.height_cm?.toString() || '')
-  const [activityLevel, setActivityLevel] = useState(profile?.activity_level || 'moderate')
-  const [primaryGoal, setPrimaryGoal] = useState(profile?.primary_goal || 'maintain_weight')
-  const [loading, setLoading] = useState(false)
-  const [success, setSuccess] = useState(false)
+export function ProfileSettings({ profile, userId }: { profile: Profile | null; userId: string }) {
+  const [fullName, setFullName] = useState(profile?.full_name || '');
+  const [age, setAge] = useState(profile?.age?.toString() || '');
+  const [gender, setGender] = useState(profile?.gender || 'male');
+  const [heightCm, setHeightCm] = useState(profile?.height_cm?.toString() || '');
+  const [activityLevel, setActivityLevel] = useState(profile?.activity_level || 'moderate');
+  const [primaryGoal, setPrimaryGoal] = useState(profile?.primary_goal || 'maintain_weight');
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
-  const supabase = createClient()
+  const supabase = createClient();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setSuccess(false)
+    e.preventDefault();
+    setLoading(true);
+    setSuccess(false);
 
     try {
       const { error } = await supabase
@@ -52,19 +46,19 @@ export function ProfileSettings({
           primary_goal: primaryGoal,
           updated_at: new Date().toISOString(),
         })
-        .eq('id', userId)
+        .eq('id', userId);
 
-      if (error) throw error
+      if (error) throw error;
 
-      setSuccess(true)
-      setTimeout(() => setSuccess(false), 3000)
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 3000);
     } catch (error: any) {
-      console.error('Error updating profile:', error)
-      alert('Failed to update profile: ' + error.message)
+      console.error('Error updating profile:', error);
+      alert('Failed to update profile: ' + error.message);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="bg-white rounded-lg border p-6">
@@ -179,5 +173,5 @@ export function ProfileSettings({
         )}
       </form>
     </div>
-  )
+  );
 }

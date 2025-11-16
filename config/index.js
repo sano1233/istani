@@ -36,41 +36,41 @@ const config = {
       enabled: secrets.hasSecret('GEMINI_API_KEY'),
       apiKey: secrets.GEMINI_API_KEY,
       model: 'gemini-pro',
-      maxTokens: 4096
+      maxTokens: 4096,
     },
     anthropic: {
       enabled: secrets.hasSecret('ANTHROPIC_API_KEY'),
       apiKey: secrets.ANTHROPIC_API_KEY,
       model: 'claude-3-5-sonnet-20241022',
-      maxTokens: 4096
+      maxTokens: 4096,
     },
     openai: {
       enabled: secrets.hasSecret('OPENAI_API_KEY'),
       apiKey: secrets.OPENAI_API_KEY,
       model: 'gpt-4-turbo-preview',
-      maxTokens: 4096
+      maxTokens: 4096,
     },
     qwen: {
       enabled: secrets.hasSecret('QWEN_API_KEY'),
       apiKey: secrets.QWEN_API_KEY,
       model: 'qwen-max',
-      endpoint: 'https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation'
+      endpoint: 'https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation',
     },
     deepseek: {
       enabled: secrets.hasSecret('DEEPSEEK_API_KEY'),
       apiKey: secrets.DEEPSEEK_API_KEY,
       model: 'deepseek-coder',
-      endpoint: 'https://api.deepseek.com/v1'
+      endpoint: 'https://api.deepseek.com/v1',
     },
     cohere: {
       enabled: secrets.hasSecret('COHERE_API_KEY'),
       apiKey: secrets.COHERE_API_KEY,
-      model: 'command'
+      model: 'command',
     },
     huggingface: {
       enabled: secrets.hasSecret('HUGGINGFACE_API_KEY'),
-      apiKey: secrets.HUGGINGFACE_API_KEY
-    }
+      apiKey: secrets.HUGGINGFACE_API_KEY,
+    },
   },
 
   // Deployment Configuration
@@ -79,14 +79,14 @@ const config = {
       enabled: secrets.hasSecret('VERCEL_TOKEN'),
       token: secrets.VERCEL_TOKEN,
       orgId: secrets.VERCEL_ORG_ID,
-      projectId: secrets.VERCEL_PROJECT_ID
+      projectId: secrets.VERCEL_PROJECT_ID,
     },
     supabase: {
       enabled: secrets.hasSecret('SUPABASE_URL') && secrets.hasSecret('SUPABASE_ANON_KEY'),
       url: secrets.SUPABASE_URL,
       anonKey: secrets.SUPABASE_ANON_KEY,
-      serviceRoleKey: secrets.SUPABASE_SERVICE_ROLE_KEY
-    }
+      serviceRoleKey: secrets.SUPABASE_SERVICE_ROLE_KEY,
+    },
   },
 
   // GitHub Configuration
@@ -94,7 +94,7 @@ const config = {
     enabled: secrets.hasSecret('GITHUB_TOKEN'),
     token: secrets.GITHUB_TOKEN,
     repo: process.env.GITHUB_REPOSITORY || 'sano1233/istani',
-    owner: process.env.GITHUB_REPOSITORY_OWNER || 'sano1233'
+    owner: process.env.GITHUB_REPOSITORY_OWNER || 'sano1233',
   },
 
   // PR Automation Settings
@@ -104,7 +104,7 @@ const config = {
     consensusThreshold: 0.67, // 2/3 approval
     autoMerge: true,
     autoResolveConflicts: true,
-    squashMerge: true
+    squashMerge: true,
   },
 
   // Utility Functions
@@ -150,18 +150,17 @@ const config = {
       services: {
         total: enabledServices.length,
         ai: aiProviders.length,
-        deployment: [
-          this.deployment.vercel.enabled,
-          this.deployment.supabase.enabled
-        ].filter(Boolean).length,
-        github: this.github.enabled ? 1 : 0
+        deployment: [this.deployment.vercel.enabled, this.deployment.supabase.enabled].filter(
+          Boolean,
+        ).length,
+        github: this.github.enabled ? 1 : 0,
       },
       details: {
-        aiProviders: aiProviders.map(p => p.name),
-        enabledServices: enabledServices.map(s => `${s.type}:${s.name}`)
-      }
+        aiProviders: aiProviders.map((p) => p.name),
+        enabledServices: enabledServices.map((s) => `${s.type}:${s.name}`),
+      },
     };
-  }
+  },
 };
 
 module.exports = config;

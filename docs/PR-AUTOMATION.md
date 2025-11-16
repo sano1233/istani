@@ -27,11 +27,11 @@ The Istani project uses an **AI Brain** system that automatically:
 
 Every PR is analyzed by **3 AI providers** simultaneously:
 
-| Provider | Model | Strengths |
-|----------|-------|-----------|
-| **Google Gemini** | `gemini-pro` | Fast, broad knowledge |
+| Provider             | Model                        | Strengths                |
+| -------------------- | ---------------------------- | ------------------------ |
+| **Google Gemini**    | `gemini-pro`                 | Fast, broad knowledge    |
 | **Anthropic Claude** | `claude-3-5-sonnet-20241022` | Code analysis, reasoning |
-| **Alibaba Qwen** | `qwen-max` | Alternative perspective |
+| **Alibaba Qwen**     | `qwen-max`                   | Alternative perspective  |
 
 ### 2. Consensus-Based Approval
 
@@ -80,6 +80,7 @@ node ai-brain/pr-analyzer.js --analyze > report.txt
 ```
 
 **Output includes**:
+
 - Total branches by source (codex, copilot, claude)
 - Merge status (clean, conflicts, errors)
 - Recommendations for merging
@@ -94,6 +95,7 @@ node config/health-check.js
 ```
 
 **Checks**:
+
 - All API keys configured
 - Services enabled
 - System health status
@@ -116,6 +118,7 @@ cat ai-brain/pr-analysis-report.json | jq
 ```
 
 This will categorize branches into:
+
 - **Clean**: Ready to merge (no conflicts)
 - **Conflicts**: Need manual resolution
 - **Error**: Unable to analyze
@@ -192,12 +195,12 @@ You can also trigger manually from GitHub Actions UI:
 4. Validate secrets configuration
 5. Configure Git
 6. Run AI Brain analysis
-   ├─ Fetch PR diff
-   ├─ Parallel AI analysis (Gemini, Claude, Qwen)
-   ├─ Consensus voting
-   ├─ Auto-resolve conflicts (if possible)
-   ├─ Auto-approve (if 2/3 approve)
-   └─ Auto-merge (squash)
+├─ Fetch PR diff
+├─ Parallel AI analysis (Gemini, Claude, Qwen)
+├─ Consensus voting
+├─ Auto-resolve conflicts (if possible)
+├─ Auto-approve (if 2/3 approve)
+└─ Auto-merge (squash)
 ```
 
 ## 🛠️ Fixing Bugs in Old PRs
@@ -339,6 +342,7 @@ git commit -m "feat: descriptive message"
 ### 4. Monitor AI Consensus
 
 If AIs frequently disagree:
+
 - Review the changes manually
 - The change might be controversial
 - Consider breaking into smaller PRs
@@ -396,6 +400,7 @@ gh pr list --state merged --json number,title,mergedBy | \
 ### AI Brain Not Running
 
 **Check**:
+
 1. Workflow enabled in Actions
 2. Secrets configured in environment
 3. Branch has open PR
@@ -403,6 +408,7 @@ gh pr list --state merged --json number,title,mergedBy | \
 ### Merge Conflicts Not Resolved
 
 **Solution**:
+
 1. Review conflict markers
 2. Manually resolve
 3. Commit and push
@@ -411,6 +417,7 @@ gh pr list --state merged --json number,title,mergedBy | \
 ### AI Providers Disagree
 
 **Investigation**:
+
 ```bash
 # Review individual AI responses
 # Check GitHub Actions logs
@@ -420,6 +427,7 @@ gh pr list --state merged --json number,title,mergedBy | \
 ### Too Many Branches
 
 **Organization**:
+
 ```bash
 # Archive old branches to separate repo
 # Delete branches merged into main

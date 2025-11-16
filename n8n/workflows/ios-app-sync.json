@@ -99,16 +99,16 @@
   ],
   "connections": {
     "App Sync Webhook": {
-      "main": [ [ { "node": "Verify & Route", "type": "main", "index": 0 } ] ]
+      "main": [[{ "node": "Verify & Route", "type": "main", "index": 0 }]]
     },
     "Verify & Route": {
-      "main": [ [ { "node": "Route by Sync Type", "type": "main", "index": 0 } ] ]
+      "main": [[{ "node": "Route by Sync Type", "type": "main", "index": 0 }]]
     },
     "Route by Sync Type": {
       "main": [
-        [ { "node": "Sync Workout Program", "type": "main", "index": 0 } ],
-        [ { "node": "Sync User Progress", "type": "main", "index": 0 } ],
-        [ { "node": "Sync Settings", "type": "main", "index": 0 } ]
+        [{ "node": "Sync Workout Program", "type": "main", "index": 0 }],
+        [{ "node": "Sync User Progress", "type": "main", "index": 0 }],
+        [{ "node": "Sync Settings", "type": "main", "index": 0 }]
       ]
     }
   },

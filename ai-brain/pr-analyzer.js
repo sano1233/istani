@@ -35,7 +35,7 @@ const colors = {
   yellow: '\x1b[33m',
   red: '\x1b[31m',
   cyan: '\x1b[36m',
-  gray: '\x1b[90m'
+  gray: '\x1b[90m',
 };
 
 function colorize(text, color) {
@@ -47,7 +47,7 @@ function exec(command, options = {}) {
     return execSync(command, {
       encoding: 'utf-8',
       stdio: options.silent ? 'pipe' : 'inherit',
-      ...options
+      ...options,
     }).trim();
   } catch (error) {
     if (!options.ignoreError) {
@@ -63,13 +63,13 @@ function exec(command, options = {}) {
 function getFeatureBranches() {
   const branches = exec('git branch -r', { silent: true })
     .split('\n')
-    .map(b => b.trim())
-    .filter(b => b && !b.includes('HEAD'))
-    .map(b => b.replace('origin/', ''));
+    .map((b) => b.trim())
+    .filter((b) => b && !b.includes('HEAD'))
+    .map((b) => b.replace('origin/', ''));
 
-  const codexBranches = branches.filter(b => b.startsWith('codex/'));
-  const copilotBranches = branches.filter(b => b.startsWith('copilot/'));
-  const claudeBranches = branches.filter(b => b.startsWith('claude/'));
+  const codexBranches = branches.filter((b) => b.startsWith('codex/'));
+  const copilotBranches = branches.filter((b) => b.startsWith('copilot/'));
+  const claudeBranches = branches.filter((b) => b.startsWith('claude/'));
 
   return {
     all: branches,
@@ -80,8 +80,8 @@ function getFeatureBranches() {
     bySource: {
       codex: codexBranches.length,
       copilot: copilotBranches.length,
-      claude: claudeBranches.length
-    }
+      claude: claudeBranches.length,
+    },
   };
 }
 
@@ -95,7 +95,9 @@ function analyzeBranch(branchName) {
   try {
     // Get branch information
     const commitHash = exec(`git rev-parse origin/${branchName}`, { silent: true });
-    const commitMsg = exec(`git log -1 --pretty=format:"%s" origin/${branchName}`, { silent: true });
+    const commitMsg = exec(`git log -1 --pretty=format:"%s" origin/${branchName}`, {
+      silent: true,
+    });
     const author = exec(`git log -1 --pretty=format:"%an" origin/${branchName}`, { silent: true });
     const date = exec(`git log -1 --pretty=format:"%ar" origin/${branchName}`, { silent: true });
 
@@ -106,7 +108,10 @@ function analyzeBranch(branchName) {
 
     // Check if branch can be merged cleanly
     const mainBranch = 'main';
-    const mergeBase = exec(`git merge-base origin/${mainBranch} origin/${branchName}`, { silent: true, ignoreError: true });
+    const mergeBase = exec(`git merge-base origin/${mainBranch} origin/${branchName}`, {
+      silent: true,
+      ignoreError: true,
+    });
 
     if (!mergeBase) {
       console.log(`  ${colorize('✗', 'red')} Cannot find merge base with ${mainBranch}`);
@@ -133,7 +138,10 @@ function analyzeBranch(branchName) {
     }
 
     // Get diff stats
-    const diffStats = exec(`git diff --shortstat origin/${mainBranch}...origin/${branchName}`, { silent: true, ignoreError: true });
+    const diffStats = exec(`git diff --shortstat origin/${mainBranch}...origin/${branchName}`, {
+      silent: true,
+      ignoreError: true,
+    });
     if (diffStats) {
       console.log(`  ${colorize('Changes:', 'gray')} ${diffStats}`);
     }
@@ -144,9 +152,8 @@ function analyzeBranch(branchName) {
       message: commitMsg,
       author,
       date,
-      conflicts: hasConflicts
+      conflicts: hasConflicts,
     };
-
   } catch (error) {
     console.log(`  ${colorize('✗', 'red')} Error analyzing branch: ${error.message}`);
     return { status: 'error', reason: error.message };
@@ -157,18 +164,22 @@ function analyzeBranch(branchName) {
  * Generate analysis report
  */
 function generateReport(branches, analysisResults) {
-  console.log(colorize('\n\n═══════════════════════════════════════════════════════════════════════', 'cyan'));
+  console.log(
+    colorize('\n\n═══════════════════════════════════════════════════════════════════════', 'cyan'),
+  );
   console.log(colorize('  BRANCH ANALYSIS REPORT', 'bright'));
-  console.log(colorize('═══════════════════════════════════════════════════════════════════════', 'cyan'));
+  console.log(
+    colorize('═══════════════════════════════════════════════════════════════════════', 'cyan'),
+  );
 
   console.log(`\n${colorize('Total Branches:', 'cyan')} ${branches.total}`);
   console.log(`  ${colorize('Codex:', 'gray')} ${branches.bySource.codex}`);
   console.log(`  ${colorize('Copilot:', 'gray')} ${branches.bySource.copilot}`);
   console.log(`  ${colorize('Claude:', 'gray')} ${branches.bySource.claude}`);
 
-  const cleanBranches = analysisResults.filter(r => r.status === 'clean');
-  const conflictBranches = analysisResults.filter(r => r.status === 'conflicts');
-  const errorBranches = analysisResults.filter(r => r.status === 'error');
+  const cleanBranches = analysisResults.filter((r) => r.status === 'clean');
+  const conflictBranches = analysisResults.filter((r) => r.status === 'conflicts');
+  const errorBranches = analysisResults.filter((r) => r.status === 'error');
 
   console.log(`\n${colorize('Branch Status:', 'cyan')}`);
   console.log(`  ${colorize('✓ Clean (can merge):', 'green')} ${cleanBranches.length}`);
@@ -180,7 +191,7 @@ function generateReport(branches, analysisResults) {
 
   if (cleanBranches.length > 0) {
     console.log(`\n${colorize('Clean branches ready to merge:', 'green')}`);
-    cleanBranches.slice(0, 10).forEach(b => {
+    cleanBranches.slice(0, 10).forEach((b) => {
       console.log(`  • ${b.branch}`);
     });
     if (cleanBranches.length > 10) {
@@ -190,7 +201,7 @@ function generateReport(branches, analysisResults) {
 
   if (conflictBranches.length > 0) {
     console.log(`\n${colorize('Branches needing conflict resolution:', 'yellow')}`);
-    conflictBranches.slice(0, 10).forEach(b => {
+    conflictBranches.slice(0, 10).forEach((b) => {
       console.log(`  • ${b.branch}`);
     });
     if (conflictBranches.length > 10) {
@@ -207,9 +218,13 @@ function generateReport(branches, analysisResults) {
 async function main() {
   const args = process.argv.slice(2);
 
-  console.log(colorize('═══════════════════════════════════════════════════════════════════════', 'cyan'));
+  console.log(
+    colorize('═══════════════════════════════════════════════════════════════════════', 'cyan'),
+  );
   console.log(colorize('  ISTANI PR BRANCH ANALYZER', 'bright'));
-  console.log(colorize('═══════════════════════════════════════════════════════════════════════', 'cyan'));
+  console.log(
+    colorize('═══════════════════════════════════════════════════════════════════════', 'cyan'),
+  );
 
   // Fetch latest branches
   console.log(colorize('\nFetching latest branches...', 'cyan'));
@@ -227,7 +242,6 @@ async function main() {
       process.exit(1);
     }
     analyzeBranch(branchName);
-
   } else {
     // Analyze all branches (or subset)
     console.log(colorize(`\nFound ${branches.total} feature branches`, 'cyan'));
@@ -247,18 +261,25 @@ async function main() {
 
     // Save detailed results
     const reportPath = path.join(__dirname, 'pr-analysis-report.json');
-    fs.writeFileSync(reportPath, JSON.stringify({
-      timestamp: new Date().toISOString(),
-      branches,
-      results
-    }, null, 2));
+    fs.writeFileSync(
+      reportPath,
+      JSON.stringify(
+        {
+          timestamp: new Date().toISOString(),
+          branches,
+          results,
+        },
+        null,
+        2,
+      ),
+    );
     console.log(colorize(`Detailed report saved to: ${reportPath}`, 'gray'));
   }
 }
 
 // Run if called directly
 if (require.main === module) {
-  main().catch(error => {
+  main().catch((error) => {
     console.error(colorize(`\nError: ${error.message}`, 'red'));
     process.exit(1);
   });

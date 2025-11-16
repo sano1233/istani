@@ -1,17 +1,17 @@
-import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { createClient } from '@/lib/supabase/server';
+import { redirect } from 'next/navigation';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 export default async function WorkoutsPage() {
-  const supabase = await createClient()
+  const supabase = await createClient();
 
   const {
     data: { user },
-  } = await supabase.auth.getUser()
+  } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect('/login')
+    redirect('/login');
   }
 
   return (
@@ -20,9 +20,7 @@ export default async function WorkoutsPage() {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-4xl font-black text-white mb-2">Workouts</h1>
-            <p className="text-white/60">
-              Track your training and stay consistent
-            </p>
+            <p className="text-white/60">Track your training and stay consistent</p>
           </div>
           <Button className="gap-2">
             <span className="material-symbols-outlined">add</span>
@@ -49,9 +47,7 @@ export default async function WorkoutsPage() {
           <Card>
             <div className="flex items-center gap-4">
               <div className="p-3 rounded-lg bg-primary/20">
-                <span className="material-symbols-outlined text-primary text-3xl">
-                  trending_up
-                </span>
+                <span className="material-symbols-outlined text-primary text-3xl">trending_up</span>
               </div>
               <div>
                 <p className="text-white/60 text-sm">Current Streak</p>
@@ -80,9 +76,7 @@ export default async function WorkoutsPage() {
           <span className="material-symbols-outlined text-white/20 text-9xl mb-4 block">
             fitness_center
           </span>
-          <h2 className="text-2xl font-bold text-white mb-4">
-            No workouts yet
-          </h2>
+          <h2 className="text-2xl font-bold text-white mb-4">No workouts yet</h2>
           <p className="text-white/60 mb-8">
             Start tracking your workouts to build your fitness journey
           </p>
@@ -93,5 +87,5 @@ export default async function WorkoutsPage() {
         </Card>
       </div>
     </main>
-  )
+  );
 }

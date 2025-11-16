@@ -1,499 +1,696 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nutrition - Istani Fitness</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nutrition - Istani Fitness</title>
 
-  <link rel="stylesheet" href="css/pico.min.css">
-  <link rel="stylesheet" href="css/custom-theme.css">
+    <link rel="stylesheet" href="css/pico.min.css" />
+    <link rel="stylesheet" href="css/custom-theme.css" />
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
-  <script src="js/supabase-client.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+    <script src="js/supabase-client.js"></script>
 
-  <style>
-    :root {
-      --primary: #FF6B35;
-      --secondary: #004E89;
-      --success: #06D6A0;
-    }
+    <style>
+      :root {
+        --primary: #ff6b35;
+        --secondary: #004e89;
+        --success: #06d6a0;
+      }
 
-    nav {
-      background: var(--secondary);
-      padding: 1rem 0;
-      color: white;
-    }
+      nav {
+        background: var(--secondary);
+        padding: 1rem 0;
+        color: white;
+      }
 
-    .nav-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 1rem;
-    }
+      .nav-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem;
+      }
 
-    .nav-links a {
-      color: white;
-      margin: 0 1rem;
-      text-decoration: none;
-      font-weight: 600;
-    }
+      .nav-links a {
+        color: white;
+        margin: 0 1rem;
+        text-decoration: none;
+        font-weight: 600;
+      }
 
-    .nutrition-grid {
-      display: grid;
-      grid-template-columns: 1fr 2fr;
-      gap: 2rem;
-      margin: 2rem 0;
-    }
-
-    @media (max-width: 968px) {
       .nutrition-grid {
-        grid-template-columns: 1fr;
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 2rem;
+        margin: 2rem 0;
       }
-    }
 
-    .macro-card {
-      background: white;
-      padding: 1.5rem;
-      border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      text-align: center;
-    }
+      @media (max-width: 968px) {
+        .nutrition-grid {
+          grid-template-columns: 1fr;
+        }
+      }
 
-    .macro-circle {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 1rem;
-      font-weight: 800;
-      color: white;
-    }
+      .macro-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
 
-    .protein { background: linear-gradient(135deg, #FF6B35, #F77F00); }
-    .carbs { background: linear-gradient(135deg, #004E89, #1976D2); }
-    .fats { background: linear-gradient(135deg, #06D6A0, #00B374); }
+      .macro-circle {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        font-weight: 800;
+        color: white;
+      }
 
-    .macro-value {
-      font-size: 2rem;
-    }
+      .protein {
+        background: linear-gradient(135deg, #ff6b35, #f77f00);
+      }
+      .carbs {
+        background: linear-gradient(135deg, #004e89, #1976d2);
+      }
+      .fats {
+        background: linear-gradient(135deg, #06d6a0, #00b374);
+      }
 
-    .macro-label {
-      font-size: 0.9rem;
-      opacity: 0.9;
-    }
+      .macro-value {
+        font-size: 2rem;
+      }
 
-    .meal-card {
-      background: white;
-      padding: 1.5rem;
-      border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      margin: 1rem 0;
-      border-left: 4px solid var(--primary);
-    }
+      .macro-label {
+        font-size: 0.9rem;
+        opacity: 0.9;
+      }
 
-    .food-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0.75rem;
-      margin: 0.5rem 0;
-      background: #f8f9fa;
-      border-radius: 8px;
-    }
+      .meal-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        margin: 1rem 0;
+        border-left: 4px solid var(--primary);
+      }
 
-    .btn-primary {
-      background: var(--primary);
-      color: white;
-      padding: 0.75rem 1.5rem;
-      border: none;
-      border-radius: 8px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
+      .food-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem;
+        margin: 0.5rem 0;
+        background: #f8f9fa;
+        border-radius: 8px;
+      }
 
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
-    }
+      .btn-primary {
+        background: var(--primary);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
 
-    .meal-type-badge {
-      display: inline-block;
-      padding: 0.5rem 1rem;
-      border-radius: 20px;
-      font-weight: 600;
-      font-size: 0.9rem;
-    }
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+      }
 
-    .breakfast { background: #FFF4E5; color: #F77F00; }
-    .lunch { background: #E3F2FD; color: #1976D2; }
-    .dinner { background: #E8F5E9; color: #388E3C; }
-    .snack { background: #F3E5F5; color: #7B1FA2; }
+      .meal-type-badge {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+      }
 
-    .quick-add-food {
-      background: #f5f5f5;
-      border: 2px dashed #ccc;
-      padding: 1.5rem;
-      border-radius: 8px;
-      cursor: pointer;
-      text-align: center;
-      transition: all 0.3s;
-    }
+      .breakfast {
+        background: #fff4e5;
+        color: #f77f00;
+      }
+      .lunch {
+        background: #e3f2fd;
+        color: #1976d2;
+      }
+      .dinner {
+        background: #e8f5e9;
+        color: #388e3c;
+      }
+      .snack {
+        background: #f3e5f5;
+        color: #7b1fa2;
+      }
 
-    .quick-add-food:hover {
-      background: #fff;
-      border-color: var(--primary);
-    }
-  </style>
-</head>
-<body>
-  <nav>
-    <div class="nav-container">
-      <div style="font-size: 1.5rem; font-weight: 800;">💪 Istani Fitness</div>
-      <div class="nav-links">
-        <a href="/dashboard.html">Dashboard</a>
-        <a href="/workouts.html">Workouts</a>
-        <a href="/nutrition.html">Nutrition</a>
-        <a href="/progress.html">Progress</a>
-        <a href="/coaching.html">Coaching</a>
-      </div>
-    </div>
-  </nav>
+      .quick-add-food {
+        background: #f5f5f5;
+        border: 2px dashed #ccc;
+        padding: 1.5rem;
+        border-radius: 8px;
+        cursor: pointer;
+        text-align: center;
+        transition: all 0.3s;
+      }
 
-  <main class="container" style="max-width: 1400px; padding: 2rem;">
-    <h1>🥗 Nutrition Tracker</h1>
-    <p style="color: #666;">Track macros, calories, and meals - Better than MyFitnessPal</p>
-
-    <!-- Daily Macros Summary -->
-    <section style="background: white; padding: 2rem; border-radius: 12px; margin: 2rem 0; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-      <h2 style="text-align: center; margin-bottom: 2rem;">Today's Macros</h2>
-
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem;">
-        <div class="macro-card">
-          <div class="macro-circle protein">
-            <span class="macro-value">120</span>
-            <span class="macro-label">/ 150g</span>
-          </div>
-          <h4>Protein</h4>
-          <div style="width: 100%; height: 8px; background: #e0e0e0; border-radius: 4px; overflow: hidden; margin-top: 0.5rem;">
-            <div style="width: 80%; height: 100%; background: linear-gradient(90deg, #FF6B35, #F77F00);"></div>
-          </div>
-        </div>
-
-        <div class="macro-card">
-          <div class="macro-circle carbs">
-            <span class="macro-value">180</span>
-            <span class="macro-label">/ 250g</span>
-          </div>
-          <h4>Carbs</h4>
-          <div style="width: 100%; height: 8px; background: #e0e0e0; border-radius: 4px; overflow: hidden; margin-top: 0.5rem;">
-            <div style="width: 72%; height: 100%; background: linear-gradient(90deg, #004E89, #1976D2);"></div>
-          </div>
-        </div>
-
-        <div class="macro-card">
-          <div class="macro-circle fats">
-            <span class="macro-value">50</span>
-            <span class="macro-label">/ 70g</span>
-          </div>
-          <h4>Fats</h4>
-          <div style="width: 100%; height: 8px; background: #e0e0e0; border-radius: 4px; overflow: hidden; margin-top: 0.5rem;">
-            <div style="width: 71%; height: 100%; background: linear-gradient(90deg, #06D6A0, #00B374);"></div>
-          </div>
-        </div>
-
-        <div class="macro-card">
-          <div class="macro-circle" style="background: linear-gradient(135deg, #667eea, #764ba2);">
-            <span class="macro-value">1850</span>
-            <span class="macro-label">/ 2400</span>
-          </div>
-          <h4>Calories</h4>
-          <div style="width: 100%; height: 8px; background: #e0e0e0; border-radius: 4px; overflow: hidden; margin-top: 0.5rem;">
-            <div style="width: 77%; height: 100%; background: linear-gradient(90deg, #667eea, #764ba2);"></div>
-          </div>
+      .quick-add-food:hover {
+        background: #fff;
+        border-color: var(--primary);
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <div class="nav-container">
+        <div style="font-size: 1.5rem; font-weight: 800">💪 Istani Fitness</div>
+        <div class="nav-links">
+          <a href="/dashboard.html">Dashboard</a>
+          <a href="/workouts.html">Workouts</a>
+          <a href="/nutrition.html">Nutrition</a>
+          <a href="/progress.html">Progress</a>
+          <a href="/coaching.html">Coaching</a>
         </div>
       </div>
-    </section>
+    </nav>
 
-    <div class="nutrition-grid">
-      <!-- Sidebar: Quick Actions -->
-      <aside>
-        <div style="background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-          <h3>Quick Add</h3>
+    <main class="container" style="max-width: 1400px; padding: 2rem">
+      <h1>🥗 Nutrition Tracker</h1>
+      <p style="color: #666">Track macros, calories, and meals - Better than MyFitnessPal</p>
 
-          <button class="btn-primary" onclick="addMeal('breakfast')" style="width: 100%; margin: 0.5rem 0; background: #F77F00;">
-            🍳 Breakfast
-          </button>
-          <button class="btn-primary" onclick="addMeal('lunch')" style="width: 100%; margin: 0.5rem 0; background: #1976D2;">
-            🍔 Lunch
-          </button>
-          <button class="btn-primary" onclick="addMeal('dinner')" style="width: 100%; margin: 0.5rem 0; background: #388E3C;">
-            🍝 Dinner
-          </button>
-          <button class="btn-primary" onclick="addMeal('snack')" style="width: 100%; margin: 0.5rem 0; background: #7B1FA2;">
-            🍎 Snack
-          </button>
+      <!-- Daily Macros Summary -->
+      <section
+        style="
+          background: white;
+          padding: 2rem;
+          border-radius: 12px;
+          margin: 2rem 0;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        "
+      >
+        <h2 style="text-align: center; margin-bottom: 2rem">Today's Macros</h2>
 
-          <hr>
-
-          <h3 style="margin-top: 1.5rem;">Water Intake</h3>
-          <div style="text-align: center; margin: 1rem 0;">
-            <div style="font-size: 2rem; font-weight: 800; color: #1976D2;">1500 ml</div>
-            <div style="color: #666;">/ 2000 ml goal</div>
+        <div
+          style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+          "
+        >
+          <div class="macro-card">
+            <div class="macro-circle protein">
+              <span class="macro-value">120</span>
+              <span class="macro-label">/ 150g</span>
+            </div>
+            <h4>Protein</h4>
+            <div
+              style="
+                width: 100%;
+                height: 8px;
+                background: #e0e0e0;
+                border-radius: 4px;
+                overflow: hidden;
+                margin-top: 0.5rem;
+              "
+            >
+              <div
+                style="
+                  width: 80%;
+                  height: 100%;
+                  background: linear-gradient(90deg, #ff6b35, #f77f00);
+                "
+              ></div>
+            </div>
           </div>
-          <button class="btn-primary" onclick="addWater()" style="width: 100%; background: #1976D2;">
-            💧 Add Water (250ml)
-          </button>
 
-          <hr>
+          <div class="macro-card">
+            <div class="macro-circle carbs">
+              <span class="macro-value">180</span>
+              <span class="macro-label">/ 250g</span>
+            </div>
+            <h4>Carbs</h4>
+            <div
+              style="
+                width: 100%;
+                height: 8px;
+                background: #e0e0e0;
+                border-radius: 4px;
+                overflow: hidden;
+                margin-top: 0.5rem;
+              "
+            >
+              <div
+                style="
+                  width: 72%;
+                  height: 100%;
+                  background: linear-gradient(90deg, #004e89, #1976d2);
+                "
+              ></div>
+            </div>
+          </div>
 
-          <h3 style="margin-top: 1.5rem;">AI Nutrition Tips</h3>
-          <div style="background: #e3f2fd; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
-            <p style="font-size: 0.95rem;"><strong>💡 Tip:</strong> You're 30g short on protein. Try adding a protein shake or Greek yogurt!</p>
+          <div class="macro-card">
+            <div class="macro-circle fats">
+              <span class="macro-value">50</span>
+              <span class="macro-label">/ 70g</span>
+            </div>
+            <h4>Fats</h4>
+            <div
+              style="
+                width: 100%;
+                height: 8px;
+                background: #e0e0e0;
+                border-radius: 4px;
+                overflow: hidden;
+                margin-top: 0.5rem;
+              "
+            >
+              <div
+                style="
+                  width: 71%;
+                  height: 100%;
+                  background: linear-gradient(90deg, #06d6a0, #00b374);
+                "
+              ></div>
+            </div>
+          </div>
+
+          <div class="macro-card">
+            <div class="macro-circle" style="background: linear-gradient(135deg, #667eea, #764ba2)">
+              <span class="macro-value">1850</span>
+              <span class="macro-label">/ 2400</span>
+            </div>
+            <h4>Calories</h4>
+            <div
+              style="
+                width: 100%;
+                height: 8px;
+                background: #e0e0e0;
+                border-radius: 4px;
+                overflow: hidden;
+                margin-top: 0.5rem;
+              "
+            >
+              <div
+                style="
+                  width: 77%;
+                  height: 100%;
+                  background: linear-gradient(90deg, #667eea, #764ba2);
+                "
+              ></div>
+            </div>
           </div>
         </div>
-      </aside>
+      </section>
 
-      <!-- Main: Meal Log -->
-      <main>
-        <div style="background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-          <h3>Today's Meals</h3>
+      <div class="nutrition-grid">
+        <!-- Sidebar: Quick Actions -->
+        <aside>
+          <div
+            style="
+              background: white;
+              padding: 1.5rem;
+              border-radius: 12px;
+              box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <h3>Quick Add</h3>
 
-          <!-- Breakfast -->
-          <div class="meal-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-              <div>
-                <span class="meal-type-badge breakfast">🍳 Breakfast</span>
-                <p style="margin: 0.5rem 0; color: #666;">8:00 AM</p>
+            <button
+              class="btn-primary"
+              onclick="addMeal('breakfast')"
+              style="width: 100%; margin: 0.5rem 0; background: #f77f00"
+            >
+              🍳 Breakfast
+            </button>
+            <button
+              class="btn-primary"
+              onclick="addMeal('lunch')"
+              style="width: 100%; margin: 0.5rem 0; background: #1976d2"
+            >
+              🍔 Lunch
+            </button>
+            <button
+              class="btn-primary"
+              onclick="addMeal('dinner')"
+              style="width: 100%; margin: 0.5rem 0; background: #388e3c"
+            >
+              🍝 Dinner
+            </button>
+            <button
+              class="btn-primary"
+              onclick="addMeal('snack')"
+              style="width: 100%; margin: 0.5rem 0; background: #7b1fa2"
+            >
+              🍎 Snack
+            </button>
+
+            <hr />
+
+            <h3 style="margin-top: 1.5rem">Water Intake</h3>
+            <div style="text-align: center; margin: 1rem 0">
+              <div style="font-size: 2rem; font-weight: 800; color: #1976d2">1500 ml</div>
+              <div style="color: #666">/ 2000 ml goal</div>
+            </div>
+            <button
+              class="btn-primary"
+              onclick="addWater()"
+              style="width: 100%; background: #1976d2"
+            >
+              💧 Add Water (250ml)
+            </button>
+
+            <hr />
+
+            <h3 style="margin-top: 1.5rem">AI Nutrition Tips</h3>
+            <div style="background: #e3f2fd; padding: 1rem; border-radius: 8px; margin-top: 1rem">
+              <p style="font-size: 0.95rem">
+                <strong>💡 Tip:</strong> You're 30g short on protein. Try adding a protein shake or
+                Greek yogurt!
+              </p>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Main: Meal Log -->
+        <main>
+          <div
+            style="
+              background: white;
+              padding: 1.5rem;
+              border-radius: 12px;
+              box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <h3>Today's Meals</h3>
+
+            <!-- Breakfast -->
+            <div class="meal-card">
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  margin-bottom: 1rem;
+                "
+              >
+                <div>
+                  <span class="meal-type-badge breakfast">🍳 Breakfast</span>
+                  <p style="margin: 0.5rem 0; color: #666">8:00 AM</p>
+                </div>
+                <div style="text-align: right">
+                  <div style="font-size: 1.5rem; font-weight: 800; color: var(--primary)">
+                    520 cal
+                  </div>
+                  <div style="font-size: 0.9rem; color: #666">35g P | 45g C | 18g F</div>
+                </div>
               </div>
-              <div style="text-align: right;">
-                <div style="font-size: 1.5rem; font-weight: 800; color: var(--primary);">520 cal</div>
-                <div style="font-size: 0.9rem; color: #666;">35g P | 45g C | 18g F</div>
+
+              <div class="food-item">
+                <div>
+                  <strong>Oatmeal with Berries</strong>
+                  <p style="margin: 0; font-size: 0.9rem; color: #666">1 cup cooked</p>
+                </div>
+                <div style="text-align: right">
+                  <div>280 cal</div>
+                  <div style="font-size: 0.85rem; color: #666">10g P | 50g C | 5g F</div>
+                </div>
               </div>
+
+              <div class="food-item">
+                <div>
+                  <strong>Greek Yogurt</strong>
+                  <p style="margin: 0; font-size: 0.9rem; color: #666">1 container (170g)</p>
+                </div>
+                <div style="text-align: right">
+                  <div>100 cal</div>
+                  <div style="font-size: 0.85rem; color: #666">17g P | 6g C | 0g F</div>
+                </div>
+              </div>
+
+              <div class="food-item">
+                <div>
+                  <strong>Scrambled Eggs</strong>
+                  <p style="margin: 0; font-size: 0.9rem; color: #666">2 large eggs</p>
+                </div>
+                <div style="text-align: right">
+                  <div>140 cal</div>
+                  <div style="font-size: 0.85rem; color: #666">12g P | 1g C | 10g F</div>
+                </div>
+              </div>
+
+              <button
+                onclick="addFood('breakfast')"
+                class="btn-primary"
+                style="
+                  background: var(--success);
+                  font-size: 0.9rem;
+                  padding: 0.5rem 1rem;
+                  margin-top: 1rem;
+                "
+              >
+                + Add Food
+              </button>
             </div>
 
-            <div class="food-item">
-              <div>
-                <strong>Oatmeal with Berries</strong>
-                <p style="margin: 0; font-size: 0.9rem; color: #666;">1 cup cooked</p>
+            <!-- Lunch -->
+            <div class="meal-card">
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  margin-bottom: 1rem;
+                "
+              >
+                <div>
+                  <span class="meal-type-badge lunch">🍔 Lunch</span>
+                  <p style="margin: 0.5rem 0; color: #666">12:30 PM</p>
+                </div>
+                <div style="text-align: right">
+                  <div style="font-size: 1.5rem; font-weight: 800; color: var(--primary)">
+                    680 cal
+                  </div>
+                  <div style="font-size: 0.9rem; color: #666">45g P | 60g C | 22g F</div>
+                </div>
               </div>
-              <div style="text-align: right;">
-                <div>280 cal</div>
-                <div style="font-size: 0.85rem; color: #666;">10g P | 50g C | 5g F</div>
+
+              <div class="food-item">
+                <div>
+                  <strong>Grilled Chicken Breast</strong>
+                  <p style="margin: 0; font-size: 0.9rem; color: #666">6 oz</p>
+                </div>
+                <div style="text-align: right">
+                  <div>280 cal</div>
+                  <div style="font-size: 0.85rem; color: #666">52g P | 0g C | 6g F</div>
+                </div>
               </div>
+
+              <div class="food-item">
+                <div>
+                  <strong>Brown Rice</strong>
+                  <p style="margin: 0; font-size: 0.9rem; color: #666">1 cup cooked</p>
+                </div>
+                <div style="text-align: right">
+                  <div>215 cal</div>
+                  <div style="font-size: 0.85rem; color: #666">5g P | 45g C | 2g F</div>
+                </div>
+              </div>
+
+              <div class="food-item">
+                <div>
+                  <strong>Broccoli</strong>
+                  <p style="margin: 0; font-size: 0.9rem; color: #666">1 cup steamed</p>
+                </div>
+                <div style="text-align: right">
+                  <div>55 cal</div>
+                  <div style="font-size: 0.85rem; color: #666">4g P | 11g C | 0g F</div>
+                </div>
+              </div>
+
+              <div class="food-item">
+                <div>
+                  <strong>Avocado</strong>
+                  <p style="margin: 0; font-size: 0.9rem; color: #666">1/2 medium</p>
+                </div>
+                <div style="text-align: right">
+                  <div>130 cal</div>
+                  <div style="font-size: 0.85rem; color: #666">2g P | 7g C | 12g F</div>
+                </div>
+              </div>
+
+              <button
+                onclick="addFood('lunch')"
+                class="btn-primary"
+                style="
+                  background: var(--success);
+                  font-size: 0.9rem;
+                  padding: 0.5rem 1rem;
+                  margin-top: 1rem;
+                "
+              >
+                + Add Food
+              </button>
             </div>
 
-            <div class="food-item">
-              <div>
-                <strong>Greek Yogurt</strong>
-                <p style="margin: 0; font-size: 0.9rem; color: #666;">1 container (170g)</p>
+            <!-- Snack -->
+            <div class="meal-card">
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  margin-bottom: 1rem;
+                "
+              >
+                <div>
+                  <span class="meal-type-badge snack">🍎 Snack</span>
+                  <p style="margin: 0.5rem 0; color: #666">3:00 PM</p>
+                </div>
+                <div style="text-align: right">
+                  <div style="font-size: 1.5rem; font-weight: 800; color: var(--primary)">
+                    300 cal
+                  </div>
+                  <div style="font-size: 0.9rem; color: #666">25g P | 30g C | 8g F</div>
+                </div>
               </div>
-              <div style="text-align: right;">
-                <div>100 cal</div>
-                <div style="font-size: 0.85rem; color: #666;">17g P | 6g C | 0g F</div>
+
+              <div class="food-item">
+                <div>
+                  <strong>Protein Shake</strong>
+                  <p style="margin: 0; font-size: 0.9rem; color: #666">
+                    1 scoop whey + almond milk
+                  </p>
+                </div>
+                <div style="text-align: right">
+                  <div>180 cal</div>
+                  <div style="font-size: 0.85rem; color: #666">24g P | 5g C | 4g F</div>
+                </div>
               </div>
+
+              <div class="food-item">
+                <div>
+                  <strong>Apple</strong>
+                  <p style="margin: 0; font-size: 0.9rem; color: #666">1 medium</p>
+                </div>
+                <div style="text-align: right">
+                  <div>95 cal</div>
+                  <div style="font-size: 0.85rem; color: #666">0g P | 25g C | 0g F</div>
+                </div>
+              </div>
+
+              <div class="food-item">
+                <div>
+                  <strong>Almonds</strong>
+                  <p style="margin: 0; font-size: 0.9rem; color: #666">10 almonds</p>
+                </div>
+                <div style="text-align: right">
+                  <div>70 cal</div>
+                  <div style="font-size: 0.85rem; color: #666">3g P | 3g C | 6g F</div>
+                </div>
+              </div>
+
+              <button
+                onclick="addFood('snack')"
+                class="btn-primary"
+                style="
+                  background: var(--success);
+                  font-size: 0.9rem;
+                  padding: 0.5rem 1rem;
+                  margin-top: 1rem;
+                "
+              >
+                + Add Food
+              </button>
             </div>
 
-            <div class="food-item">
-              <div>
-                <strong>Scrambled Eggs</strong>
-                <p style="margin: 0; font-size: 0.9rem; color: #666;">2 large eggs</p>
-              </div>
-              <div style="text-align: right;">
-                <div>140 cal</div>
-                <div style="font-size: 0.85rem; color: #666;">12g P | 1g C | 10g F</div>
-              </div>
+            <!-- Quick Add Meal -->
+            <div class="quick-add-food" onclick="addMeal('dinner')">
+              <h4>+ Add Dinner</h4>
+              <p style="color: #666; font-size: 0.9rem">Log your evening meal</p>
             </div>
 
-            <button onclick="addFood('breakfast')" class="btn-primary" style="background: var(--success); font-size: 0.9rem; padding: 0.5rem 1rem; margin-top: 1rem;">
-              + Add Food
+            <!-- Save Button -->
+            <button
+              class="btn-primary"
+              onclick="saveNutrition()"
+              style="
+                width: 100%;
+                margin-top: 2rem;
+                padding: 1rem;
+                font-size: 1.1rem;
+                background: var(--success);
+              "
+            >
+              💾 Save Today's Nutrition
             </button>
           </div>
+        </main>
+      </div>
+    </main>
 
-          <!-- Lunch -->
-          <div class="meal-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-              <div>
-                <span class="meal-type-badge lunch">🍔 Lunch</span>
-                <p style="margin: 0.5rem 0; color: #666;">12:30 PM</p>
-              </div>
-              <div style="text-align: right;">
-                <div style="font-size: 1.5rem; font-weight: 800; color: var(--primary);">680 cal</div>
-                <div style="font-size: 0.9rem; color: #666;">45g P | 60g C | 22g F</div>
-              </div>
-            </div>
+    <script>
+      let waterIntake = 1500; // ml
+      const waterGoal = 2000;
 
-            <div class="food-item">
-              <div>
-                <strong>Grilled Chicken Breast</strong>
-                <p style="margin: 0; font-size: 0.9rem; color: #666;">6 oz</p>
-              </div>
-              <div style="text-align: right;">
-                <div>280 cal</div>
-                <div style="font-size: 0.85rem; color: #666;">52g P | 0g C | 6g F</div>
-              </div>
-            </div>
-
-            <div class="food-item">
-              <div>
-                <strong>Brown Rice</strong>
-                <p style="margin: 0; font-size: 0.9rem; color: #666;">1 cup cooked</p>
-              </div>
-              <div style="text-align: right;">
-                <div>215 cal</div>
-                <div style="font-size: 0.85rem; color: #666;">5g P | 45g C | 2g F</div>
-              </div>
-            </div>
-
-            <div class="food-item">
-              <div>
-                <strong>Broccoli</strong>
-                <p style="margin: 0; font-size: 0.9rem; color: #666;">1 cup steamed</p>
-              </div>
-              <div style="text-align: right;">
-                <div>55 cal</div>
-                <div style="font-size: 0.85rem; color: #666;">4g P | 11g C | 0g F</div>
-              </div>
-            </div>
-
-            <div class="food-item">
-              <div>
-                <strong>Avocado</strong>
-                <p style="margin: 0; font-size: 0.9rem; color: #666;">1/2 medium</p>
-              </div>
-              <div style="text-align: right;">
-                <div>130 cal</div>
-                <div style="font-size: 0.85rem; color: #666;">2g P | 7g C | 12g F</div>
-              </div>
-            </div>
-
-            <button onclick="addFood('lunch')" class="btn-primary" style="background: var(--success); font-size: 0.9rem; padding: 0.5rem 1rem; margin-top: 1rem;">
-              + Add Food
-            </button>
-          </div>
-
-          <!-- Snack -->
-          <div class="meal-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-              <div>
-                <span class="meal-type-badge snack">🍎 Snack</span>
-                <p style="margin: 0.5rem 0; color: #666;">3:00 PM</p>
-              </div>
-              <div style="text-align: right;">
-                <div style="font-size: 1.5rem; font-weight: 800; color: var(--primary);">300 cal</div>
-                <div style="font-size: 0.9rem; color: #666;">25g P | 30g C | 8g F</div>
-              </div>
-            </div>
-
-            <div class="food-item">
-              <div>
-                <strong>Protein Shake</strong>
-                <p style="margin: 0; font-size: 0.9rem; color: #666;">1 scoop whey + almond milk</p>
-              </div>
-              <div style="text-align: right;">
-                <div>180 cal</div>
-                <div style="font-size: 0.85rem; color: #666;">24g P | 5g C | 4g F</div>
-              </div>
-            </div>
-
-            <div class="food-item">
-              <div>
-                <strong>Apple</strong>
-                <p style="margin: 0; font-size: 0.9rem; color: #666;">1 medium</p>
-              </div>
-              <div style="text-align: right;">
-                <div>95 cal</div>
-                <div style="font-size: 0.85rem; color: #666;">0g P | 25g C | 0g F</div>
-              </div>
-            </div>
-
-            <div class="food-item">
-              <div>
-                <strong>Almonds</strong>
-                <p style="margin: 0; font-size: 0.9rem; color: #666;">10 almonds</p>
-              </div>
-              <div style="text-align: right;">
-                <div>70 cal</div>
-                <div style="font-size: 0.85rem; color: #666;">3g P | 3g C | 6g F</div>
-              </div>
-            </div>
-
-            <button onclick="addFood('snack')" class="btn-primary" style="background: var(--success); font-size: 0.9rem; padding: 0.5rem 1rem; margin-top: 1rem;">
-              + Add Food
-            </button>
-          </div>
-
-          <!-- Quick Add Meal -->
-          <div class="quick-add-food" onclick="addMeal('dinner')">
-            <h4>+ Add Dinner</h4>
-            <p style="color: #666; font-size: 0.9rem;">Log your evening meal</p>
-          </div>
-
-          <!-- Save Button -->
-          <button class="btn-primary" onclick="saveNutrition()" style="width: 100%; margin-top: 2rem; padding: 1rem; font-size: 1.1rem; background: var(--success);">
-            💾 Save Today's Nutrition
-          </button>
-        </div>
-      </main>
-    </div>
-  </main>
-
-  <script>
-    let waterIntake = 1500; // ml
-    const waterGoal = 2000;
-
-    function addMeal(mealType) {
-      alert(`Add ${mealType} meal - Search from 1M+ foods database`);
-    }
-
-    function addFood(mealType) {
-      const foodName = prompt(`Add food to ${mealType}:`);
-      if (foodName) {
-        alert(`In production, search database for: ${foodName}`);
-      }
-    }
-
-    function addWater() {
-      waterIntake += 250;
-      if (waterIntake > waterGoal) waterIntake = waterGoal;
-      alert(`💧 Water logged! ${waterIntake}ml / ${waterGoal}ml`);
-
-      // Track event
-      if (window.SupabaseAPI) {
-        SupabaseAPI.trackEvent('water_logged', { amount: 250, total: waterIntake });
-      }
-    }
-
-    async function saveNutrition() {
-      alert('🎉 Nutrition logged successfully!\n\nCalories: 1850 / 2400\nProtein: 120g / 150g\nCarbs: 180g / 250g\nFats: 50g / 70g\n\nGreat job staying on track!');
-
-      // Track completion
-      if (window.SupabaseAPI) {
-        SupabaseAPI.trackEvent('nutrition_saved', {
-          calories: 1850,
-          protein: 120,
-          carbs: 180,
-          fats: 50
-        });
+      function addMeal(mealType) {
+        alert(`Add ${mealType} meal - Search from 1M+ foods database`);
       }
 
-      if (confirm('View your progress on the dashboard?')) {
-        window.location.href = '/dashboard.html';
+      function addFood(mealType) {
+        const foodName = prompt(`Add food to ${mealType}:`);
+        if (foodName) {
+          alert(`In production, search database for: ${foodName}`);
+        }
       }
-    }
 
-    // Track page view
-    window.addEventListener('load', () => {
-      if (window.SupabaseAPI) {
-        SupabaseAPI.trackEvent('page_view', { page: 'nutrition' });
+      function addWater() {
+        waterIntake += 250;
+        if (waterIntake > waterGoal) waterIntake = waterGoal;
+        alert(`💧 Water logged! ${waterIntake}ml / ${waterGoal}ml`);
+
+        // Track event
+        if (window.SupabaseAPI) {
+          SupabaseAPI.trackEvent('water_logged', { amount: 250, total: waterIntake });
+        }
       }
-    });
-  </script>
-</body>
+
+      async function saveNutrition() {
+        alert(
+          '🎉 Nutrition logged successfully!\n\nCalories: 1850 / 2400\nProtein: 120g / 150g\nCarbs: 180g / 250g\nFats: 50g / 70g\n\nGreat job staying on track!',
+        );
+
+        // Track completion
+        if (window.SupabaseAPI) {
+          SupabaseAPI.trackEvent('nutrition_saved', {
+            calories: 1850,
+            protein: 120,
+            carbs: 180,
+            fats: 50,
+          });
+        }
+
+        if (confirm('View your progress on the dashboard?')) {
+          window.location.href = '/dashboard.html';
+        }
+      }
+
+      // Track page view
+      window.addEventListener('load', () => {
+        if (window.SupabaseAPI) {
+          SupabaseAPI.trackEvent('page_view', { page: 'nutrition' });
+        }
+      });
+    </script>
+  </body>
 </html>

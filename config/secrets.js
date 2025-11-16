@@ -23,25 +23,25 @@ const SECRET_DEFINITIONS = {
     required: false,
     env: ['GEMINI_API_KEY'],
     description: 'Google Gemini AI API key for code analysis and generation',
-    validateFormat: (val) => val && val.length > 20
+    validateFormat: (val) => val && val.length > 20,
   },
   ANTHROPIC_API_KEY: {
     required: false,
     env: ['ANTHROPIC_API_KEY'],
     description: 'Anthropic Claude API key for code analysis',
-    validateFormat: (val) => val && val.startsWith('sk-ant-')
+    validateFormat: (val) => val && val.startsWith('sk-ant-'),
   },
   OPENAI_API_KEY: {
     required: false,
     env: ['OPENAI_API_KEY', 'open_ai_api_key'],
     description: 'OpenAI API key for GPT models',
-    validateFormat: (val) => val && (val.startsWith('sk-') || val.startsWith('sk-proj-'))
+    validateFormat: (val) => val && (val.startsWith('sk-') || val.startsWith('sk-proj-')),
   },
   QWEN_API_KEY: {
     required: false,
     env: ['QWEN_API_KEY', 'QWEN'],
     description: 'Alibaba Qwen AI API key',
-    validateFormat: (val) => val && val.length > 20
+    validateFormat: (val) => val && val.length > 20,
   },
 
   // Deployment & Infrastructure
@@ -49,19 +49,19 @@ const SECRET_DEFINITIONS = {
     required: false,
     env: ['VERCEL_TOKEN', 'VERCEL_API_TOKEN'],
     description: 'Vercel deployment token',
-    validateFormat: (val) => val && val.length > 20
+    validateFormat: (val) => val && val.length > 20,
   },
   VERCEL_ORG_ID: {
     required: false,
     env: ['VERCEL_ORG_ID'],
     description: 'Vercel organization ID',
-    validateFormat: (val) => val && val.length > 10
+    validateFormat: (val) => val && val.length > 10,
   },
   VERCEL_PROJECT_ID: {
     required: false,
     env: ['VERCEL_PROJECT_ID'],
     description: 'Vercel project ID',
-    validateFormat: (val) => val && val.length > 10
+    validateFormat: (val) => val && val.length > 10,
   },
 
   // Supabase
@@ -69,19 +69,19 @@ const SECRET_DEFINITIONS = {
     required: false,
     env: ['SUPABASE_URL'],
     description: 'Supabase project URL',
-    validateFormat: (val) => val && val.includes('supabase.co')
+    validateFormat: (val) => val && val.includes('supabase.co'),
   },
   SUPABASE_ANON_KEY: {
     required: false,
     env: ['SUPABASE_ANON_KEY', 'SUPABASE_KEY'],
     description: 'Supabase anonymous/public key',
-    validateFormat: (val) => val && val.length > 100
+    validateFormat: (val) => val && val.length > 100,
   },
   SUPABASE_SERVICE_ROLE_KEY: {
     required: false,
     env: ['SUPABASE_SERVICE_ROLE_KEY'],
     description: 'Supabase service role key (admin)',
-    validateFormat: (val) => val && val.length > 100
+    validateFormat: (val) => val && val.length > 100,
   },
 
   // GitHub
@@ -89,7 +89,7 @@ const SECRET_DEFINITIONS = {
     required: false,
     env: ['GITHUB_TOKEN', 'GH_TOKEN'],
     description: 'GitHub personal access token or Actions token',
-    validateFormat: (val) => val && (val.startsWith('ghp_') || val.startsWith('ghs_'))
+    validateFormat: (val) => val && (val.startsWith('ghp_') || val.startsWith('ghs_')),
   },
 
   // Additional AI Services (unlimited API helpers)
@@ -97,20 +97,20 @@ const SECRET_DEFINITIONS = {
     required: false,
     env: ['DEEPSEEK_API_KEY'],
     description: 'DeepSeek AI API key',
-    validateFormat: (val) => val && val.length > 20
+    validateFormat: (val) => val && val.length > 20,
   },
   COHERE_API_KEY: {
     required: false,
     env: ['COHERE_API_KEY'],
     description: 'Cohere AI API key',
-    validateFormat: (val) => val && val.length > 20
+    validateFormat: (val) => val && val.length > 20,
   },
   HUGGINGFACE_API_KEY: {
     required: false,
     env: ['HUGGINGFACE_API_KEY', 'HF_TOKEN'],
     description: 'Hugging Face API key',
-    validateFormat: (val) => val && val.startsWith('hf_')
-  }
+    validateFormat: (val) => val && val.startsWith('hf_'),
+  },
 };
 
 /**
@@ -131,16 +131,18 @@ function loadSecret(secretDef) {
  */
 function validateSecret(secretKey, value, secretDef) {
   if (!value) {
-    return secretDef.required ? {
-      valid: false,
-      error: `${secretKey} is required but not set`
-    } : { valid: true };
+    return secretDef.required
+      ? {
+          valid: false,
+          error: `${secretKey} is required but not set`,
+        }
+      : { valid: true };
   }
 
   if (secretDef.validateFormat && !secretDef.validateFormat(value)) {
     return {
       valid: false,
-      error: `${secretKey} has invalid format`
+      error: `${secretKey} has invalid format`,
     };
   }
 
@@ -192,8 +194,8 @@ function getSecretsHealth() {
         .filter(([_, v]) => v === null)
         .map(([key]) => key),
       errors,
-      warnings
-    }
+      warnings,
+    },
   };
 }
 
@@ -210,7 +212,7 @@ function getSecrets() {
     if (errors.length > 0) {
       throw new Error(
         `Secret validation failed:\n${errors.join('\n')}\n\n` +
-        `Please configure required secrets in your .env file or GitHub environment.`
+          `Please configure required secrets in your .env file or GitHub environment.`,
       );
     }
 
@@ -256,18 +258,46 @@ module.exports = {
   SECRET_DEFINITIONS,
 
   // Individual secret getters (convenience)
-  get GEMINI_API_KEY() { return getSecret('GEMINI_API_KEY'); },
-  get ANTHROPIC_API_KEY() { return getSecret('ANTHROPIC_API_KEY'); },
-  get OPENAI_API_KEY() { return getSecret('OPENAI_API_KEY'); },
-  get QWEN_API_KEY() { return getSecret('QWEN_API_KEY'); },
-  get VERCEL_TOKEN() { return getSecret('VERCEL_TOKEN'); },
-  get VERCEL_ORG_ID() { return getSecret('VERCEL_ORG_ID'); },
-  get VERCEL_PROJECT_ID() { return getSecret('VERCEL_PROJECT_ID'); },
-  get SUPABASE_URL() { return getSecret('SUPABASE_URL'); },
-  get SUPABASE_ANON_KEY() { return getSecret('SUPABASE_ANON_KEY'); },
-  get SUPABASE_SERVICE_ROLE_KEY() { return getSecret('SUPABASE_SERVICE_ROLE_KEY'); },
-  get GITHUB_TOKEN() { return getSecret('GITHUB_TOKEN'); },
-  get DEEPSEEK_API_KEY() { return getSecret('DEEPSEEK_API_KEY'); },
-  get COHERE_API_KEY() { return getSecret('COHERE_API_KEY'); },
-  get HUGGINGFACE_API_KEY() { return getSecret('HUGGINGFACE_API_KEY'); }
+  get GEMINI_API_KEY() {
+    return getSecret('GEMINI_API_KEY');
+  },
+  get ANTHROPIC_API_KEY() {
+    return getSecret('ANTHROPIC_API_KEY');
+  },
+  get OPENAI_API_KEY() {
+    return getSecret('OPENAI_API_KEY');
+  },
+  get QWEN_API_KEY() {
+    return getSecret('QWEN_API_KEY');
+  },
+  get VERCEL_TOKEN() {
+    return getSecret('VERCEL_TOKEN');
+  },
+  get VERCEL_ORG_ID() {
+    return getSecret('VERCEL_ORG_ID');
+  },
+  get VERCEL_PROJECT_ID() {
+    return getSecret('VERCEL_PROJECT_ID');
+  },
+  get SUPABASE_URL() {
+    return getSecret('SUPABASE_URL');
+  },
+  get SUPABASE_ANON_KEY() {
+    return getSecret('SUPABASE_ANON_KEY');
+  },
+  get SUPABASE_SERVICE_ROLE_KEY() {
+    return getSecret('SUPABASE_SERVICE_ROLE_KEY');
+  },
+  get GITHUB_TOKEN() {
+    return getSecret('GITHUB_TOKEN');
+  },
+  get DEEPSEEK_API_KEY() {
+    return getSecret('DEEPSEEK_API_KEY');
+  },
+  get COHERE_API_KEY() {
+    return getSecret('COHERE_API_KEY');
+  },
+  get HUGGINGFACE_API_KEY() {
+    return getSecret('HUGGINGFACE_API_KEY');
+  },
 };

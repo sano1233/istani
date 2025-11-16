@@ -12,7 +12,8 @@ const https = require('https');
 // Supabase Configuration
 const SUPABASE_PROJECT_REF = 'kxsmgrlpojdsgvjdodda';
 const SUPABASE_URL = `https://${SUPABASE_PROJECT_REF}.supabase.co`;
-const SERVICE_ROLE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt4c21ncmxwb2pkc2d2amRvZGRhIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MDA2NDYyMSwiZXhwIjoyMDc1NjQwNjIxfQ.6a5eSOaxQyl_GVXyKhnT45qn2ws-xUT5qYB5eeQooME';
+const SERVICE_ROLE_KEY =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt4c21ncmxwb2pkc2d2amRvZGRhIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MDA2NDYyMSwiZXhwIjoyMDc1NjQwNjIxfQ.6a5eSOaxQyl_GVXyKhnT45qn2ws-xUT5qYB5eeQooME';
 
 console.log('🤖 FULLY AUTOMATED DATABASE MIGRATION');
 console.log('=====================================\n');
@@ -31,15 +32,15 @@ async function executeSQL(sql) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'apikey': SERVICE_ROLE_KEY,
-        'Authorization': `Bearer ${SERVICE_ROLE_KEY}`,
-        'Content-Length': data.length
-      }
+        apikey: SERVICE_ROLE_KEY,
+        Authorization: `Bearer ${SERVICE_ROLE_KEY}`,
+        'Content-Length': data.length,
+      },
     };
 
     const req = https.request(options, (res) => {
       let body = '';
-      res.on('data', (chunk) => body += chunk);
+      res.on('data', (chunk) => (body += chunk));
       res.on('end', () => {
         if (res.statusCode >= 200 && res.statusCode < 300) {
           resolve({ success: true, data: body });
@@ -64,12 +65,12 @@ function createCombinedMigration() {
 
   const migration1 = fs.readFileSync(
     path.join(process.cwd(), 'supabase/migrations/001_initial_schema.sql'),
-    'utf8'
+    'utf8',
   );
 
   const migration2 = fs.readFileSync(
     path.join(process.cwd(), 'supabase/migrations/002_autonomous_features.sql'),
-    'utf8'
+    'utf8',
   );
 
   const combined = `-- =============================================================================
@@ -147,7 +148,9 @@ function printInstructions() {
 
   console.log('🎯 OPTION 3: Direct psql Command\n');
   console.log('   Get your database password from Supabase settings, then run:');
-  console.log('   psql "postgresql://postgres:[PASSWORD]@db.kxsmgrlpojdsgvjdodda.supabase.co:5432/postgres" < COMBINED_MIGRATION.sql\n');
+  console.log(
+    '   psql "postgresql://postgres:[PASSWORD]@db.kxsmgrlpojdsgvjdodda.supabase.co:5432/postgres" < COMBINED_MIGRATION.sql\n',
+  );
 
   console.log('✅ After migration, verify with:');
   console.log('   node scripts/run-migrations.js\n');

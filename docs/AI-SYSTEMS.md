@@ -7,6 +7,7 @@
 **Project**: [stitch.withgoogle.com/projects/12262529591791741168](https://stitch.withgoogle.com/projects/12262529591791741168)
 
 **Capabilities**:
+
 - **Progress Visualization**: Automatically generates before/after images based on real progress data
 - **Workout Demonstrations**: AI-generated form guides for 400+ exercises
 - **Body Composition**: Science-based anatomical visualizations showing muscle/fat distribution
@@ -22,7 +23,7 @@ const progressImage = await ImageGenerationAPI.generateProgressImage(userId, {
   currentWeight: 176,
   muscleGain: 5,
   fatLoss: 14,
-  weeks: 12
+  weeks: 12,
 });
 ```
 
@@ -33,12 +34,14 @@ const progressImage = await ImageGenerationAPI.generateProgressImage(userId, {
 ### Body Composition Analysis
 
 **Science-Based Calculations**:
+
 - Lean body mass vs fat mass changes
 - Muscle gain vs fat loss differentiation
 - Body fat percentage tracking
 - Realistic progress rate validation (0.5-1% body weight per week)
 
 **Formula Used**:
+
 ```
 Fat Mass Change = (Current Weight × Current BF%) - (Start Weight × Start BF%)
 Muscle Mass Change = Total Weight Change - Fat Mass Change
@@ -47,12 +50,14 @@ Muscle Mass Change = Total Weight Change - Fat Mass Change
 ### Progressive Overload Detection
 
 **Tracks**:
+
 - Volume progression (Sets × Reps × Weight)
 - Intensity increases over time
 - Training frequency optimization
 - Recovery adequacy
 
 **Algorithm**:
+
 ```javascript
 // Detects 5%+ increase in training volume over 4-week periods
 const isProgressiveOverload = recentAverage > previousAverage * 1.05;
@@ -61,6 +66,7 @@ const isProgressiveOverload = recentAverage > previousAverage * 1.05;
 ### Nutrition Adherence Monitoring
 
 **Metrics**:
+
 - Protein intake vs target (0.8-1g per lb body weight)
 - Calorie accuracy (±200 cal tolerance)
 - Macro balance tracking
@@ -69,12 +75,14 @@ const isProgressiveOverload = recentAverage > previousAverage * 1.05;
 ### Recovery Score
 
 **Factors**:
+
 - Workout frequency (optimal: 4-5x per week)
 - Training intensity
 - Rest day adequacy
 - Overtraining detection
 
 **Scoring**:
+
 - 6+ workouts/week: Overtraining penalty
 - <3 workouts/week: Undertraining penalty
 - 4-5 workouts/week: Optimal score (100)
@@ -86,18 +94,21 @@ const isProgressiveOverload = recentAverage > previousAverage * 1.05;
 ### Automated Coaching Intelligence
 
 **Training Recommendations**:
+
 - Volume adjustments based on plateau detection
 - Exercise selection optimization
 - Intensity progression suggestions
 - Form improvement tips
 
 **Nutrition Recommendations**:
+
 - Protein intake optimization
 - Calorie adjustments for goal pace
 - Macro rebalancing
 - Meal timing strategies
 
 **Recovery Recommendations**:
+
 - Rest day scheduling
 - Deload week triggers
 - Sleep optimization
@@ -106,12 +117,14 @@ const isProgressiveOverload = recentAverage > previousAverage * 1.05;
 ### Science-Based Validation
 
 **All recommendations backed by**:
+
 - Peer-reviewed research
 - Biomechanical principles
 - Nutritional science
 - Exercise physiology
 
 **Example Recommendation**:
+
 ```
 Type: Training
 Priority: High
@@ -127,12 +140,14 @@ Science: "Progressive overload is essential for continued muscle growth (Schoenf
 ### Realistic Timeline Calculation
 
 **Uses**:
+
 - Current progress rate
 - Science-based healthy loss/gain rates
 - Body composition changes
 - Training adherence
 
 **Formula**:
+
 ```
 Weeks to Goal = |Total Change Required| / Healthy Weekly Rate
 Healthy Weekly Rate = Current Weight × 0.01 (1% max per week)
@@ -141,6 +156,7 @@ Healthy Weekly Rate = Current Weight × 0.01 (1% max per week)
 ### On-Track Detection
 
 **Compares**:
+
 - Actual progress vs expected progress
 - ±10% tolerance for "on track" status
 - Automated alerts for significant deviations
@@ -152,6 +168,7 @@ Healthy Weekly Rate = Current Weight × 0.01 (1% max per week)
 ### Real-Time Analysis
 
 **Triggers**:
+
 - After each workout logged
 - After each meal logged
 - Weekly progress reviews
@@ -275,16 +292,13 @@ const analysis = await IntelligentProgressSystem.analyzeProgress(userId);
 
 ```javascript
 // Generate custom workout demo
-const demoImage = await ImageGenerationAPI.generateWorkoutDemo(
-  'Barbell Back Squat',
-  'Quadriceps'
-);
+const demoImage = await ImageGenerationAPI.generateWorkoutDemo('Barbell Back Squat', 'Quadriceps');
 
 // Generate motivational graphic
 const motivationImage = await ImageGenerationAPI.generateMotivationalImage({
   streak: 14,
   totalWorkouts: 75,
-  weightLost: 22
+  weightLost: 22,
 });
 ```
 
@@ -300,11 +314,11 @@ const motivationImage = await ImageGenerationAPI.generateMotivationalImage({
 
 ## 🎓 References
 
-- Schoenfeld, B. J. (2010). The mechanisms of muscle hypertrophy. *Journal of Strength and Conditioning Research*.
-- Phillips, S. M., & Van Loon, L. J. (2011). Dietary protein for athletes. *British Journal of Sports Medicine*.
-- Hall, K. D., & Kahan, S. (2018). Maintenance of lost weight and long-term management of obesity. *Medical Clinics*.
-- Schoenfeld, B. J., et al. (2016). Effects of resistance training frequency. *Sports Medicine*.
-- Kellmann, M., et al. (2018). Recovery and performance in sport. *International Journal of Sports Physiology*.
+- Schoenfeld, B. J. (2010). The mechanisms of muscle hypertrophy. _Journal of Strength and Conditioning Research_.
+- Phillips, S. M., & Van Loon, L. J. (2011). Dietary protein for athletes. _British Journal of Sports Medicine_.
+- Hall, K. D., & Kahan, S. (2018). Maintenance of lost weight and long-term management of obesity. _Medical Clinics_.
+- Schoenfeld, B. J., et al. (2016). Effects of resistance training frequency. _Sports Medicine_.
+- Kellmann, M., et al. (2018). Recovery and performance in sport. _International Journal of Sports Physiology_.
 
 ---
 

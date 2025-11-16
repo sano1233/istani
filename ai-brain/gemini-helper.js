@@ -28,12 +28,12 @@ async function getPrompt() {
     // Read from stdin
     return new Promise((resolve) => {
       let data = '';
-      process.stdin.on('data', chunk => data += chunk);
+      process.stdin.on('data', (chunk) => (data += chunk));
       process.stdin.on('end', () => resolve(data.trim() || 'Hello'));
     });
   }
 }
 
 getPrompt()
-  .then(prompt => chat(prompt))
-  .catch(err => console.log(`Gemini error: ${err.message}`));
+  .then((prompt) => chat(prompt))
+  .catch((err) => console.log(`Gemini error: ${err.message}`));

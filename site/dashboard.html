@@ -1,403 +1,425 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard - Istani Fitness</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - Istani Fitness</title>
 
-  <link rel="stylesheet" href="css/pico.min.css">
-  <link rel="stylesheet" href="css/custom-theme.css">
+    <link rel="stylesheet" href="css/pico.min.css" />
+    <link rel="stylesheet" href="css/custom-theme.css" />
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
-  <script src="js/supabase-client.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+    <script src="js/supabase-client.js"></script>
 
-  <style>
-    :root {
-      --primary: #FF6B35;
-      --secondary: #004E89;
-      --success: #06D6A0;
-    }
+    <style>
+      :root {
+        --primary: #ff6b35;
+        --secondary: #004e89;
+        --success: #06d6a0;
+      }
 
-    nav {
-      background: var(--secondary);
-      padding: 1rem 0;
-      color: white;
-    }
+      nav {
+        background: var(--secondary);
+        padding: 1rem 0;
+        color: white;
+      }
 
-    .nav-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 1rem;
-    }
+      .nav-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem;
+      }
 
-    .nav-links a {
-      color: white;
-      margin: 0 1rem;
-      text-decoration: none;
-      font-weight: 600;
-    }
+      .nav-links a {
+        color: white;
+        margin: 0 1rem;
+        text-decoration: none;
+        font-weight: 600;
+      }
 
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1.5rem;
-      margin: 2rem 0;
-    }
+      .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin: 2rem 0;
+      }
 
-    .dashboard-card {
-      background: white;
-      padding: 1.5rem;
-      border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
+      .dashboard-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
 
-    .dashboard-card h3 {
-      margin-bottom: 1rem;
-      color: var(--secondary);
-    }
+      .dashboard-card h3 {
+        margin-bottom: 1rem;
+        color: var(--secondary);
+      }
 
-    .stat-large {
-      font-size: 2.5rem;
-      font-weight: 800;
-      color: var(--primary);
-    }
+      .stat-large {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--primary);
+      }
 
-    .quick-action-btn {
-      background: var(--success);
-      color: white;
-      padding: 1rem 2rem;
-      border: none;
-      border-radius: 8px;
-      font-weight: 700;
-      cursor: pointer;
-      width: 100%;
-      margin: 0.5rem 0;
-      transition: all 0.3s;
-    }
+      .quick-action-btn {
+        background: var(--success);
+        color: white;
+        padding: 1rem 2rem;
+        border: none;
+        border-radius: 8px;
+        font-weight: 700;
+        cursor: pointer;
+        width: 100%;
+        margin: 0.5rem 0;
+        transition: all 0.3s;
+      }
 
-    .quick-action-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(6, 214, 160, 0.4);
-    }
+      .quick-action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(6, 214, 160, 0.4);
+      }
 
-    .workout-btn { background: #FF6B35; }
-    .meal-btn { background: #F77F00; }
-    .progress-btn { background: #06D6A0; }
+      .workout-btn {
+        background: #ff6b35;
+      }
+      .meal-btn {
+        background: #f77f00;
+      }
+      .progress-btn {
+        background: #06d6a0;
+      }
 
-    .progress-bar {
-      width: 100%;
-      height: 20px;
-      background: #e0e0e0;
-      border-radius: 10px;
-      overflow: hidden;
-      margin: 1rem 0;
-    }
+      .progress-bar {
+        width: 100%;
+        height: 20px;
+        background: #e0e0e0;
+        border-radius: 10px;
+        overflow: hidden;
+        margin: 1rem 0;
+      }
 
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--success), var(--primary));
-      transition: width 0.3s ease;
-    }
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--success), var(--primary));
+        transition: width 0.3s ease;
+      }
 
-    .recent-activity {
-      list-style: none;
-      padding: 0;
-    }
+      .recent-activity {
+        list-style: none;
+        padding: 0;
+      }
 
-    .recent-activity li {
-      padding: 0.75rem;
-      margin: 0.5rem 0;
-      background: #f8f9fa;
-      border-radius: 8px;
-      border-left: 4px solid var(--primary);
-    }
+      .recent-activity li {
+        padding: 0.75rem;
+        margin: 0.5rem 0;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border-left: 4px solid var(--primary);
+      }
 
-    .streak-badge {
-      display: inline-flex;
-      align-items: center;
-      background: linear-gradient(135deg, #FFD700, #FFA500);
-      color: #333;
-      padding: 0.75rem 1.5rem;
-      border-radius: 50px;
-      font-weight: 800;
-      font-size: 1.2rem;
-      box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
-    }
+      .streak-badge {
+        display: inline-flex;
+        align-items: center;
+        background: linear-gradient(135deg, #ffd700, #ffa500);
+        color: #333;
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+        font-weight: 800;
+        font-size: 1.2rem;
+        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+      }
 
-    .ai-recommendation {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 1.5rem;
-      border-radius: 12px;
-      margin: 1rem 0;
-    }
+      .ai-recommendation {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin: 1rem 0;
+      }
 
-    .chart-container {
-      position: relative;
-      height: 300px;
-      margin: 1rem 0;
-    }
-  </style>
-</head>
-<body>
-  <nav>
-    <div class="nav-container">
-      <div style="font-size: 1.5rem; font-weight: 800;">💪 Istani Fitness</div>
-      <div class="nav-links">
-        <a href="/dashboard.html">Dashboard</a>
-        <a href="/workouts.html">Workouts</a>
-        <a href="/nutrition.html">Nutrition</a>
-        <a href="/progress.html">Progress</a>
-        <a href="/coaching.html">Coaching</a>
+      .chart-container {
+        position: relative;
+        height: 300px;
+        margin: 1rem 0;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <div class="nav-container">
+        <div style="font-size: 1.5rem; font-weight: 800">💪 Istani Fitness</div>
+        <div class="nav-links">
+          <a href="/dashboard.html">Dashboard</a>
+          <a href="/workouts.html">Workouts</a>
+          <a href="/nutrition.html">Nutrition</a>
+          <a href="/progress.html">Progress</a>
+          <a href="/coaching.html">Coaching</a>
+        </div>
       </div>
-    </div>
-  </nav>
+    </nav>
 
-  <main class="container" style="max-width: 1400px; padding: 2rem;">
-    <h1>Welcome back, <span id="userName">Fitness Champion</span>! 🎯</h1>
+    <main class="container" style="max-width: 1400px; padding: 2rem">
+      <h1>Welcome back, <span id="userName">Fitness Champion</span>! 🎯</h1>
 
-    <!-- Streak Display -->
-    <div style="text-align: center; margin: 2rem 0;">
-      <div class="streak-badge">
-        🔥 <span id="streakDays">0</span> Day Streak
-      </div>
-    </div>
-
-    <!-- Quick Actions -->
-    <section class="dashboard-grid">
-      <div class="dashboard-card">
-        <h3>🏋️ Quick Actions</h3>
-        <button class="quick-action-btn workout-btn" onclick="window.location.href='/workouts.html'">
-          Log Workout
-        </button>
-        <button class="quick-action-btn meal-btn" onclick="window.location.href='/nutrition.html'">
-          Log Meal
-        </button>
-        <button class="quick-action-btn progress-btn" onclick="window.location.href='/progress.html'">
-          Update Progress
-        </button>
+      <!-- Streak Display -->
+      <div style="text-align: center; margin: 2rem 0">
+        <div class="streak-badge">🔥 <span id="streakDays">0</span> Day Streak</div>
       </div>
 
-      <div class="dashboard-card">
-        <h3>📊 Today's Stats</h3>
-        <p>Workouts: <strong id="todayWorkouts">0</strong></p>
-        <p>Calories Burned: <strong id="todayCaloriesBurned">0</strong> kcal</p>
-        <p>Meals Logged: <strong id="todayMeals">0</strong></p>
-        <p>Total Calories: <strong id="todayCaloriesConsumed">0</strong> kcal</p>
-      </div>
+      <!-- Quick Actions -->
+      <section class="dashboard-grid">
+        <div class="dashboard-card">
+          <h3>🏋️ Quick Actions</h3>
+          <button
+            class="quick-action-btn workout-btn"
+            onclick="window.location.href='/workouts.html'"
+          >
+            Log Workout
+          </button>
+          <button
+            class="quick-action-btn meal-btn"
+            onclick="window.location.href='/nutrition.html'"
+          >
+            Log Meal
+          </button>
+          <button
+            class="quick-action-btn progress-btn"
+            onclick="window.location.href='/progress.html'"
+          >
+            Update Progress
+          </button>
+        </div>
 
-      <div class="dashboard-card">
-        <h3>🎯 Weekly Goals</h3>
-        <div>
-          <p>Workouts: <span id="weeklyWorkouts">0</span>/5</p>
-          <div class="progress-bar">
-            <div class="progress-fill" id="workoutProgress" style="width: 0%"></div>
+        <div class="dashboard-card">
+          <h3>📊 Today's Stats</h3>
+          <p>Workouts: <strong id="todayWorkouts">0</strong></p>
+          <p>Calories Burned: <strong id="todayCaloriesBurned">0</strong> kcal</p>
+          <p>Meals Logged: <strong id="todayMeals">0</strong></p>
+          <p>Total Calories: <strong id="todayCaloriesConsumed">0</strong> kcal</p>
+        </div>
+
+        <div class="dashboard-card">
+          <h3>🎯 Weekly Goals</h3>
+          <div>
+            <p>Workouts: <span id="weeklyWorkouts">0</span>/5</p>
+            <div class="progress-bar">
+              <div class="progress-fill" id="workoutProgress" style="width: 0%"></div>
+            </div>
+          </div>
+          <div>
+            <p>Protein Goal: <span id="proteinProgress">0</span>g / 150g</p>
+            <div class="progress-bar">
+              <div class="progress-fill" id="proteinProgressBar" style="width: 0%"></div>
+            </div>
           </div>
         </div>
-        <div>
-          <p>Protein Goal: <span id="proteinProgress">0</span>g / 150g</p>
-          <div class="progress-bar">
-            <div class="progress-fill" id="proteinProgressBar" style="width: 0%"></div>
+      </section>
+
+      <!-- AI Recommendations -->
+      <section id="aiRecommendations" style="margin: 2rem 0">
+        <h2>🤖 AI-Powered Recommendations</h2>
+        <div class="ai-recommendation">
+          <h4>💡 Today's Tip</h4>
+          <p id="aiTip">Loading personalized recommendation...</p>
+        </div>
+      </section>
+
+      <!-- Progress Charts -->
+      <section class="dashboard-grid">
+        <div class="dashboard-card">
+          <h3>📈 Weight Progress</h3>
+          <div class="chart-container">
+            <canvas id="weightChart"></canvas>
           </div>
         </div>
-      </div>
-    </section>
 
-    <!-- AI Recommendations -->
-    <section id="aiRecommendations" style="margin: 2rem 0;">
-      <h2>🤖 AI-Powered Recommendations</h2>
-      <div class="ai-recommendation">
-        <h4>💡 Today's Tip</h4>
-        <p id="aiTip">Loading personalized recommendation...</p>
-      </div>
-    </section>
-
-    <!-- Progress Charts -->
-    <section class="dashboard-grid">
-      <div class="dashboard-card">
-        <h3>📈 Weight Progress</h3>
-        <div class="chart-container">
-          <canvas id="weightChart"></canvas>
+        <div class="dashboard-card">
+          <h3>💪 Strength Progress</h3>
+          <div class="chart-container">
+            <canvas id="strengthChart"></canvas>
+          </div>
         </div>
-      </div>
+      </section>
 
-      <div class="dashboard-card">
-        <h3>💪 Strength Progress</h3>
-        <div class="chart-container">
-          <canvas id="strengthChart"></canvas>
+      <!-- Recent Activity -->
+      <section class="dashboard-card" style="margin: 2rem 0">
+        <h3>📝 Recent Activity</h3>
+        <ul class="recent-activity" id="recentActivity">
+          <li>Loading your recent activities...</li>
+        </ul>
+      </section>
+
+      <!-- Personal Records -->
+      <section class="dashboard-grid">
+        <div class="dashboard-card">
+          <h3>🏆 Personal Records</h3>
+          <p>Bench Press: <strong id="benchPR">0 lbs</strong></p>
+          <p>Squat: <strong id="squatPR">0 lbs</strong></p>
+          <p>Deadlift: <strong id="deadliftPR">0 lbs</strong></p>
+          <p>Longest Streak: <strong id="longestStreak">0 days</strong></p>
         </div>
-      </div>
-    </section>
 
-    <!-- Recent Activity -->
-    <section class="dashboard-card" style="margin: 2rem 0;">
-      <h3>📝 Recent Activity</h3>
-      <ul class="recent-activity" id="recentActivity">
-        <li>Loading your recent activities...</li>
-      </ul>
-    </section>
-
-    <!-- Personal Records -->
-    <section class="dashboard-grid">
-      <div class="dashboard-card">
-        <h3>🏆 Personal Records</h3>
-        <p>Bench Press: <strong id="benchPR">0 lbs</strong></p>
-        <p>Squat: <strong id="squatPR">0 lbs</strong></p>
-        <p>Deadlift: <strong id="deadliftPR">0 lbs</strong></p>
-        <p>Longest Streak: <strong id="longestStreak">0 days</strong></p>
-      </div>
-
-      <div class="dashboard-card">
-        <h3>📅 This Month</h3>
-        <p><span class="stat-large" id="monthWorkouts">0</span></p>
-        <p>Total Workouts</p>
-        <p style="margin-top: 1rem;"><span class="stat-large" id="monthCalories">0</span></p>
-        <p>Calories Burned</p>
-      </div>
-
-      <div class="dashboard-card">
-        <h3>🎖️ Achievements</h3>
-        <div id="achievements" style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
-          <span style="font-size: 2rem;">🔥</span>
-          <span style="font-size: 2rem;">💪</span>
-          <span style="font-size: 2rem;">🏆</span>
-          <span style="font-size: 2rem;">⭐</span>
+        <div class="dashboard-card">
+          <h3>📅 This Month</h3>
+          <p><span class="stat-large" id="monthWorkouts">0</span></p>
+          <p>Total Workouts</p>
+          <p style="margin-top: 1rem"><span class="stat-large" id="monthCalories">0</span></p>
+          <p>Calories Burned</p>
         </div>
-        <p style="margin-top: 1rem; font-size: 0.9rem; color: #666;">
-          Complete challenges to unlock more!
-        </p>
-      </div>
-    </section>
-  </main>
 
-  <script>
-    // Sample data generation (replace with real Supabase data)
-    const userData = {
-      name: 'Fitness Champion',
-      streak: 7,
-      todayWorkouts: 1,
-      todayCaloriesBurned: 450,
-      todayMeals: 3,
-      todayCaloriesConsumed: 1850,
-      weeklyWorkouts: 4,
-      proteinToday: 120,
-      benchPR: 225,
-      squatPR: 315,
-      deadliftPR: 405,
-      longestStreak: 28,
-      monthWorkouts: 18,
-      monthCalories: 8500
-    };
+        <div class="dashboard-card">
+          <h3>🎖️ Achievements</h3>
+          <div id="achievements" style="display: flex; flex-wrap: wrap; gap: 0.5rem">
+            <span style="font-size: 2rem">🔥</span>
+            <span style="font-size: 2rem">💪</span>
+            <span style="font-size: 2rem">🏆</span>
+            <span style="font-size: 2rem">⭐</span>
+          </div>
+          <p style="margin-top: 1rem; font-size: 0.9rem; color: #666">
+            Complete challenges to unlock more!
+          </p>
+        </div>
+      </section>
+    </main>
 
-    // Update dashboard with data
-    function updateDashboard() {
-      document.getElementById('userName').textContent = userData.name;
-      document.getElementById('streakDays').textContent = userData.streak;
-      document.getElementById('todayWorkouts').textContent = userData.todayWorkouts;
-      document.getElementById('todayCaloriesBurned').textContent = userData.todayCaloriesBurned;
-      document.getElementById('todayMeals').textContent = userData.todayMeals;
-      document.getElementById('todayCaloriesConsumed').textContent = userData.todayCaloriesConsumed;
-      document.getElementById('weeklyWorkouts').textContent = userData.weeklyWorkouts;
-      document.getElementById('proteinProgress').textContent = userData.proteinToday;
+    <script>
+      // Sample data generation (replace with real Supabase data)
+      const userData = {
+        name: 'Fitness Champion',
+        streak: 7,
+        todayWorkouts: 1,
+        todayCaloriesBurned: 450,
+        todayMeals: 3,
+        todayCaloriesConsumed: 1850,
+        weeklyWorkouts: 4,
+        proteinToday: 120,
+        benchPR: 225,
+        squatPR: 315,
+        deadliftPR: 405,
+        longestStreak: 28,
+        monthWorkouts: 18,
+        monthCalories: 8500,
+      };
 
-      // Progress bars
-      document.getElementById('workoutProgress').style.width = (userData.weeklyWorkouts / 5 * 100) + '%';
-      document.getElementById('proteinProgressBar').style.width = (userData.proteinToday / 150 * 100) + '%';
+      // Update dashboard with data
+      function updateDashboard() {
+        document.getElementById('userName').textContent = userData.name;
+        document.getElementById('streakDays').textContent = userData.streak;
+        document.getElementById('todayWorkouts').textContent = userData.todayWorkouts;
+        document.getElementById('todayCaloriesBurned').textContent = userData.todayCaloriesBurned;
+        document.getElementById('todayMeals').textContent = userData.todayMeals;
+        document.getElementById('todayCaloriesConsumed').textContent =
+          userData.todayCaloriesConsumed;
+        document.getElementById('weeklyWorkouts').textContent = userData.weeklyWorkouts;
+        document.getElementById('proteinProgress').textContent = userData.proteinToday;
 
-      // Personal records
-      document.getElementById('benchPR').textContent = userData.benchPR + ' lbs';
-      document.getElementById('squatPR').textContent = userData.squatPR + ' lbs';
-      document.getElementById('deadliftPR').textContent = userData.deadliftPR + ' lbs';
-      document.getElementById('longestStreak').textContent = userData.longestStreak + ' days';
+        // Progress bars
+        document.getElementById('workoutProgress').style.width =
+          (userData.weeklyWorkouts / 5) * 100 + '%';
+        document.getElementById('proteinProgressBar').style.width =
+          (userData.proteinToday / 150) * 100 + '%';
 
-      // Month stats
-      document.getElementById('monthWorkouts').textContent = userData.monthWorkouts;
-      document.getElementById('monthCalories').textContent = userData.monthCalories.toLocaleString();
+        // Personal records
+        document.getElementById('benchPR').textContent = userData.benchPR + ' lbs';
+        document.getElementById('squatPR').textContent = userData.squatPR + ' lbs';
+        document.getElementById('deadliftPR').textContent = userData.deadliftPR + ' lbs';
+        document.getElementById('longestStreak').textContent = userData.longestStreak + ' days';
 
-      // AI Tip (in production, this would come from AI API)
-      const tips = [
-        'Based on your recent workouts, focus on recovery today. Consider light cardio or yoga.',
-        'Your protein intake is on track! Keep it up to support muscle growth.',
-        'You\'re close to beating your bench press PR! Try adding 5 lbs next session.',
-        'Great consistency this week! Your 7-day streak shows dedication.',
-        'Your squat form is improving. Focus on depth and core engagement.'
-      ];
-      document.getElementById('aiTip').textContent = tips[Math.floor(Math.random() * tips.length)];
+        // Month stats
+        document.getElementById('monthWorkouts').textContent = userData.monthWorkouts;
+        document.getElementById('monthCalories').textContent =
+          userData.monthCalories.toLocaleString();
 
-      // Recent activity
-      document.getElementById('recentActivity').innerHTML = `
+        // AI Tip (in production, this would come from AI API)
+        const tips = [
+          'Based on your recent workouts, focus on recovery today. Consider light cardio or yoga.',
+          'Your protein intake is on track! Keep it up to support muscle growth.',
+          "You're close to beating your bench press PR! Try adding 5 lbs next session.",
+          'Great consistency this week! Your 7-day streak shows dedication.',
+          'Your squat form is improving. Focus on depth and core engagement.',
+        ];
+        document.getElementById('aiTip').textContent =
+          tips[Math.floor(Math.random() * tips.length)];
+
+        // Recent activity
+        document.getElementById('recentActivity').innerHTML = `
         <li>✅ Completed Push Day Workout - 45 mins ago</li>
         <li>🍳 Logged Breakfast (520 cal, 35g protein) - 3 hours ago</li>
         <li>📸 Updated progress photo - Yesterday</li>
         <li>🏋️ New PR: Bench Press 225 lbs - 2 days ago</li>
         <li>🥗 Logged Chicken & Rice Bowl - 2 days ago</li>
       `;
-    }
-
-    // Weight Chart
-    function createWeightChart() {
-      const ctx = document.getElementById('weightChart').getContext('2d');
-      new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'],
-          datasets: [{
-            label: 'Weight (lbs)',
-            data: [185, 183, 181, 180, 178, 176],
-            borderColor: '#FF6B35',
-            backgroundColor: 'rgba(255, 107, 53, 0.1)',
-            tension: 0.4,
-            fill: true
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false }
-          }
-        }
-      });
-    }
-
-    // Strength Chart
-    function createStrengthChart() {
-      const ctx = document.getElementById('strengthChart').getContext('2d');
-      new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: ['Bench', 'Squat', 'Deadlift', 'OHP'],
-          datasets: [{
-            label: 'Max Weight (lbs)',
-            data: [225, 315, 405, 135],
-            backgroundColor: ['#FF6B35', '#004E89', '#06D6A0', '#F77F00']
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false }
-          }
-        }
-      });
-    }
-
-    // Initialize dashboard
-    window.addEventListener('load', () => {
-      updateDashboard();
-      createWeightChart();
-      createStrengthChart();
-
-      // Track page view
-      if (window.SupabaseAPI) {
-        SupabaseAPI.trackEvent('page_view', { page: 'dashboard' });
       }
-    });
-  </script>
-</body>
+
+      // Weight Chart
+      function createWeightChart() {
+        const ctx = document.getElementById('weightChart').getContext('2d');
+        new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'],
+            datasets: [
+              {
+                label: 'Weight (lbs)',
+                data: [185, 183, 181, 180, 178, 176],
+                borderColor: '#FF6B35',
+                backgroundColor: 'rgba(255, 107, 53, 0.1)',
+                tension: 0.4,
+                fill: true,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+            },
+          },
+        });
+      }
+
+      // Strength Chart
+      function createStrengthChart() {
+        const ctx = document.getElementById('strengthChart').getContext('2d');
+        new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: ['Bench', 'Squat', 'Deadlift', 'OHP'],
+            datasets: [
+              {
+                label: 'Max Weight (lbs)',
+                data: [225, 315, 405, 135],
+                backgroundColor: ['#FF6B35', '#004E89', '#06D6A0', '#F77F00'],
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+            },
+          },
+        });
+      }
+
+      // Initialize dashboard
+      window.addEventListener('load', () => {
+        updateDashboard();
+        createWeightChart();
+        createStrengthChart();
+
+        // Track page view
+        if (window.SupabaseAPI) {
+          SupabaseAPI.trackEvent('page_view', { page: 'dashboard' });
+        }
+      });
+    </script>
+  </body>
 </html>
