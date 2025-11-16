@@ -12,6 +12,7 @@ permissions:
 jobs:
   analyze:
     runs-on: ubuntu-latest
+    environment: unified-software-automated-developer-and-deployer
     steps:
       - uses: actions/checkout@v4
         with:

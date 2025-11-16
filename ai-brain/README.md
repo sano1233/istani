@@ -2,6 +2,11 @@
 
 Enterprise automated AI with VS Code, Cursor, Gemini, Claude, Codex, Qwen.
 
+## Setup
+All secrets are managed through the unified GitHub environment: `unified-software-automated-developer-and-deployer`
+
+See [Environment Setup Guide](../.github/ENVIRONMENT-SETUP.md) for configuration details.
+
 ## Usage
 
 **Unified query (all AIs):**
