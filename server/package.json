@@ -1,0 +1,17 @@
+{
+  "name": "ai-platform-server",
+  "version": "1.0.0",
+  "description": "Backend for free full-stack AI business assistant",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node index.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "express": "^4.19.0",
+    "node-cron": "^3.0.0",
+    "node-fetch": "^3.3.2"
+  }
+}

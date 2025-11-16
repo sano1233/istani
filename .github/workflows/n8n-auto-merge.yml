@@ -1,0 +1,172 @@
+name: 🔀 n8n Auto-Merge PR
+
+# Automatically merges PRs via n8n webhook when all checks pass
+# Triggered when PR checks complete
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+  check_suite:
+    types: [completed]
+  workflow_run:
+    workflows: ["🧪 JavaScript CI - Quality & Security"]
+    types: [completed]
+
+permissions:
+  contents: write
+  pull-requests: write
+  checks: read
+
+jobs:
+  auto-merge-check:
+    name: 🔍 Check Auto-Merge Eligibility
+    runs-on: ubuntu-latest
+    outputs:
+      should_merge: ${{ steps.check.outputs.should_merge }}
+      pr_number: ${{ steps.check.outputs.pr_number }}
+      pr_title: ${{ steps.check.outputs.pr_title }}
+    steps:
+      - name: Get PR info
+        id: pr_info
+        uses: actions/github-script@v7
+        with:
+          script: |
+            let pr;
+            if (context.payload.pull_request) {
+              pr = context.payload.pull_request;
+            } else if (context.payload.workflow_run) {
+              const prs = context.payload.workflow_run.pull_requests;
+              if (prs && prs.length > 0) {
+                const { data: prData } = await github.rest.pulls.get({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: prs[0].number
+                });
+                pr = prData;
+              }
+            }
+
+            if (!pr) {
+              core.setOutput('pr_number', '0');
+              return;
+            }
+
+            core.setOutput('pr_number', pr.number.toString());
+            core.setOutput('pr_title', pr.title);
+            core.setOutput('head_sha', pr.head.sha);
+
+      - name: Check if should auto-merge
+        id: check
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = parseInt('${{ steps.pr_info.outputs.pr_number }}');
+            if (!prNumber) {
+              core.setOutput('should_merge', 'false');
+              return;
+            }
+
+            // Get PR details
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber
+            });
+
+            // Check conditions
+            const conditions = {
+              mergeable: pr.mergeable !== false,
+              not_draft: !pr.draft,
+              no_conflicts: pr.mergeable_state !== 'dirty',
+              approved_or_owner: pr.user.login === context.repo.owner ||
+                                 pr.labels.some(l => l.name === 'auto-merge')
+            };
+
+            console.log('Auto-merge conditions:', conditions);
+
+            // Get check runs
+            const { data: checks } = await github.rest.checks.listForRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: pr.head.sha
+            });
+
+            const failedChecks = checks.check_runs.filter(c =>
+              c.conclusion === 'failure' || c.conclusion === 'cancelled'
+            );
+
+            conditions.checks_passing = failedChecks.length === 0;
+
+            const shouldMerge = Object.values(conditions).every(c => c === true);
+
+            core.setOutput('should_merge', shouldMerge.toString());
+            core.setOutput('pr_number', prNumber.toString());
+            core.setOutput('pr_title', pr.title);
+
+  trigger-n8n-merge:
+    name: 🚀 Trigger n8n Auto-Merge
+    runs-on: ubuntu-latest
+    needs: auto-merge-check
+    if: needs.auto-merge-check.outputs.should_merge == 'true'
+    steps:
+      - name: Calculate HMAC signature
+        id: hmac
+        env:
+          N8N_SECRET: ${{ secrets.N8N_ISTANI_SHARED_SECRET }}
+        run: |
+          PR_NUMBER="${{ needs.auto-merge-check.outputs.pr_number }}"
+          PR_TITLE="${{ needs.auto-merge-check.outputs.pr_title }}"
+
+          PAYLOAD=$(cat <<EOF
+          {
+            "pr_number": $PR_NUMBER,
+            "merge_method": "squash",
+            "commit_title": "$PR_TITLE (#$PR_NUMBER)",
+            "commit_message": "Auto-merged by n8n workflow\n\n✅ All checks passed\n🤖 Automated merge via n8n + GitHub Actions",
+            "repo": "${{ github.repository }}"
+          }
+          EOF
+          )
+
+          if [ -n "$N8N_SECRET" ]; then
+            SIGNATURE=$(echo -n "$PAYLOAD" | openssl dgst -sha256 -hmac "$N8N_SECRET" | sed 's/^.* //')
+            echo "signature=$SIGNATURE" >> $GITHUB_OUTPUT
+          else
+            echo "signature=none" >> $GITHUB_OUTPUT
+          fi
+
+          echo "payload<<EOF" >> $GITHUB_OUTPUT
+          echo "$PAYLOAD" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Send merge webhook to n8n
+        env:
+          N8N_WEBHOOK_URL: ${{ secrets.N8N_WEBHOOK_URL_MERGE || 'http://localhost:5678/webhook/github-merge-pr' }}
+        run: |
+          curl -X POST "$N8N_WEBHOOK_URL" \
+            -H "Content-Type: application/json" \
+            -H "X-Istani-Signature: ${{ steps.hmac.outputs.signature }}" \
+            -d '${{ steps.hmac.outputs.payload }}' \
+            -v || {
+              echo "⚠️  n8n webhook failed. Falling back to direct merge."
+              exit 1
+            }
+
+      - name: Direct merge (fallback)
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = parseInt('${{ needs.auto-merge-check.outputs.pr_number }}');
+            const prTitle = '${{ needs.auto-merge-check.outputs.pr_title }}';
+
+            await github.rest.pulls.merge({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber,
+              merge_method: 'squash',
+              commit_title: `${prTitle} (#${prNumber})`,
+              commit_message: 'Auto-merged by GitHub Actions (n8n fallback)\n\n✅ All checks passed'
+            });
+
+            console.log(`✅ Merged PR #${prNumber}`);

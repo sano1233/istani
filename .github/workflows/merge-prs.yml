@@ -1,0 +1,30 @@
+name: Merge PRs (manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      prs:
+        description: "Space-separated PR numbers (oldest→newest)"
+        required: false
+        default: "39 40 41 44 45 49"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Use gh
+        run: gh --version
+      - name: Merge PRs sequentially
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PRS: ${{ github.event.inputs.prs }}
+        run: |
+          bash -lc '
+          for pr in ${PRS}; do
+            echo "Merging #${pr}…"
+            gh pr merge "${pr}" --squash --delete-branch
+          done'

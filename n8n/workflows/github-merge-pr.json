@@ -1,0 +1,77 @@
+{
+  "name": "GitHub Auto-Merge PR",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "github-merge-pr",
+        "responseMode": "lastNode",
+        "options": { "responseCode": 200 }
+      },
+      "id": "WebhookMerge",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [260, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const crypto = require('crypto');\nconst headers = $json.headers || {};\nconst secret = process.env.N8N_ISTANI_SHARED_SECRET || '';\nconst sig = headers['x-istani-signature'] || headers['X-Istani-Signature'] || '';\nconst body = JSON.stringify($json.body || {});\nconst calc = secret ? crypto.createHmac('sha256', secret).update(body).digest('hex') : '';\nif (secret && sig !== calc) {\n  return [{ ok: false, reason: 'bad-signature' }];\n}\nconst data = $json.body || {};\nreturn [{\n  ok: true,\n  pr_number: data.pr_number || 0,\n  merge_method: data.merge_method || 'squash',\n  commit_title: data.commit_title || 'Auto-merged PR',\n  commit_message: data.commit_message || 'Automatically merged by n8n workflow'\n}];"
+      },
+      "id": "VerifyMerge",
+      "name": "Verify Signature",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=https://api.github.com/repos/{{ $env.GITHUB_REPO || 'sano1233/istani' }}/pulls/{{ $json.pr_number }}/merge",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=token {{ $env.GITHUB_TOKEN }}"
+            },
+            {
+              "name": "Accept",
+              "value": "application/vnd.github.v3+json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "merge_method",
+              "value": "={{ $json.merge_method }}"
+            },
+            {
+              "name": "commit_title",
+              "value": "={{ $json.commit_title }}"
+            },
+            {
+              "name": "commit_message",
+              "value": "={{ $json.commit_message }}"
+            }
+          ]
+        }
+      },
+      "id": "MergePR",
+      "name": "Merge GitHub PR",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [660, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": { "main": [ [ { "node": "Verify Signature", "type": "main", "index": 0 } ] ] },
+    "Verify Signature": { "main": [ [ { "node": "Merge GitHub PR", "type": "main", "index": 0 } ] ] }
+  },
+  "active": true,
+  "settings": { "executionOrder": "v1" }
+}
