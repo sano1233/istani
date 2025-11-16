@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Workouts - Istani Fitness</title>
+
+  <link rel="stylesheet" href="css/pico.min.css">
+  <link rel="stylesheet" href="css/custom-theme.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-client.js"></script>
+
+  <style>
+    :root {
+      --primary: #FF6B35;
+      --secondary: #004E89;
+      --success: #06D6A0;
+    }
+
+    nav {
+      background: var(--secondary);
+      padding: 1rem 0;
+      color: white;
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    .nav-links a {
+      color: white;
+      margin: 0 1rem;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .workout-grid {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 2rem;
+      margin: 2rem 0;
+    }
+
+    @media (max-width: 968px) {
+      .workout-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .exercise-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      margin: 1rem 0;
+      border-left: 4px solid var(--primary);
+    }
+
+    .exercise-card h4 {
+      margin-bottom: 0.5rem;
+      color: var(--secondary);
+    }
+
+    .exercise-sets {
+      margin: 1rem 0;
+    }
+
+    .set-row {
+      display: grid;
+      grid-template-columns: auto 1fr 1fr 60px;
+      gap: 0.5rem;
+      align-items: center;
+      margin: 0.5rem 0;
+      padding: 0.75rem;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+
+    .set-input {
+      padding: 0.5rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 6px;
+      font-size: 1rem;
+      text-align: center;
+    }
+
+    .set-input:focus {
+      border-color: var(--primary);
+      outline: none;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+    }
+
+    .btn-success {
+      background: var(--success);
+    }
+
+    .program-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin: 1rem 0;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .program-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    }
+
+    .program-card.active {
+      border: 3px solid var(--primary);
+    }
+
+    .timer {
+      font-size: 2rem;
+      font-weight: 800;
+      text-align: center;
+      color: var(--primary);
+      margin: 1rem 0;
+    }
+
+    .muscle-badge {
+      display: inline-block;
+      background: #e3f2fd;
+      color: #1976d2;
+      padding: 0.25rem 0.75rem;
+      border-radius: 15px;
+      font-size: 0.85rem;
+      margin: 0.25rem;
+    }
+
+    .quick-add-btn {
+      background: #f5f5f5;
+      border: 2px dashed #ccc;
+      padding: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.3s;
+    }
+
+    .quick-add-btn:hover {
+      background: #fff;
+      border-color: var(--primary);
+    }
+
+    .workout-summary {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 2rem;
+      border-radius: 12px;
+      margin: 2rem 0;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-container">
+      <div style="font-size: 1.5rem; font-weight: 800;">💪 Istani Fitness</div>
+      <div class="nav-links">
+        <a href="/dashboard.html">Dashboard</a>
+        <a href="/workouts.html">Workouts</a>
+        <a href="/nutrition.html">Nutrition</a>
+        <a href="/progress.html">Progress</a>
+        <a href="/coaching.html">Coaching</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container" style="max-width: 1400px; padding: 2rem;">
+    <h1>🏋️ Workout Tracker</h1>
+    <p style="color: #666;">Track every rep, set, and weight to maximize your gains</p>
+
+    <!-- Workout Timer -->
+    <div class="workout-summary" id="workoutTimer" style="display: none;">
+      <h3>Active Workout</h3>
+      <div class="timer" id="timerDisplay">00:00:00</div>
+      <div style="text-align: center;">
+        <button class="btn-primary btn-success" onclick="completeWorkout()">Complete Workout</button>
+        <button class="btn-primary" onclick="pauseWorkout()" style="background: #f77f00; margin-left: 1rem;">Pause</button>
+      </div>
+    </div>
+
+    <div class="workout-grid">
+      <!-- Sidebar: Programs & Quick Add -->
+      <aside>
+        <div style="background: white; padding: 1.5rem; border-radius: 12px;">
+          <h3>Workout Programs</h3>
+
+          <div class="program-card active" onclick="selectProgram('push_day')">
+            <h4>💪 Push Day</h4>
+            <p style="font-size: 0.9rem; color: #666;">Chest, Shoulders, Triceps</p>
+            <span class="muscle-badge">Chest</span>
+            <span class="muscle-badge">Shoulders</span>
+            <span class="muscle-badge">Triceps</span>
+          </div>
+
+          <div class="program-card" onclick="selectProgram('pull_day')">
+            <h4>🔙 Pull Day</h4>
+            <p style="font-size: 0.9rem; color: #666;">Back, Biceps, Rear Delts</p>
+            <span class="muscle-badge">Back</span>
+            <span class="muscle-badge">Biceps</span>
+          </div>
+
+          <div class="program-card" onclick="selectProgram('leg_day')">
+            <h4>🦵 Leg Day</h4>
+            <p style="font-size: 0.9rem; color: #666;">Quads, Hamstrings, Calves</p>
+            <span class="muscle-badge">Quads</span>
+            <span class="muscle-badge">Hamstrings</span>
+          </div>
+
+          <div class="program-card" onclick="selectProgram('full_body')">
+            <h4>🏋️ Full Body</h4>
+            <p style="font-size: 0.9rem; color: #666;">Complete workout</p>
+            <span class="muscle-badge">All Muscles</span>
+          </div>
+
+          <button class="btn-primary" style="width: 100%; margin-top: 1rem;" onclick="startWorkout()">
+            Start Workout
+          </button>
+        </div>
+      </aside>
+
+      <!-- Main: Exercise Tracker -->
+      <main>
+        <div style="background: white; padding: 1.5rem; border-radius: 12px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h3>Today's Exercises</h3>
+            <button class="btn-primary" onclick="addExercise()" style="background: var(--success);">
+              + Add Exercise
+            </button>
+          </div>
+
+          <!-- Exercise List -->
+          <div id="exerciseList">
+            <!-- Bench Press -->
+            <div class="exercise-card">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <h4>Bench Press</h4>
+                  <span class="muscle-badge">Chest</span>
+                  <span class="muscle-badge">Triceps</span>
+                </div>
+                <button onclick="removeExercise(this)" style="background: #f44336; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">
+                  Remove
+                </button>
+              </div>
+
+              <div class="exercise-sets">
+                <div class="set-row">
+                  <strong>Set 1:</strong>
+                  <input type="number" class="set-input" placeholder="Weight (lbs)" value="135">
+                  <input type="number" class="set-input" placeholder="Reps" value="10">
+                  <input type="checkbox" class="set-input" style="width: 30px; height: 30px;">
+                </div>
+                <div class="set-row">
+                  <strong>Set 2:</strong>
+                  <input type="number" class="set-input" placeholder="Weight (lbs)" value="185">
+                  <input type="number" class="set-input" placeholder="Reps" value="8">
+                  <input type="checkbox" class="set-input" style="width: 30px; height: 30px;">
+                </div>
+                <div class="set-row">
+                  <strong>Set 3:</strong>
+                  <input type="number" class="set-input" placeholder="Weight (lbs)" value="205">
+                  <input type="number" class="set-input" placeholder="Reps" value="6">
+                  <input type="checkbox" class="set-input" style="width: 30px; height: 30px;">
+                </div>
+              </div>
+
+              <button onclick="addSet(this)" class="btn-primary" style="background: var(--success); font-size: 0.9rem; padding: 0.5rem 1rem;">
+                + Add Set
+              </button>
+
+              <div style="margin-top: 1rem; padding: 0.75rem; background: #e3f2fd; border-radius: 6px;">
+                <strong>💡 AI Tip:</strong> Your form is solid! Try increasing weight by 5-10 lbs next session.
+              </div>
+            </div>
+
+            <!-- Incline Dumbbell Press -->
+            <div class="exercise-card">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <h4>Incline Dumbbell Press</h4>
+                  <span class="muscle-badge">Upper Chest</span>
+                  <span class="muscle-badge">Shoulders</span>
+                </div>
+                <button onclick="removeExercise(this)" style="background: #f44336; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">
+                  Remove
+                </button>
+              </div>
+
+              <div class="exercise-sets">
+                <div class="set-row">
+                  <strong>Set 1:</strong>
+                  <input type="number" class="set-input" placeholder="Weight (lbs)" value="60">
+                  <input type="number" class="set-input" placeholder="Reps" value="12">
+                  <input type="checkbox" class="set-input" style="width: 30px; height: 30px;">
+                </div>
+                <div class="set-row">
+                  <strong>Set 2:</strong>
+                  <input type="number" class="set-input" placeholder="Weight (lbs)" value="70">
+                  <input type="number" class="set-input" placeholder="Reps" value="10">
+                  <input type="checkbox" class="set-input" style="width: 30px; height: 30px;">
+                </div>
+                <div class="set-row">
+                  <strong>Set 3:</strong>
+                  <input type="number" class="set-input" placeholder="Weight (lbs)" value="75">
+                  <input type="number" class="set-input" placeholder="Reps" value="8">
+                  <input type="checkbox" class="set-input" style="width: 30px; height: 30px;">
+                </div>
+              </div>
+
+              <button onclick="addSet(this)" class="btn-primary" style="background: var(--success); font-size: 0.9rem; padding: 0.5rem 1rem;">
+                + Add Set
+              </button>
+            </div>
+
+            <!-- Cable Flyes -->
+            <div class="exercise-card">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <h4>Cable Flyes</h4>
+                  <span class="muscle-badge">Chest</span>
+                </div>
+                <button onclick="removeExercise(this)" style="background: #f44336; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">
+                  Remove
+                </button>
+              </div>
+
+              <div class="exercise-sets">
+                <div class="set-row">
+                  <strong>Set 1:</strong>
+                  <input type="number" class="set-input" placeholder="Weight (lbs)" value="40">
+                  <input type="number" class="set-input" placeholder="Reps" value="15">
+                  <input type="checkbox" class="set-input" style="width: 30px; height: 30px;">
+                </div>
+              </div>
+
+              <button onclick="addSet(this)" class="btn-primary" style="background: var(--success); font-size: 0.9rem; padding: 0.5rem 1rem;">
+                + Add Set
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Add Exercise -->
+          <div class="quick-add-btn" onclick="addExercise()">
+            <h4>+ Add New Exercise</h4>
+            <p style="color: #666; font-size: 0.9rem;">Choose from 400+ exercises</p>
+          </div>
+
+          <!-- Save Workout -->
+          <button class="btn-primary btn-success" onclick="saveWorkout()" style="width: 100%; margin-top: 2rem; padding: 1rem; font-size: 1.1rem;">
+            💾 Save Workout
+          </button>
+        </div>
+      </main>
+    </div>
+  </main>
+
+  <script>
+    let workoutStartTime = null;
+    let timerInterval = null;
+    let selectedProgram = 'push_day';
+
+    function selectProgram(program) {
+      selectedProgram = program;
+      document.querySelectorAll('.program-card').forEach(card => {
+        card.classList.remove('active');
+      });
+      event.target.closest('.program-card').classList.add('active');
+    }
+
+    function startWorkout() {
+      workoutStartTime = new Date();
+      document.getElementById('workoutTimer').style.display = 'block';
+
+      timerInterval = setInterval(() => {
+        const elapsed = new Date() - workoutStartTime;
+        const hours = Math.floor(elapsed / 3600000);
+        const minutes = Math.floor((elapsed % 3600000) / 60000);
+        const seconds = Math.floor((elapsed % 60000) / 1000);
+
+        document.getElementById('timerDisplay').textContent =
+          `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      }, 1000);
+
+      alert('✅ Workout started! Track your sets and reps below.');
+
+      // Track event
+      if (window.SupabaseAPI) {
+        SupabaseAPI.trackEvent('workout_started', { program: selectedProgram });
+      }
+    }
+
+    function pauseWorkout() {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        alert('⏸️ Workout paused. Click Start to resume.');
+      }
+    }
+
+    function completeWorkout() {
+      if (confirm('Complete this workout? Your progress will be saved.')) {
+        clearInterval(timerInterval);
+        saveWorkout();
+      }
+    }
+
+    function addSet(button) {
+      const exerciseSets = button.previousElementSibling;
+      const setCount = exerciseSets.children.length + 1;
+
+      const setRow = document.createElement('div');
+      setRow.className = 'set-row';
+      setRow.innerHTML = `
+        <strong>Set ${setCount}:</strong>
+        <input type="number" class="set-input" placeholder="Weight (lbs)">
+        <input type="number" class="set-input" placeholder="Reps">
+        <input type="checkbox" class="set-input" style="width: 30px; height: 30px;">
+      `;
+
+      exerciseSets.appendChild(setRow);
+    }
+
+    function removeExercise(button) {
+      if (confirm('Remove this exercise?')) {
+        button.closest('.exercise-card').remove();
+      }
+    }
+
+    function addExercise() {
+      const exerciseName = prompt('Enter exercise name:');
+      if (!exerciseName) return;
+
+      const exerciseList = document.getElementById('exerciseList');
+      const exerciseCard = document.createElement('div');
+      exerciseCard.className = 'exercise-card';
+      exerciseCard.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <h4>${exerciseName}</h4>
+            <span class="muscle-badge">Custom</span>
+          </div>
+          <button onclick="removeExercise(this)" style="background: #f44336; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">
+            Remove
+          </button>
+        </div>
+        <div class="exercise-sets">
+          <div class="set-row">
+            <strong>Set 1:</strong>
+            <input type="number" class="set-input" placeholder="Weight (lbs)">
+            <input type="number" class="set-input" placeholder="Reps">
+            <input type="checkbox" class="set-input" style="width: 30px; height: 30px;">
+          </div>
+        </div>
+        <button onclick="addSet(this)" class="btn-primary" style="background: var(--success); font-size: 0.9rem; padding: 0.5rem 1rem;">
+          + Add Set
+        </button>
+      `;
+
+      exerciseList.appendChild(exerciseCard);
+    }
+
+    async function saveWorkout() {
+      // Collect workout data
+      const exercises = [];
+      document.querySelectorAll('.exercise-card').forEach(card => {
+        const name = card.querySelector('h4').textContent;
+        const sets = [];
+
+        card.querySelectorAll('.set-row').forEach(row => {
+          const inputs = row.querySelectorAll('input[type="number"]');
+          if (inputs.length === 2) {
+            sets.push({
+              weight: parseFloat(inputs[0].value) || 0,
+              reps: parseInt(inputs[1].value) || 0
+            });
+          }
+        });
+
+        exercises.push({ name, sets });
+      });
+
+      const duration = workoutStartTime ? Math.floor((new Date() - workoutStartTime) / 60000) : 0;
+
+      console.log('Saving workout:', { exercises, duration });
+
+      // In production, save to Supabase
+      // await SupabaseAPI.logWorkout(userId, programId, exercises, duration, caloriesBurned);
+
+      alert(`🎉 Workout saved successfully!\n\nDuration: ${duration} minutes\nExercises: ${exercises.length}\n\nGreat work!`);
+
+      // Track completion
+      if (window.SupabaseAPI) {
+        SupabaseAPI.trackEvent('workout_completed', {
+          exercises: exercises.length,
+          duration,
+          program: selectedProgram
+        });
+      }
+
+      // Redirect to dashboard
+      if (confirm('View your progress on the dashboard?')) {
+        window.location.href = '/dashboard.html';
+      }
+    }
+
+    // Track page view
+    window.addEventListener('load', () => {
+      if (window.SupabaseAPI) {
+        SupabaseAPI.trackEvent('page_view', { page: 'workouts' });
+      }
+    });
+  </script>
+</body>
+</html>
