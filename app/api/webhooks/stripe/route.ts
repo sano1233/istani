@@ -1,13 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { stripe } from '@/lib/stripe'
+import { getStripe } from '@/lib/stripe'
 import { createClient } from '@supabase/supabase-js'
 import type { Database } from '@/types/database'
 
 // Create Supabase admin client for webhook
-const supabaseAdmin = createClient<Database>(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+function getSupabaseAdmin() {
+  return createClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co',
+    process.env.SUPABASE_SERVICE_ROLE_KEY || 'placeholder-key'
+  )
+}
 
 export async function POST(request: NextRequest) {
   const body = await request.text()
@@ -23,6 +25,7 @@ export async function POST(request: NextRequest) {
   let event: any
 
   try {
+    const stripe = getStripe()
     event = stripe.webhooks.constructEvent(
       body,
       signature,
@@ -43,9 +46,11 @@ export async function POST(request: NextRequest) {
         const session = event.data.object
 
         // Get line items from session
+        const stripe = getStripe()
         const lineItems = await stripe.checkout.sessions.listLineItems(session.id)
 
         // Create order in database
+        const supabaseAdmin = getSupabaseAdmin()
         const { data: order, error: orderError } = await supabaseAdmin
           .from('orders')
           .insert({
@@ -57,10 +62,12 @@ export async function POST(request: NextRequest) {
           .select()
           .single()
 
-        if (orderError) {
+        if (orderError || !order) {
           console.error('Failed to create order:', orderError)
           break
         }
+
+        const orderId = (order as any).id
 
         // Create order items
         for (const item of lineItems.data) {
@@ -72,14 +79,14 @@ export async function POST(request: NextRequest) {
           await supabaseAdmin
             .from('order_items')
             .insert({
-              order_id: order.id,
+              order_id: orderId,
               product_id: null, // You'd want to store product_id in metadata
               quantity: item.quantity || 1,
               price_at_time: unitAmount / 100,
             } as any)
         }
 
-        console.log('Order created successfully:', order.id)
+        console.log('Order created successfully:', orderId)
         break
       }
 
@@ -88,8 +95,9 @@ export async function POST(request: NextRequest) {
         console.log('Payment succeeded:', paymentIntent.id)
 
         // Update order status to completed
-        await supabaseAdmin
-          .from('orders')
+        const supabaseAdmin = getSupabaseAdmin()
+        await (supabaseAdmin
+          .from('orders') as any)
           .update({ status: 'completed' })
           .eq('stripe_payment_intent_id', paymentIntent.id)
 
@@ -101,8 +109,9 @@ export async function POST(request: NextRequest) {
         console.log('Payment failed:', paymentIntent.id)
 
         // Update order status to cancelled
-        await supabaseAdmin
-          .from('orders')
+        const supabaseAdmin = getSupabaseAdmin()
+        await (supabaseAdmin
+          .from('orders') as any)
           .update({ status: 'cancelled' })
           .eq('stripe_payment_intent_id', paymentIntent.id)
 

@@ -28,9 +28,19 @@ export function calculateTDEE(bmr: number, activityLevel: string): number {
   return Math.round(bmr * (multipliers[activityLevel] || 1.2))
 }
 
+export function calculateCalorieTarget(tdee: number, goal: string): number {
+  if (goal === 'muscle_gain') {
+    return Math.round(tdee + 300) // Surplus for muscle gain
+  } else if (goal === 'fat_loss') {
+    return Math.round(tdee - 500) // Deficit for fat loss
+  }
+  return tdee // Maintenance
+}
+
 export function calculateMacros(
   calories: number,
-  goal: string
+  goal: string,
+  weightKg?: number
 ): { protein: number; carbs: number; fats: number } {
   let proteinPercent = 0.3
   let carbsPercent = 0.4

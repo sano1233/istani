@@ -27,7 +27,7 @@ export default async function WaterPage() {
 
   // Calculate recommended water intake
   const recommendedGlasses = profile?.current_weight_kg
-    ? calculateWaterIntake(profile.current_weight_kg, profile.activity_level || 'moderate')
+    ? calculateWaterIntake(profile.current_weight_kg)
     : 8
 
   // Get today's water intake

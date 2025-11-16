@@ -43,15 +43,15 @@ export default async function NutritionPage() {
 
     // Calculate macros
     const macros = calculateMacros(
-      profile.current_weight_kg,
       calorieTarget,
-      fitnessGoal
+      fitnessGoal,
+      profile.current_weight_kg
     )
 
     macroTargets = {
-      protein: macros.protein_g,
-      carbs: macros.carbs_g,
-      fats: macros.fats_g,
+      protein: macros.protein,
+      carbs: macros.carbs,
+      fats: macros.fats,
       calories: calorieTarget,
     }
   }
