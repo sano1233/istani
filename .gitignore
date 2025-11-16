@@ -1,174 +1,20 @@
-# ============================================
-# SENSITIVE FILES - NEVER COMMIT THESE!
-# ============================================
-
-# Environment variables and secrets
-.env
-.env.*
-*.env
-.env.local
-.env.development
-.env.production
-.env.test
-.env.staging
-
-# API Keys and Credentials
-credentials.json
-secrets.json
-config/secrets.*
-*-credentials.json
-service-account*.json
-
-# Private Keys and Certificates
-*.key
-*.pem
-*.p12
-*.pfx
-*.cer
-*.crt
-id_rsa
-id_dsa
-id_ecdsa
-id_ed25519
-*.ppk
-
-# Cloud Provider Credentials
-.aws/credentials
-.aws/config
-.azure/
-.gcloud/
-.credentials
-
-# Package Manager Credentials
-.npmrc
-.yarnrc
-.pypirc
-pip.conf
-
-# Database
-*.sql
-*.sqlite
-*.db
-database.yml
-database.json
-
-# ============================================
-# NODE.JS
-# ============================================
 node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-lerna-debug.log*
-.pnpm-debug.log*
+.next/
+.env
+.env.local
+*.log
+.DS_Store
 ai-brain/node_modules/
 ai-brain/package-lock.json
-
-# ============================================
-# BUILD OUTPUTS
-# ============================================
+ai-brain/.temp-comment.txt
+out/
 dist/
 build/
-out/
-.next/
-.nuxt/
-.cache/
-istani-rebuild/assets/
+.vercel
 .turbo
 
-# ============================================
-# JAVA BUILD ARTIFACTS
-# ============================================
-target/
-*.class
-*.jar
-*.war
-*.ear
-.settings/
-.project
-.classpath
-*.iml
-.idea/
-.mvn/
-mvnw
-mvnw.cmd
-
-# ============================================
-# AI AGENT (Paid - Not Used)
-# ============================================
-ai-agent/.env
-ai-agent/node_modules
-ai-agent/logs/
-ai-agent/*.log
-ai-agent/.env.local
-ai-agent/.env.*.local
-ai-agent/monitoring/*.db
-ai-agent/monitoring/*.sqlite
-
-# ============================================
-# DOCKER
-# ============================================
-docker-compose.override.yml
-.docker/
-
-# ============================================
-# TEMPORARY FILES
-# ============================================
-*.tmp
-*.temp
-*.swp
-*.swo
-*.bak
-*.backup
-*~
-.DS_Store
-Thumbs.db
-
-# ============================================
-# IDE / EDITOR FILES
-# ============================================
-.vscode/
-.idea/
-*.sublime-project
-*.sublime-workspace
-.project
-.classpath
-.settings/
-*.code-workspace
-
-# ============================================
-# LOGS
-# ============================================
-*.log
-logs/
-*.log.*
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# ============================================
-# COVERAGE
-# ============================================
-coverage/
-.nyc_output/
-*.lcov
-
-# ============================================
-# MISC
-# ============================================
-.cache
-.parcel-cache
-.vercel
-.netlify
-.output
-
-# ============================================
-# SECURITY NOTE FOR BEGINNERS:
-# ============================================
-# If you accidentally committed sensitive files:
-# 1. Add them to this .gitignore
-# 2. Run: git rm --cached <filename>
-# 3. Commit the changes
-# 4. Rotate/change any exposed secrets immediately
-#
-# Read SECURITY_FOR_BEGINNERS.md for detailed help!
+# AI Platform
+server/node_modules/
+server/.env
+client/node_modules/
+client/dist/
