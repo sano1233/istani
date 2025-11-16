@@ -1,0 +1,114 @@
+name: 🤖 n8n Auto-Create PR
+
+# Automatically creates PRs via n8n webhook
+# Triggered on push to feature branches
+
+on:
+  push:
+    branches-ignore:
+      - main
+      - master
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-create-pr:
+    name: 🔀 Auto-Create PR via n8n
+    runs-on: ubuntu-latest
+    if: |
+      !startsWith(github.ref, 'refs/heads/claude/') &&
+      !contains(github.event.head_commit.message, '[skip ci]')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Extract branch info
+        id: branch
+        run: |
+          BRANCH_NAME="${GITHUB_REF#refs/heads/}"
+          echo "name=$BRANCH_NAME" >> $GITHUB_OUTPUT
+
+          # Get last commit message as PR title
+          TITLE=$(git log -1 --pretty=%s)
+          echo "title=$TITLE" >> $GITHUB_OUTPUT
+
+          # Get commit body as PR body
+          BODY=$(git log -1 --pretty=%b)
+          if [ -z "$BODY" ]; then
+            BODY="Auto-created PR from branch $BRANCH_NAME"
+          fi
+          echo "body<<EOF" >> $GITHUB_OUTPUT
+          echo "$BODY" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Calculate HMAC signature
+        id: hmac
+        env:
+          N8N_SECRET: ${{ secrets.N8N_ISTANI_SHARED_SECRET }}
+        run: |
+          PAYLOAD=$(cat <<EOF
+          {
+            "branch": "${{ steps.branch.outputs.name }}",
+            "title": "${{ steps.branch.outputs.title }}",
+            "body": "${{ steps.branch.outputs.body }}",
+            "base": "main",
+            "repo": "${{ github.repository }}",
+            "sha": "${{ github.sha }}"
+          }
+          EOF
+          )
+
+          # Calculate HMAC-SHA256
+          if [ -n "$N8N_SECRET" ]; then
+            SIGNATURE=$(echo -n "$PAYLOAD" | openssl dgst -sha256 -hmac "$N8N_SECRET" | sed 's/^.* //')
+            echo "signature=$SIGNATURE" >> $GITHUB_OUTPUT
+          else
+            echo "⚠️  N8N_ISTANI_SHARED_SECRET not set"
+            echo "signature=none" >> $GITHUB_OUTPUT
+          fi
+
+          echo "payload<<EOF" >> $GITHUB_OUTPUT
+          echo "$PAYLOAD" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Send webhook to n8n
+        env:
+          N8N_WEBHOOK_URL: ${{ secrets.N8N_WEBHOOK_URL || 'http://localhost:5678/webhook/github-create-pr' }}
+        run: |
+          curl -X POST "$N8N_WEBHOOK_URL" \
+            -H "Content-Type: application/json" \
+            -H "X-Istani-Signature: ${{ steps.hmac.outputs.signature }}" \
+            -d '${{ steps.hmac.outputs.payload }}' \
+            -v || {
+              echo "⚠️  n8n webhook failed. PR creation may not have succeeded."
+              echo "   This is expected if n8n is not running."
+            }
+
+      - name: Create PR via GitHub API (fallback)
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const branch = '${{ steps.branch.outputs.name }}';
+            const title = '${{ steps.branch.outputs.title }}';
+            const body = '${{ steps.branch.outputs.body }}';
+
+            try {
+              const { data: pr } = await github.rest.pulls.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: title,
+                body: body + '\n\n🤖 Auto-created by GitHub Actions (n8n fallback)',
+                head: branch,
+                base: 'main'
+              });
+              console.log(`✅ Created PR #${pr.number}: ${pr.html_url}`);
+            } catch (error) {
+              if (error.message.includes('A pull request already exists')) {
+                console.log('ℹ️  PR already exists for this branch');
+              } else {
+                throw error;
+              }
+            }
