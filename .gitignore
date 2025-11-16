@@ -1,5 +1,43 @@
-node_modules
-# Node logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+gemini error: Command failed: node ai-brain/gemini-helper.js "Resolve the merge conflict in .gitignore. The file contains Git conflict markers (<<<<<<<, =======, >>>>>>>). Return ONLY the complete resolved file content without any conflict markers or explanations:
+
+node_modules/
+.next/
+.env
+.env.local
+*.log
+.DS_Store
+ai-brain/node_modules/
+ai-brain/package-lock.json
+<<<<<<< HEAD
+out/
+dist/
+build/
+.vercel
+.turbo
+=======
+.env
+.vercel
+>>>>>>> origin/main
+"
+node:internal/modules/cjs/loader:1386
+  throw err;
+  ^
+
+Error: Cannot find module '@google/generative-ai'
+Require stack:
+- /workspace/ai-brain/gemini-helper.js
+    at Function._resolveFilename (node:internal/modules/cjs/loader:1383:15)
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1025:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1030:22)
+    at Function._load (node:internal/modules/cjs/loader:1192:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)
+    at Module.require (node:internal/modules/cjs/loader:1463:12)
+    at require (node:internal/modules/helpers:147:16)
+    at Object.<anonymous> (/workspace/ai-brain/gemini-helper.js:1:32)
+    at Module._compile (node:internal/modules/cjs/loader:1706:14) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [ '/workspace/ai-brain/gemini-helper.js' ]
+}
+
+Node.js v22.21.1
