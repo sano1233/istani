@@ -1,0 +1,5 @@
+User-agent: *
+Disallow:
+
+# Provide the location of your sitemap
+Sitemap: https://istaniorg.vercel.app/sitemap.xml
