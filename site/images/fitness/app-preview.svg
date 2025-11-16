@@ -1,0 +1,49 @@
+<svg width="300" height="600" viewBox="0 0 300 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0f0f1e;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="cardGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#06b6d4;stop-opacity:0.2" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0.2" />
+    </linearGradient>
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#06b6d4;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <rect width="300" height="600" fill="url(#bgGradient)"/>
+
+  <rect x="20" y="60" width="260" height="80" rx="16" fill="url(#cardGradient)" stroke="#06b6d4" stroke-width="1" opacity="0.8"/>
+  <text x="40" y="95" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#ffffff">Today's Workout</text>
+  <text x="40" y="120" font-family="Arial, sans-serif" font-size="14" fill="#a0a0a8">Chest and Triceps</text>
+
+  <circle cx="240" cy="100" r="20" fill="url(#accentGradient)"/>
+  <text x="240" y="107" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#ffffff" text-anchor="middle">5</text>
+
+  <rect x="20" y="160" width="260" height="120" rx="16" fill="url(#cardGradient)" stroke="#3b82f6" stroke-width="1" opacity="0.8"/>
+  <text x="40" y="190" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#ffffff">Progress This Week</text>
+
+  <rect x="40" y="210" width="80" height="50" rx="8" fill="#06b6d4" opacity="0.3"/>
+  <text x="80" y="230" font-family="Arial, sans-serif" font-size="14" fill="#ffffff" text-anchor="middle">Workouts</text>
+  <text x="80" y="255" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#06b6d4" text-anchor="middle">4</text>
+
+  <rect x="140" y="210" width="120" height="50" rx="8" fill="#3b82f6" opacity="0.3"/>
+  <text x="200" y="230" font-family="Arial, sans-serif" font-size="14" fill="#ffffff" text-anchor="middle">Total Volume</text>
+  <text x="200" y="255" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#3b82f6" text-anchor="middle">12.5k</text>
+
+  <rect x="20" y="300" width="260" height="100" rx="16" fill="url(#cardGradient)" stroke="#8e44ad" stroke-width="1" opacity="0.8"/>
+  <text x="40" y="330" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#ffffff">AI Coach Suggestion</text>
+  <text x="40" y="355" font-family="Arial, sans-serif" font-size="12" fill="#a0a0a8">Based on your recovery data,</text>
+  <text x="40" y="375" font-family="Arial, sans-serif" font-size="12" fill="#a0a0a8">consider a deload week next</text>
+
+  <rect x="20" y="420" width="260" height="60" rx="16" fill="url(#accentGradient)" opacity="0.9"/>
+  <text x="150" y="455" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#ffffff" text-anchor="middle">Start Workout</text>
+
+  <circle cx="50" cy="540" r="8" fill="#34c759"/>
+  <text x="65" y="545" font-family="Arial, sans-serif" font-size="12" fill="#34c759">Connected</text>
+
+  <text x="230" y="545" font-family="Arial, sans-serif" font-size="12" fill="#a0a0a8">AI Online</text>
+</svg>
