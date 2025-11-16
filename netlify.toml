@@ -1,4 +1,5 @@
-# Static site deployment
+# Static site deployment on Netlify
 [build]
-  command = "npm run build"
   publish = "."
+
+# Do NOT add the old @netlify/plugin-nextjs manually.

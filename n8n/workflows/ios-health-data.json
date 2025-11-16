@@ -1,0 +1,136 @@
+{
+  "name": "iOS Health Data Integration",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ios-health-data",
+        "responseMode": "lastNode",
+        "options": { "responseCode": 200 }
+      },
+      "id": "HealthWebhook",
+      "name": "iOS Health Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [260, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const crypto = require('crypto');\nconst headers = $json.headers || {};\nconst secret = process.env.N8N_ISTANI_SHARED_SECRET || '';\nconst sig = headers['x-istani-signature'] || headers['X-Istani-Signature'] || '';\nconst body = JSON.stringify($json.body || {});\nconst calc = secret ? crypto.createHmac('sha256', secret).update(body).digest('hex') : '';\n\nif (secret && sig !== calc) {\n  return [{ ok: false, reason: 'bad-signature' }];\n}\n\nconst data = $json.body || {};\nconsole.log(`🏃 iOS Health Data Received: ${data.type || 'unknown'}`);\n\nreturn [{\n  ok: true,\n  dataType: data.type,\n  payload: data,\n  timestamp: new Date().toISOString()\n}];"
+      },
+      "id": "VerifyHealth",
+      "name": "Verify & Parse Health Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": ""
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.dataType }}",
+              "rightValue": "workout",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "leftValue": "={{ $json.dataType }}",
+              "rightValue": "steps",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "leftValue": "={{ $json.dataType }}",
+              "rightValue": "heart_rate",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "leftValue": "={{ $json.dataType }}",
+              "rightValue": "sleep",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combineOperation": "any"
+        }
+      },
+      "id": "RouteHealthData",
+      "name": "Route by Data Type",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [660, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $json.payload || {};\n\nconsole.log('💪 Processing Apple Fitness workout data');\nconsole.log(`  Type: ${data.workoutType || 'N/A'}`);\nconsole.log(`  Duration: ${data.duration || 0} minutes`);\nconsole.log(`  Calories: ${data.calories || 0} kcal`);\nconsole.log(`  Heart Rate: ${data.avgHeartRate || 0} bpm`);\n\nconst workout = {\n  source: 'apple_health',\n  type: data.workoutType || 'unknown',\n  duration: parseFloat(data.duration) || 0,\n  calories: parseFloat(data.calories) || 0,\n  distance: parseFloat(data.distance) || 0,\n  avgHeartRate: parseInt(data.avgHeartRate) || 0,\n  maxHeartRate: parseInt(data.maxHeartRate) || 0,\n  startTime: data.startTime || new Date().toISOString(),\n  endTime: data.endTime || new Date().toISOString(),\n  user: data.user || 'anonymous'\n};\n\nreturn [{\n  status: 'workout_synced',\n  workout: workout,\n  message: `Synced ${workout.type} workout: ${workout.duration}min, ${workout.calories}cal`\n}];"
+      },
+      "id": "ProcessWorkout",
+      "name": "Process Workout",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [860, 100]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $json.payload || {};\n\nconsole.log('👟 Processing step count data');\nconsole.log(`  Steps: ${data.count || 0}`);\nconsole.log(`  Date: ${data.date || 'N/A'}`);\n\nconst steps = {\n  source: 'apple_health',\n  count: parseInt(data.count) || 0,\n  date: data.date || new Date().toISOString().split('T')[0],\n  floors: parseInt(data.floors) || 0,\n  distance: parseFloat(data.distance) || 0,\n  user: data.user || 'anonymous'\n};\n\nreturn [{\n  status: 'steps_synced',\n  steps: steps,\n  message: `Synced ${steps.count} steps for ${steps.date}`\n}];"
+      },
+      "id": "ProcessSteps",
+      "name": "Process Steps",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [860, 250]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $json.payload || {};\n\nconsole.log('❤️ Processing heart rate data');\nconsole.log(`  Heart Rate: ${data.bpm || 0} bpm`);\nconsole.log(`  Timestamp: ${data.timestamp || 'N/A'}`);\n\nconst heartRate = {\n  source: 'apple_health',\n  bpm: parseInt(data.bpm) || 0,\n  context: data.context || 'resting',\n  timestamp: data.timestamp || new Date().toISOString(),\n  user: data.user || 'anonymous'\n};\n\nreturn [{\n  status: 'heart_rate_synced',\n  heartRate: heartRate,\n  message: `Synced heart rate: ${heartRate.bpm} bpm (${heartRate.context})`\n}];"
+      },
+      "id": "ProcessHeartRate",
+      "name": "Process Heart Rate",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [860, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $json.payload || {};\n\nconsole.log('😴 Processing sleep data');\nconsole.log(`  Duration: ${data.duration || 0} hours`);\nconsole.log(`  Quality: ${data.quality || 'N/A'}`);\n\nconst sleep = {\n  source: 'apple_health',\n  duration: parseFloat(data.duration) || 0,\n  quality: data.quality || 'unknown',\n  deepSleep: parseFloat(data.deepSleep) || 0,\n  remSleep: parseFloat(data.remSleep) || 0,\n  startTime: data.startTime || new Date().toISOString(),\n  endTime: data.endTime || new Date().toISOString(),\n  user: data.user || 'anonymous'\n};\n\nreturn [{\n  status: 'sleep_synced',\n  sleep: sleep,\n  message: `Synced sleep: ${sleep.duration}h (${sleep.quality})`\n}];"
+      },
+      "id": "ProcessSleep",
+      "name": "Process Sleep",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [860, 550]
+    }
+  ],
+  "connections": {
+    "iOS Health Webhook": {
+      "main": [ [ { "node": "Verify & Parse Health Data", "type": "main", "index": 0 } ] ]
+    },
+    "Verify & Parse Health Data": {
+      "main": [ [ { "node": "Route by Data Type", "type": "main", "index": 0 } ] ]
+    },
+    "Route by Data Type": {
+      "main": [
+        [ { "node": "Process Workout", "type": "main", "index": 0 } ],
+        [ { "node": "Process Steps", "type": "main", "index": 0 } ],
+        [ { "node": "Process Heart Rate", "type": "main", "index": 0 } ],
+        [ { "node": "Process Sleep", "type": "main", "index": 0 } ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": { "executionOrder": "v1" }
+}
