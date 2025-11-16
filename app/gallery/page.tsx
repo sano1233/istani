@@ -3,19 +3,16 @@ import { loadGalleryItems } from '@/lib/images';
 
 export const revalidate = 3600;
 
-export default async function Home() {
+export default async function GalleryPage() {
   const items = await loadGalleryItems({
-    supabaseLimit: 30,
-    pexelsCount: 18,
-    unsplashCount: 18,
+    supabaseLimit: 60,
+    pexelsCount: 24,
+    unsplashCount: 24,
   });
 
   return (
     <main className="mx-auto max-w-6xl p-6">
-      <section className="mb-6">
-        <h1 className="text-4xl font-bold">ISTANI</h1>
-        <p>Evidence based fitness inspiration from around the world.</p>
-      </section>
+      <h1 className="text-3xl font-semibold mb-6">ISTANI Fitness Gallery</h1>
       <GalleryGrid items={items} />
     </main>
   );
