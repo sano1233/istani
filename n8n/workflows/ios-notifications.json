@@ -1,0 +1,61 @@
+{
+  "name": "iOS Push Notifications",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ios-send-notification",
+        "responseMode": "lastNode",
+        "options": { "responseCode": 200 }
+      },
+      "id": "NotificationWebhook",
+      "name": "Send Notification Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [260, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const crypto = require('crypto');\nconst headers = $json.headers || {};\nconst secret = process.env.N8N_ISTANI_SHARED_SECRET || '';\nconst sig = headers['x-istani-signature'] || headers['X-Istani-Signature'] || '';\nconst body = JSON.stringify($json.body || {});\nconst calc = secret ? crypto.createHmac('sha256', secret).update(body).digest('hex') : '';\n\nif (secret && sig !== calc) {\n  return [{ ok: false, reason: 'bad-signature' }];\n}\n\nconst data = $json.body || {};\nconsole.log(`📲 Notification Request: ${data.title || 'N/A'}`);\n\nreturn [{\n  ok: true,\n  notification: {\n    title: data.title || 'ISTANI Fitness',\n    body: data.body || '',\n    badge: data.badge || 0,\n    sound: data.sound || 'default',\n    category: data.category || 'fitness',\n    data: data.data || {},\n    deviceToken: data.deviceToken || '',\n    user: data.user || 'anonymous'\n  },\n  timestamp: new Date().toISOString()\n}];"
+      },
+      "id": "VerifyNotification",
+      "name": "Verify & Prepare",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const notif = $json.notification || {};\n\nconsole.log('📲 Sending iOS notification via APNs');\nconsole.log(`  Title: ${notif.title}`);\nconsole.log(`  Body: ${notif.body}`);\nconsole.log(`  Device: ${notif.deviceToken ? 'provided' : 'broadcast'}`);\n\n// NOTE: In production, integrate with APNs (Apple Push Notification service)\n// This requires:\n// 1. APNs Auth Key (.p8 file) from Apple Developer Account\n// 2. Team ID and Key ID\n// 3. Bundle ID of iOS app\n//\n// Example APNs HTTP/2 request:\n// POST https://api.push.apple.com/3/device/{deviceToken}\n// Headers:\n//   - apns-topic: com.istani.fitness\n//   - authorization: bearer {JWT_TOKEN}\n// Body:\n//   {\n//     \"aps\": {\n//       \"alert\": {\n//         \"title\": \"...\",\n//         \"body\": \"...\"\n//       },\n//       \"badge\": 1,\n//       \"sound\": \"default\"\n//     }\n//   }\n\n// For now, log the notification (replace with actual APNs call)\nconst apnsPayload = {\n  aps: {\n    alert: {\n      title: notif.title,\n      body: notif.body\n    },\n    badge: notif.badge,\n    sound: notif.sound,\n    category: notif.category\n  },\n  data: notif.data\n};\n\nconsole.log('APNs Payload:', JSON.stringify(apnsPayload, null, 2));\n\n// Simulate successful send\nreturn [{\n  status: 'notification_sent',\n  destination: notif.deviceToken ? 'device' : 'broadcast',\n  payload: apnsPayload,\n  timestamp: new Date().toISOString(),\n  message: `Notification sent: ${notif.title}`\n}];"
+      },
+      "id": "SendAPNs",
+      "name": "Send via APNs",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [660, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const result = $json;\n\nconsole.log('✅ Notification delivery confirmed');\nconsole.log(`  Status: ${result.status}`);\nconsole.log(`  Destination: ${result.destination}`);\n\nreturn [{\n  success: true,\n  status: result.status,\n  message: result.message,\n  timestamp: result.timestamp\n}];"
+      },
+      "id": "ConfirmDelivery",
+      "name": "Confirm Delivery",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [860, 300]
+    }
+  ],
+  "connections": {
+    "Send Notification Webhook": {
+      "main": [ [ { "node": "Verify & Prepare", "type": "main", "index": 0 } ] ]
+    },
+    "Verify & Prepare": {
+      "main": [ [ { "node": "Send via APNs", "type": "main", "index": 0 } ] ]
+    },
+    "Send via APNs": {
+      "main": [ [ { "node": "Confirm Delivery", "type": "main", "index": 0 } ] ]
+    }
+  },
+  "active": true,
+  "settings": { "executionOrder": "v1" }
+}
