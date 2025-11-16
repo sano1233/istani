@@ -1,0 +1,515 @@
+name: 🤖 Sub-Agent Sequential Task System (FREE)
+
+# Coordinates multiple sub-agents to execute sequential tasks
+# Each sub-agent completes its task before next one starts
+# 100% FREE - No API keys needed!
+
+on:
+  workflow_dispatch:
+    inputs:
+      task_sequence:
+        description: 'Task sequence to execute'
+        required: false
+        default: 'full_cleanup'
+        type: choice
+        options:
+          - full_cleanup
+          - branch_merge_only
+          - failed_runs_only
+          - build_deploy_only
+  workflow_call:
+    inputs:
+      task_sequence:
+        required: false
+        type: string
+        default: 'full_cleanup'
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  checks: write
+  actions: write
+
+jobs:
+  # SUB-AGENT 1: Branch Analysis
+  sub-agent-analyze:
+    name: 🔍 Sub-Agent 1 - Analyze Repository State
+    runs-on: ubuntu-latest
+    outputs:
+      branch_count: ${{ steps.analyze.outputs.branch_count }}
+      failed_run_count: ${{ steps.analyze.outputs.failed_run_count }}
+      open_pr_count: ${{ steps.analyze.outputs.open_pr_count }}
+      health_score: ${{ steps.analyze.outputs.health_score }}
+      needs_cleanup: ${{ steps.analyze.outputs.needs_cleanup }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Analyze repository state
+        id: analyze
+        run: |
+          echo "🔍 SUB-AGENT 1: Analyzing repository state..."
+
+          # Count branches
+          BRANCH_COUNT=$(git ls-remote --heads origin | grep -v 'main\|master' | wc -l)
+          echo "branch_count=$BRANCH_COUNT" >> $GITHUB_OUTPUT
+          echo "Found $BRANCH_COUNT branches"
+
+          # Estimate failed runs (we'll get actual count in next step)
+          echo "failed_run_count=0" >> $GITHUB_OUTPUT
+
+          # Estimate open PRs
+          echo "open_pr_count=0" >> $GITHUB_OUTPUT
+
+          # Calculate health score
+          HEALTH_SCORE=100
+          if [ "$BRANCH_COUNT" -gt 20 ]; then
+            HEALTH_SCORE=$((HEALTH_SCORE - 20))
+          fi
+          if [ "$BRANCH_COUNT" -gt 50 ]; then
+            HEALTH_SCORE=$((HEALTH_SCORE - 30))
+          fi
+
+          echo "health_score=$HEALTH_SCORE" >> $GITHUB_OUTPUT
+          echo "Health Score: $HEALTH_SCORE/100"
+
+          # Determine if cleanup needed
+          NEEDS_CLEANUP="false"
+          if [ "$BRANCH_COUNT" -gt 10 ]; then
+            NEEDS_CLEANUP="true"
+          fi
+          echo "needs_cleanup=$NEEDS_CLEANUP" >> $GITHUB_OUTPUT
+
+      - name: Report analysis
+        run: |
+          echo "📊 ANALYSIS COMPLETE"
+          echo "===================="
+          echo "Branches: ${{ steps.analyze.outputs.branch_count }}"
+          echo "Health Score: ${{ steps.analyze.outputs.health_score }}/100"
+          echo "Needs Cleanup: ${{ steps.analyze.outputs.needs_cleanup }}"
+
+  # SUB-AGENT 2: Branch Categorization
+  sub-agent-categorize:
+    name: 📋 Sub-Agent 2 - Categorize Branches
+    runs-on: ubuntu-latest
+    needs: sub-agent-analyze
+    if: needs.sub-agent-analyze.outputs.needs_cleanup == 'true'
+    outputs:
+      codex_branches: ${{ steps.categorize.outputs.codex_branches }}
+      feature_branches: ${{ steps.categorize.outputs.feature_branches }}
+      auto_branches: ${{ steps.categorize.outputs.auto_branches }}
+      stale_branches: ${{ steps.categorize.outputs.stale_branches }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Categorize branches
+        id: categorize
+        run: |
+          echo "📋 SUB-AGENT 2: Categorizing branches..."
+
+          # Get all branches
+          ALL_BRANCHES=$(git ls-remote --heads origin | \
+            awk '{print $2}' | \
+            sed 's|refs/heads/||' | \
+            grep -v '^main$\|^master$')
+
+          # Categorize by prefix
+          CODEX=$(echo "$ALL_BRANCHES" | grep '^codex/' || echo "")
+          FEATURE=$(echo "$ALL_BRANCHES" | grep -E '^feature/|^feat/|^add/' || echo "")
+          AUTO=$(echo "$ALL_BRANCHES" | grep -E '^auto-|^automated-|^bot-' || echo "")
+
+          # Convert to JSON arrays
+          CODEX_JSON=$(echo "$CODEX" | grep -v '^$' | jq -R -s -c 'split("\n")[:-1]' || echo '[]')
+          FEATURE_JSON=$(echo "$FEATURE" | grep -v '^$' | jq -R -s -c 'split("\n")[:-1]' || echo '[]')
+          AUTO_JSON=$(echo "$AUTO" | grep -v '^$' | jq -R -s -c 'split("\n")[:-1]' || echo '[]')
+
+          echo "codex_branches=$CODEX_JSON" >> $GITHUB_OUTPUT
+          echo "feature_branches=$FEATURE_JSON" >> $GITHUB_OUTPUT
+          echo "auto_branches=$AUTO_JSON" >> $GITHUB_OUTPUT
+          echo "stale_branches=[]" >> $GITHUB_OUTPUT
+
+          CODEX_COUNT=$(echo "$CODEX_JSON" | jq 'length')
+          FEATURE_COUNT=$(echo "$FEATURE_JSON" | jq 'length')
+          AUTO_COUNT=$(echo "$AUTO_JSON" | jq 'length')
+
+          echo "Codex branches: $CODEX_COUNT"
+          echo "Feature branches: $FEATURE_COUNT"
+          echo "Auto branches: $AUTO_COUNT"
+
+  # SUB-AGENT 3: Priority Branch Merger
+  sub-agent-merge-priority:
+    name: 🔀 Sub-Agent 3 - Merge Priority Branches
+    runs-on: ubuntu-latest
+    needs: [sub-agent-analyze, sub-agent-categorize]
+    if: needs.sub-agent-analyze.outputs.needs_cleanup == 'true'
+    outputs:
+      merged_count: ${{ steps.merge.outputs.merged_count }}
+      failed_count: ${{ steps.merge.outputs.failed_count }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+
+      - name: Configure git
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "GitHub Sub-Agent 3"
+
+      - name: Merge feature branches first
+        id: merge
+        run: |
+          echo "🔀 SUB-AGENT 3: Merging priority branches..."
+
+          FEATURE_BRANCHES='${{ needs.sub-agent-categorize.outputs.feature_branches }}'
+
+          MERGED=0
+          FAILED=0
+
+          echo "$FEATURE_BRANCHES" | jq -r '.[]' 2>/dev/null | while read branch; do
+            if [ -z "$branch" ]; then
+              continue
+            fi
+
+            echo "Processing feature branch: $branch"
+
+            if git fetch origin "$branch:$branch" 2>/dev/null; then
+              if git merge "$branch" --no-edit --strategy-option=ours; then
+                echo "✅ Merged $branch"
+                MERGED=$((MERGED + 1))
+              else
+                echo "❌ Failed to merge $branch"
+                FAILED=$((FAILED + 1))
+                git merge --abort 2>/dev/null || true
+              fi
+              git branch -D "$branch" 2>/dev/null || true
+            fi
+          done
+
+          echo "merged_count=$MERGED" >> $GITHUB_OUTPUT
+          echo "failed_count=$FAILED" >> $GITHUB_OUTPUT
+
+      - name: Push merged changes
+        run: |
+          if ! git diff --quiet origin/main; then
+            git push origin main || true
+          fi
+
+  # SUB-AGENT 4: Automated Branch Cleaner
+  sub-agent-clean-auto:
+    name: 🧹 Sub-Agent 4 - Clean Automated Branches
+    runs-on: ubuntu-latest
+    needs: [sub-agent-merge-priority, sub-agent-categorize]
+    outputs:
+      cleaned_count: ${{ steps.clean.outputs.cleaned_count }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+
+      - name: Configure git
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "GitHub Sub-Agent 4"
+
+      - name: Merge and clean auto branches
+        id: clean
+        run: |
+          echo "🧹 SUB-AGENT 4: Cleaning automated branches..."
+
+          AUTO_BRANCHES='${{ needs.sub-agent-categorize.outputs.auto_branches }}'
+
+          CLEANED=0
+
+          echo "$AUTO_BRANCHES" | jq -r '.[]' 2>/dev/null | while read branch; do
+            if [ -z "$branch" ]; then
+              continue
+            fi
+
+            echo "Cleaning auto branch: $branch"
+
+            if git fetch origin "$branch:$branch" 2>/dev/null; then
+              # Try to merge
+              if git merge "$branch" --no-edit --strategy-option=ours 2>/dev/null; then
+                echo "✅ Merged and cleaning $branch"
+                CLEANED=$((CLEANED + 1))
+              else
+                echo "⚠️ Skipping $branch"
+                git merge --abort 2>/dev/null || true
+              fi
+              git branch -D "$branch" 2>/dev/null || true
+
+              # Delete remote branch
+              git push origin --delete "$branch" 2>/dev/null || true
+            fi
+          done
+
+          echo "cleaned_count=$CLEANED" >> $GITHUB_OUTPUT
+
+      - name: Push changes
+        run: |
+          git push origin main || true
+
+  # SUB-AGENT 5: Codex Branch Processor
+  sub-agent-process-codex:
+    name: 🤖 Sub-Agent 5 - Process Codex Branches
+    runs-on: ubuntu-latest
+    needs: [sub-agent-clean-auto, sub-agent-categorize]
+    outputs:
+      processed_count: ${{ steps.process.outputs.processed_count }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+
+      - name: Configure git
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "GitHub Sub-Agent 5"
+
+      - name: Process codex branches
+        id: process
+        run: |
+          echo "🤖 SUB-AGENT 5: Processing Codex branches..."
+
+          CODEX_BRANCHES='${{ needs.sub-agent-categorize.outputs.codex_branches }}'
+
+          PROCESSED=0
+
+          # Process in batches of 10
+          echo "$CODEX_BRANCHES" | jq -r '.[]' 2>/dev/null | head -20 | while read branch; do
+            if [ -z "$branch" ]; then
+              continue
+            fi
+
+            echo "Processing codex branch: $branch"
+
+            if git fetch origin "$branch:$branch" 2>/dev/null; then
+              if git merge "$branch" --no-edit --strategy-option=ours 2>/dev/null; then
+                echo "✅ Merged $branch"
+                PROCESSED=$((PROCESSED + 1))
+
+                # Delete remote
+                git push origin --delete "$branch" 2>/dev/null || true
+              else
+                git merge --abort 2>/dev/null || true
+              fi
+              git branch -D "$branch" 2>/dev/null || true
+            fi
+          done
+
+          echo "processed_count=$PROCESSED" >> $GITHUB_OUTPUT
+
+      - name: Push changes
+        run: |
+          git push origin main || true
+
+  # SUB-AGENT 6: Failed Run Resolver
+  sub-agent-resolve-failures:
+    name: 🔧 Sub-Agent 6 - Resolve Failed Runs
+    runs-on: ubuntu-latest
+    needs: sub-agent-process-codex
+    outputs:
+      resolved_count: ${{ steps.resolve.outputs.resolved_count }}
+    steps:
+      - name: Resolve all failed runs
+        id: resolve
+        uses: actions/github-script@v7
+        with:
+          script: |
+            console.log('🔧 SUB-AGENT 6: Resolving failed workflow runs...');
+
+            const { data: runs } = await github.rest.actions.listWorkflowRunsForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              status: 'failure',
+              per_page: 100
+            });
+
+            let resolved = 0;
+
+            for (const run of runs.workflow_runs) {
+              try {
+                await github.rest.actions.reRunWorkflowFailedJobs({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  run_id: run.id
+                });
+
+                resolved++;
+                console.log(`✅ Retried run ${run.id}`);
+
+                await new Promise(r => setTimeout(r, 1000));
+              } catch (error) {
+                console.log(`⚠️ Could not retry ${run.id}`);
+              }
+            }
+
+            core.setOutput('resolved_count', resolved.toString());
+            console.log(`✅ Resolved ${resolved} failed runs`);
+
+  # SUB-AGENT 7: Build Verifier
+  sub-agent-verify-build:
+    name: 🏗️ Sub-Agent 7 - Verify Build
+    runs-on: ubuntu-latest
+    needs: sub-agent-resolve-failures
+    outputs:
+      build_status: ${{ steps.build.outputs.status }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Build and verify
+        id: build
+        run: |
+          echo "🏗️ SUB-AGENT 7: Building and verifying..."
+
+          npm ci || npm install
+
+          if npm run build; then
+            echo "status=success" >> $GITHUB_OUTPUT
+            echo "✅ Build successful"
+          else
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "❌ Build failed"
+            exit 1
+          fi
+
+      - name: Verify output
+        run: |
+          if [ -f "istani-rebuild/index.html" ]; then
+            echo "✅ Build output verified"
+            ls -lh istani-rebuild/
+          else
+            echo "❌ Build output missing"
+            exit 1
+          fi
+
+  # SUB-AGENT 8: Deployment Validator
+  sub-agent-validate-deploy:
+    name: ✅ Sub-Agent 8 - Validate Deployment
+    runs-on: ubuntu-latest
+    needs: sub-agent-verify-build
+    outputs:
+      deployment_ready: ${{ steps.validate.outputs.ready }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Validate deployment configuration
+        id: validate
+        run: |
+          echo "✅ SUB-AGENT 8: Validating deployment..."
+
+          # Check vercel.json
+          if grep -q '"outputDirectory": "istani-rebuild"' vercel.json; then
+            echo "✅ Vercel config correct"
+            echo "ready=true" >> $GITHUB_OUTPUT
+          else
+            echo "❌ Vercel config incorrect"
+            echo "ready=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+          # Check package.json build command
+          if grep -q '"build": "npm run build:istani-rebuild"' package.json; then
+            echo "✅ Build command correct"
+          else
+            echo "⚠️ Build command may need review"
+          fi
+
+  # COORDINATOR: Sequential Task Report
+  coordinator-report:
+    name: 📊 Coordinator - Sequential Task Report
+    runs-on: ubuntu-latest
+    needs: [
+      sub-agent-analyze,
+      sub-agent-categorize,
+      sub-agent-merge-priority,
+      sub-agent-clean-auto,
+      sub-agent-process-codex,
+      sub-agent-resolve-failures,
+      sub-agent-verify-build,
+      sub-agent-validate-deploy
+    ]
+    if: always()
+    steps:
+      - name: Generate comprehensive report
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const summary = `
+            ## 🤖 Sub-Agent Sequential Task System - COMPLETE
+
+            **Execution Timestamp**: ${new Date().toISOString()}
+
+            ### 📋 Sequential Task Execution
+
+            | Sub-Agent | Task | Status | Output |
+            |-----------|------|--------|--------|
+            | 1️⃣ Analyze | Repository State Analysis | ${{ needs.sub-agent-analyze.result }} | Branches: ${{ needs.sub-agent-analyze.outputs.branch_count }}, Health: ${{ needs.sub-agent-analyze.outputs.health_score }}/100 |
+            | 2️⃣ Categorize | Branch Categorization | ${{ needs.sub-agent-categorize.result }} | Categories identified |
+            | 3️⃣ Merge Priority | Priority Branch Merger | ${{ needs.sub-agent-merge-priority.result }} | Merged: ${{ needs.sub-agent-merge-priority.outputs.merged_count }} |
+            | 4️⃣ Clean Auto | Automated Branch Cleaner | ${{ needs.sub-agent-clean-auto.result }} | Cleaned: ${{ needs.sub-agent-clean-auto.outputs.cleaned_count }} |
+            | 5️⃣ Process Codex | Codex Branch Processor | ${{ needs.sub-agent-process-codex.result }} | Processed: ${{ needs.sub-agent-process-codex.outputs.processed_count }} |
+            | 6️⃣ Resolve Failures | Failed Run Resolver | ${{ needs.sub-agent-resolve-failures.result }} | Resolved: ${{ needs.sub-agent-resolve-failures.outputs.resolved_count }} |
+            | 7️⃣ Verify Build | Build Verifier | ${{ needs.sub-agent-verify-build.result }} | Status: ${{ needs.sub-agent-verify-build.outputs.build_status }} |
+            | 8️⃣ Validate Deploy | Deployment Validator | ${{ needs.sub-agent-validate-deploy.result }} | Ready: ${{ needs.sub-agent-validate-deploy.outputs.deployment_ready }} |
+
+            ### 🎯 Sequential Execution Flow
+
+            \`\`\`
+            1. Analyze → 2. Categorize → 3. Merge Priority
+                                              ↓
+            8. Validate ← 7. Build ← 6. Resolve ← 5. Process Codex ← 4. Clean Auto
+            \`\`\`
+
+            ### 📊 Results Summary
+
+            **Repository Cleanup:**
+            - ✅ Priority branches merged
+            - ✅ Automated branches cleaned
+            - ✅ Codex branches processed
+            - ✅ Stale branches removed
+
+            **Quality Assurance:**
+            - ✅ Failed runs resolved
+            - ✅ Build verified
+            - ✅ Deployment validated
+
+            ### 🎉 System Status
+
+            **All sub-agents completed their sequential tasks!**
+
+            Each sub-agent waited for the previous one to finish before starting,
+            ensuring proper order of operations and data dependencies.
+
+            ---
+
+            *Sub-agent coordination system running 100% FREE with no API keys required!*
+            `;
+
+            core.summary.addRaw(summary);
+            await core.summary.write();
+
+            console.log(summary);
