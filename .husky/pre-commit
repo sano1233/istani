@@ -1,0 +1,31 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# JavaScript/React equivalent of Python pre-commit
+echo "🔍 Running pre-commit checks..."
+
+# 1. Lint and auto-fix
+npm run lint:fix || exit 1
+
+# 2. Format
+npm run format || exit 1
+
+# 3. Secret scanning (Gitleaks)
+if command -v gitleaks &> /dev/null; then
+  gitleaks protect --staged --verbose || exit 1
+else
+  echo "⚠️  Gitleaks not installed, skipping secret scan"
+fi
+
+# 4. Security audit
+npm audit --audit-level=high || echo "⚠️  Security vulnerabilities found, review before commit"
+
+# 5. Type check (if using TypeScript)
+if [ -f "tsconfig.json" ]; then
+  npm run typecheck || exit 1
+fi
+
+# 6. Run tests
+npm test -- --passWithNoTests || exit 1
+
+echo "✅ All pre-commit checks passed!"

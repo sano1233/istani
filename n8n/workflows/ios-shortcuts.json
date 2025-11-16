@@ -1,0 +1,90 @@
+{
+  "name": "iOS Shortcuts Integration",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ios-shortcuts",
+        "responseMode": "lastNode",
+        "options": { "responseCode": 200 }
+      },
+      "id": "ShortcutsWebhook",
+      "name": "iOS Shortcuts Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [260, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const crypto = require('crypto');\nconst headers = $json.headers || {};\nconst secret = process.env.N8N_ISTANI_SHARED_SECRET || '';\nconst sig = headers['x-istani-signature'] || headers['X-Istani-Signature'] || '';\nconst body = JSON.stringify($json.body || {});\nconst calc = secret ? crypto.createHmac('sha256', secret).update(body).digest('hex') : '';\n\nif (secret && sig !== calc) {\n  return [{ ok: false, reason: 'bad-signature' }];\n}\n\nconst data = $json.body || {};\nconsole.log(`📱 iOS Shortcuts Event: ${data.action || 'unknown'}`);\n\nreturn [{\n  ok: true,\n  event: data.action,\n  payload: data,\n  timestamp: new Date().toISOString()\n}];"
+      },
+      "id": "VerifyShortcut",
+      "name": "Verify & Process",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": ""
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.event }}",
+              "rightValue": "log_workout",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combineOperation": "any"
+        }
+      },
+      "id": "CheckAction",
+      "name": "Route by Action",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [660, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $json.payload || {};\n\nconsole.log('💪 Logging workout from iOS Shortcuts:');\nconsole.log(`  Exercise: ${data.exercise || 'N/A'}`);\nconsole.log(`  Sets: ${data.sets || 0}`);\nconsole.log(`  Reps: ${data.reps || 0}`);\nconsole.log(`  Weight: ${data.weight || 0}kg`);\n\n// Store workout in n8n database or forward to WordPress API\nconst workout = {\n  source: 'ios_shortcuts',\n  exercise: data.exercise,\n  sets: parseInt(data.sets) || 0,\n  reps: parseInt(data.reps) || 0,\n  weight: parseFloat(data.weight) || 0,\n  notes: data.notes || '',\n  timestamp: data.timestamp || new Date().toISOString(),\n  user: data.user || 'anonymous'\n};\n\nreturn [{\n  status: 'workout_logged',\n  workout: workout,\n  message: `Logged ${workout.exercise}: ${workout.sets}x${workout.reps} @ ${workout.weight}kg`\n}];"
+      },
+      "id": "LogWorkout",
+      "name": "Log Workout",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [860, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $json.payload || {};\n\nconsole.log('📊 Processing generic iOS action');\n\nreturn [{\n  status: 'processed',\n  action: $json.event,\n  data: data,\n  message: 'iOS shortcut action processed successfully'\n}];"
+      },
+      "id": "GenericAction",
+      "name": "Generic Action",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [860, 400]
+    }
+  ],
+  "connections": {
+    "iOS Shortcuts Webhook": {
+      "main": [ [ { "node": "Verify & Process", "type": "main", "index": 0 } ] ]
+    },
+    "Verify & Process": {
+      "main": [ [ { "node": "Route by Action", "type": "main", "index": 0 } ] ]
+    },
+    "Route by Action": {
+      "main": [
+        [ { "node": "Log Workout", "type": "main", "index": 0 } ],
+        [ { "node": "Generic Action", "type": "main", "index": 0 } ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": { "executionOrder": "v1" }
+}
