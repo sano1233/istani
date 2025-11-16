@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { persist, createJSONStorage } from 'zustand/middleware'
+import { persist } from 'zustand/middleware'
 import type { CartItem, Product } from '@/types'
 
 interface CartStore {
@@ -20,13 +20,13 @@ export const useCartStore = create<CartStore>()(
       addItem: (product, quantity = 1) => {
         set((state) => {
           const existingItem = state.items.find(
-            (item) => item.product.id === product.id
+            (item) => item.product_id === product.id
           )
 
           if (existingItem) {
             return {
               items: state.items.map((item) =>
-                item.product.id === product.id
+                item.product_id === product.id
                   ? { ...item, quantity: item.quantity + quantity }
                   : item
               ),
@@ -34,14 +34,22 @@ export const useCartStore = create<CartStore>()(
           }
 
           return {
-            items: [...state.items, { product, quantity }],
+            items: [
+              ...state.items,
+              {
+                id: crypto.randomUUID(),
+                product_id: product.id,
+                quantity,
+                product,
+              },
+            ],
           }
         })
       },
 
       removeItem: (productId) => {
         set((state) => ({
-          items: state.items.filter((item) => item.product.id !== productId),
+          items: state.items.filter((item) => item.product_id !== productId),
         }))
       },
 
@@ -53,14 +61,12 @@ export const useCartStore = create<CartStore>()(
 
         set((state) => ({
           items: state.items.map((item) =>
-            item.product.id === productId ? { ...item, quantity } : item
+            item.product_id === productId ? { ...item, quantity } : item
           ),
         }))
       },
 
-      clearCart: () => {
-        set({ items: [] })
-      },
+      clearCart: () => set({ items: [] }),
 
       getTotalItems: () => {
         return get().items.reduce((total, item) => total + item.quantity, 0)
@@ -74,8 +80,7 @@ export const useCartStore = create<CartStore>()(
       },
     }),
     {
-      name: 'istani-cart-storage',
-      storage: createJSONStorage(() => localStorage),
+      name: 'istani-cart',
     }
   )
 )

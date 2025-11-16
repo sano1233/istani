@@ -1,38 +1,27 @@
-import * as React from 'react'
+import { InputHTMLAttributes, forwardRef } from 'react'
 import { cn } from '@/lib/utils'
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string
-  error?: string
 }
 
-const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, label, error, ...props }, ref) => {
+const Input = forwardRef<HTMLInputElement, InputProps>(
+  ({ className, label, type, ...props }, ref) => {
     return (
-      <div className="w-full">
+      <label className="flex flex-col w-full">
         {label && (
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            {label}
-          </label>
+          <span className="pb-2 text-base font-medium text-white">{label}</span>
         )}
         <input
+          ref={ref}
           type={type}
           className={cn(
-            'w-full px-4 py-2 border rounded-lg transition-all duration-200',
-            'focus:ring-2 focus:ring-brand-primary focus:border-transparent',
-            'placeholder:text-gray-400',
-            error
-              ? 'border-red-500 focus:ring-red-500'
-              : 'border-gray-300',
+            'w-full h-12 p-3 text-base font-normal leading-normal text-white placeholder-white/40 bg-white/5 rounded-lg border border-white/10 focus:ring-1 focus:ring-primary focus:border-primary focus:outline-none transition-colors',
             className
           )}
-          ref={ref}
           {...props}
         />
-        {error && (
-          <p className="mt-1 text-sm text-red-600">{error}</p>
-        )}
-      </div>
+      </label>
     )
   }
 )

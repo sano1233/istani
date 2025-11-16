@@ -1,358 +1,293 @@
-# 🏋️ Istani Fitness - Complete Full-Stack E-Commerce Platform
+# Istani Fitness - E-Commerce & Fitness Tracking Platform
 
-![Istani Fitness](https://img.shields.io/badge/Status-Production%20Ready-success)
-![Next.js](https://img.shields.io/badge/Next.js-15.0-black)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)
-![Supabase](https://img.shields.io/badge/Supabase-Postgres-green)
-![Stripe](https://img.shields.io/badge/Stripe-Payments-blueviolet)
+A complete full-stack fitness e-commerce application built with Next.js 15, Supabase, and Stripe.
 
-> **Transform Your Body, Transform Your Life** - The most comprehensive fitness platform with AI-powered coaching, personalized workouts, science-based nutrition tracking, and premium e-commerce.
+## Features
 
-**Live URL**: https://istani.org (https://istani-dpoolwes1-istanis-projects.vercel.app)
+### E-Commerce
+- 🛍️ Product catalog with categories
+- 🛒 Shopping cart with persistent state
+- 💳 Stripe payment integration
+- 📦 Order management
+- 🔍 Product search and filtering
 
----
+### Fitness Tracking
+- 📊 Dashboard with fitness metrics
+- 💪 Workout tracking
+- 📈 Progress monitoring
+- 🎯 Goal setting and tracking
+- 🧮 BMI, BMR, and TDEE calculators
 
-## 🎯 Features
+### User Management
+- 🔐 Supabase authentication (email/password + OAuth)
+- 👤 User profiles with fitness data
+- ⚙️ Settings and preferences
+- 📱 Responsive design
 
-### 💪 Fitness Tracking
-- **Smart Workouts** - AI-generated workout plans with progressive overload tracking
-- **Nutrition Tracking** - Science-based macro calculations (BMR, TDEE, protein/carbs/fats)
-- **Progress Analytics** - Body composition analysis, strength progression, measurement tracking
-- **Meal Logging** - Comprehensive meal tracking with real-time macro totals
+## Tech Stack
 
-### 🛒 E-Commerce
-- **Product Catalog** - Premium supplements, equipment, and apparel
-- **Shopping Cart** - Persistent cart with Zustand state management
-- **Stripe Integration** - Secure payment processing with webhook handling
-- **Order Management** - Complete order history and tracking
+- **Framework:** Next.js 15 (App Router)
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS
+- **Database:** Supabase (PostgreSQL)
+- **Authentication:** Supabase Auth
+- **Payments:** Stripe
+- **State Management:** Zustand
+- **Icons:** Material Symbols
 
-### 🎓 Elite Coaching
-- **1-on-1 Coaching** - From $297 onboarding to $1,997/month elite plans
-- **Session Scheduling** - Google Calendar integration (via ElevenLabs agent)
-- **Progress Reviews** - Regular check-ins and form analysis
-- **24/7 Support** - Direct coach access for elite members
-
-### 🤖 AI Integration
-- **ElevenLabs Voice Agent** - Voice-powered fitness coach with 8 AI models
-- **Google Stitch AI** - Next-gen AI image generation for fitness content
-- **Multi-Model Support** - MiniMax, Gemini, Claude, GPT-4, Llama, DeepSeek, Qwen, Cohere
-
----
-
-## 🚀 Quick Start
+## Getting Started
 
 ### Prerequisites
-- Node.js 18+
-- npm or yarn
+
+- Node.js 18+ installed
 - Supabase account
 - Stripe account
-- Vercel account (for deployment)
+- Git
 
 ### Installation
 
+1. Clone the repository:
 ```bash
-# Clone the repository
 git clone https://github.com/sano1233/istani.git
 cd istani
+```
 
-# Install dependencies
+2. Install dependencies:
+```bash
 npm install
-
-# Copy environment variables
-cp .env.example .env.local
-
-# Set up Supabase (see Database Setup below)
-
-# Run development server
-npm run dev
 ```
 
-Visit `http://localhost:3000` to see your application.
-
----
-
-## 🗄️ Database Setup
-
-### 1. Create Supabase Project
-
-1. Go to [Supabase Dashboard](https://app.supabase.com)
-2. Create a new project
-3. Copy your project URL and anon key
-
-### 2. Run Migration
-
+3. Set up environment variables:
 ```bash
-# Navigate to Supabase SQL Editor
-# Copy and paste the contents of: supabase/migrations/001_initial_schema.sql
-# Run the migration
+cp .env.local.example .env.local
 ```
 
-Or use Supabase CLI:
-
-```bash
-# Install Supabase CLI
-npm install -g supabase
-
-# Link to your project
-supabase link --project-ref YOUR_PROJECT_REF
-
-# Run migration
-supabase db push
-```
-
-### 3. Configure Authentication
-
-1. Enable Email/Password auth in Supabase Dashboard
-2. (Optional) Enable Google OAuth:
-   - Go to Authentication > Providers
-   - Enable Google
-   - Add OAuth credentials from [Google Cloud Console](https://console.cloud.google.com)
-
-### 4. Set Up Storage (Optional)
-
-Create storage buckets for:
-- `product-images` - Product photos
-- `avatars` - User profile pictures
-
----
-
-## 🔐 Environment Variables
-
-Create `.env.local` file with:
-
-```bash
+Edit `.env.local` with your credentials:
+```env
 # Supabase
-NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 
 # Stripe
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
-STRIPE_SECRET_KEY=sk_test_...
-STRIPE_WEBHOOK_SECRET=whsec_...
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
+STRIPE_SECRET_KEY=your_stripe_secret_key
+STRIPE_WEBHOOK_SECRET=your_webhook_secret
 
-# Site
+# App
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
 
-### Getting Stripe Webhook Secret
+4. Set up Supabase database:
+   - Go to your Supabase project
+   - Navigate to SQL Editor
+   - Copy and run the SQL from `supabase/migrations/001_initial_schema.sql`
 
-1. Install Stripe CLI: `npm install -g stripe-cli`
-2. Login: `stripe login`
-3. Forward webhooks: `stripe listen --forward-to localhost:3000/api/webhooks/stripe`
-4. Copy the webhook signing secret displayed
-
----
-
-## 📦 Project Structure
-
-```
-istani/
-├── app/                          # Next.js 15 App Router
-│   ├── (auth)/                   # Authentication pages
-│   │   ├── login/
-│   │   └── register/
-│   ├── (shop)/                   # E-commerce pages
-│   │   ├── products/
-│   │   ├── cart/
-│   │   ├── checkout/
-│   │   └── coaching/
-│   ├── (dashboard)/              # User dashboard
-│   │   ├── dashboard/            # Main dashboard
-│   │   ├── workouts/             # Workout tracking
-│   │   ├── nutrition/            # Meal logging
-│   │   ├── progress/             # Analytics
-│   │   └── settings/             # User settings
-│   ├── api/                      # API Routes
-│   │   ├── checkout/             # Stripe checkout
-│   │   └── webhooks/stripe/      # Stripe webhooks
-│   ├── globals.css               # Global styles
-│   ├── layout.tsx                # Root layout
-│   └── page.tsx                  # Homepage
-├── components/                    # Reusable components
-│   ├── ui/                       # UI components
-│   │   ├── button.tsx
-│   │   ├── input.tsx
-│   │   ├── card.tsx
-│   │   └── sidebar.tsx
-│   └── product-card.tsx
-├── lib/                          # Utility libraries
-│   ├── supabase/                 # Supabase clients
-│   │   ├── client.ts             # Browser client
-│   │   └── server.ts             # Server client
-│   ├── store/                    # State management
-│   │   └── cart-store.ts         # Zustand cart store
-│   ├── fitness-calculations.ts   # BMR, TDEE, macros
-│   ├── stripe.ts                 # Stripe config
-│   └── utils.ts                  # Helper functions
-├── types/                        # TypeScript types
-│   ├── database.ts               # Supabase types
-│   └── index.ts                  # App types
-├── supabase/                     # Database
-│   └── migrations/
-│       └── 001_initial_schema.sql
-├── elevenlabs-agent/             # Voice agent backend
-│   ├── server.js
-│   ├── package.json
-│   └── README.md
-├── site/                         # Legacy static site
-├── next.config.js
-├── tailwind.config.ts
-├── tsconfig.json
-└── package.json
+5. Run the development server:
+```bash
+npm run dev
 ```
 
----
+6. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-## 🎨 Tech Stack
+## Database Setup
 
-### Frontend
-- **Next.js 15** - React framework with App Router
-- **TypeScript** - Type-safe development
-- **Tailwind CSS** - Utility-first styling
-- **Zustand** - Lightweight state management
-- **Lucide React** - Beautiful icons
+The application includes a comprehensive database schema with:
 
-### Backend
-- **Supabase** - PostgreSQL database with auth & RLS
-- **Stripe** - Payment processing
-- **Next.js API Routes** - Serverless functions
+- **profiles**: User profiles with fitness data
+- **products**: Product catalog
+- **categories**: Product categories
+- **orders**: Order management
+- **cart_items**: Shopping cart
+- **workout_programs**: Workout programs
+- **user_progress**: Progress tracking
 
-### AI Services
-- **ElevenLabs** - Voice AI agent
-- **OpenRouter** - Multi-model AI access
-- **Google Stitch** - AI image generation
+Run the migration file in your Supabase SQL editor to set up all tables, policies, and seed data.
 
----
+## Deployment
 
-## 🌐 Deployment
+### Vercel Deployment
 
-### Vercel (Recommended)
+1. Push your code to GitHub
 
-1. Push code to GitHub
-2. Import project in [Vercel Dashboard](https://vercel.com/new)
-3. Add environment variables
+2. Import the project in Vercel:
+   - Go to [vercel.com](https://vercel.com)
+   - Click "Import Project"
+   - Select your GitHub repository
+
+3. Configure environment variables in Vercel:
+   - Add all variables from `.env.local.example`
+   - Set `NEXT_PUBLIC_SITE_URL` to your Vercel domain
+
 4. Deploy!
 
-```bash
-# Or use Vercel CLI
-npm install -g vercel
-vercel --prod
+### Supabase Configuration
+
+1. **Enable Authentication Providers:**
+   - Go to Authentication → Providers
+   - Enable Email/Password
+   - Configure Google OAuth (optional)
+
+2. **Set up Storage:**
+   - Create a bucket for product images
+   - Configure public access policies
+
+3. **Configure Redirect URLs:**
+   - Add your Vercel domain to allowed redirect URLs
+   - Format: `https://your-domain.vercel.app/**`
+
+### Stripe Configuration
+
+1. **Get API Keys:**
+   - Dashboard → Developers → API Keys
+   - Copy publishable and secret keys
+
+2. **Set up Webhooks:**
+   - Dashboard → Developers → Webhooks
+   - Add endpoint: `https://your-domain.vercel.app/api/stripe/webhook`
+   - Select events: `checkout.session.completed`, `payment_intent.succeeded`
+   - Copy webhook secret to environment variables
+
+## Project Structure
+
+```
+istani-fitness/
+├── app/
+│   ├── (auth)/           # Authentication pages
+│   ├── (dashboard)/      # Dashboard pages
+│   ├── (shop)/          # Shop pages
+│   ├── api/             # API routes
+│   ├── layout.tsx       # Root layout
+│   ├── page.tsx         # Homepage
+│   └── globals.css      # Global styles
+├── components/
+│   ├── ui/              # UI components
+│   └── product-card.tsx # Product card component
+├── lib/
+│   ├── supabase/        # Supabase clients
+│   ├── store/           # Zustand stores
+│   ├── stripe.ts        # Stripe utilities
+│   ├── utils.ts         # General utilities
+│   └── fitness-calculations.ts
+├── types/               # TypeScript types
+├── supabase/
+│   └── migrations/      # Database migrations
+└── public/              # Static assets
 ```
 
-### Environment Variables in Vercel
+## Key Features Implementation
 
-Add all variables from `.env.local` in:
-**Project Settings → Environment Variables**
+### Authentication Flow
+- Users can sign up with email/password or Google OAuth
+- Protected routes redirect to login
+- Middleware handles session refresh
 
-### Stripe Webhook in Production
+### Shopping Cart
+- Persistent cart using Zustand with localStorage
+- Real-time cart updates
+- Quantity management
 
-1. Create webhook endpoint in [Stripe Dashboard](https://dashboard.stripe.com/webhooks)
-2. Point to: `https://istani.org/api/webhooks/stripe`
-3. Select events: `checkout.session.completed`, `payment_intent.succeeded`, `payment_intent.payment_failed`
-4. Copy webhook secret and add to Vercel environment variables
+### Fitness Calculations
+- BMI (Body Mass Index)
+- BMR (Basal Metabolic Rate)
+- TDEE (Total Daily Energy Expenditure)
+- Macro calculations based on goals
 
----
+### Payment Processing
+- Stripe Checkout integration
+- Webhook handling for order updates
+- Secure payment processing
 
-## 🧪 Testing
+## Environment Variables
 
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL | Yes |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anonymous key | Yes |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key | Yes |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Stripe publishable key | Yes |
+| `STRIPE_SECRET_KEY` | Stripe secret key | Yes |
+| `STRIPE_WEBHOOK_SECRET` | Stripe webhook secret | Yes |
+| `NEXT_PUBLIC_SITE_URL` | Your site URL | Yes |
+
+## Development
+
+### Running Tests
 ```bash
-# Type checking
-npm run type-check
+npm run test
+```
 
-# Linting
-npm run lint
-
-# Build test
+### Building for Production
+```bash
 npm run build
+npm start
 ```
 
-### Test Payment (Stripe Test Mode)
+### Linting
+```bash
+npm run lint
+```
 
-Use test card: `4242 4242 4242 4242`
-- Expiry: Any future date
-- CVC: Any 3 digits
-- ZIP: Any 5 digits
+## Adding Products
 
----
+1. Go to your Supabase dashboard
+2. Navigate to Table Editor → products
+3. Insert new products with the following fields:
+   - name, slug, description, short_description
+   - price, compare_at_price (optional)
+   - images (array of URLs)
+   - category_id
+   - inventory_quantity
+   - is_active, is_featured
 
-## 📊 Database Schema
+## Customization
 
-### Core Tables
+### Colors
+Edit `tailwind.config.ts` to customize the color scheme:
+```typescript
+colors: {
+  primary: '#0df259',           // Primary brand color
+  'background-dark': '#102216', // Dark background
+}
+```
 
-| Table | Description |
-|-------|-------------|
-| `profiles` | User profiles with fitness data |
-| `products` | E-commerce product catalog |
-| `orders` | Order history |
-| `order_items` | Line items for orders |
-| `workouts` | Workout sessions |
-| `workout_exercises` | Individual exercises |
-| `meals` | Nutrition logging |
-| `body_measurements` | Progress tracking |
-| `coaching_sessions` | Coaching appointments |
-| `donations` | Buy Me a Coffee donations |
+### Fonts
+The app uses Space Grotesk. Change in `app/layout.tsx`:
+```typescript
+import { YourFont } from 'next/font/google'
+```
 
-All tables have Row Level Security (RLS) enabled.
+## Contributing
 
----
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-## 🔒 Security
+## License
 
-- ✅ Row Level Security (RLS) on all tables
-- ✅ Stripe webhook signature verification
-- ✅ Environment variable validation
-- ✅ XSS protection headers
-- ✅ CSRF protection
-- ✅ Secure authentication with Supabase Auth
+This project is licensed under the MIT License.
 
----
+## Support
 
-## 🎯 Fitness Calculations
+For support, email support@istani.org or open an issue on GitHub.
 
-All formulas are science-based and validated:
+## Roadmap
 
-- **BMR** - Mifflin-St Jeor Equation (most accurate for modern populations)
-- **TDEE** - Activity level multipliers
-- **Macros** - Evidence-based protein recommendations (1.6-2.4g/kg)
-- **Calories** - Deficit/surplus based on goal
-- **Body Fat** - Navy Method estimation
-
----
-
-## 📞 Support
-
-**Email**: istaniDOTstore@proton.me
-**Platform**: https://istani.org
-**Donations**: https://buymeacoffee.com/istanifitn
-
----
-
-## 📝 License
-
-MIT License - see [LICENSE](LICENSE) for details
-
----
-
-## 🙏 Acknowledgments
-
-- Science-based fitness formulas from peer-reviewed research
-- Inspired by Apple Fitness+, Peloton, and Tonal design systems
-- Built with ❤️ by the Istani Fitness Team
-
----
-
-## 🚧 Roadmap
-
+- [ ] Admin dashboard for product management
+- [ ] Advanced workout program builder
+- [ ] Nutrition tracking integration
+- [ ] Social features and community
 - [ ] Mobile app (React Native)
-- [ ] Social features (follow friends, share workouts)
-- [ ] Video form checks with AI analysis
-- [ ] Marketplace for certified coaches
-- [ ] Meal plan generator with AI
-- [ ] Integration with fitness trackers (Fitbit, Apple Watch)
+- [ ] Email automation
+- [ ] Analytics dashboard
+- [ ] Multi-currency support
+- [ ] Subscription management
+
+## Acknowledgments
+
+- Built with [Next.js](https://nextjs.org/)
+- Database powered by [Supabase](https://supabase.com)
+- Payments by [Stripe](https://stripe.com)
+- Icons from [Material Symbols](https://fonts.google.com/icons)
 
 ---
 
-**Last Updated**: 2025-11-11
-**Version**: 2.0.0
-**Author**: Istani Fitness Team
+**Built with ❤️ for the fitness community**

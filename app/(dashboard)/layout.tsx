@@ -1,40 +1,35 @@
-'use client'
-
-import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { createClient } from '@/lib/supabase/server'
+import { redirect } from 'next/navigation'
 import { Sidebar } from '@/components/ui/sidebar'
-import { AchievementToast } from '@/components/achievement-toast'
-import { createClient } from '@/lib/supabase/client'
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const router = useRouter()
-  const [userId, setUserId] = useState<string | null>(null)
+  const supabase = await createClient()
 
-  useEffect(() => {
-    const supabase = createClient()
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (user) setUserId(user.id)
-    })
-  }, [])
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
 
-  const handleLogout = async () => {
-    const supabase = createClient()
-    await supabase.auth.signOut()
-    router.push('/')
-    router.refresh()
+  if (!user) {
+    redirect('/login')
   }
 
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('full_name, avatar_url')
+    .eq('id', user.id)
+    .single()
+
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      <Sidebar onLogout={handleLogout} />
-      <main className="ml-64 flex-1 p-8">
-        {children}
-      </main>
-      {userId && <AchievementToast userId={userId} />}
+    <div className="flex w-full min-h-screen">
+      <Sidebar
+        userName={profile?.full_name || 'User'}
+        userAvatar={profile?.avatar_url}
+      />
+      {children}
     </div>
   )
 }

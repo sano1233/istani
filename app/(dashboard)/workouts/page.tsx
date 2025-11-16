@@ -1,133 +1,97 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import { WorkoutLogger } from '@/components/workout-logger'
-import { WorkoutHistory } from '@/components/workout-history'
-import { WorkoutRecommendations } from '@/components/workout-recommendations'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 
 export default async function WorkoutsPage() {
   const supabase = await createClient()
 
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
 
-  // Get today's workouts
-  const today = new Date().toISOString().split('T')[0]
-  const { data: todayWorkouts } = await supabase
-    .from('workouts')
-    .select('*, workout_exercises(*)')
-    .eq('user_id', user.id)
-    .gte('completed_at', today)
-    .order('completed_at', { ascending: false })
-
-  // Get recent workout history (last 30 days)
-  const thirtyDaysAgo = new Date()
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
-  const { data: recentWorkouts } = await supabase
-    .from('workouts')
-    .select('*')
-    .eq('user_id', user.id)
-    .gte('completed_at', thirtyDaysAgo.toISOString())
-    .order('completed_at', { ascending: false })
-    .limit(20)
-
-  // Get AI workout recommendations
-  const { data: recommendations } = await supabase
-    .from('workout_recommendations')
-    .select('*')
-    .eq('user_id', user.id)
-    .order('created_at', { ascending: false })
-    .limit(3)
-
-  // Get user's workout streak
-  const { data: streak } = await supabase
-    .from('user_streaks')
-    .select('*')
-    .eq('user_id', user.id)
-    .eq('streak_type', 'workout')
-    .single()
-
-  // Calculate this week's workout count
-  const weekStart = new Date()
-  weekStart.setDate(weekStart.getDate() - weekStart.getDay())
-  const weekWorkouts = recentWorkouts?.filter(w =>
-    new Date(w.completed_at) >= weekStart
-  ).length || 0
-
-  // Calculate total workouts
-  const { count: totalWorkouts } = await supabase
-    .from('workouts')
-    .select('*', { count: 'exact', head: true })
-    .eq('user_id', user.id)
+  if (!user) {
+    redirect('/login')
+  }
 
   return (
-    <div className="container mx-auto py-6 px-4 max-w-7xl">
-      <div className="flex flex-col gap-6">
-        {/* Header with Stats */}
-        <div className="flex items-center justify-between">
+    <main className="flex-1 p-8 overflow-y-auto">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold">Workouts</h1>
-            <p className="text-muted-foreground mt-1">
-              Track your training and view AI-powered recommendations
+            <h1 className="text-4xl font-black text-white mb-2">Workouts</h1>
+            <p className="text-white/60">
+              Track your training and stay consistent
             </p>
           </div>
+          <Button className="gap-2">
+            <span className="material-symbols-outlined">add</span>
+            New Workout
+          </Button>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="bg-white rounded-lg border p-6">
-            <div className="text-sm font-medium text-muted-foreground">Current Streak</div>
-            <div className="text-3xl font-bold mt-2">
-              {streak?.current_streak || 0} 🔥
+        {/* Quick Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <Card>
+            <div className="flex items-center gap-4">
+              <div className="p-3 rounded-lg bg-primary/20">
+                <span className="material-symbols-outlined text-primary text-3xl">
+                  calendar_today
+                </span>
+              </div>
+              <div>
+                <p className="text-white/60 text-sm">This Week</p>
+                <p className="text-2xl font-bold text-white">0 workouts</p>
+              </div>
             </div>
-            <div className="text-xs text-muted-foreground mt-1">
-              Best: {streak?.longest_streak || 0} days
-            </div>
-          </div>
+          </Card>
 
-          <div className="bg-white rounded-lg border p-6">
-            <div className="text-sm font-medium text-muted-foreground">This Week</div>
-            <div className="text-3xl font-bold mt-2">{weekWorkouts}</div>
-            <div className="text-xs text-muted-foreground mt-1">
-              workouts completed
+          <Card>
+            <div className="flex items-center gap-4">
+              <div className="p-3 rounded-lg bg-primary/20">
+                <span className="material-symbols-outlined text-primary text-3xl">
+                  trending_up
+                </span>
+              </div>
+              <div>
+                <p className="text-white/60 text-sm">Current Streak</p>
+                <p className="text-2xl font-bold text-white">0 days</p>
+              </div>
             </div>
-          </div>
+          </Card>
 
-          <div className="bg-white rounded-lg border p-6">
-            <div className="text-sm font-medium text-muted-foreground">Total Workouts</div>
-            <div className="text-3xl font-bold mt-2">{totalWorkouts || 0}</div>
-            <div className="text-xs text-muted-foreground mt-1">
-              all time
+          <Card>
+            <div className="flex items-center gap-4">
+              <div className="p-3 rounded-lg bg-primary/20">
+                <span className="material-symbols-outlined text-primary text-3xl">
+                  fitness_center
+                </span>
+              </div>
+              <div>
+                <p className="text-white/60 text-sm">Total Workouts</p>
+                <p className="text-2xl font-bold text-white">0</p>
+              </div>
             </div>
-          </div>
-
-          <div className="bg-white rounded-lg border p-6">
-            <div className="text-sm font-medium text-muted-foreground">Today</div>
-            <div className="text-3xl font-bold mt-2">{todayWorkouts?.length || 0}</div>
-            <div className="text-xs text-muted-foreground mt-1">
-              {todayWorkouts?.length ? '✅ completed' : '📝 pending'}
-            </div>
-          </div>
+          </Card>
         </div>
 
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Workout Logger - Takes 2 columns */}
-          <div className="lg:col-span-2">
-            <WorkoutLogger userId={user.id} />
-          </div>
-
-          {/* AI Recommendations - Takes 1 column */}
-          <div>
-            <WorkoutRecommendations
-              recommendations={recommendations || []}
-              userId={user.id}
-            />
-          </div>
-        </div>
-
-        {/* Workout History */}
-        <WorkoutHistory workouts={recentWorkouts || []} />
+        {/* Empty State */}
+        <Card className="text-center py-20">
+          <span className="material-symbols-outlined text-white/20 text-9xl mb-4 block">
+            fitness_center
+          </span>
+          <h2 className="text-2xl font-bold text-white mb-4">
+            No workouts yet
+          </h2>
+          <p className="text-white/60 mb-8">
+            Start tracking your workouts to build your fitness journey
+          </p>
+          <Button size="lg" className="gap-2">
+            <span className="material-symbols-outlined">add</span>
+            Log Your First Workout
+          </Button>
+        </Card>
       </div>
-    </div>
+    </main>
   )
 }

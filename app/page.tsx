@@ -1,220 +1,90 @@
 import Link from 'next/link'
-import { ArrowRight, Dumbbell, TrendingUp, Users, Zap } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen">
-      {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-white/95 backdrop-blur-sm shadow-sm z-50">
-        <div className="container-custom py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <Dumbbell className="w-8 h-8 text-brand-primary" />
-              <span className="text-2xl font-display font-bold text-brand-dark">Istani</span>
-            </div>
-            <div className="hidden md:flex items-center space-x-8">
-              <Link href="/products" className="text-gray-700 hover:text-brand-primary transition">
-                Shop
-              </Link>
-              <Link href="/coaching" className="text-gray-700 hover:text-brand-primary transition">
-                Coaching
-              </Link>
-              <Link href="/login" className="text-gray-700 hover:text-brand-primary transition">
-                Sign In
-              </Link>
-              <Link href="/register" className="btn-primary">
-                Get Started
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
-
+    <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="pt-32 pb-20 gradient-hero">
-        <div className="container-custom">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-5xl md:text-7xl font-display font-bold mb-6 animate-fade-in">
-              Transform Your Body,<br />Transform Your Life
-            </h1>
-            <p className="text-xl md:text-2xl mb-10 text-white/90 animate-fade-in animation-delay-200">
-              The complete fitness platform with AI-powered coaching, personalized workouts, and science-based nutrition guidance
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in animation-delay-400">
-              <Link href="/register" className="btn-primary bg-white text-brand-primary hover:bg-gray-100 flex items-center gap-2">
-                Start Free Trial
-                <ArrowRight className="w-5 h-5" />
-              </Link>
-              <Link href="/coaching" className="btn-outline border-white text-white hover:bg-white hover:text-brand-primary">
-                View Coaching Plans
-              </Link>
-            </div>
-          </div>
+      <section className="relative flex items-center justify-center h-screen px-4 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-background-dark to-background-dark" />
 
-          {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-20 max-w-5xl mx-auto">
-            <div className="text-center">
-              <div className="text-4xl md:text-5xl font-bold mb-2">50K+</div>
-              <div className="text-white/80">Active Members</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl md:text-5xl font-bold mb-2">1M+</div>
-              <div className="text-white/80">Workouts Logged</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl md:text-5xl font-bold mb-2">95%</div>
-              <div className="text-white/80">Goal Achievement</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl md:text-5xl font-bold mb-2">24/7</div>
-              <div className="text-white/80">AI Support</div>
-            </div>
+        <div className="relative z-10 max-w-4xl mx-auto text-center">
+          <h1 className="mb-6 text-6xl font-black tracking-tighter text-white md:text-8xl">
+            TRANSFORM YOUR
+            <span className="text-primary"> FITNESS</span>
+          </h1>
+          <p className="mb-8 text-xl text-white/80 md:text-2xl">
+            Science-backed training. Premium supplements. Real results.
+          </p>
+          <div className="flex flex-wrap justify-center gap-4">
+            <Button size="lg" asChild>
+              <Link href="/products">Shop Now</Link>
+            </Button>
+            <Button size="lg" variant="outline" asChild>
+              <Link href="/register">Start Free Trial</Link>
+            </Button>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-20 bg-white">
-        <div className="container-custom">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-display font-bold mb-4">
-              Everything You Need to Succeed
-            </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              From beginner to elite athlete, our platform adapts to your goals and fitness level
+      {/* Features */}
+      <section className="px-4 py-20">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="p-8 border rounded-xl border-white/10 bg-white/5">
+            <span className="material-symbols-outlined text-primary text-5xl mb-4 block">
+              science
+            </span>
+            <h3 className="text-2xl font-bold text-white mb-4">
+              Truth Fitness Science
+            </h3>
+            <p className="text-white/60">
+              Evidence-based training programs backed by scientific research and
+              real-world results.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="card group hover:border-brand-primary border-2 border-transparent">
-              <div className="w-14 h-14 bg-gradient-to-br from-brand-primary to-brand-accent rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <Dumbbell className="w-7 h-7 text-white" />
-              </div>
-              <h3 className="text-2xl font-display font-bold mb-3">Smart Workouts</h3>
-              <p className="text-gray-600">
-                AI-generated workout plans that adapt to your progress, equipment, and schedule
-              </p>
-            </div>
+          <div className="p-8 border rounded-xl border-white/10 bg-white/5">
+            <span className="material-symbols-outlined text-primary text-5xl mb-4 block">
+              shopping_bag
+            </span>
+            <h3 className="text-2xl font-bold text-white mb-4">
+              Premium Products
+            </h3>
+            <p className="text-white/60">
+              High-quality supplements and equipment tested and approved by
+              professionals.
+            </p>
+          </div>
 
-            <div className="card group hover:border-brand-primary border-2 border-transparent">
-              <div className="w-14 h-14 bg-gradient-to-br from-fitness-nutrition to-brand-primary rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <TrendingUp className="w-7 h-7 text-white" />
-              </div>
-              <h3 className="text-2xl font-display font-bold mb-3">Nutrition Tracking</h3>
-              <p className="text-gray-600">
-                Science-based macro calculations with real-time meal logging and AI suggestions
-              </p>
-            </div>
-
-            <div className="card group hover:border-brand-primary border-2 border-transparent">
-              <div className="w-14 h-14 bg-gradient-to-br from-brand-secondary to-fitness-strength rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <Users className="w-7 h-7 text-white" />
-              </div>
-              <h3 className="text-2xl font-display font-bold mb-3">Elite Coaching</h3>
-              <p className="text-gray-600">
-                1-on-1 coaching with certified experts. From $297 onboarding to $1,997/mo elite plans
-              </p>
-            </div>
-
-            <div className="card group hover:border-brand-primary border-2 border-transparent">
-              <div className="w-14 h-14 bg-gradient-to-br from-fitness-cardio to-brand-primary rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <Zap className="w-7 h-7 text-white" />
-              </div>
-              <h3 className="text-2xl font-display font-bold mb-3">Progress Analytics</h3>
-              <p className="text-gray-600">
-                Advanced body composition analysis, strength progression, and AI-powered insights
-              </p>
-            </div>
-
-            <div className="card group hover:border-brand-primary border-2 border-transparent">
-              <div className="w-14 h-14 bg-gradient-to-br from-fitness-flexibility to-fitness-strength rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <svg className="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <h3 className="text-2xl font-display font-bold mb-3">Voice Assistant</h3>
-              <p className="text-gray-600">
-                ElevenLabs AI voice coach for hands-free workout logging and real-time form tips
-              </p>
-            </div>
-
-            <div className="card group hover:border-brand-primary border-2 border-transparent">
-              <div className="w-14 h-14 bg-gradient-to-br from-brand-accent to-fitness-cardio rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <svg className="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                </svg>
-              </div>
-              <h3 className="text-2xl font-display font-bold mb-3">Premium Shop</h3>
-              <p className="text-gray-600">
-                Curated supplements, equipment, and apparel from trusted fitness brands
-              </p>
-            </div>
+          <div className="p-8 border rounded-xl border-white/10 bg-white/5">
+            <span className="material-symbols-outlined text-primary text-5xl mb-4 block">
+              trending_up
+            </span>
+            <h3 className="text-2xl font-bold text-white mb-4">
+              Track Progress
+            </h3>
+            <p className="text-white/60">
+              Advanced analytics to monitor your fitness journey and achieve
+              your goals.
+            </p>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 gradient-hero">
-        <div className="container-custom text-center">
-          <h2 className="text-4xl md:text-5xl font-display font-bold mb-6">
-            Ready to Start Your Transformation?
+      <section className="px-4 py-20 bg-white/5">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="mb-6 text-5xl font-black text-white">
+            Ready to Transform?
           </h2>
-          <p className="text-xl mb-10 text-white/90 max-w-2xl mx-auto">
-            Join 50,000+ members who have already transformed their lives with Istani Fitness
+          <p className="mb-8 text-xl text-white/80">
+            Join thousands of athletes achieving their fitness goals with Istani.
           </p>
-          <Link href="/register" className="btn-primary bg-white text-brand-primary hover:bg-gray-100 text-lg px-8 py-4 inline-flex items-center gap-2">
-            Start Your Free Trial
-            <ArrowRight className="w-6 h-6" />
-          </Link>
+          <Button size="lg" asChild>
+            <Link href="/register">Get Started Today</Link>
+          </Button>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="bg-brand-dark text-white py-12">
-        <div className="container-custom">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <Dumbbell className="w-8 h-8 text-brand-primary" />
-                <span className="text-2xl font-display font-bold">Istani</span>
-              </div>
-              <p className="text-gray-400">
-                Transform your body, transform your life
-              </p>
-            </div>
-            <div>
-              <h4 className="font-display font-bold mb-4">Platform</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><Link href="/products" className="hover:text-brand-primary transition">Shop</Link></li>
-                <li><Link href="/coaching" className="hover:text-brand-primary transition">Coaching</Link></li>
-                <li><Link href="/dashboard" className="hover:text-brand-primary transition">Dashboard</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-display font-bold mb-4">Support</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="mailto:istaniDOTstore@proton.me" className="hover:text-brand-primary transition">Contact</a></li>
-                <li><a href="https://buymeacoffee.com/istanifitn" target="_blank" rel="noopener noreferrer" className="hover:text-brand-primary transition">Donate</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-display font-bold mb-4">Connect</h4>
-              <p className="text-gray-400 mb-2">istaniDOTstore@proton.me</p>
-              <a
-                href="https://buymeacoffee.com/istanifitn"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block bg-brand-primary hover:bg-brand-primary/90 text-white px-4 py-2 rounded-lg transition"
-              >
-                ☕ Buy Me a Coffee
-              </a>
-            </div>
-          </div>
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2025 Istani Fitness. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
-    </main>
+    </div>
   )
 }

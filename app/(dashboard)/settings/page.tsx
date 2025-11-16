@@ -1,13 +1,19 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import { ProfileSettings } from '@/components/profile-settings'
-import { BodyMeasurements } from '@/components/body-measurements'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 
 export default async function SettingsPage() {
   const supabase = await createClient()
 
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) {
+    redirect('/login')
+  }
 
   const { data: profile } = await supabase
     .from('profiles')
@@ -15,82 +21,124 @@ export default async function SettingsPage() {
     .eq('id', user.id)
     .single()
 
-  // Get recent body measurements
-  const { data: measurements } = await supabase
-    .from('body_measurements')
-    .select('*')
-    .eq('user_id', user.id)
-    .order('measured_at', { ascending: false })
-    .limit(10)
-
   return (
-    <div className="container mx-auto py-6 px-4 max-w-5xl">
-      <div className="flex flex-col gap-6">
+    <main className="flex-1 p-8 overflow-y-auto">
+      <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div>
-          <h1 className="text-3xl font-bold">Settings</h1>
-          <p className="text-muted-foreground mt-1">
-            Manage your profile, goals, and preferences
-          </p>
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="text-4xl font-black text-white">Settings</h1>
+          <Button>Save Changes</Button>
         </div>
 
-        {/* Account Info Card */}
-        <div className="bg-white rounded-lg border p-6">
-          <h2 className="text-lg font-semibold mb-4">Account Information</h2>
-          <div className="space-y-2">
-            <div className="flex items-center justify-between py-2">
-              <span className="text-sm text-gray-600">Email</span>
-              <span className="font-medium">{user.email}</span>
-            </div>
-            <div className="flex items-center justify-between py-2 border-t">
-              <span className="text-sm text-gray-600">Account Created</span>
-              <span className="font-medium">
-                {new Date(user.created_at).toLocaleDateString()}
+        {/* Profile Header */}
+        <div className="mb-10 p-4">
+          <div className="flex items-center gap-5">
+            <div className="w-24 h-24 rounded-full bg-primary/20 flex items-center justify-center">
+              <span className="material-symbols-outlined text-primary text-5xl">
+                person
               </span>
             </div>
-            <div className="flex items-center justify-between py-2 border-t">
-              <span className="text-sm text-gray-600">Last Sign In</span>
-              <span className="font-medium">
-                {user.last_sign_in_at
-                  ? new Date(user.last_sign_in_at).toLocaleDateString()
-                  : 'Never'}
-              </span>
+            <div>
+              <h2 className="text-2xl font-bold text-white">
+                {profile?.full_name || 'User'}
+              </h2>
+              <p className="text-white/60">
+                Member since{' '}
+                {profile?.member_since && new Date(profile.member_since).toLocaleDateString('en-US', {
+                  month: 'long',
+                  year: 'numeric',
+                })}
+              </p>
             </div>
           </div>
         </div>
 
-        {/* Profile Settings */}
-        <ProfileSettings profile={profile} userId={user.id} />
-
-        {/* Body Measurements */}
-        <BodyMeasurements
-          userId={user.id}
-          profile={profile}
-          measurements={measurements || []}
-        />
-
-        {/* Danger Zone */}
-        <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-          <h2 className="text-lg font-semibold text-red-900 mb-2">Danger Zone</h2>
-          <p className="text-sm text-red-700 mb-4">
-            These actions are permanent and cannot be undone
+        {/* Profile Section */}
+        <Card className="mb-8">
+          <h2 className="text-2xl font-bold text-white mb-2">Profile</h2>
+          <p className="text-white/60 mb-6">
+            Manage your personal and physical information.
           </p>
-          <button
-            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-            onClick={() => {
-              if (
-                confirm(
-                  'Are you sure you want to delete your account? This action cannot be undone.'
-                )
-              ) {
-                alert('Account deletion requires contacting support: istaniDOTstore@proton.me')
-              }
-            }}
-          >
-            Delete Account
-          </button>
-        </div>
+
+          <h3 className="text-xl font-bold text-white pt-5 pb-3">
+            Personal Details
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Input
+              label="Full Name"
+              placeholder="Jane Doe"
+              defaultValue={profile?.full_name || ''}
+            />
+            <Input
+              label="Email"
+              type="email"
+              placeholder="jane@istani.com"
+              defaultValue={profile?.email || ''}
+            />
+            <Input
+              label="Age"
+              type="number"
+              placeholder="28"
+              defaultValue={profile?.age || ''}
+            />
+            <div className="flex flex-col">
+              <label className="pb-2 text-base font-medium text-white">
+                Sex
+              </label>
+              <select className="w-full h-12 p-3 text-base font-normal leading-normal text-white bg-white/5 rounded-lg border border-white/10 focus:ring-1 focus:ring-primary focus:border-primary">
+                <option className="bg-background-dark" value="female">Female</option>
+                <option className="bg-background-dark" value="male">Male</option>
+                <option className="bg-background-dark" value="">Prefer not to say</option>
+              </select>
+            </div>
+          </div>
+
+          <h3 className="mt-8 text-xl font-bold text-white pt-5 pb-3">
+            Physical Metrics
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Input
+              label="Height (cm)"
+              type="number"
+              placeholder="170"
+              defaultValue={profile?.height_cm || ''}
+            />
+            <Input
+              label="Weight (kg)"
+              type="number"
+              placeholder="65"
+              defaultValue={profile?.weight_kg || ''}
+            />
+            <Input
+              label="Body Fat %"
+              type="number"
+              placeholder="22"
+              defaultValue={profile?.body_fat_percentage || ''}
+            />
+          </div>
+        </Card>
+
+        {/* Fitness Goals Section */}
+        <Card className="mb-8">
+          <h2 className="text-2xl font-bold text-white mb-2">Fitness Goals</h2>
+          <p className="text-white/60 mb-6">Define what you want to achieve.</p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="flex flex-col">
+              <label className="pb-2 text-base font-medium text-white">
+                Primary Goal
+              </label>
+              <select className="w-full h-12 p-3 text-base font-normal leading-normal text-white bg-white/5 rounded-lg border border-white/10 focus:ring-1 focus:ring-primary focus:border-primary">
+                <option className="bg-background-dark">Fat Loss</option>
+                <option className="bg-background-dark">Muscle Gain</option>
+                <option className="bg-background-dark">Maintenance</option>
+                <option className="bg-background-dark">Improve Endurance</option>
+              </select>
+            </div>
+            <Input label="Target Date" type="date" />
+          </div>
+        </Card>
       </div>
-    </div>
+    </main>
   )
 }

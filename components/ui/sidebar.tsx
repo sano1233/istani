@@ -3,79 +3,77 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import {
-  LayoutDashboard,
-  Dumbbell,
-  UtensilsCrossed,
-  TrendingUp,
-  ShoppingBag,
-  Users,
-  Settings,
-  LogOut,
-  Droplets,
-} from 'lucide-react'
 
 interface SidebarProps {
-  onLogout?: () => void
+  userName: string
+  userAvatar?: string
 }
 
-export function Sidebar({ onLogout }: SidebarProps) {
+export function Sidebar({ userName, userAvatar }: SidebarProps) {
   const pathname = usePathname()
 
-  const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-    { name: 'Workouts', href: '/dashboard/workouts', icon: Dumbbell },
-    { name: 'Nutrition', href: '/dashboard/nutrition', icon: UtensilsCrossed },
-    { name: 'Water', href: '/dashboard/water', icon: Droplets },
-    { name: 'Progress', href: '/dashboard/progress', icon: TrendingUp },
-    { name: 'Shop', href: '/products', icon: ShoppingBag },
-    { name: 'Coaching', href: '/coaching', icon: Users },
-    { name: 'Settings', href: '/dashboard/settings', icon: Settings },
+  const links = [
+    { href: '/dashboard', icon: 'dashboard', label: 'Dashboard' },
+    { href: '/settings', icon: 'person', label: 'Profile' },
+    { href: '/workouts', icon: 'fitness_center', label: 'Workouts' },
+    { href: '/progress', icon: 'trending_up', label: 'Progress' },
+    { href: '/products', icon: 'shopping_bag', label: 'Shop' },
+    { href: '/cart', icon: 'shopping_cart', label: 'Cart' },
   ]
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-64 bg-white border-r border-gray-200 flex flex-col">
-      {/* Logo */}
-      <div className="px-6 py-6 border-b border-gray-200">
-        <Link href="/" className="flex items-center space-x-2">
-          <Dumbbell className="w-8 h-8 text-brand-primary" />
-          <span className="text-2xl font-display font-bold text-brand-dark">Istani</span>
-        </Link>
-      </div>
+    <aside className="flex-shrink-0 w-64 p-4 border-r border-white/10">
+      <div className="flex flex-col h-full">
+        {/* User Profile */}
+        <div className="flex items-center gap-3 p-2 mb-6">
+          <div className="flex items-center justify-center rounded-full size-10 bg-primary/20 text-primary">
+            <span className="material-symbols-outlined">bar_chart_4_bars</span>
+          </div>
+          <div className="flex flex-col">
+            <h1 className="text-base font-medium text-white">{userName}</h1>
+            <p className="text-sm font-normal text-white/60">ISTANI FITNESS</p>
+          </div>
+        </div>
 
-      {/* Navigation */}
-      <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-        {navigation.map((item) => {
-          const isActive = pathname === item.href
-          const Icon = item.icon
+        {/* Navigation Links */}
+        <nav className="flex flex-col gap-2">
+          {links.map((link) => {
+            const isActive = pathname === link.href
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={cn(
+                  'flex items-center gap-3 px-3 py-2 rounded-lg transition-colors',
+                  isActive
+                    ? 'bg-primary/20 text-primary'
+                    : 'text-white hover:bg-white/10'
+                )}
+              >
+                <span
+                  className={cn(
+                    'material-symbols-outlined',
+                    isActive && 'fill'
+                  )}
+                >
+                  {link.icon}
+                </span>
+                <p className="text-sm font-medium">{link.label}</p>
+              </Link>
+            )
+          })}
+        </nav>
 
-          return (
-            <Link
-              key={item.name}
-              href={item.href}
-              className={cn(
-                'flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200',
-                isActive
-                  ? 'bg-brand-primary text-white'
-                  : 'text-gray-700 hover:bg-gray-100'
-              )}
-            >
-              <Icon className="w-5 h-5" />
-              <span className="font-medium">{item.name}</span>
-            </Link>
-          )
-        })}
-      </nav>
-
-      {/* Logout */}
-      <div className="px-4 py-4 border-t border-gray-200">
-        <button
-          onClick={onLogout}
-          className="flex items-center space-x-3 px-4 py-3 w-full rounded-lg text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors duration-200"
-        >
-          <LogOut className="w-5 h-5" />
-          <span className="font-medium">Logout</span>
-        </button>
+        {/* Logout */}
+        <div className="mt-auto">
+          <Link
+            href="/api/auth/logout"
+            className="flex items-center gap-3 px-3 py-2 text-white rounded-lg hover:bg-white/10"
+          >
+            <span className="material-symbols-outlined">logout</span>
+            <p className="text-sm font-medium">Log Out</p>
+          </Link>
+        </div>
       </div>
     </aside>
   )

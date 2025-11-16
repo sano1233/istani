@@ -1,12 +1,11 @@
 'use client'
 
 import Image from 'next/image'
-import { ShoppingCart } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { formatCurrency } from '@/lib/utils'
+import Link from 'next/link'
+import { Button } from './ui/button'
 import { useCartStore } from '@/lib/store/cart-store'
 import type { Product } from '@/types'
+import { formatPrice } from '@/lib/utils'
 
 interface ProductCardProps {
   product: Product
@@ -15,78 +14,62 @@ interface ProductCardProps {
 export function ProductCard({ product }: ProductCardProps) {
   const addItem = useCartStore((state) => state.addItem)
 
-  const handleAddToCart = () => {
-    addItem(product)
-  }
-
   return (
-    <Card className="group overflow-hidden">
-      <div className="relative h-64 w-full overflow-hidden bg-gray-100">
-        {product.image_url ? (
-          <Image
-            src={product.image_url}
-            alt={product.name}
-            fill
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
-          />
-        ) : (
-          <div className="flex h-full items-center justify-center bg-gradient-to-br from-brand-secondary to-brand-primary">
-            <span className="text-4xl text-white">{product.name[0]}</span>
-          </div>
-        )}
-        {product.featured && (
-          <div className="absolute top-4 right-4 bg-brand-accent text-white px-3 py-1 rounded-full text-sm font-semibold">
-            Featured
-          </div>
-        )}
-        {product.stock_quantity === 0 && (
-          <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-            <span className="bg-red-600 text-white px-4 py-2 rounded-lg font-semibold">
-              Out of Stock
-            </span>
-          </div>
-        )}
-      </div>
-
-      <CardContent className="p-6">
-        <div className="mb-2">
-          <span className="text-sm text-brand-primary font-medium uppercase tracking-wide">
-            {product.category}
-          </span>
+    <div className="border rounded-xl border-white/10 bg-white/5 overflow-hidden hover:border-primary/30 transition-colors group">
+      <Link href={`/products/${product.slug}`}>
+        <div className="relative aspect-square overflow-hidden bg-white/10">
+          {product.images && product.images.length > 0 ? (
+            <Image
+              src={product.images[0]}
+              alt={product.name}
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-300"
+            />
+          ) : (
+            <div className="flex items-center justify-center h-full">
+              <span className="material-symbols-outlined text-white/20 text-6xl">
+                shopping_bag
+              </span>
+            </div>
+          )}
         </div>
+      </Link>
 
-        <h3 className="text-xl font-display font-bold mb-2 line-clamp-2">
-          {product.name}
-        </h3>
+      <div className="p-4">
+        <Link href={`/products/${product.slug}`}>
+          <h3 className="text-lg font-bold text-white mb-2 hover:text-primary transition-colors">
+            {product.name}
+          </h3>
+        </Link>
 
-        {product.description && (
-          <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-            {product.description}
-          </p>
-        )}
+        <p className="text-white/60 text-sm mb-4 line-clamp-2">
+          {product.short_description}
+        </p>
 
         <div className="flex items-center justify-between">
-          <div className="text-2xl font-bold text-brand-dark">
-            {formatCurrency(product.price)}
+          <div className="flex items-center gap-2">
+            <span className="text-2xl font-bold text-primary">
+              {formatPrice(product.price)}
+            </span>
+            {product.compare_at_price && (
+              <span className="text-sm text-white/40 line-through">
+                {formatPrice(product.compare_at_price)}
+              </span>
+            )}
           </div>
 
           <Button
-            onClick={handleAddToCart}
-            disabled={product.stock_quantity === 0}
             size="sm"
-            className="flex items-center gap-2"
+            onClick={() => addItem(product)}
+            className="gap-2"
           >
-            <ShoppingCart className="w-4 h-4" />
-            Add to Cart
+            <span className="material-symbols-outlined text-sm">
+              shopping_cart
+            </span>
+            Add
           </Button>
         </div>
-
-        {product.stock_quantity > 0 && product.stock_quantity < 10 && (
-          <p className="text-amber-600 text-sm mt-2">
-            Only {product.stock_quantity} left in stock!
-          </p>
-        )}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }

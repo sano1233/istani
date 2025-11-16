@@ -1,40 +1,83 @@
-import { Database } from './database'
+export interface Product {
+  id: string
+  name: string
+  slug: string
+  description: string
+  short_description: string
+  price: number
+  compare_at_price?: number
+  images: string[]
+  category_id: string
+  inventory_quantity: number
+  is_active: boolean
+  is_featured: boolean
+  metadata: Record<string, any>
+}
 
-export type Profile = Database['public']['Tables']['profiles']['Row']
-export type Product = Database['public']['Tables']['products']['Row']
-export type Order = Database['public']['Tables']['orders']['Row']
-export type OrderItem = Database['public']['Tables']['order_items']['Row']
-export type Workout = Database['public']['Tables']['workouts']['Row']
-export type WorkoutExercise = Database['public']['Tables']['workout_exercises']['Row']
-export type Meal = Database['public']['Tables']['meals']['Row']
-export type BodyMeasurement = Database['public']['Tables']['body_measurements']['Row']
-export type CoachingSession = Database['public']['Tables']['coaching_sessions']['Row']
-export type Donation = Database['public']['Tables']['donations']['Row']
+export interface Category {
+  id: string
+  name: string
+  slug: string
+  description: string
+  image_url: string
+}
 
 export interface CartItem {
-  product: Product
+  id: string
+  product_id: string
+  variant_id?: string
   quantity: number
+  product: Product
 }
 
-export interface FitnessMetrics {
-  bmr: number
-  tdee: number
-  proteinTarget: number
-  carbsTarget: number
-  fatsTarget: number
+export interface Order {
+  id: string
+  order_number: string
+  user_id: string
+  subtotal: number
+  shipping_cost: number
+  tax: number
+  total: number
+  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled'
+  payment_status: 'pending' | 'paid' | 'refunded' | 'failed'
+  created_at: string
 }
 
-export interface WorkoutWithExercises extends Workout {
-  exercises: WorkoutExercise[]
+export interface UserProfile {
+  id: string
+  email: string
+  full_name: string
+  avatar_url?: string
+  age?: number
+  sex?: string
+  height_cm?: number
+  weight_kg?: number
+  body_fat_percentage?: number
+  fitness_goals?: string[]
+  primary_goal?: string
+  target_weight_kg?: number
+  target_date?: string
+  member_since: string
 }
 
-export interface OrderWithItems extends Order {
-  items: (OrderItem & { product: Product })[]
+export interface WorkoutProgram {
+  id: string
+  name: string
+  slug: string
+  description: string
+  price: number
+  duration_weeks: number
+  difficulty_level: 'beginner' | 'intermediate' | 'advanced'
+  image_url: string
 }
 
-export type ActivityLevel = 'sedentary' | 'light' | 'moderate' | 'active' | 'very_active'
-export type FitnessGoal = 'weight_loss' | 'muscle_gain' | 'maintenance' | 'athletic_performance'
-export type MealType = 'breakfast' | 'lunch' | 'dinner' | 'snack'
-export type WorkoutType = 'strength' | 'cardio' | 'flexibility' | 'sports' | 'other'
-export type CoachingPlan = 'onboarding' | 'weekly' | 'monthly' | 'elite'
-export type OrderStatus = 'pending' | 'processing' | 'completed' | 'cancelled' | 'refunded'
+export interface UserProgress {
+  id: string
+  user_id: string
+  date: string
+  weight_kg?: number
+  body_fat_percentage?: number
+  workout_completed: boolean
+  calories_consumed?: number
+  notes?: string
+}
