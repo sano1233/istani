@@ -1,15 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { stripe } from '@/lib/stripe'
+import { getStripe } from '@/lib/stripe'
 import { createClient } from '@supabase/supabase-js'
 import type { Database } from '@/types/database'
 
-// Create Supabase admin client for webhook
-const supabaseAdmin = createClient<Database>(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+function getSupabaseAdmin() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY
+  if (!url || !key) {
+    throw new Error('Supabase admin credentials are not set')
+  }
+  return createClient<Database>(url, key)
+}
 
 export async function POST(request: NextRequest) {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    return NextResponse.json({ received: true }, { status: 200 })
+  }
   const body = await request.text()
   const signature = request.headers.get('stripe-signature')
 
@@ -23,6 +29,7 @@ export async function POST(request: NextRequest) {
   let event: any
 
   try {
+    const stripe = getStripe()
     event = stripe.webhooks.constructEvent(
       body,
       signature,
@@ -43,10 +50,10 @@ export async function POST(request: NextRequest) {
         const session = event.data.object
 
         // Get line items from session
-        const lineItems = await stripe.checkout.sessions.listLineItems(session.id)
+        const lineItems = await getStripe().checkout.sessions.listLineItems(session.id)
 
         // Create order in database
-        const { data: order, error: orderError } = await supabaseAdmin
+        const orderInsertRes = await getSupabaseAdmin()
           .from('orders')
           .insert({
             user_id: session.metadata?.user_id || null,
@@ -56,6 +63,8 @@ export async function POST(request: NextRequest) {
           } as any)
           .select()
           .single()
+        const order: any = orderInsertRes.data
+        const orderError = orderInsertRes.error
 
         if (orderError) {
           console.error('Failed to create order:', orderError)
@@ -69,10 +78,10 @@ export async function POST(request: NextRequest) {
           const unitAmount = item.price?.unit_amount || 0
 
           // Note: In production, you'd want to match products by ID stored in metadata
-          await supabaseAdmin
+          await getSupabaseAdmin()
             .from('order_items')
             .insert({
-              order_id: order.id,
+              order_id: order?.id,
               product_id: null, // You'd want to store product_id in metadata
               quantity: item.quantity || 1,
               price_at_time: unitAmount / 100,
@@ -88,7 +97,7 @@ export async function POST(request: NextRequest) {
         console.log('Payment succeeded:', paymentIntent.id)
 
         // Update order status to completed
-        await supabaseAdmin
+        await (getSupabaseAdmin() as any)
           .from('orders')
           .update({ status: 'completed' })
           .eq('stripe_payment_intent_id', paymentIntent.id)
@@ -101,7 +110,7 @@ export async function POST(request: NextRequest) {
         console.log('Payment failed:', paymentIntent.id)
 
         // Update order status to cancelled
-        await supabaseAdmin
+        await (getSupabaseAdmin() as any)
           .from('orders')
           .update({ status: 'cancelled' })
           .eq('stripe_payment_intent_id', paymentIntent.id)

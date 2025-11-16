@@ -28,9 +28,26 @@ export function calculateTDEE(bmr: number, activityLevel: string): number {
   return Math.round(bmr * (multipliers[activityLevel] || 1.2))
 }
 
+export function calculateCalorieTarget(
+  tdee: number,
+  goal: 'weight_loss' | 'muscle_gain' | 'maintenance' | 'athletic_performance'
+): number {
+  switch (goal) {
+    case 'weight_loss':
+      return Math.max(1200, Math.round(tdee - 500))
+    case 'muscle_gain':
+      return Math.round(tdee + 300)
+    case 'athletic_performance':
+      return Math.round(tdee + 200)
+    default:
+      return Math.round(tdee)
+  }
+}
+
 export function calculateMacros(
+  weightKg: number,
   calories: number,
-  goal: string
+  goal: 'weight_loss' | 'muscle_gain' | 'maintenance' | 'athletic_performance'
 ): { protein: number; carbs: number; fats: number } {
   let proteinPercent = 0.3
   let carbsPercent = 0.4
@@ -40,20 +57,23 @@ export function calculateMacros(
     proteinPercent = 0.35
     carbsPercent = 0.45
     fatsPercent = 0.2
-  } else if (goal === 'fat_loss') {
+  } else if (goal === 'weight_loss') {
     proteinPercent = 0.4
     carbsPercent = 0.3
     fatsPercent = 0.3
   }
 
-  return {
-    protein: Math.round((calories * proteinPercent) / 4),
-    carbs: Math.round((calories * carbsPercent) / 4),
-    fats: Math.round((calories * fatsPercent) / 9),
-  }
+  const protein = Math.round((calories * proteinPercent) / 4)
+  const carbs = Math.round((calories * carbsPercent) / 4)
+  const fats = Math.round((calories * fatsPercent) / 9)
+
+  return { protein, carbs, fats }
 }
 
-export function calculateWaterIntake(weightKg: number): number {
+export function calculateWaterIntake(weightKg: number, activityLevel?: string): number {
   // 35ml per kg of body weight
-  return Math.round((weightKg * 35) / 250) // in 250ml glasses
+  let glasses = Math.round((weightKg * 35) / 250)
+  if (activityLevel === 'active') glasses += 1
+  if (activityLevel === 'very_active') glasses += 2
+  return glasses // in 250ml glasses
 }

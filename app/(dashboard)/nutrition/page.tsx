@@ -49,9 +49,9 @@ export default async function NutritionPage() {
     )
 
     macroTargets = {
-      protein: macros.protein_g,
-      carbs: macros.carbs_g,
-      fats: macros.fats_g,
+      protein: macros.protein,
+      carbs: macros.carbs,
+      fats: macros.fats,
       calories: calorieTarget,
     }
   }

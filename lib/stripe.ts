@@ -1,10 +1,5 @@
 import Stripe from 'stripe'
 
-<<<<<<< HEAD
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-11-20.acacia',
-})
-=======
 let stripeInstance: Stripe | null = null
 
 export function getStripe(): Stripe {
@@ -13,14 +8,12 @@ export function getStripe(): Stripe {
     if (!secretKey) {
       throw new Error('STRIPE_SECRET_KEY is not set')
     }
-    // Use the version that matches installed types to avoid TS errors
     stripeInstance = new Stripe(secretKey, {
       apiVersion: '2025-02-24.acacia',
     })
   }
   return stripeInstance
 }
->>>>>>> 076bcbfe (fix(build): make CI deploys pass without secrets and add UI robustness)
 
 export async function createCheckoutSession(
   items: Array<{ product_id: string; quantity: number; price: number }>,

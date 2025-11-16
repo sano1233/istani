@@ -6,10 +6,14 @@
 
 import { createClient } from '@supabase/supabase-js'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+function getSupabase() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY
+  if (!url || !key) {
+    throw new Error('Supabase URL and Service Role key must be set')
+  }
+  return createClient(url, key)
+}
 
 interface UserData {
   id: string
@@ -24,6 +28,7 @@ interface UserData {
  * Generate morning motivation message
  */
 export async function generateMorningMotivation(userId: string) {
+  const supabase = getSupabase()
   const motivationalMessages = [
     {
       title: '🌅 Rise and Grind!',
@@ -58,6 +63,7 @@ export async function generateMorningMotivation(userId: string) {
  * Generate workout recommendation based on user data
  */
 export async function generateWorkoutRecommendation(userId: string) {
+  const supabase = getSupabase()
   // Get user profile and recent workouts
   const { data: profile } = await supabase
     .from('profiles')
@@ -182,6 +188,7 @@ function getExercisesForType(type: string): any {
  * Analyze progress and send insights
  */
 export async function analyzeProgressAndSendInsights(userId: string) {
+  const supabase = getSupabase()
   // Get user's progress over last 30 days
   const thirtyDaysAgo = new Date()
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
@@ -279,6 +286,7 @@ export async function analyzeProgressAndSendInsights(userId: string) {
  * Generate nutrition recommendations
  */
 export async function generateNutritionRecommendation(userId: string) {
+  const supabase = getSupabase()
   const { data: profile } = await supabase
     .from('profiles')
     .select('*')
@@ -395,6 +403,7 @@ function calculateTDEE(bmr: number, activityLevel: string): number {
  * Check for inactive users and send re-engagement
  */
 export async function checkInactiveUsers() {
+  const supabase = getSupabase()
   const sevenDaysAgo = new Date()
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
 
@@ -423,6 +432,7 @@ export async function checkInactiveUsers() {
  * Run all daily coaching tasks
  */
 export async function runDailyCoachingTasks() {
+  const supabase = getSupabase()
   try {
     // Get all active users
     const { data: users } = await supabase
