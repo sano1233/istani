@@ -1,4 +1,4 @@
-import { supabaseClient } from '@/lib/supabaseClient';
+import { getSupabaseClient } from '@/lib/supabaseClient';
 
 export type ExternalImage = {
   source: 'pexels' | 'unsplash';
@@ -97,6 +97,7 @@ export async function loadGalleryItems({
 
   let saved: GalleryItem[] = [];
   try {
+    const supabaseClient = getSupabaseClient()
     const { data, error } = await supabaseClient
       .from('image_assets')
       .select('*')
