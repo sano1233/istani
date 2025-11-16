@@ -16,16 +16,15 @@ jobs:
   merge:
     runs-on: ubuntu-latest
     steps:
-        - name: Use gh
-          run: gh --version
-        - name: Merge PRs sequentially
-          env:
-            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            PRS: ${{ github.event.inputs.prs }}
-          shell: bash
-          run: |
-            set -euo pipefail
-            for pr in ${PRS}; do
-              echo "Merging #${pr}…"
-              gh pr merge "${pr}" --squash --delete-branch
-            done
+      - name: Use gh
+        run: gh --version
+      - name: Merge PRs sequentially
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PRS: ${{ github.event.inputs.prs }}
+        run: |
+          bash -lc '
+          for pr in ${PRS}; do
+            echo "Merging #${pr}…"
+            gh pr merge "${pr}" --squash --delete-branch
+          done'

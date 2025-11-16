@@ -1,23 +1,4 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "version": 2,
-  "builds": [
-    { "src": "*.html", "use": "@vercel/static" },
-    { "src": "*.txt", "use": "@vercel/static" },
-    { "src": "*.xml", "use": "@vercel/static" }
-  ],
-  "git": { "productionBranch": "main" },
-  "redirects": [
-    { "source": "/index", "destination": "/index.html", "statusCode": 301 }
-  ],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        { "key": "X-Frame-Options", "value": "DENY" },
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
-      ]
-    }
-  ]
+  "git": { "productionBranch": "main" }
 }
