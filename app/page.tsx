@@ -17,12 +17,12 @@ export default function HomePage() {
             Science-backed training. Premium supplements. Real results.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Button size="lg" asChild>
-              <Link href="/products">Shop Now</Link>
-            </Button>
-            <Button size="lg" variant="outline" asChild>
-              <Link href="/register">Start Free Trial</Link>
-            </Button>
+            <Link href="/products">
+              <Button size="lg">Shop Now</Button>
+            </Link>
+            <Link href="/register">
+              <Button size="lg" variant="outline">Start Free Trial</Button>
+            </Link>
           </div>
         </div>
       </section>
@@ -80,9 +80,9 @@ export default function HomePage() {
           <p className="mb-8 text-xl text-white/80">
             Join thousands of athletes achieving their fitness goals with Istani.
           </p>
-          <Button size="lg" asChild>
-            <Link href="/register">Get Started Today</Link>
-          </Button>
+          <Link href="/register">
+            <Button size="lg">Get Started Today</Button>
+          </Link>
         </div>
       </section>
     </div>

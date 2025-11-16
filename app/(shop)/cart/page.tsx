@@ -22,9 +22,9 @@ export default function CartPage() {
           <p className="text-white/60 mb-8">
             Add some products to get started!
           </p>
-          <Button size="lg" asChild>
-            <Link href="/products">Browse Products</Link>
-          </Button>
+          <Link href="/products">
+            <Button size="lg">Browse Products</Button>
+          </Link>
         </div>
       </div>
     )
@@ -134,23 +134,24 @@ export default function CartPage() {
                 </div>
               </div>
 
-              <Button size="lg" className="w-full gap-2" asChild>
-                <Link href="/checkout">
+              <Link href="/checkout">
+                <Button size="lg" className="w-full gap-2">
                   <span className="material-symbols-outlined">
                     lock
                   </span>
                   Checkout
-                </Link>
-              </Button>
+                </Button>
+              </Link>
 
-              <Button
-                variant="outline"
-                size="lg"
-                className="w-full mt-3"
-                asChild
-              >
-                <Link href="/products">Continue Shopping</Link>
-              </Button>
+              <Link href="/products">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="w-full mt-3"
+                >
+                  Continue Shopping
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
