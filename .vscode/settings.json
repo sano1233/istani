@@ -1,0 +1,6 @@
+{
+  "ai-brain.enabled": true,
+  "ai-brain.providers": ["gemini", "claude", "codex", "qwen"],
+  "ai-brain.autoReview": true,
+  "ai-brain.autoFix": true
+}
