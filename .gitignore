@@ -61,6 +61,8 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 .pnpm-debug.log*
+ai-brain/node_modules/
+ai-brain/package-lock.json
 
 # ============================================
 # BUILD OUTPUTS
@@ -72,6 +74,7 @@ out/
 .nuxt/
 .cache/
 istani-rebuild/assets/
+.turbo
 
 # ============================================
 # JAVA BUILD ARTIFACTS
