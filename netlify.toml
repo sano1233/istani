@@ -1,0 +1,5 @@
+# Static site deployment on Netlify
+[build]
+  publish = "."
+
+# Do NOT add the old @netlify/plugin-nextjs manually.

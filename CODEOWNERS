@@ -1,0 +1,22 @@
+# Code ownership for istani.org repository
+# Format: path/pattern @username
+
+# Default owner for everything
+* @sano1233
+
+# Workflow configurations
+/.github/ @sano1233
+
+# Fitness content
+/REAL_FITNESS_SCIENCE.md @sano1233
+/src/istani-rebuild/ @sano1233
+
+# Documentation
+/*.md @sano1233
+/docs/ @sano1233
+
+# Configuration files
+/package.json @sano1233
+/vercel.json @sano1233
+/.eslintrc.* @sano1233
+/.prettierrc.* @sano1233
