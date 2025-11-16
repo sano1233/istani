@@ -29,7 +29,10 @@ function parseEnvFile(filePath) {
       }
       const [rawKey, ...rest] = trimmed.split('=');
       const key = rawKey.trim();
-      const value = rest.join('=').trim().replace(/^['"]|['"]$/g, '');
+      const value = rest
+        .join('=')
+        .trim()
+        .replace(/^['"]|['"]$/g, '');
       if (key) {
         acc[key] = value;
       }
@@ -64,10 +67,7 @@ function detectEnvStatus() {
 }
 
 function digestFile(filePath) {
-  return crypto
-    .createHash('sha1')
-    .update(fs.readFileSync(filePath))
-    .digest('hex');
+  return crypto.createHash('sha1').update(fs.readFileSync(filePath)).digest('hex');
 }
 
 function computeDependencySignature() {
@@ -204,7 +204,9 @@ function printStatus() {
 
   const envFile = path.join(projectRoot, '.env.local');
   console.log(formatHeader('Config Files'));
-  console.log(`${path.relative(projectRoot, envFile)}: ${fs.existsSync(envFile) ? 'present' : 'missing'}`);
+  console.log(
+    `${path.relative(projectRoot, envFile)}: ${fs.existsSync(envFile) ? 'present' : 'missing'}`
+  );
 }
 
 function main() {

@@ -1,16 +1,16 @@
-'use client'
+'use client';
 
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { cn } from '@/lib/utils'
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { cn } from '@/lib/utils';
 
 interface SidebarProps {
-  userName: string
-  userAvatar?: string
+  userName: string;
+  userAvatar?: string;
 }
 
 export function Sidebar({ userName, userAvatar }: SidebarProps) {
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   const links = [
     { href: '/dashboard', icon: 'dashboard', label: 'Dashboard' },
@@ -18,8 +18,8 @@ export function Sidebar({ userName, userAvatar }: SidebarProps) {
     { href: '/workouts', icon: 'fitness_center', label: 'Workouts' },
     { href: '/progress', icon: 'trending_up', label: 'Progress' },
     { href: '/products', icon: 'shopping_bag', label: 'Shop' },
-    { href: '/cart', icon: 'shopping_cart', label: 'Cart' },
-  ]
+    { href: '/cart', icon: 'shopping_cart', label: 'Cart' }
+  ];
 
   return (
     <aside className="flex-shrink-0 w-64 p-4 border-r border-white/10">
@@ -37,30 +37,23 @@ export function Sidebar({ userName, userAvatar }: SidebarProps) {
 
         {/* Navigation Links */}
         <nav className="flex flex-col gap-2">
-          {links.map((link) => {
-            const isActive = pathname === link.href
+          {links.map(link => {
+            const isActive = pathname === link.href;
             return (
               <Link
                 key={link.href}
                 href={link.href}
                 className={cn(
                   'flex items-center gap-3 px-3 py-2 rounded-lg transition-colors',
-                  isActive
-                    ? 'bg-primary/20 text-primary'
-                    : 'text-white hover:bg-white/10'
+                  isActive ? 'bg-primary/20 text-primary' : 'text-white hover:bg-white/10'
                 )}
               >
-                <span
-                  className={cn(
-                    'material-symbols-outlined',
-                    isActive && 'fill'
-                  )}
-                >
+                <span className={cn('material-symbols-outlined', isActive && 'fill')}>
                   {link.icon}
                 </span>
                 <p className="text-sm font-medium">{link.label}</p>
               </Link>
-            )
+            );
           })}
         </nav>
 
@@ -76,5 +69,5 @@ export function Sidebar({ userName, userAvatar }: SidebarProps) {
         </div>
       </div>
     </aside>
-  )
+  );
 }

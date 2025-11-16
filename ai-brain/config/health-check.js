@@ -12,18 +12,18 @@ try {
 } catch (e) {
   // Fallback if chalk is not installed
   chalk = {
-    green: (s) => s,
-    yellow: (s) => s,
-    red: (s) => s,
-    blue: (s) => s
+    green: s => s,
+    yellow: s => s,
+    red: s => s,
+    blue: s => s
   };
 }
 
 // Define secret categories and their importance
 const secretsConfig = {
   required: {
-    'GitHub': ['GITHUB_TOKEN'],
-    'Supabase': ['SUPABASE_URL', 'SUPABASE_ANON_KEY']
+    GitHub: ['GITHUB_TOKEN'],
+    Supabase: ['SUPABASE_URL', 'SUPABASE_ANON_KEY']
   },
   optional: {
     'AI Services': [
@@ -35,12 +35,7 @@ const secretsConfig = {
       'COHERE_API_KEY',
       'HUGGINGFACE_API_KEY'
     ],
-    'Deployment': [
-      'VERCEL_TOKEN',
-      'VERCEL_ORG_ID',
-      'VERCEL_PROJECT_ID',
-      'SUPABASE_SERVICE_ROLE_KEY'
-    ]
+    Deployment: ['VERCEL_TOKEN', 'VERCEL_ORG_ID', 'VERCEL_PROJECT_ID', 'SUPABASE_SERVICE_ROLE_KEY']
   }
 };
 

@@ -26,9 +26,9 @@ async function getPrompt() {
     return process.argv.slice(2).join(' ') || 'Hello';
   } else {
     // Read from stdin
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       let data = '';
-      process.stdin.on('data', chunk => data += chunk);
+      process.stdin.on('data', chunk => (data += chunk));
       process.stdin.on('end', () => resolve(data.trim() || 'Hello'));
     });
   }

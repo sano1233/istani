@@ -1,16 +1,12 @@
-import type { Metadata } from 'next'
-import './globals.css'
+import type { Metadata } from 'next';
+import './globals.css';
 
 export const metadata: Metadata = {
   title: 'Istani Fitness - Transform Your Body',
-  description: 'Science-backed fitness programs and premium supplements',
-}
+  description: 'Science-backed fitness programs and premium supplements'
+};
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="dark">
       <head>
@@ -25,5 +21,5 @@ export default function RootLayout({
       </head>
       <body className="font-display">{children}</body>
     </html>
-  )
+  );
 }

@@ -1,45 +1,45 @@
-import { createClient } from '@/lib/supabase/server'
-import { NextResponse } from 'next/server'
+import { createClient } from '@/lib/supabase/server';
+import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
-  const { action, email, password } = await request.json()
-  const supabase = await createClient()
+  const { action, email, password } = await request.json();
+  const supabase = await createClient();
 
   if (action === 'login') {
     const { error } = await supabase.auth.signInWithPassword({
       email,
-      password,
-    })
+      password
+    });
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
-    return NextResponse.json({ success: true })
+    return NextResponse.json({ success: true });
   }
 
   if (action === 'register') {
     const { error } = await supabase.auth.signUp({
       email,
-      password,
-    })
+      password
+    });
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
-    return NextResponse.json({ success: true })
+    return NextResponse.json({ success: true });
   }
 
   if (action === 'logout') {
-    const { error } = await supabase.auth.signOut()
+    const { error } = await supabase.auth.signOut();
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
-    return NextResponse.json({ success: true })
+    return NextResponse.json({ success: true });
   }
 
-  return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
+  return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
 }

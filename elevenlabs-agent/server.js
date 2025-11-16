@@ -103,7 +103,7 @@ app.post('/chat', async (req, res) => {
       },
       {
         headers: {
-          'Authorization': `Bearer ${apiKey}`,
+          Authorization: `Bearer ${apiKey}`,
           'Content-Type': 'application/json',
           'HTTP-Referer': 'https://istani-dpoolwes1-istanis-projects.vercel.app',
           'X-Title': 'Istani Fitness Agent'
@@ -119,7 +119,6 @@ app.post('/chat', async (req, res) => {
       model,
       usage: response.data.usage
     });
-
   } catch (error) {
     console.error('Chat error:', error.response?.data || error.message);
     res.status(500).json({
@@ -190,7 +189,6 @@ app.post('/schedule', async (req, res) => {
       eventId: calendarResponse.data.id,
       eventLink: calendarResponse.data.htmlLink
     });
-
   } catch (error) {
     console.error('Schedule error:', error.message);
     res.status(500).json({
@@ -234,7 +232,6 @@ app.get('/file/search', async (req, res) => {
       success: true,
       files: searchResponse.data.files
     });
-
   } catch (error) {
     console.error('Search error:', error.message);
     res.status(500).json({
@@ -277,7 +274,6 @@ app.get('/file/:id', async (req, res) => {
       file: metadataResponse.data,
       content: Buffer.from(contentResponse.data).toString('base64')
     });
-
   } catch (error) {
     console.error('File retrieval error:', error.message);
     res.status(500).json({

@@ -10,7 +10,10 @@ const projectRoot = path.resolve(__dirname, '..');
 function listTrackedFiles() {
   try {
     const output = execSync('git ls-files', { cwd: projectRoot, encoding: 'utf8' });
-    return output.split('\n').map(line => line.trim()).filter(Boolean);
+    return output
+      .split('\n')
+      .map(line => line.trim())
+      .filter(Boolean);
   } catch (error) {
     return [];
   }
@@ -59,7 +62,10 @@ function scanForTodos(files) {
 
 function scanUnstagedChanges() {
   try {
-    const output = execSync('git status --porcelain', { cwd: projectRoot, encoding: 'utf8' }).trim();
+    const output = execSync('git status --porcelain', {
+      cwd: projectRoot,
+      encoding: 'utf8'
+    }).trim();
     return output ? output.split('\n') : [];
   } catch (error) {
     return [];

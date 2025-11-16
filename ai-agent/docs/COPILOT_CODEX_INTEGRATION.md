@@ -236,11 +236,11 @@ npm run cli config
 
 ### Model Responsibilities
 
-| Model | Primary Use | Strengths |
-|-------|------------|-----------|
-| **Claude AI** | Comprehensive code review | Deep analysis, security, architecture |
-| **GitHub Copilot** | Code suggestions | Contextual completions, best practices |
-| **OpenAI Codex** | Error fixing | Advanced debugging, auto-fix generation |
+| Model              | Primary Use               | Strengths                               |
+| ------------------ | ------------------------- | --------------------------------------- |
+| **Claude AI**      | Comprehensive code review | Deep analysis, security, architecture   |
+| **GitHub Copilot** | Code suggestions          | Contextual completions, best practices  |
+| **OpenAI Codex**   | Error fixing              | Advanced debugging, auto-fix generation |
 
 ### Consensus Algorithm
 
@@ -293,6 +293,7 @@ Result: CHANGES REQUESTED (below 70% threshold)
 ### Auto-Fix Workflow
 
 Automatically triggered on:
+
 - New PR opened
 - New commits pushed
 - Comment `/fix` on PR
@@ -303,7 +304,7 @@ on:
   pull_request:
     types: [opened, synchronize]
   issue_comment:
-    types: [created]  # Comment "/fix"
+    types: [created] # Comment "/fix"
 ```
 
 ---
@@ -357,13 +358,13 @@ npm run cli autofix 123
 
 // Before (detected by all models):
 function getData() {
-  var data = fetchData();  // ❌ Use const/let
+  var data = fetchData(); // ❌ Use const/let
   return data;
 }
 
 // After (auto-fixed):
 async function getData() {
-  const data = await fetchData();  // ✅ Modern async/await
+  const data = await fetchData(); // ✅ Modern async/await
   return data;
 }
 ```
@@ -396,6 +397,7 @@ console.log('Consensus:', result.review.consensus);
 ### Issue: "OpenAI API key not set"
 
 **Solution:**
+
 ```bash
 # Check .env file
 cat ai-agent/.env | grep OPENAI
@@ -412,6 +414,7 @@ gh secret set OPENAI_API_KEY --body "sk-xxx"
 **Solutions:**
 
 1. **Use GitHub Copilot for Business:**
+
    ```bash
    # Requires organization with Copilot enabled
    # Set GITHUB_TOKEN with Copilot permissions
@@ -426,6 +429,7 @@ gh secret set OPENAI_API_KEY --body "sk-xxx"
 ### Issue: "Rate limit exceeded"
 
 **Solution:**
+
 ```bash
 # Add rate limiting in .env
 AGENT_MAX_PRS_PER_HOUR=20
@@ -439,6 +443,7 @@ AGENT_RATE_LIMIT_DELAY_MS=3000
 ### Issue: "Auto-fix creates broken code"
 
 **Solution:**
+
 ```bash
 # Disable auto-fix and review manually
 AUTO_FIX_ENABLED=false
@@ -541,9 +546,9 @@ calculateOverallConsensus(filesAnalysis) {
 ```javascript
 // Give different weights to models
 const weightedConsensus = {
-  claude: 0.5,    // 50% weight
-  copilot: 0.3,   // 30% weight
-  codex: 0.2      // 20% weight
+  claude: 0.5, // 50% weight
+  copilot: 0.3, // 30% weight
+  codex: 0.2 // 20% weight
 };
 ```
 
@@ -593,16 +598,19 @@ Shows:
 ## Support
 
 ### Documentation
+
 - 📖 [Main README](../README.md)
 - 📖 [Deployment Guide](../../DEPLOYMENT.md)
 - 📖 [API Reference](./API.md)
 
 ### Community
+
 - 💬 [Discord](https://discord.gg/istani)
 - 🐦 [Twitter](https://twitter.com/istani)
 - 📧 [Email](mailto:support@istani.org)
 
 ### Issues
+
 - 🐛 [Report Bug](https://github.com/sano1233/istani/issues/new?template=bug_report.md)
 - ✨ [Request Feature](https://github.com/sano1233/istani/issues/new?template=feature_request.md)
 

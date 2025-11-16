@@ -1,39 +1,33 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
+import { useState } from 'react';
+import { createClient } from '@/lib/supabase/client';
 
 interface Meal {
-  id: string
-  meal_name: string
-  calories: number
-  protein_g: number
-  carbs_g: number
-  fats_g: number
-  consumed_at: string
+  id: string;
+  meal_name: string;
+  calories: number;
+  protein_g: number;
+  carbs_g: number;
+  fats_g: number;
+  consumed_at: string;
 }
 
-export function MealLogger({
-  userId,
-  todayMeals,
-}: {
-  userId: string
-  todayMeals: Meal[]
-}) {
-  const [mealName, setMealName] = useState('')
-  const [calories, setCalories] = useState('')
-  const [protein, setProtein] = useState('')
-  const [carbs, setCarbs] = useState('')
-  const [fats, setFats] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [success, setSuccess] = useState(false)
+export function MealLogger({ userId, todayMeals }: { userId: string; todayMeals: Meal[] }) {
+  const [mealName, setMealName] = useState('');
+  const [calories, setCalories] = useState('');
+  const [protein, setProtein] = useState('');
+  const [carbs, setCarbs] = useState('');
+  const [fats, setFats] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
-  const supabase = createClient()
+  const supabase = createClient();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setSuccess(false)
+    e.preventDefault();
+    setLoading(true);
+    setSuccess(false);
 
     try {
       // Insert meal
@@ -44,46 +38,46 @@ export function MealLogger({
         protein_g: Number(protein),
         carbs_g: Number(carbs),
         fats_g: Number(fats),
-        consumed_at: new Date().toISOString(),
-      })
+        consumed_at: new Date().toISOString()
+      });
 
-      if (error) throw error
+      if (error) throw error;
 
       // Update nutrition streak
-      const today = new Date().toISOString().split('T')[0]
+      const today = new Date().toISOString().split('T')[0];
       await supabase.rpc('update_user_streak', {
         p_user_id: userId,
         p_streak_type: 'nutrition',
-        p_activity_date: today,
-      })
+        p_activity_date: today
+      });
 
-      setSuccess(true)
+      setSuccess(true);
       // Reset form
-      setMealName('')
-      setCalories('')
-      setProtein('')
-      setCarbs('')
-      setFats('')
+      setMealName('');
+      setCalories('');
+      setProtein('');
+      setCarbs('');
+      setFats('');
 
       // Reload page to show updated stats
-      setTimeout(() => window.location.reload(), 1500)
+      setTimeout(() => window.location.reload(), 1500);
     } catch (error: any) {
-      console.error('Error logging meal:', error)
-      alert('Failed to log meal: ' + error.message)
+      console.error('Error logging meal:', error);
+      alert('Failed to log meal: ' + error.message);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   // Auto-calculate macros from calories if needed
   const estimateMacros = () => {
-    if (!calories) return
-    const cal = Number(calories)
+    if (!calories) return;
+    const cal = Number(calories);
     // Estimate: 30% protein, 40% carbs, 30% fats
-    setProtein(String(Math.round((cal * 0.3) / 4)))
-    setCarbs(String(Math.round((cal * 0.4) / 4)))
-    setFats(String(Math.round((cal * 0.3) / 9)))
-  }
+    setProtein(String(Math.round((cal * 0.3) / 4)));
+    setCarbs(String(Math.round((cal * 0.4) / 4)));
+    setFats(String(Math.round((cal * 0.3) / 9)));
+  };
 
   return (
     <div className="bg-white rounded-lg border p-6">
@@ -97,14 +91,11 @@ export function MealLogger({
           </div>
           <div className="space-y-1">
             {todayMeals.map(meal => (
-              <div
-                key={meal.id}
-                className="text-sm flex items-center justify-between"
-              >
+              <div key={meal.id} className="text-sm flex items-center justify-between">
                 <span className="text-gray-700">
                   {new Date(meal.consumed_at).toLocaleTimeString('en-US', {
                     hour: 'numeric',
-                    minute: '2-digit',
+                    minute: '2-digit'
                   })}{' '}
                   - {meal.meal_name}
                 </span>
@@ -123,7 +114,7 @@ export function MealLogger({
             type="text"
             required
             value={mealName}
-            onChange={(e) => setMealName(e.target.value)}
+            onChange={e => setMealName(e.target.value)}
             placeholder="e.g., Chicken breast with rice"
             className="w-full px-3 py-2 border rounded-lg"
             list="common-meals"
@@ -157,7 +148,7 @@ export function MealLogger({
             required
             min="0"
             value={calories}
-            onChange={(e) => setCalories(e.target.value)}
+            onChange={e => setCalories(e.target.value)}
             placeholder="500"
             className="w-full px-3 py-2 border rounded-lg"
           />
@@ -166,16 +157,14 @@ export function MealLogger({
         {/* Macros Grid */}
         <div className="grid grid-cols-3 gap-3">
           <div>
-            <label className="block text-sm font-medium mb-1 text-blue-600">
-              Protein (g)
-            </label>
+            <label className="block text-sm font-medium mb-1 text-blue-600">Protein (g)</label>
             <input
               type="number"
               required
               min="0"
               step="0.1"
               value={protein}
-              onChange={(e) => setProtein(e.target.value)}
+              onChange={e => setProtein(e.target.value)}
               placeholder="30"
               className="w-full px-3 py-2 border rounded-lg"
             />
@@ -185,16 +174,14 @@ export function MealLogger({
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1 text-green-600">
-              Carbs (g)
-            </label>
+            <label className="block text-sm font-medium mb-1 text-green-600">Carbs (g)</label>
             <input
               type="number"
               required
               min="0"
               step="0.1"
               value={carbs}
-              onChange={(e) => setCarbs(e.target.value)}
+              onChange={e => setCarbs(e.target.value)}
               placeholder="50"
               className="w-full px-3 py-2 border rounded-lg"
             />
@@ -204,16 +191,14 @@ export function MealLogger({
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1 text-yellow-600">
-              Fats (g)
-            </label>
+            <label className="block text-sm font-medium mb-1 text-yellow-600">Fats (g)</label>
             <input
               type="number"
               required
               min="0"
               step="0.1"
               value={fats}
-              onChange={(e) => setFats(e.target.value)}
+              onChange={e => setFats(e.target.value)}
               placeholder="15"
               className="w-full px-3 py-2 border rounded-lg"
             />
@@ -233,9 +218,7 @@ export function MealLogger({
                 Math.round(Number(protein) * 4 + Number(carbs) * 4 + Number(fats) * 9) -
                   Number(calories)
               ) > 20 && (
-                <span className="text-yellow-600 ml-2">
-                  ⚠️ Doesn't match total calories
-                </span>
+                <span className="text-yellow-600 ml-2">⚠️ Doesn't match total calories</span>
               )}
           </div>
         )}
@@ -258,9 +241,9 @@ export function MealLogger({
 
       {/* Quick Tip */}
       <div className="mt-4 p-3 bg-gray-50 rounded-lg text-sm text-gray-600">
-        💡 <span className="font-medium">Pro Tip:</span> Use MyFitnessPal or nutrition labels
-        to get accurate macro information
+        💡 <span className="font-medium">Pro Tip:</span> Use MyFitnessPal or nutrition labels to get
+        accurate macro information
       </div>
     </div>
-  )
+  );
 }

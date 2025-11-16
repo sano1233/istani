@@ -18,14 +18,14 @@ async function query(prompt) {
       path: '/api/v1/services/aigc/text-generation/generation',
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
+        Authorization: `Bearer ${apiKey}`,
         'Content-Type': 'application/json'
       }
     };
 
     const req = https.request(options, res => {
       let body = '';
-      res.on('data', chunk => body += chunk);
+      res.on('data', chunk => (body += chunk));
       res.on('end', () => {
         try {
           const parsed = JSON.parse(body);
@@ -60,9 +60,9 @@ async function getPrompt() {
     return process.argv.slice(2).join(' ') || 'Hello';
   } else {
     // Read from stdin
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       let data = '';
-      process.stdin.on('data', chunk => data += chunk);
+      process.stdin.on('data', chunk => (data += chunk));
       process.stdin.on('end', () => resolve(data.trim() || 'Hello'));
     });
   }

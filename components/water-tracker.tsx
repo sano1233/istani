@@ -1,16 +1,16 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
-import { Button } from './ui/button'
-import { createClient } from '@/lib/supabase/client'
+import { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Button } from './ui/button';
+import { createClient } from '@/lib/supabase/client';
 
 interface WaterTrackerProps {
-  userId: string
-  currentGlasses: number
-  dailyGoal: number
-  recommendedGlasses: number
-  loggedTimes: string[]
+  userId: string;
+  currentGlasses: number;
+  dailyGoal: number;
+  recommendedGlasses: number;
+  loggedTimes: string[];
 }
 
 export function WaterTracker({
@@ -18,52 +18,48 @@ export function WaterTracker({
   currentGlasses: initialGlasses,
   dailyGoal: initialGoal,
   recommendedGlasses,
-  loggedTimes: initialTimes,
+  loggedTimes: initialTimes
 }: WaterTrackerProps) {
-  const [glasses, setGlasses] = useState(initialGlasses)
-  const [goal, setGoal] = useState(initialGoal)
-  const [loggedTimes, setLoggedTimes] = useState<Date[]>(
-    initialTimes.map(t => new Date(t))
-  )
-  const [loading, setLoading] = useState(false)
-  const supabase = createClient()
+  const [glasses, setGlasses] = useState(initialGlasses);
+  const [goal, setGoal] = useState(initialGoal);
+  const [loggedTimes, setLoggedTimes] = useState<Date[]>(initialTimes.map(t => new Date(t)));
+  const [loading, setLoading] = useState(false);
+  const supabase = createClient();
 
-  const percentage = (glasses / goal) * 100
-  const today = new Date().toISOString().split('T')[0]
+  const percentage = (glasses / goal) * 100;
+  const today = new Date().toISOString().split('T')[0];
 
   async function addGlass() {
-    if (loading) return
-    setLoading(true)
+    if (loading) return;
+    setLoading(true);
 
     try {
-      const now = new Date()
-      const newGlasses = glasses + 1
-      const newTimes = [...loggedTimes, now]
+      const now = new Date();
+      const newGlasses = glasses + 1;
+      const newTimes = [...loggedTimes, now];
 
       // Update UI immediately
-      setGlasses(newGlasses)
-      setLoggedTimes(newTimes)
+      setGlasses(newGlasses);
+      setLoggedTimes(newTimes);
 
       // Update database
-      const { error } = await supabase
-        .from('water_intake')
-        .upsert({
-          user_id: userId,
-          date: today,
-          glasses_consumed: newGlasses,
-          daily_goal: goal,
-          logged_times: newTimes.map(t => t.toISOString()),
-        })
+      const { error } = await supabase.from('water_intake').upsert({
+        user_id: userId,
+        date: today,
+        glasses_consumed: newGlasses,
+        daily_goal: goal,
+        logged_times: newTimes.map(t => t.toISOString())
+      });
 
-      if (error) throw error
+      if (error) throw error;
 
       // Update streak if goal reached
       if (newGlasses >= goal) {
         await supabase.rpc('update_user_streak', {
           p_user_id: userId,
           p_streak_type: 'water',
-          p_activity_date: today,
-        })
+          p_activity_date: today
+        });
 
         // Send celebration message
         await supabase.from('coaching_messages').insert({
@@ -71,69 +67,65 @@ export function WaterTracker({
           message_type: 'celebration',
           title: '💧 Hydration Goal Achieved!',
           content: `Congratulations! You've hit your water goal of ${goal} glasses today. Keep it up!`,
-          priority: 'normal',
-        })
+          priority: 'normal'
+        });
       }
     } catch (error) {
-      console.error('Error logging water:', error)
+      console.error('Error logging water:', error);
       // Revert on error
-      setGlasses(glasses)
-      setLoggedTimes(loggedTimes)
+      setGlasses(glasses);
+      setLoggedTimes(loggedTimes);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
   async function removeGlass() {
-    if (glasses === 0 || loading) return
-    setLoading(true)
+    if (glasses === 0 || loading) return;
+    setLoading(true);
 
     try {
-      const newGlasses = glasses - 1
-      const newTimes = loggedTimes.slice(0, -1)
+      const newGlasses = glasses - 1;
+      const newTimes = loggedTimes.slice(0, -1);
 
-      setGlasses(newGlasses)
-      setLoggedTimes(newTimes)
+      setGlasses(newGlasses);
+      setLoggedTimes(newTimes);
 
-      await supabase
-        .from('water_intake')
-        .upsert({
-          user_id: userId,
-          date: today,
-          glasses_consumed: newGlasses,
-          daily_goal: goal,
-          logged_times: newTimes.map(t => t.toISOString()),
-        })
+      await supabase.from('water_intake').upsert({
+        user_id: userId,
+        date: today,
+        glasses_consumed: newGlasses,
+        daily_goal: goal,
+        logged_times: newTimes.map(t => t.toISOString())
+      });
     } catch (error) {
-      console.error('Error removing water:', error)
-      setGlasses(glasses)
-      setLoggedTimes(loggedTimes)
+      console.error('Error removing water:', error);
+      setGlasses(glasses);
+      setLoggedTimes(loggedTimes);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
   async function updateGoal(newGoal: number) {
-    if (loading) return
-    setLoading(true)
+    if (loading) return;
+    setLoading(true);
 
     try {
-      setGoal(newGoal)
+      setGoal(newGoal);
 
-      await supabase
-        .from('water_intake')
-        .upsert({
-          user_id: userId,
-          date: today,
-          glasses_consumed: glasses,
-          daily_goal: newGoal,
-          logged_times: loggedTimes.map(t => t.toISOString()),
-        })
+      await supabase.from('water_intake').upsert({
+        user_id: userId,
+        date: today,
+        glasses_consumed: glasses,
+        daily_goal: newGoal,
+        logged_times: loggedTimes.map(t => t.toISOString())
+      });
     } catch (error) {
-      console.error('Error updating goal:', error)
-      setGoal(goal)
+      console.error('Error updating goal:', error);
+      setGoal(goal);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
@@ -146,11 +138,11 @@ export function WaterTracker({
             <span className="text-sm text-white/60">Daily Goal:</span>
             <select
               value={goal}
-              onChange={(e) => updateGoal(Number(e.target.value))}
+              onChange={e => updateGoal(Number(e.target.value))}
               className="h-8 px-2 text-sm bg-white/5 border border-white/10 rounded-lg text-white focus:ring-1 focus:ring-primary"
               disabled={loading}
             >
-              {[6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map((num) => (
+              {[6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map(num => (
                 <option key={num} value={num} className="bg-background-dark">
                   {num} glasses
                 </option>
@@ -192,9 +184,7 @@ export function WaterTracker({
               </svg>
               {/* Percentage text */}
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-4xl font-black text-white">
-                  {Math.round(percentage)}%
-                </span>
+                <span className="text-4xl font-black text-white">{Math.round(percentage)}%</span>
               </div>
             </div>
           </div>
@@ -202,7 +192,8 @@ export function WaterTracker({
           {/* Glass count */}
           <div className="text-center mb-6">
             <p className="text-6xl font-black text-white mb-2">
-              {glasses}<span className="text-white/40">/{goal}</span>
+              {glasses}
+              <span className="text-white/40">/{goal}</span>
             </p>
             <p className="text-white/60">
               {glasses >= goal
@@ -231,12 +222,7 @@ export function WaterTracker({
               <span className="material-symbols-outlined">remove</span>
               Remove
             </Button>
-            <Button
-              onClick={addGlass}
-              disabled={loading}
-              size="lg"
-              className="gap-2"
-            >
+            <Button onClick={addGlass} disabled={loading} size="lg" className="gap-2">
               <span className="material-symbols-outlined">add</span>
               Add Glass
             </Button>
@@ -250,17 +236,20 @@ export function WaterTracker({
               Today's Log ({loggedTimes.length})
             </h4>
             <div className="flex flex-wrap gap-2">
-              {loggedTimes.slice(-8).reverse().map((time, index) => (
-                <div
-                  key={index}
-                  className="px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-sm text-white/80"
-                >
-                  {time.toLocaleTimeString('en-US', {
-                    hour: 'numeric',
-                    minute: '2-digit',
-                  })}
-                </div>
-              ))}
+              {loggedTimes
+                .slice(-8)
+                .reverse()
+                .map((time, index) => (
+                  <div
+                    key={index}
+                    className="px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-sm text-white/80"
+                  >
+                    {time.toLocaleTimeString('en-US', {
+                      hour: 'numeric',
+                      minute: '2-digit'
+                    })}
+                  </div>
+                ))}
             </div>
           </div>
         )}
@@ -271,9 +260,7 @@ export function WaterTracker({
             <div className="flex items-start gap-3">
               <span className="material-symbols-outlined text-primary">info</span>
               <div>
-                <p className="text-sm font-semibold text-white mb-1">
-                  Personalized Recommendation
-                </p>
+                <p className="text-sm font-semibold text-white mb-1">Personalized Recommendation</p>
                 <p className="text-sm text-white/80">
                   Based on your weight and activity level, we recommend{' '}
                   <strong>{recommendedGlasses} glasses</strong> per day.
@@ -294,5 +281,5 @@ export function WaterTracker({
         )}
       </CardContent>
     </Card>
-  )
+  );
 }

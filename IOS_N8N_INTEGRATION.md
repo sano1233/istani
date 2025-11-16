@@ -116,6 +116,7 @@ openssl rand -hex 32
 ```
 
 **Supported Actions**:
+
 - `log_workout` - Log workout from iOS Shortcuts
 - `log_meal` - Log nutrition data
 - `set_reminder` - Set fitness reminder
@@ -244,6 +245,7 @@ openssl rand -hex 32
 ```
 
 **Notification Categories**:
+
 - `workout_reminder` - Daily workout reminders
 - `achievement` - Achievement unlocked notifications
 - `community` - Community updates
@@ -262,6 +264,7 @@ openssl rand -hex 32
 **Sync Types**:
 
 1. **Workout Program** (`syncType: "workout_program"`)
+
    ```json
    {
      "syncType": "workout_program",
@@ -282,6 +285,7 @@ openssl rand -hex 32
    ```
 
 2. **User Progress** (`syncType: "user_progress"`)
+
    ```json
    {
      "syncType": "user_progress",
@@ -290,9 +294,7 @@ openssl rand -hex 32
      "currentStreak": 7,
      "longestStreak": 21,
      "totalVolume": 125000,
-     "personalRecords": [
-       { "exercise": "Bench Press", "weight": 100, "reps": 5 }
-     ],
+     "personalRecords": [{ "exercise": "Bench Press", "weight": 100, "reps": 5 }],
      "achievements": ["first_workout", "week_streak", "pr_bench_press"]
    }
    ```
@@ -305,9 +307,7 @@ openssl rand -hex 32
      "units": "metric",
      "theme": "dark",
      "notifications": true,
-     "reminders": [
-       { "time": "06:00", "days": ["mon", "wed", "fri"] }
-     ],
+     "reminders": [{ "time": "06:00", "days": ["mon", "wed", "fri"] }],
      "preferences": {
        "restTimerSound": true,
        "formVideos": true
@@ -419,6 +419,7 @@ curl -X POST http://localhost:5678/webhook/ios-shortcuts \
 **Scenario**: User completes workout at gym, uses iOS Shortcut to log it instantly.
 
 **Flow**:
+
 1. User opens iOS Shortcuts app
 2. Runs "Log Workout" shortcut
 3. Enters exercise, sets, reps, weight
@@ -429,6 +430,7 @@ curl -X POST http://localhost:5678/webhook/ios-shortcuts \
 8. User sees confirmation on iPhone
 
 **Benefits**:
+
 - ✅ 5-second workout logging
 - ✅ No app switching required
 - ✅ Works offline (queued for later sync)
@@ -440,6 +442,7 @@ curl -X POST http://localhost:5678/webhook/ios-shortcuts \
 **Scenario**: User's Apple Watch tracks workout automatically, data syncs to ISTANI.
 
 **Flow**:
+
 1. User wears Apple Watch during workout
 2. Apple Fitness tracks workout automatically
 3. iOS Health app receives workout data
@@ -449,6 +452,7 @@ curl -X POST http://localhost:5678/webhook/ios-shortcuts \
 7. User sees detailed analytics on istani.org
 
 **Benefits**:
+
 - ✅ Zero manual logging
 - ✅ Accurate heart rate, calories, duration
 - ✅ Unified fitness tracking
@@ -460,6 +464,7 @@ curl -X POST http://localhost:5678/webhook/ios-shortcuts \
 **Scenario**: n8n sends daily workout reminder to user's iPhone.
 
 **Flow**:
+
 1. n8n checks user's workout schedule
 2. At 6:00 AM, triggers iOS notification workflow
 3. Sends push notification via APNs
@@ -468,6 +473,7 @@ curl -X POST http://localhost:5678/webhook/ios-shortcuts \
 6. Workout program loads automatically
 
 **Benefits**:
+
 - ✅ Never miss a workout
 - ✅ Personalized timing
 - ✅ Direct deep-link to workout
@@ -479,6 +485,7 @@ curl -X POST http://localhost:5678/webhook/ios-shortcuts \
 **Scenario**: User works out on iOS app, data syncs to web app in real-time.
 
 **Flow**:
+
 1. User completes workout on iOS app
 2. iOS app sends sync request to n8n
 3. n8n updates backend database
@@ -487,6 +494,7 @@ curl -X POST http://localhost:5678/webhook/ios-shortcuts \
 6. Sees workout just logged on iPhone
 
 **Benefits**:
+
 - ✅ Seamless multi-device experience
 - ✅ No data loss
 - ✅ Real-time synchronization

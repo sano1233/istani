@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server'
-import { runDailyCoachingTasks } from '@/lib/autonomous/coaching-engine'
+import { NextResponse } from 'next/server';
+import { runDailyCoachingTasks } from '@/lib/autonomous/coaching-engine';
 
 /**
  * Vercel Cron Job Endpoint
@@ -14,31 +14,31 @@ import { runDailyCoachingTasks } from '@/lib/autonomous/coaching-engine'
 
 export async function GET(request: Request) {
   // Verify cron secret
-  const authHeader = request.headers.get('authorization')
+  const authHeader = request.headers.get('authorization');
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return new Response('Unauthorized', {
-      status: 401,
-    })
+      status: 401
+    });
   }
 
   try {
-    await runDailyCoachingTasks()
+    await runDailyCoachingTasks();
 
     return NextResponse.json({
       success: true,
       message: 'Daily coaching tasks completed',
-      timestamp: new Date().toISOString(),
-    })
+      timestamp: new Date().toISOString()
+    });
   } catch (error: any) {
-    console.error('Cron job error:', error)
+    console.error('Cron job error:', error);
 
     return NextResponse.json(
       {
         success: false,
         error: error.message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString()
       },
       { status: 500 }
-    )
+    );
   }
 }

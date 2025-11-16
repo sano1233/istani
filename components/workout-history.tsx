@@ -1,10 +1,10 @@
-'use client'
+'use client';
 
 interface Workout {
-  id: string
-  workout_type: string
-  duration_minutes: number
-  completed_at: string
+  id: string;
+  workout_type: string;
+  duration_minutes: number;
+  completed_at: string;
 }
 
 const WORKOUT_EMOJIS: Record<string, string> = {
@@ -13,8 +13,8 @@ const WORKOUT_EMOJIS: Record<string, string> = {
   yoga: '🧘',
   hiit: '🔥',
   sports: '⚽',
-  other: '🎯',
-}
+  other: '🎯'
+};
 
 export function WorkoutHistory({ workouts }: { workouts: Workout[] }) {
   if (!workouts || workouts.length === 0) {
@@ -27,21 +27,24 @@ export function WorkoutHistory({ workouts }: { workouts: Workout[] }) {
           <p className="text-sm mt-1">Start by logging your first workout above!</p>
         </div>
       </div>
-    )
+    );
   }
 
   // Group workouts by date
-  const groupedWorkouts = workouts.reduce((acc, workout) => {
-    const date = new Date(workout.completed_at).toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    })
-    if (!acc[date]) acc[date] = []
-    acc[date].push(workout)
-    return acc
-  }, {} as Record<string, Workout[]>)
+  const groupedWorkouts = workouts.reduce(
+    (acc, workout) => {
+      const date = new Date(workout.completed_at).toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+      if (!acc[date]) acc[date] = [];
+      acc[date].push(workout);
+      return acc;
+    },
+    {} as Record<string, Workout[]>
+  );
 
   return (
     <div className="bg-white rounded-lg border p-6">
@@ -57,21 +60,17 @@ export function WorkoutHistory({ workouts }: { workouts: Workout[] }) {
                   key={workout.id}
                   className="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50 transition-colors"
                 >
-                  <div className="text-2xl">
-                    {WORKOUT_EMOJIS[workout.workout_type] || '🎯'}
-                  </div>
+                  <div className="text-2xl">{WORKOUT_EMOJIS[workout.workout_type] || '🎯'}</div>
                   <div className="flex-1">
                     <div className="font-medium capitalize">
                       {workout.workout_type.replace('_', ' ')}
                     </div>
-                    <div className="text-sm text-gray-600">
-                      {workout.duration_minutes} minutes
-                    </div>
+                    <div className="text-sm text-gray-600">{workout.duration_minutes} minutes</div>
                   </div>
                   <div className="text-xs text-gray-500">
                     {new Date(workout.completed_at).toLocaleTimeString('en-US', {
                       hour: 'numeric',
-                      minute: '2-digit',
+                      minute: '2-digit'
                     })}
                   </div>
                 </div>
@@ -82,10 +81,8 @@ export function WorkoutHistory({ workouts }: { workouts: Workout[] }) {
       </div>
 
       {workouts.length >= 20 && (
-        <div className="mt-4 text-center text-sm text-gray-500">
-          Showing last 20 workouts
-        </div>
+        <div className="mt-4 text-center text-sm text-gray-500">Showing last 20 workouts</div>
       )}
     </div>
-  )
+  );
 }

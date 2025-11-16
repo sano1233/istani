@@ -2,7 +2,7 @@ const fs = require('fs');
 
 const checks = {
   'index.html': 'bPKYqxtvvAXr6YAd9_MHFjn7euBAPgd9F7n6ruTEn0M',
-  'google09fb6384e727b88f.html': 'google-site-verification: google09fb6384e727b88f.html',
+  'google09fb6384e727b88f.html': 'google-site-verification: google09fb6384e727b88f.html'
 };
 
 for (const [file, snippet] of Object.entries(checks)) {

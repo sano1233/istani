@@ -1,27 +1,27 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import Image from 'next/image'
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
-import { Button } from './ui/button'
+import { useState } from 'react';
+import Image from 'next/image';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Button } from './ui/button';
 
 interface ProgressPhoto {
-  id: string
-  photo_url: string
-  photo_type: string
-  weight_kg: number
-  body_fat_percentage: number
-  taken_at: string
-  notes: string
+  id: string;
+  photo_url: string;
+  photo_type: string;
+  weight_kg: number;
+  body_fat_percentage: number;
+  taken_at: string;
+  notes: string;
 }
 
 interface ProgressPhotosProps {
-  photos: ProgressPhoto[]
-  userId: string
+  photos: ProgressPhoto[];
+  userId: string;
 }
 
 export function ProgressPhotos({ photos, userId }: ProgressPhotosProps) {
-  const [selectedPhoto, setSelectedPhoto] = useState<ProgressPhoto | null>(null)
+  const [selectedPhoto, setSelectedPhoto] = useState<ProgressPhoto | null>(null);
 
   return (
     <Card className="mb-8">
@@ -37,16 +37,14 @@ export function ProgressPhotos({ photos, userId }: ProgressPhotosProps) {
       <CardContent>
         {photos.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-white/40">
-            <span className="material-symbols-outlined text-6xl mb-4 opacity-40">
-              photo_camera
-            </span>
+            <span className="material-symbols-outlined text-6xl mb-4 opacity-40">photo_camera</span>
             <p className="text-lg mb-2">No progress photos yet</p>
             <p className="text-sm mb-4">Document your journey with progress photos</p>
             <Button size="sm">Upload First Photo</Button>
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {photos.map((photo) => (
+            {photos.map(photo => (
               <div
                 key={photo.id}
                 className="relative aspect-[3/4] rounded-lg overflow-hidden bg-white/5 border border-white/10 hover:border-primary/30 transition-colors cursor-pointer group"
@@ -63,7 +61,7 @@ export function ProgressPhotos({ photos, userId }: ProgressPhotosProps) {
                     <p className="text-sm font-semibold text-white">
                       {new Date(photo.taken_at).toLocaleDateString('en-US', {
                         month: 'short',
-                        day: 'numeric',
+                        day: 'numeric'
                       })}
                     </p>
                     {photo.weight_kg && (
@@ -87,7 +85,7 @@ export function ProgressPhotos({ photos, userId }: ProgressPhotosProps) {
           >
             <div
               className="relative max-w-4xl w-full max-h-[90vh] bg-background-dark rounded-xl overflow-hidden"
-              onClick={(e) => e.stopPropagation()}
+              onClick={e => e.stopPropagation()}
             >
               <button
                 onClick={() => setSelectedPhoto(null)}
@@ -111,7 +109,7 @@ export function ProgressPhotos({ photos, userId }: ProgressPhotosProps) {
                     {new Date(selectedPhoto.taken_at).toLocaleDateString('en-US', {
                       month: 'long',
                       day: 'numeric',
-                      year: 'numeric',
+                      year: 'numeric'
                     })}
                   </h3>
 
@@ -155,5 +153,5 @@ export function ProgressPhotos({ photos, userId }: ProgressPhotosProps) {
         )}
       </CardContent>
     </Card>
-  )
+  );
 }

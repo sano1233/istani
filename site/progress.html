@@ -1,160 +1,164 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Progress Tracking - Istani Fitness</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Progress Tracking - Istani Fitness</title>
 
-  <link rel="stylesheet" href="css/pico.min.css">
-  <link rel="stylesheet" href="css/custom-theme.css">
+    <link rel="stylesheet" href="css/pico.min.css" />
+    <link rel="stylesheet" href="css/custom-theme.css" />
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
-  <script src="js/supabase-client.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+    <script src="js/supabase-client.js"></script>
 
-  <style>
-    :root {
-      --primary: #FF6B35;
-      --secondary: #004E89;
-      --success: #06D6A0;
-    }
-
-    nav {
-      background: var(--secondary);
-      padding: 1rem 0;
-      color: white;
-    }
-
-    .nav-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 1rem;
-    }
-
-    .nav-links a {
-      color: white;
-      margin: 0 1rem;
-      text-decoration: none;
-      font-weight: 600;
-    }
-
-    .progress-card {
-      background: white;
-      padding: 2rem;
-      border-radius: 15px;
-      box-shadow: 0 3px 15px rgba(0,0,0,0.1);
-      margin: 1.5rem 0;
-    }
-
-    .chart-container {
-      position: relative;
-      height: 350px;
-      margin: 1.5rem 0;
-    }
-
-    .btn-primary {
-      background: var(--primary);
-      color: white;
-      padding: 1rem 2rem;
-      border: none;
-      border-radius: 8px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
-    }
-  </style>
-</head>
-<body>
-  <nav>
-    <div class="nav-container">
-      <div style="font-size: 1.5rem; font-weight: 800;">💪 Istani Fitness</div>
-      <div class="nav-links">
-        <a href="/dashboard.html">Dashboard</a>
-        <a href="/workouts.html">Workouts</a>
-        <a href="/nutrition.html">Nutrition</a>
-        <a href="/progress.html">Progress</a>
-        <a href="/coaching.html">Coaching</a>
-      </div>
-    </div>
-  </nav>
-
-  <main class="container" style="max-width: 1400px; padding: 2rem;">
-    <h1>📈 Progress Tracking</h1>
-    <p style="color: #666;">Visualize your transformation journey</p>
-
-    <div class="progress-card">
-      <h2>Weight Progress</h2>
-      <div class="chart-container">
-        <canvas id="weightChart"></canvas>
-      </div>
-    </div>
-
-    <div class="progress-card">
-      <h2>Body Measurements</h2>
-      <div class="chart-container">
-        <canvas id="measurementsChart"></canvas>
-      </div>
-    </div>
-
-    <div class="progress-card">
-      <h2>Strength Gains</h2>
-      <div class="chart-container">
-        <canvas id="strengthChart"></canvas>
-      </div>
-    </div>
-
-    <button class="btn-primary" onclick="alert('Add new measurements!')">
-      + Log New Measurements
-    </button>
-  </main>
-
-  <script>
-    // Weight Chart
-    new Chart(document.getElementById('weightChart'), {
-      type: 'line',
-      data: {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-        datasets: [{
-          label: 'Weight (lbs)',
-          data: [185, 183, 180, 178, 176, 174],
-          borderColor: '#FF6B35',
-          tension: 0.4
-        }]
+    <style>
+      :root {
+        --primary: #ff6b35;
+        --secondary: #004e89;
+        --success: #06d6a0;
       }
-    });
 
-    // Measurements Chart
-    new Chart(document.getElementById('measurementsChart'), {
-      type: 'line',
-      data: {
-        labels: ['Week 1', 'Week 4', 'Week 8', 'Week 12'],
-        datasets: [
-          { label: 'Waist (in)', data: [36, 35, 34, 32], borderColor: '#004E89' },
-          { label: 'Chest (in)', data: [38, 39, 40, 41], borderColor: '#06D6A0' }
-        ]
+      nav {
+        background: var(--secondary);
+        padding: 1rem 0;
+        color: white;
       }
-    });
 
-    // Strength Chart
-    new Chart(document.getElementById('strengthChart'), {
-      type: 'bar',
-      data: {
-        labels: ['Bench', 'Squat', 'Deadlift'],
-        datasets: [{
-          label: 'Max Weight (lbs)',
-          data: [225, 315, 405],
-          backgroundColor: ['#FF6B35', '#004E89', '#06D6A0']
-        }]
+      .nav-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem;
       }
-    });
-  </script>
-</body>
+
+      .nav-links a {
+        color: white;
+        margin: 0 1rem;
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .progress-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+        margin: 1.5rem 0;
+      }
+
+      .chart-container {
+        position: relative;
+        height: 350px;
+        margin: 1.5rem 0;
+      }
+
+      .btn-primary {
+        background: var(--primary);
+        color: white;
+        padding: 1rem 2rem;
+        border: none;
+        border-radius: 8px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <div class="nav-container">
+        <div style="font-size: 1.5rem; font-weight: 800">💪 Istani Fitness</div>
+        <div class="nav-links">
+          <a href="/dashboard.html">Dashboard</a>
+          <a href="/workouts.html">Workouts</a>
+          <a href="/nutrition.html">Nutrition</a>
+          <a href="/progress.html">Progress</a>
+          <a href="/coaching.html">Coaching</a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="container" style="max-width: 1400px; padding: 2rem">
+      <h1>📈 Progress Tracking</h1>
+      <p style="color: #666">Visualize your transformation journey</p>
+
+      <div class="progress-card">
+        <h2>Weight Progress</h2>
+        <div class="chart-container">
+          <canvas id="weightChart"></canvas>
+        </div>
+      </div>
+
+      <div class="progress-card">
+        <h2>Body Measurements</h2>
+        <div class="chart-container">
+          <canvas id="measurementsChart"></canvas>
+        </div>
+      </div>
+
+      <div class="progress-card">
+        <h2>Strength Gains</h2>
+        <div class="chart-container">
+          <canvas id="strengthChart"></canvas>
+        </div>
+      </div>
+
+      <button class="btn-primary" onclick="alert('Add new measurements!')">
+        + Log New Measurements
+      </button>
+    </main>
+
+    <script>
+      // Weight Chart
+      new Chart(document.getElementById('weightChart'), {
+        type: 'line',
+        data: {
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+          datasets: [
+            {
+              label: 'Weight (lbs)',
+              data: [185, 183, 180, 178, 176, 174],
+              borderColor: '#FF6B35',
+              tension: 0.4
+            }
+          ]
+        }
+      });
+
+      // Measurements Chart
+      new Chart(document.getElementById('measurementsChart'), {
+        type: 'line',
+        data: {
+          labels: ['Week 1', 'Week 4', 'Week 8', 'Week 12'],
+          datasets: [
+            { label: 'Waist (in)', data: [36, 35, 34, 32], borderColor: '#004E89' },
+            { label: 'Chest (in)', data: [38, 39, 40, 41], borderColor: '#06D6A0' }
+          ]
+        }
+      });
+
+      // Strength Chart
+      new Chart(document.getElementById('strengthChart'), {
+        type: 'bar',
+        data: {
+          labels: ['Bench', 'Squat', 'Deadlift'],
+          datasets: [
+            {
+              label: 'Max Weight (lbs)',
+              data: [225, 315, 405],
+              backgroundColor: ['#FF6B35', '#004E89', '#06D6A0']
+            }
+          ]
+        }
+      });
+    </script>
+  </body>
 </html>

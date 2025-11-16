@@ -131,7 +131,6 @@ class IstaniAIAgent {
         buildResult,
         testResult
       };
-
     } catch (error) {
       this.log(`❌ Error processing PR #${prNumber}: ${error.message}`, 'error');
       await this.handleError(prNumber, error);
@@ -167,7 +166,8 @@ class IstaniAIAgent {
     this.log(`🔍 Analyzing changes in ${pr.files.length} files`, 'info');
 
     const filesContent = await Promise.all(
-      pr.files.slice(0, 50).map(async (file) => { // Limit to 50 files
+      pr.files.slice(0, 50).map(async file => {
+        // Limit to 50 files
         try {
           if (file.status === 'removed') {
             return { filename: file.filename, status: 'removed', patch: file.patch };
@@ -204,10 +204,12 @@ class IstaniAIAgent {
     const response = await this.claude.messages.create({
       model: this.config.model,
       max_tokens: this.config.maxTokens,
-      messages: [{
-        role: 'user',
-        content: prompt
-      }]
+      messages: [
+        {
+          role: 'user',
+          content: prompt
+        }
+      ]
     });
 
     const analysisText = response.content[0].text;
@@ -230,10 +232,12 @@ class IstaniAIAgent {
     const response = await this.claude.messages.create({
       model: this.config.model,
       max_tokens: this.config.maxTokens,
-      messages: [{
-        role: 'user',
-        content: reviewPrompt
-      }]
+      messages: [
+        {
+          role: 'user',
+          content: reviewPrompt
+        }
+      ]
     });
 
     const reviewText = response.content[0].text;
@@ -269,7 +273,7 @@ class IstaniAIAgent {
           /token\s*=\s*['"][^'"]+['"]/gi,
           /-----BEGIN\s+(?:RSA\s+)?PRIVATE\s+KEY-----/gi,
           /sk_live_[a-zA-Z0-9]+/gi, // Stripe keys
-          /AKIA[0-9A-Z]{16}/gi, // AWS keys
+          /AKIA[0-9A-Z]{16}/gi // AWS keys
         ];
 
         for (const pattern of suspiciousPatterns) {
@@ -436,11 +440,12 @@ class IstaniAIAgent {
    * Report security issues
    */
   async reportSecurityIssues(pr, issues) {
-    const comment = `## 🔒 Security Scan Results\n\n` +
+    const comment =
+      `## 🔒 Security Scan Results\n\n` +
       `Found ${issues.length} potential security issue(s):\n\n` +
-      issues.map(issue =>
-        `- **${issue.severity}**: ${issue.issue} in \`${issue.file}\``
-      ).join('\n') +
+      issues
+        .map(issue => `- **${issue.severity}**: ${issue.issue} in \`${issue.file}\``)
+        .join('\n') +
       `\n\n⚠️ Please review these findings before merging.`;
 
     await this.github.issues.createComment({
@@ -455,7 +460,8 @@ class IstaniAIAgent {
    * Post deployment comment
    */
   async postDeploymentComment(pr) {
-    const comment = `## 🚀 Deployment Successful\n\n` +
+    const comment =
+      `## 🚀 Deployment Successful\n\n` +
       `This PR has been automatically deployed:\n\n` +
       `- ✅ Vercel: https://istaniorg.vercel.app\n` +
       `- ✅ Netlify: https://istaniorg.netlify.app\n\n` +
@@ -473,7 +479,8 @@ class IstaniAIAgent {
    * Handle errors
    */
   async handleError(prNumber, error) {
-    const comment = `## ❌ AI Agent Error\n\n` +
+    const comment =
+      `## ❌ AI Agent Error\n\n` +
       `The autonomous AI agent encountered an error while processing this PR:\n\n` +
       `\`\`\`\n${error.message}\n\`\`\`\n\n` +
       `Stack trace:\n\`\`\`\n${error.stack}\n\`\`\`\n\n` +
@@ -503,14 +510,18 @@ Author: @${pr.user.login}
 Description: ${pr.body || 'No description provided'}
 
 Files changed (${filesContent.length}):
-${filesContent.map(f => `
+${filesContent
+  .map(
+    f => `
 File: ${f.filename}
 Status: ${f.status}
 Changes: +${f.additions || 0} -${f.deletions || 0}
 
 ${f.content ? 'Content:\n```\n' + f.content + '\n```' : ''}
 ${f.patch ? 'Diff:\n```diff\n' + f.patch + '\n```' : ''}
-`).join('\n---\n')}
+`
+  )
+  .join('\n---\n')}
 
 Please analyze these changes and provide:
 1. Summary of what this PR does
@@ -555,13 +566,21 @@ Start your response with APPROVE or REQUEST_CHANGES, followed by your detailed r
   determineApproval(reviewText) {
     const text = reviewText.toLowerCase();
 
-    if (text.startsWith('approve') || text.includes('approval status**: yes') ||
-        text.includes('**approval**: yes') || text.includes('should be approved: yes')) {
+    if (
+      text.startsWith('approve') ||
+      text.includes('approval status**: yes') ||
+      text.includes('**approval**: yes') ||
+      text.includes('should be approved: yes')
+    ) {
       return true;
     }
 
-    if (text.includes('high severity') || text.includes('critical issue') ||
-        text.includes('security vulnerability') || text.startsWith('request_changes')) {
+    if (
+      text.includes('high severity') ||
+      text.includes('critical issue') ||
+      text.includes('security vulnerability') ||
+      text.startsWith('request_changes')
+    ) {
       return false;
     }
 
@@ -576,12 +595,14 @@ Start your response with APPROVE or REQUEST_CHANGES, followed by your detailed r
     const emoji = review.approved ? '✅' : '⚠️';
     const status = review.approved ? 'APPROVED' : 'CHANGES REQUESTED';
 
-    return `## ${emoji} AI Code Review - ${status}\n\n` +
+    return (
+      `## ${emoji} AI Code Review - ${status}\n\n` +
       `**Reviewer**: ${review.reviewer}\n` +
       `**Timestamp**: ${review.timestamp}\n\n` +
       `---\n\n${review.text}\n\n` +
       `---\n\n` +
-      `*This review was performed automatically by the ISTANI Autonomous AI Agent powered by Claude.*`;
+      `*This review was performed automatically by the ISTANI Autonomous AI Agent powered by Claude.*`
+    );
   }
 
   /**
@@ -635,12 +656,13 @@ Start your response with APPROVE or REQUEST_CHANGES, followed by your detailed r
    */
   log(message, level = 'info') {
     const timestamp = new Date().toISOString();
-    const prefix = {
-      info: 'ℹ️',
-      success: '✅',
-      warn: '⚠️',
-      error: '❌'
-    }[level] || 'ℹ️';
+    const prefix =
+      {
+        info: 'ℹ️',
+        success: '✅',
+        warn: '⚠️',
+        error: '❌'
+      }[level] || 'ℹ️';
 
     console.log(`[${timestamp}] ${prefix} ${message}`);
   }

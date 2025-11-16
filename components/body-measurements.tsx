@@ -1,64 +1,62 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
+import { useState } from 'react';
+import { createClient } from '@/lib/supabase/client';
 
 interface Measurement {
-  id: string
-  weight_kg: number
-  body_fat_percentage: number | null
-  chest_cm: number | null
-  waist_cm: number | null
-  hips_cm: number | null
-  measured_at: string
+  id: string;
+  weight_kg: number;
+  body_fat_percentage: number | null;
+  chest_cm: number | null;
+  waist_cm: number | null;
+  hips_cm: number | null;
+  measured_at: string;
 }
 
 interface Profile {
-  current_weight_kg: number | null
-  target_weight_kg: number | null
+  current_weight_kg: number | null;
+  target_weight_kg: number | null;
 }
 
 export function BodyMeasurements({
   userId,
   profile,
-  measurements,
+  measurements
 }: {
-  userId: string
-  profile: Profile | null
-  measurements: Measurement[]
+  userId: string;
+  profile: Profile | null;
+  measurements: Measurement[];
 }) {
-  const [showForm, setShowForm] = useState(false)
-  const [weight, setWeight] = useState('')
-  const [targetWeight, setTargetWeight] = useState(profile?.target_weight_kg?.toString() || '')
-  const [bodyFat, setBodyFat] = useState('')
-  const [chest, setChest] = useState('')
-  const [waist, setWaist] = useState('')
-  const [hips, setHips] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [success, setSuccess] = useState(false)
+  const [showForm, setShowForm] = useState(false);
+  const [weight, setWeight] = useState('');
+  const [targetWeight, setTargetWeight] = useState(profile?.target_weight_kg?.toString() || '');
+  const [bodyFat, setBodyFat] = useState('');
+  const [chest, setChest] = useState('');
+  const [waist, setWaist] = useState('');
+  const [hips, setHips] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
-  const supabase = createClient()
+  const supabase = createClient();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setSuccess(false)
+    e.preventDefault();
+    setLoading(true);
+    setSuccess(false);
 
     try {
       // Insert new measurement
-      const { error: measurementError } = await supabase
-        .from('body_measurements')
-        .insert({
-          user_id: userId,
-          weight_kg: Number(weight),
-          body_fat_percentage: bodyFat ? Number(bodyFat) : null,
-          chest_cm: chest ? Number(chest) : null,
-          waist_cm: waist ? Number(waist) : null,
-          hips_cm: hips ? Number(hips) : null,
-          measured_at: new Date().toISOString(),
-        })
+      const { error: measurementError } = await supabase.from('body_measurements').insert({
+        user_id: userId,
+        weight_kg: Number(weight),
+        body_fat_percentage: bodyFat ? Number(bodyFat) : null,
+        chest_cm: chest ? Number(chest) : null,
+        waist_cm: waist ? Number(waist) : null,
+        hips_cm: hips ? Number(hips) : null,
+        measured_at: new Date().toISOString()
+      });
 
-      if (measurementError) throw measurementError
+      if (measurementError) throw measurementError;
 
       // Update profile with current weight and target
       const { error: profileError } = await supabase
@@ -66,31 +64,31 @@ export function BodyMeasurements({
         .update({
           current_weight_kg: Number(weight),
           target_weight_kg: targetWeight ? Number(targetWeight) : null,
-          updated_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
         })
-        .eq('id', userId)
+        .eq('id', userId);
 
-      if (profileError) throw profileError
+      if (profileError) throw profileError;
 
-      setSuccess(true)
-      setShowForm(false)
+      setSuccess(true);
+      setShowForm(false);
 
       // Reset form
-      setWeight('')
-      setBodyFat('')
-      setChest('')
-      setWaist('')
-      setHips('')
+      setWeight('');
+      setBodyFat('');
+      setChest('');
+      setWaist('');
+      setHips('');
 
       // Reload page to show updated measurements
-      setTimeout(() => window.location.reload(), 1500)
+      setTimeout(() => window.location.reload(), 1500);
     } catch (error: any) {
-      console.error('Error saving measurements:', error)
-      alert('Failed to save measurements: ' + error.message)
+      console.error('Error saving measurements:', error);
+      alert('Failed to save measurements: ' + error.message);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="bg-white rounded-lg border p-6">
@@ -146,7 +144,7 @@ export function BodyMeasurements({
                 min="20"
                 max="300"
                 value={weight}
-                onChange={(e) => setWeight(e.target.value)}
+                onChange={e => setWeight(e.target.value)}
                 placeholder="75.0"
                 className="w-full px-3 py-2 border rounded-lg"
               />
@@ -160,7 +158,7 @@ export function BodyMeasurements({
                 min="20"
                 max="300"
                 value={targetWeight}
-                onChange={(e) => setTargetWeight(e.target.value)}
+                onChange={e => setTargetWeight(e.target.value)}
                 placeholder="70.0"
                 className="w-full px-3 py-2 border rounded-lg"
               />
@@ -176,7 +174,7 @@ export function BodyMeasurements({
                 min="3"
                 max="60"
                 value={bodyFat}
-                onChange={(e) => setBodyFat(e.target.value)}
+                onChange={e => setBodyFat(e.target.value)}
                 placeholder="15.0"
                 className="w-full px-3 py-2 border rounded-lg"
               />
@@ -190,7 +188,7 @@ export function BodyMeasurements({
                 min="50"
                 max="200"
                 value={chest}
-                onChange={(e) => setChest(e.target.value)}
+                onChange={e => setChest(e.target.value)}
                 placeholder="100.0"
                 className="w-full px-3 py-2 border rounded-lg"
               />
@@ -206,7 +204,7 @@ export function BodyMeasurements({
                 min="40"
                 max="200"
                 value={waist}
-                onChange={(e) => setWaist(e.target.value)}
+                onChange={e => setWaist(e.target.value)}
                 placeholder="85.0"
                 className="w-full px-3 py-2 border rounded-lg"
               />
@@ -220,7 +218,7 @@ export function BodyMeasurements({
                 min="50"
                 max="200"
                 value={hips}
-                onChange={(e) => setHips(e.target.value)}
+                onChange={e => setHips(e.target.value)}
                 placeholder="95.0"
                 className="w-full px-3 py-2 border rounded-lg"
               />
@@ -241,7 +239,7 @@ export function BodyMeasurements({
       {measurements.length > 0 ? (
         <div className="space-y-2">
           <h3 className="text-sm font-medium text-gray-700 mb-3">History</h3>
-          {measurements.map((m) => (
+          {measurements.map(m => (
             <div
               key={m.id}
               className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50"
@@ -267,5 +265,5 @@ export function BodyMeasurements({
         </div>
       )}
     </div>
-  )
+  );
 }

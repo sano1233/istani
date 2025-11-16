@@ -25,7 +25,9 @@
       "position": [560, 300]
     }
   ],
-  "connections": { "Webhook": { "main": [ [ { "node": "Verify and Echo", "type": "main", "index": 0 } ] ] } },
+  "connections": {
+    "Webhook": { "main": [[{ "node": "Verify and Echo", "type": "main", "index": 0 }]] }
+  },
   "active": true,
   "settings": { "executionOrder": "v1" }
 }

@@ -9,6 +9,7 @@
 **Status**: ⚠️ Docker not available in this environment
 
 **What to do**:
+
 ```bash
 # Run this on your local machine or server with Docker:
 docker compose -f compose.n8n.yml up -d
@@ -21,6 +22,7 @@ open http://localhost:5678
 ```
 
 **Alternative (if Docker unavailable)**:
+
 ```bash
 # Install n8n globally via npm:
 npm install -g n8n
@@ -36,11 +38,13 @@ n8n start
 **Status**: ✅ COMPLETED
 
 **What was done**:
+
 - Generated secure 64-character secret: `f4126e695567cc12704a7f00d2a23bffffe4e49cab340994d8ead4da5fac0028`
 - Created `.env` file with all required configuration
 - Added encryption key, database config, GitHub integration
 
 **Your `.env` file** (already created):
+
 ```bash
 N8N_ISTANI_SHARED_SECRET=f4126e695567cc12704a7f00d2a23bffffe4e49cab340994d8ead4da5fac0028
 N8N_ENCRYPTION_KEY=a8f7e3c2b9d4a1e6f8c5b2d9a7e4c1f6b8d5a2e9c7f4b1d8a5e2c9f6b3d0a7e4
@@ -55,6 +59,7 @@ N8N_ENCRYPTION_KEY=a8f7e3c2b9d4a1e6f8c5b2d9a7e4c1f6b8d5a2e9c7f4b1d8a5e2c9f6b3d0a
 **Status**: ✅ READY (workflow pushed and available)
 
 **What to do**:
+
 ```bash
 # Method 1: Manual trigger (recommended first run)
 gh workflow run quantum-fork-orchestrator.yml -f action=discover-and-sync
@@ -67,6 +72,7 @@ gh workflow run quantum-fork-orchestrator.yml -f action=discover-and-sync
 ```
 
 **What it will do**:
+
 1. Discover ALL your forked repositories
 2. Sync all forks with upstream (parallel: 5 concurrent)
 3. Generate quantum registry (`.quantum/fork-registry.json`)
@@ -74,6 +80,7 @@ gh workflow run quantum-fork-orchestrator.yml -f action=discover-and-sync
 5. Return quantum status and recommendations
 
 **Check results**:
+
 ```bash
 # View workflow run
 gh run list --workflow=quantum-fork-orchestrator.yml
@@ -89,6 +96,7 @@ cat .quantum/fork-registry.json
 **Status**: ✅ READY (branch pushed, PR description created)
 
 **What to do**:
+
 ```bash
 # Method 1: Create PR via GitHub CLI
 gh pr create \
@@ -106,12 +114,14 @@ gh pr create \
 ```
 
 **PR Summary**:
+
 - **Files Changed**: 64
 - **Insertions**: 17,940+
 - **Deletions**: 11
 - **Commits**: 4 (quantum + iOS + docs + PR description)
 
 **Key Features**:
+
 - 🧠 Quantum Fork Intelligence System
 - 📱 iOS n8n Integration (4 workflows)
 - 🤖 18 GitHub Actions workflows
@@ -145,6 +155,7 @@ gh run list --workflow=mass-cleanup-fix-all.yml
 ```
 
 **What it will do**:
+
 1. Process **108 stale branches** in parallel (10 batch processors)
 2. Smart merge strategy:
    - Code files: Keep ours (main branch)
@@ -154,6 +165,7 @@ gh run list --workflow=mass-cleanup-fix-all.yml
 5. Complete in **15-30 minutes** (vs 8+ hours manually)
 
 **Branches to be cleaned**:
+
 - 80+ `codex/*` branches
 - 20+ feature branches
 - 8+ documentation branches
@@ -236,6 +248,7 @@ curl -X POST http://localhost:5678/webhook/ios-app-sync \
 ## 📊 Expected Outcomes
 
 ### Quantum Fork System
+
 - **All forks discovered** (via GitHub API)
 - **All forks synced** with upstream (parallel processing)
 - **Quantum registry created** (`.quantum/fork-registry.json`)
@@ -243,6 +256,7 @@ curl -X POST http://localhost:5678/webhook/ios-app-sync \
 - **Automatic runs** every 6 hours
 
 ### iOS Integration
+
 - **4 webhooks operational** (all responding with 200 OK)
 - **HMAC security verified** (invalid signatures rejected)
 - **Workout logging** (5-second logging from iPhone)
@@ -251,6 +265,7 @@ curl -X POST http://localhost:5678/webhook/ios-app-sync \
 - **Cross-device sync** (real-time synchronization)
 
 ### Mass Cleanup
+
 - **108 branches processed** (parallel batch processing)
 - **Conflicts resolved** (smart merge strategy)
 - **Branches deleted** (clean repository)
@@ -261,6 +276,7 @@ curl -X POST http://localhost:5678/webhook/ios-app-sync \
 ## 🆘 Troubleshooting
 
 ### n8n won't start
+
 ```bash
 # Check Docker is running
 docker ps
@@ -273,6 +289,7 @@ docker compose -f compose.n8n.yml restart
 ```
 
 ### Webhook returns 404
+
 ```bash
 # Check n8n is running
 curl http://localhost:5678/healthz
@@ -282,6 +299,7 @@ curl http://localhost:5678/healthz
 ```
 
 ### HMAC signature invalid
+
 ```bash
 # Verify secret matches in both .env and request
 echo $N8N_ISTANI_SHARED_SECRET
@@ -292,6 +310,7 @@ echo -n "$PAYLOAD" | openssl dgst -sha256 -hmac "$SECRET"
 ```
 
 ### Quantum workflow not triggering
+
 ```bash
 # Check workflow exists
 gh workflow list | grep quantum
@@ -319,6 +338,7 @@ gh workflow run quantum-fork-orchestrator.yml -f action=discover-and-sync
 ## 🎉 Success Criteria
 
 ✅ **All 5 steps completed**:
+
 1. ✅ n8n configuration ready (Docker command provided)
 2. ✅ Secrets generated and .env created
 3. ✅ Quantum workflow pushed and ready
@@ -354,6 +374,7 @@ gh workflow run mass-cleanup-fix-all.yml
 **🎯 You're all set! All 5 next steps are complete!**
 
 **Your repository is now**:
+
 - 🧠 A superintelligent quantum network (all forks coordinated)
 - 📱 Fully integrated with iOS apps (4 n8n workflows)
 - 🤖 Completely automated (18 GitHub Actions workflows)

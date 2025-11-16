@@ -6,7 +6,9 @@ const fs = require('fs').promises;
 // Helper to run AI models
 async function runAI(prompt, tool) {
   try {
-    const { stdout } = await execAsync(`node ai-brain/${tool}-helper.js "${prompt.replace(/"/g, '\\"')}"`);
+    const { stdout } = await execAsync(
+      `node ai-brain/${tool}-helper.js "${prompt.replace(/"/g, '\\"')}"`
+    );
     return stdout.trim();
   } catch (e) {
     console.error(`${tool} error: ${e.message}`);
@@ -17,7 +19,9 @@ async function runAI(prompt, tool) {
 // Get all open PRs with their status
 async function getAllOpenPRs() {
   try {
-    const { stdout } = await execAsync('gh pr list --state open --json number,title,state,mergeable,isDraft,statusCheckRollup,headRefName,baseRefName');
+    const { stdout } = await execAsync(
+      'gh pr list --state open --json number,title,state,mergeable,isDraft,statusCheckRollup,headRefName,baseRefName'
+    );
     return JSON.parse(stdout);
   } catch (e) {
     console.error(`Error fetching PRs: ${e.message}`);
@@ -28,7 +32,9 @@ async function getAllOpenPRs() {
 // Get detailed PR information
 async function getPRDetails(prNumber) {
   try {
-    const { stdout } = await execAsync(`gh pr view ${prNumber} --json title,body,files,mergeable,state,headRefName,baseRefName,url,statusCheckRollup`);
+    const { stdout } = await execAsync(
+      `gh pr view ${prNumber} --json title,body,files,mergeable,state,headRefName,baseRefName,url,statusCheckRollup`
+    );
     return JSON.parse(stdout);
   } catch (e) {
     console.error(`Error fetching PR ${prNumber}: ${e.message}`);
@@ -41,7 +47,7 @@ function hasFailedChecks(pr) {
   if (!pr.statusCheckRollup || pr.statusCheckRollup.length === 0) {
     return false;
   }
-  
+
   return pr.statusCheckRollup.some(check => {
     if (check.__typename === 'CheckRun') {
       return check.conclusion === 'FAILURE' || check.conclusion === 'CANCELLED';
@@ -61,7 +67,7 @@ function hasConflicts(pr) {
 // Resolve merge conflicts
 async function resolveMergeConflicts(prNumber, prDetails) {
   console.log(`\n🔧 Resolving merge conflicts for PR #${prNumber}...`);
-  
+
   try {
     // Get current branch
     let currentBranchName = 'main';
@@ -71,40 +77,45 @@ async function resolveMergeConflicts(prNumber, prDetails) {
     } catch (e) {
       // If we're in detached HEAD, that's okay
     }
-    
+
     // Fetch latest changes
     console.log('   Fetching latest changes...');
     await execAsync('git fetch origin --prune');
-    
+
     // Checkout the PR branch
     await execAsync(`gh pr checkout ${prNumber}`);
-    
+
     // Get the branch name
     const { stdout: branchName } = await execAsync('git rev-parse --abbrev-ref HEAD');
     const prBranchName = branchName.trim();
-    
+
     // Try to merge base branch into PR branch
     try {
       await execAsync(`git merge origin/${prDetails.baseRefName} --no-edit`);
       console.log(`✅ Successfully merged ${prDetails.baseRefName} into ${prBranchName}`);
     } catch (mergeError) {
       // Check for conflicts
-      const { stdout: conflictFiles } = await execAsync('git diff --name-only --diff-filter=U 2>&1 || echo ""');
+      const { stdout: conflictFiles } = await execAsync(
+        'git diff --name-only --diff-filter=U 2>&1 || echo ""'
+      );
       const conflicts = conflictFiles.trim().split('\n').filter(Boolean);
-      
+
       if (conflicts.length > 0) {
         console.log(`⚠️  Found ${conflicts.length} conflicted files: ${conflicts.join(', ')}`);
-        
+
         // Resolve each conflict using AI or smart fallback
         for (const file of conflicts) {
           try {
             console.log(`   Resolving conflict in ${file}...`);
-            
+
             // For large files (like package-lock.json), use git strategy instead of AI
             const fileStats = await fs.stat(file).catch(() => null);
             const isLargeFile = fileStats && fileStats.size > 100000; // > 100KB
-            const isLockFile = file.includes('package-lock.json') || file.includes('yarn.lock') || file.includes('pnpm-lock.yaml');
-            
+            const isLockFile =
+              file.includes('package-lock.json') ||
+              file.includes('yarn.lock') ||
+              file.includes('pnpm-lock.yaml');
+
             if (isLargeFile || isLockFile) {
               // For lock files, prefer theirs (base branch) and regenerate if needed
               console.log(`   Using git strategy for large/lock file: ${file}`);
@@ -112,7 +123,7 @@ async function resolveMergeConflicts(prNumber, prDetails) {
                 await execAsync(`git checkout --theirs ${file}`);
                 await execAsync(`git add ${file}`);
                 console.log(`   ✅ Resolved ${file} using --theirs strategy`);
-                
+
                 // If it's a package-lock.json, try to regenerate it
                 if (file.includes('package-lock.json')) {
                   try {
@@ -132,20 +143,27 @@ async function resolveMergeConflicts(prNumber, prDetails) {
             } else {
               // For smaller files, use AI to resolve
               const content = await fs.readFile(file, 'utf8');
-              
+
               // Limit content size for AI (first 50KB)
-              const contentForAI = content.length > 50000 ? content.substring(0, 50000) + '\n... (truncated)' : content;
-              
+              const contentForAI =
+                content.length > 50000
+                  ? content.substring(0, 50000) + '\n... (truncated)'
+                  : content;
+
               // Create prompt for AI to resolve conflict
               const prompt = `Resolve the merge conflict in ${file}. The file contains Git conflict markers (<<<<<<<, =======, >>>>>>>). Return ONLY the complete resolved file content without any conflict markers or explanations:\n\n${contentForAI}`;
-              
+
               const resolved = await runAI(prompt, 'gemini');
-              
+
               // Check if AI returned an error
-              if (resolved.includes('error') || resolved.includes('Error') || resolved.includes('Set GEMINI_API_KEY')) {
+              if (
+                resolved.includes('error') ||
+                resolved.includes('Error') ||
+                resolved.includes('Set GEMINI_API_KEY')
+              ) {
                 throw new Error('AI resolution failed, using git strategy');
               }
-              
+
               // Clean up the response (remove markdown code blocks if present)
               let cleanResolved = resolved;
               if (cleanResolved.includes('```')) {
@@ -154,12 +172,12 @@ async function resolveMergeConflicts(prNumber, prDetails) {
                   cleanResolved = codeBlockMatch[1];
                 }
               }
-              
+
               // If AI response seems incomplete, fall back to git strategy
               if (cleanResolved.length < content.length * 0.5 || !cleanResolved.trim()) {
                 throw new Error('AI response seems incomplete, using git strategy');
               }
-              
+
               await fs.writeFile(file, cleanResolved, 'utf8');
               await execAsync(`git add ${file}`);
               console.log(`   ✅ Resolved conflict in ${file} using AI`);
@@ -183,26 +201,28 @@ async function resolveMergeConflicts(prNumber, prDetails) {
             }
           }
         }
-        
+
         // Complete the merge
         try {
           await execAsync('git commit -m "chore: resolve merge conflicts via AI Brain" --no-edit');
           console.log(`✅ Committed conflict resolution`);
         } catch (commitError) {
           // If commit fails, try with --allow-empty
-          await execAsync('git commit --allow-empty -m "chore: resolve merge conflicts via AI Brain"');
+          await execAsync(
+            'git commit --allow-empty -m "chore: resolve merge conflicts via AI Brain"'
+          );
         }
       }
     }
-    
+
     // Push the resolved changes
     await execAsync(`git push origin ${prBranchName}`);
     console.log(`✅ Pushed resolved changes for PR #${prNumber}`);
-    
+
     // Wait a bit for GitHub to update
     console.log('   Waiting for GitHub to update PR status...');
     await new Promise(resolve => setTimeout(resolve, 5000));
-    
+
     // Return to original branch (or main if detached)
     try {
       if (currentBranchName && currentBranchName !== prBranchName) {
@@ -211,7 +231,7 @@ async function resolveMergeConflicts(prNumber, prDetails) {
     } catch (e) {
       // Ignore checkout errors
     }
-    
+
     return true;
   } catch (e) {
     console.error(`❌ Error resolving conflicts for PR #${prNumber}: ${e.message}`);
@@ -222,7 +242,7 @@ async function resolveMergeConflicts(prNumber, prDetails) {
 // Fix code issues based on failed checks
 async function fixCodeIssues(prNumber, prDetails) {
   console.log(`\n🔧 Analyzing and fixing code issues for PR #${prNumber}...`);
-  
+
   try {
     // Get the branch name
     let currentBranchName = 'main';
@@ -232,19 +252,19 @@ async function fixCodeIssues(prNumber, prDetails) {
     } catch (e) {
       // If we're in detached HEAD, that's okay
     }
-    
+
     // Fetch latest changes
     await execAsync('git fetch origin --prune');
-    
+
     // Checkout the PR branch
     await execAsync(`gh pr checkout ${prNumber}`);
-    
+
     const { stdout: branchName } = await execAsync('git rev-parse --abbrev-ref HEAD');
     const prBranchName = branchName.trim();
-    
+
     // Get list of changed files
     const changedFiles = prDetails.files.map(f => f.path).join(', ');
-    
+
     // Analyze the PR with AI to identify and fix issues
     const prompt = `Review and fix the following pull request:
     
@@ -261,17 +281,17 @@ Return a detailed analysis and fixes. If you find issues, provide the corrected 
 
     const analysis = await runAI(prompt, 'gemini');
     console.log(`📝 AI Analysis:\n${analysis.substring(0, 500)}...`);
-    
+
     // Try to extract file fixes from the analysis
     // This is a simplified approach - in production, you'd want more sophisticated parsing
     const filePattern = /(?:File|file|FILE):\s*([^\n]+)\n([\s\S]*?)(?=(?:File|file|FILE):|$)/g;
     let match;
     let fixesApplied = false;
-    
+
     while ((match = filePattern.exec(analysis)) !== null) {
       const fileName = match[1].trim();
       const fileContent = match[2].trim();
-      
+
       // Check if file exists
       try {
         await fs.access(fileName);
@@ -283,7 +303,7 @@ Return a detailed analysis and fixes. If you find issues, provide the corrected 
             code = codeBlockMatch[1];
           }
         }
-        
+
         await fs.writeFile(fileName, code, 'utf8');
         await execAsync(`git add ${fileName}`);
         fixesApplied = true;
@@ -293,7 +313,7 @@ Return a detailed analysis and fixes. If you find issues, provide the corrected 
         console.log(`   ⚠️  Skipping ${fileName} (not found or can't write)`);
       }
     }
-    
+
     // If we applied fixes, commit them
     if (fixesApplied) {
       try {
@@ -306,7 +326,7 @@ Return a detailed analysis and fixes. If you find issues, provide the corrected 
         console.log(`⚠️  No changes to commit or commit failed: ${commitError.message}`);
       }
     }
-    
+
     // Return to original branch (or main if detached)
     try {
       if (currentBranchName && currentBranchName !== prBranchName) {
@@ -315,7 +335,7 @@ Return a detailed analysis and fixes. If you find issues, provide the corrected 
     } catch (e) {
       // Ignore checkout errors
     }
-    
+
     return fixesApplied;
   } catch (e) {
     console.error(`❌ Error fixing code issues for PR #${prNumber}: ${e.message}`);
@@ -326,28 +346,28 @@ Return a detailed analysis and fixes. If you find issues, provide the corrected 
 // Wait for checks to pass (with timeout)
 async function waitForChecksToPass(prNumber, timeoutMinutes = 10) {
   console.log(`\n⏳ Waiting for checks to pass for PR #${prNumber}...`);
-  
+
   const startTime = Date.now();
   const timeout = timeoutMinutes * 60 * 1000;
   const checkInterval = 30000; // Check every 30 seconds
-  
+
   while (Date.now() - startTime < timeout) {
     const prDetails = await getPRDetails(prNumber);
-    
+
     if (!prDetails) {
       console.log(`❌ Could not fetch PR details`);
       return false;
     }
-    
+
     // Check if all checks are passing
     const hasFailures = hasFailedChecks(prDetails);
     const hasConflicts = hasConflicts(prDetails);
-    
+
     if (!hasFailures && !hasConflicts && prDetails.mergeable === 'MERGEABLE') {
       console.log(`✅ All checks passed for PR #${prNumber}`);
       return true;
     }
-    
+
     // Check if checks are still running
     const checksRunning = prDetails.statusCheckRollup?.some(check => {
       if (check.__typename === 'CheckRun') {
@@ -355,16 +375,16 @@ async function waitForChecksToPass(prNumber, timeoutMinutes = 10) {
       }
       return false;
     });
-    
+
     if (checksRunning) {
       console.log(`   ⏳ Checks still running, waiting...`);
     } else if (hasFailures || hasConflicts) {
       console.log(`   ⚠️  Some checks still failing or conflicts remain`);
     }
-    
+
     await new Promise(resolve => setTimeout(resolve, checkInterval));
   }
-  
+
   console.log(`⏰ Timeout waiting for checks to pass for PR #${prNumber}`);
   return false;
 }
@@ -372,7 +392,7 @@ async function waitForChecksToPass(prNumber, timeoutMinutes = 10) {
 // Merge the PR
 async function mergePR(prNumber) {
   console.log(`\n🔀 Merging PR #${prNumber}...`);
-  
+
   try {
     // Try squash merge first (most common)
     try {
@@ -408,16 +428,16 @@ async function fixAndMergePR(prNumber) {
   console.log(`\n${'='.repeat(60)}`);
   console.log(`🚀 Processing PR #${prNumber}`);
   console.log(`${'='.repeat(60)}`);
-  
+
   const prDetails = await getPRDetails(prNumber);
   if (!prDetails) {
     console.log(`❌ Could not fetch PR details for #${prNumber}`);
     return false;
   }
-  
+
   console.log(`📋 PR: ${prDetails.title}`);
   console.log(`🔗 URL: ${prDetails.url}`);
-  
+
   // Check for conflicts
   if (hasConflicts(prDetails)) {
     console.log(`⚠️  PR has merge conflicts`);
@@ -426,23 +446,23 @@ async function fixAndMergePR(prNumber) {
       console.log(`❌ Failed to resolve conflicts for PR #${prNumber}`);
       return false;
     }
-    
+
     // Wait a bit for GitHub to update
     await new Promise(resolve => setTimeout(resolve, 5000));
   }
-  
+
   // Check for failed checks
   if (hasFailedChecks(prDetails)) {
     console.log(`⚠️  PR has failed checks`);
     await fixCodeIssues(prNumber, prDetails);
-    
+
     // Wait for checks to re-run
     await new Promise(resolve => setTimeout(resolve, 10000));
   }
-  
+
   // Wait for checks to pass
   const checksPassed = await waitForChecksToPass(prNumber, 15);
-  
+
   if (!checksPassed) {
     // Re-check PR status
     const updatedPR = await getPRDetails(prNumber);
@@ -451,16 +471,16 @@ async function fixAndMergePR(prNumber) {
       return false;
     }
   }
-  
+
   // Merge the PR
   const merged = await mergePR(prNumber);
-  
+
   if (merged) {
     console.log(`\n✅ Successfully fixed and merged PR #${prNumber}`);
   } else {
     console.log(`\n❌ Failed to merge PR #${prNumber}`);
   }
-  
+
   return merged;
 }
 
@@ -468,7 +488,9 @@ async function fixAndMergePR(prNumber) {
 async function ensureGitConfig() {
   try {
     await execAsync('git config user.name || git config --global user.name "AI Brain Bot"');
-    await execAsync('git config user.email || git config --global user.email "ai-brain@istani.org"');
+    await execAsync(
+      'git config user.email || git config --global user.email "ai-brain@istani.org"'
+    );
   } catch (e) {
     // Ignore errors
   }
@@ -477,24 +499,24 @@ async function ensureGitConfig() {
 // Main execution
 async function main() {
   console.log('🔍 Finding all failed pull requests...\n');
-  
+
   // Ensure git is configured
   await ensureGitConfig();
-  
+
   const prs = await getAllOpenPRs();
   console.log(`Found ${prs.length} open PR(s)\n`);
-  
+
   // Filter for PRs that need fixing
   const failedPRs = prs.filter(pr => {
     if (pr.isDraft) return false;
     return hasConflicts(pr) || hasFailedChecks(pr);
   });
-  
+
   if (failedPRs.length === 0) {
     console.log('✅ No failed PRs found! All PRs are in good shape.');
     return;
   }
-  
+
   console.log(`Found ${failedPRs.length} PR(s) that need fixing:\n`);
   failedPRs.forEach(pr => {
     const issues = [];
@@ -502,9 +524,9 @@ async function main() {
     if (hasFailedChecks(pr)) issues.push('FAILED_CHECKS');
     console.log(`  - PR #${pr.number}: ${pr.title} [${issues.join(', ')}]`);
   });
-  
+
   console.log(`\n🚀 Starting automated fix and merge process...\n`);
-  
+
   // Process each PR
   for (const pr of failedPRs) {
     try {
@@ -515,7 +537,7 @@ async function main() {
       console.error(`\n❌ Error processing PR #${pr.number}: ${error.message}`);
     }
   }
-  
+
   console.log(`\n${'='.repeat(60)}`);
   console.log('✨ Finished processing all PRs');
   console.log(`${'='.repeat(60)}\n`);

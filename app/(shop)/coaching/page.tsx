@@ -1,11 +1,11 @@
-import Link from 'next/link'
-import { Dumbbell, Check } from 'lucide-react'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import Link from 'next/link';
+import { Dumbbell, Check } from 'lucide-react';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 
 export const metadata = {
   title: 'Elite Coaching - Istani Fitness',
-  description: 'Transform your body with 1-on-1 elite coaching',
-}
+  description: 'Transform your body with 1-on-1 elite coaching'
+};
 
 export default function CoachingPage() {
   const plans = [
@@ -19,8 +19,8 @@ export default function CoachingPage() {
         'Custom workout plan creation',
         'Nutrition blueprint',
         '90-day roadmap',
-        'Email support for 30 days',
-      ],
+        'Email support for 30 days'
+      ]
     },
     {
       name: 'Weekly Coaching',
@@ -32,8 +32,8 @@ export default function CoachingPage() {
         'Personalized meal plans',
         'Form check videos',
         'Email & text support',
-        'Monthly progress reviews',
-      ],
+        'Monthly progress reviews'
+      ]
     },
     {
       name: 'Elite Monthly Coaching',
@@ -48,10 +48,10 @@ export default function CoachingPage() {
         'Bi-weekly body composition scans',
         'Mindset & habit coaching',
         'Exclusive community access',
-        'Lifetime program library access',
-      ],
-    },
-  ]
+        'Lifetime program library access'
+      ]
+    }
+  ];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -105,7 +105,7 @@ export default function CoachingPage() {
       {/* Pricing Plans */}
       <section className="container-custom py-16">
         <div className="grid md:grid-cols-3 gap-8">
-          {plans.map((plan) => (
+          {plans.map(plan => (
             <Card
               key={plan.name}
               className={plan.featured ? 'border-4 border-brand-primary relative' : ''}
@@ -122,14 +122,16 @@ export default function CoachingPage() {
                   </div>
                   <div className="text-4xl font-display font-bold mb-2">
                     ${plan.price}
-                    {plan.name !== 'Onboarding Session' && <span className="text-lg text-gray-600">/month</span>}
+                    {plan.name !== 'Onboarding Session' && (
+                      <span className="text-lg text-gray-600">/month</span>
+                    )}
                   </div>
                   <p className="text-sm text-gray-600 font-normal">{plan.description}</p>
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-3 mb-6">
-                  {plan.features.map((feature) => (
+                  {plan.features.map(feature => (
                     <li key={feature} className="flex items-start gap-2">
                       <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                       <span className="text-sm">{feature}</span>
@@ -155,11 +157,10 @@ export default function CoachingPage() {
       {/* Contact CTA */}
       <section className="bg-white py-16">
         <div className="container-custom text-center">
-          <h2 className="text-3xl font-display font-bold mb-4">
-            Ready to Transform Your Body?
-          </h2>
+          <h2 className="text-3xl font-display font-bold mb-4">Ready to Transform Your Body?</h2>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Book a free 15-minute consultation to discuss your goals and find the perfect coaching plan
+            Book a free 15-minute consultation to discuss your goals and find the perfect coaching
+            plan
           </p>
           <a
             href="mailto:istaniDOTstore@proton.me?subject=Free Coaching Consultation"
@@ -186,5 +187,5 @@ export default function CoachingPage() {
         </div>
       </footer>
     </div>
-  )
+  );
 }

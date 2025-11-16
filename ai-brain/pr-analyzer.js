@@ -95,7 +95,9 @@ function analyzeBranch(branchName) {
   try {
     // Get branch information
     const commitHash = exec(`git rev-parse origin/${branchName}`, { silent: true });
-    const commitMsg = exec(`git log -1 --pretty=format:"%s" origin/${branchName}`, { silent: true });
+    const commitMsg = exec(`git log -1 --pretty=format:"%s" origin/${branchName}`, {
+      silent: true
+    });
     const author = exec(`git log -1 --pretty=format:"%an" origin/${branchName}`, { silent: true });
     const date = exec(`git log -1 --pretty=format:"%ar" origin/${branchName}`, { silent: true });
 
@@ -106,7 +108,10 @@ function analyzeBranch(branchName) {
 
     // Check if branch can be merged cleanly
     const mainBranch = 'main';
-    const mergeBase = exec(`git merge-base origin/${mainBranch} origin/${branchName}`, { silent: true, ignoreError: true });
+    const mergeBase = exec(`git merge-base origin/${mainBranch} origin/${branchName}`, {
+      silent: true,
+      ignoreError: true
+    });
 
     if (!mergeBase) {
       console.log(`  ${colorize('✗', 'red')} Cannot find merge base with ${mainBranch}`);
@@ -133,7 +138,10 @@ function analyzeBranch(branchName) {
     }
 
     // Get diff stats
-    const diffStats = exec(`git diff --shortstat origin/${mainBranch}...origin/${branchName}`, { silent: true, ignoreError: true });
+    const diffStats = exec(`git diff --shortstat origin/${mainBranch}...origin/${branchName}`, {
+      silent: true,
+      ignoreError: true
+    });
     if (diffStats) {
       console.log(`  ${colorize('Changes:', 'gray')} ${diffStats}`);
     }
@@ -146,7 +154,6 @@ function analyzeBranch(branchName) {
       date,
       conflicts: hasConflicts
     };
-
   } catch (error) {
     console.log(`  ${colorize('✗', 'red')} Error analyzing branch: ${error.message}`);
     return { status: 'error', reason: error.message };
@@ -157,9 +164,13 @@ function analyzeBranch(branchName) {
  * Generate analysis report
  */
 function generateReport(branches, analysisResults) {
-  console.log(colorize('\n\n═══════════════════════════════════════════════════════════════════════', 'cyan'));
+  console.log(
+    colorize('\n\n═══════════════════════════════════════════════════════════════════════', 'cyan')
+  );
   console.log(colorize('  BRANCH ANALYSIS REPORT', 'bright'));
-  console.log(colorize('═══════════════════════════════════════════════════════════════════════', 'cyan'));
+  console.log(
+    colorize('═══════════════════════════════════════════════════════════════════════', 'cyan')
+  );
 
   console.log(`\n${colorize('Total Branches:', 'cyan')} ${branches.total}`);
   console.log(`  ${colorize('Codex:', 'gray')} ${branches.bySource.codex}`);
@@ -207,9 +218,13 @@ function generateReport(branches, analysisResults) {
 async function main() {
   const args = process.argv.slice(2);
 
-  console.log(colorize('═══════════════════════════════════════════════════════════════════════', 'cyan'));
+  console.log(
+    colorize('═══════════════════════════════════════════════════════════════════════', 'cyan')
+  );
   console.log(colorize('  ISTANI PR BRANCH ANALYZER', 'bright'));
-  console.log(colorize('═══════════════════════════════════════════════════════════════════════', 'cyan'));
+  console.log(
+    colorize('═══════════════════════════════════════════════════════════════════════', 'cyan')
+  );
 
   // Fetch latest branches
   console.log(colorize('\nFetching latest branches...', 'cyan'));
@@ -227,7 +242,6 @@ async function main() {
       process.exit(1);
     }
     analyzeBranch(branchName);
-
   } else {
     // Analyze all branches (or subset)
     console.log(colorize(`\nFound ${branches.total} feature branches`, 'cyan'));
@@ -247,11 +261,18 @@ async function main() {
 
     // Save detailed results
     const reportPath = path.join(__dirname, 'pr-analysis-report.json');
-    fs.writeFileSync(reportPath, JSON.stringify({
-      timestamp: new Date().toISOString(),
-      branches,
-      results
-    }, null, 2));
+    fs.writeFileSync(
+      reportPath,
+      JSON.stringify(
+        {
+          timestamp: new Date().toISOString(),
+          branches,
+          results
+        },
+        null,
+        2
+      )
+    );
     console.log(colorize(`Detailed report saved to: ${reportPath}`, 'gray'));
   }
 }

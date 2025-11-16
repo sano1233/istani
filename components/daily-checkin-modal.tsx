@@ -1,31 +1,31 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-import { createClient } from '@/lib/supabase/client'
+import { useState, useEffect } from 'react';
+import { createClient } from '@/lib/supabase/client';
 
 interface DailyCheckInModalProps {
-  userId: string
-  onClose: () => void
+  userId: string;
+  onClose: () => void;
 }
 
 export function DailyCheckInModal({ userId, onClose }: DailyCheckInModalProps) {
-  const [mood, setMood] = useState(3)
-  const [energy, setEnergy] = useState(3)
-  const [sleepQuality, setSleepQuality] = useState(3)
-  const [stressLevel, setStressLevel] = useState(3)
-  const [notes, setNotes] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [success, setSuccess] = useState(false)
+  const [mood, setMood] = useState(3);
+  const [energy, setEnergy] = useState(3);
+  const [sleepQuality, setSleepQuality] = useState(3);
+  const [stressLevel, setStressLevel] = useState(3);
+  const [notes, setNotes] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
-  const supabase = createClient()
+  const supabase = createClient();
 
-  const moodEmojis = ['😢', '😕', '😐', '😊', '🤩']
-  const energyEmojis = ['😴', '😪', '😐', '💪', '⚡']
+  const moodEmojis = ['😢', '😕', '😐', '😊', '🤩'];
+  const energyEmojis = ['😴', '😪', '😐', '💪', '⚡'];
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setSuccess(false)
+    e.preventDefault();
+    setLoading(true);
+    setSuccess(false);
 
     try {
       // Insert check-in
@@ -36,56 +36,51 @@ export function DailyCheckInModal({ userId, onClose }: DailyCheckInModalProps) {
         sleep_quality: sleepQuality,
         stress_level: stressLevel,
         notes: notes || null,
-        checked_in_at: new Date().toISOString(),
-      })
+        checked_in_at: new Date().toISOString()
+      });
 
-      if (error) throw error
+      if (error) throw error;
 
       // Update check-in streak
-      const today = new Date().toISOString().split('T')[0]
+      const today = new Date().toISOString().split('T')[0];
       await supabase.rpc('update_user_streak', {
         p_user_id: userId,
         p_streak_type: 'checkin',
-        p_activity_date: today,
-      })
+        p_activity_date: today
+      });
 
-      setSuccess(true)
+      setSuccess(true);
       setTimeout(() => {
-        onClose()
-        window.location.reload()
-      }, 1500)
+        onClose();
+        window.location.reload();
+      }, 1500);
     } catch (error: any) {
-      console.error('Error submitting check-in:', error)
-      alert('Failed to submit check-in: ' + error.message)
+      console.error('Error submitting check-in:', error);
+      alert('Failed to submit check-in: ' + error.message);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg max-w-md w-full p-6 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-2xl font-bold">Daily Check-In</h2>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 text-2xl"
-          >
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-2xl">
             ×
           </button>
         </div>
 
         <p className="text-sm text-gray-600 mb-6">
-          Take a moment to reflect on how you're feeling today. Your AI coach uses this
-          data to personalize your recommendations.
+          Take a moment to reflect on how you're feeling today. Your AI coach uses this data to
+          personalize your recommendations.
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Mood */}
           <div>
-            <label className="block text-sm font-medium mb-2">
-              How's your mood today?
-            </label>
+            <label className="block text-sm font-medium mb-2">How's your mood today?</label>
             <div className="flex items-center justify-between gap-2">
               {moodEmojis.map((emoji, index) => (
                 <button
@@ -109,9 +104,7 @@ export function DailyCheckInModal({ userId, onClose }: DailyCheckInModalProps) {
 
           {/* Energy Level */}
           <div>
-            <label className="block text-sm font-medium mb-2">
-              Energy level?
-            </label>
+            <label className="block text-sm font-medium mb-2">Energy level?</label>
             <div className="flex items-center justify-between gap-2">
               {energyEmojis.map((emoji, index) => (
                 <button
@@ -143,7 +136,7 @@ export function DailyCheckInModal({ userId, onClose }: DailyCheckInModalProps) {
               min="1"
               max="5"
               value={sleepQuality}
-              onChange={(e) => setSleepQuality(Number(e.target.value))}
+              onChange={e => setSleepQuality(Number(e.target.value))}
               className="w-full"
             />
             <div className="flex justify-between text-xs text-gray-500 mt-1">
@@ -154,15 +147,13 @@ export function DailyCheckInModal({ userId, onClose }: DailyCheckInModalProps) {
 
           {/* Stress Level */}
           <div>
-            <label className="block text-sm font-medium mb-2">
-              Stress level: {stressLevel}/5
-            </label>
+            <label className="block text-sm font-medium mb-2">Stress level: {stressLevel}/5</label>
             <input
               type="range"
               min="1"
               max="5"
               value={stressLevel}
-              onChange={(e) => setStressLevel(Number(e.target.value))}
+              onChange={e => setStressLevel(Number(e.target.value))}
               className="w-full"
             />
             <div className="flex justify-between text-xs text-gray-500 mt-1">
@@ -173,12 +164,10 @@ export function DailyCheckInModal({ userId, onClose }: DailyCheckInModalProps) {
 
           {/* Notes */}
           <div>
-            <label className="block text-sm font-medium mb-2">
-              Any notes? (optional)
-            </label>
+            <label className="block text-sm font-medium mb-2">Any notes? (optional)</label>
             <textarea
               value={notes}
-              onChange={(e) => setNotes(e.target.value)}
+              onChange={e => setNotes(e.target.value)}
               placeholder="How are you feeling? Any goals for today?"
               className="w-full px-3 py-2 border rounded-lg resize-none"
               rows={3}
@@ -202,40 +191,40 @@ export function DailyCheckInModal({ userId, onClose }: DailyCheckInModalProps) {
         </form>
       </div>
     </div>
-  )
+  );
 }
 
 export function DailyCheckInTrigger({ userId }: { userId: string }) {
-  const [showModal, setShowModal] = useState(false)
-  const [hasCheckedIn, setHasCheckedIn] = useState(true)
+  const [showModal, setShowModal] = useState(false);
+  const [hasCheckedIn, setHasCheckedIn] = useState(true);
 
-  const supabase = createClient()
+  const supabase = createClient();
 
   useEffect(() => {
     // Check if user has checked in today
     const checkTodayCheckIn = async () => {
-      const today = new Date().toISOString().split('T')[0]
+      const today = new Date().toISOString().split('T')[0];
       const { data } = await supabase
         .from('daily_checkins')
         .select('id')
         .eq('user_id', userId)
         .gte('checked_in_at', today)
         .limit(1)
-        .single()
+        .single();
 
-      setHasCheckedIn(!!data)
+      setHasCheckedIn(!!data);
 
       // Auto-show modal if not checked in and it's been 5 seconds
       if (!data) {
-        setTimeout(() => setShowModal(true), 5000)
+        setTimeout(() => setShowModal(true), 5000);
       }
-    }
+    };
 
-    checkTodayCheckIn()
-  }, [userId, supabase])
+    checkTodayCheckIn();
+  }, [userId, supabase]);
 
   if (hasCheckedIn) {
-    return null
+    return null;
   }
 
   return (
@@ -249,12 +238,7 @@ export function DailyCheckInTrigger({ userId }: { userId: string }) {
         </button>
       )}
 
-      {showModal && (
-        <DailyCheckInModal
-          userId={userId}
-          onClose={() => setShowModal(false)}
-        />
-      )}
+      {showModal && <DailyCheckInModal userId={userId} onClose={() => setShowModal(false)} />}
     </>
-  )
+  );
 }

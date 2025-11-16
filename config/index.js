@@ -150,10 +150,9 @@ const config = {
       services: {
         total: enabledServices.length,
         ai: aiProviders.length,
-        deployment: [
-          this.deployment.vercel.enabled,
-          this.deployment.supabase.enabled
-        ].filter(Boolean).length,
+        deployment: [this.deployment.vercel.enabled, this.deployment.supabase.enabled].filter(
+          Boolean
+        ).length,
         github: this.github.enabled ? 1 : 0
       },
       details: {

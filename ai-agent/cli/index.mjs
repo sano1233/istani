@@ -22,9 +22,7 @@ const program = new Command();
 // Load package.json for version
 let version = '1.0.0';
 try {
-  const packageJson = JSON.parse(
-    await readFile(join(__dirname, '../../package.json'), 'utf-8')
-  );
+  const packageJson = JSON.parse(await readFile(join(__dirname, '../../package.json'), 'utf-8'));
   version = packageJson.version || version;
 } catch (error) {
   // Ignore
@@ -71,7 +69,6 @@ program
         console.log('\n' + chalk.bold('Review:'));
         console.log(result.review.text);
       }
-
     } catch (error) {
       spinner.fail(chalk.red(`Failed to process PR #${prNumber}`));
       console.error(chalk.red('Error:'), error.message);
@@ -113,19 +110,11 @@ program
             result.testResult.success ? '✅' : '❌'
           ]);
         } else {
-          table.push([
-            result.prNumber,
-            '❌ Failed',
-            '-',
-            '-',
-            '-',
-            '-'
-          ]);
+          table.push([result.prNumber, '❌ Failed', '-', '-', '-', '-']);
         }
       });
 
       console.log('\n' + table.toString());
-
     } catch (error) {
       spinner.fail(chalk.red('Failed to process PRs'));
       console.error(chalk.red('Error:'), error.message);
@@ -163,7 +152,6 @@ program
       );
 
       console.log(table.toString() + '\n');
-
     } catch (error) {
       console.error(chalk.red('Error:'), error.message);
       process.exit(1);
@@ -176,7 +164,7 @@ program
 program
   .command('review <prNumber>')
   .description('Perform code review only (no build/deploy)')
-  .action(async (prNumber) => {
+  .action(async prNumber => {
     const spinner = ora(`Reviewing PR #${prNumber}`).start();
 
     try {
@@ -198,7 +186,6 @@ program
 
       console.log('\n' + chalk.bold('Review:'));
       console.log(review.text);
-
     } catch (error) {
       spinner.fail(chalk.red(`Failed to review PR #${prNumber}`));
       console.error(chalk.red('Error:'), error.message);
@@ -212,7 +199,7 @@ program
 program
   .command('scan <prNumber>')
   .description('Run security scan on a PR')
-  .action(async (prNumber) => {
+  .action(async prNumber => {
     const spinner = ora(`Scanning PR #${prNumber} for security issues`).start();
 
     try {
@@ -232,22 +219,18 @@ program
         });
 
         result.issues.forEach(issue => {
-          const severityColor = {
-            HIGH: chalk.red,
-            MEDIUM: chalk.yellow,
-            LOW: chalk.blue
-          }[issue.severity] || chalk.white;
+          const severityColor =
+            {
+              HIGH: chalk.red,
+              MEDIUM: chalk.yellow,
+              LOW: chalk.blue
+            }[issue.severity] || chalk.white;
 
-          table.push([
-            severityColor(issue.severity),
-            issue.file,
-            issue.issue
-          ]);
+          table.push([severityColor(issue.severity), issue.file, issue.issue]);
         });
 
         console.log('\n' + table.toString());
       }
-
     } catch (error) {
       spinner.fail(chalk.red(`Security scan failed`));
       console.error(chalk.red('Error:'), error.message);
@@ -263,7 +246,7 @@ program
   .description('Deploy to production')
   .option('-v, --vercel', 'Deploy to Vercel only')
   .option('-n, --netlify', 'Deploy to Netlify only')
-  .action(async (options) => {
+  .action(async options => {
     const spinner = ora('Deploying to production').start();
 
     try {
@@ -275,7 +258,6 @@ program
       await agent.deployToProduction(mockPR);
 
       spinner.succeed(chalk.green('Deployment successful'));
-
     } catch (error) {
       spinner.fail(chalk.red('Deployment failed'));
       console.error(chalk.red('Error:'), error.message);
@@ -293,13 +275,13 @@ program
     console.log(chalk.bold.cyan('\n🔧 Agent Configuration\n'));
 
     const config = {
-      'ANTHROPIC_API_KEY': process.env.ANTHROPIC_API_KEY ? '✅ Set' : '❌ Not set',
-      'GITHUB_TOKEN': process.env.GITHUB_TOKEN ? '✅ Set' : '❌ Not set',
-      'GITHUB_OWNER': process.env.GITHUB_OWNER || 'sano1233 (default)',
-      'GITHUB_REPO': process.env.GITHUB_REPO || 'istani (default)',
-      'VERCEL_TOKEN': process.env.VERCEL_TOKEN ? '✅ Set' : '❌ Not set',
-      'NETLIFY_TOKEN': process.env.NETLIFY_TOKEN ? '✅ Set' : '❌ Not set',
-      'GITHUB_WEBHOOK_SECRET': process.env.GITHUB_WEBHOOK_SECRET ? '✅ Set' : '❌ Not set'
+      ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY ? '✅ Set' : '❌ Not set',
+      GITHUB_TOKEN: process.env.GITHUB_TOKEN ? '✅ Set' : '❌ Not set',
+      GITHUB_OWNER: process.env.GITHUB_OWNER || 'sano1233 (default)',
+      GITHUB_REPO: process.env.GITHUB_REPO || 'istani (default)',
+      VERCEL_TOKEN: process.env.VERCEL_TOKEN ? '✅ Set' : '❌ Not set',
+      NETLIFY_TOKEN: process.env.NETLIFY_TOKEN ? '✅ Set' : '❌ Not set',
+      GITHUB_WEBHOOK_SECRET: process.env.GITHUB_WEBHOOK_SECRET ? '✅ Set' : '❌ Not set'
     };
 
     const table = new Table({

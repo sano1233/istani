@@ -133,8 +133,8 @@ async function handlePR(prNumber) {
       await fs.unlink(tempFile).catch(() => {});
     }
 
-    const approvals = [gemini, claude, qwen].filter(r =>
-      r && r.toLowerCase().includes('approve')
+    const approvals = [gemini, claude, qwen].filter(
+      r => r && r.toLowerCase().includes('approve')
     ).length;
 
     console.log(`\nApprovals: ${approvals}/3`);

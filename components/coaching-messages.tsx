@@ -1,13 +1,13 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
+import { useState } from 'react';
 
 interface CoachingMessage {
-  id: string
-  message_type: string
-  title: string
-  content: string
-  created_at: string
+  id: string;
+  message_type: string;
+  title: string;
+  content: string;
+  created_at: string;
 }
 
 const MESSAGE_EMOJIS: Record<string, string> = {
@@ -16,25 +16,25 @@ const MESSAGE_EMOJIS: Record<string, string> = {
   tip: '💡',
   reminder: '⏰',
   progress: '📈',
-  warning: '⚠️',
-}
+  warning: '⚠️'
+};
 
 export function CoachingMessages({ messages }: { messages: CoachingMessage[] }) {
-  const [dismissed, setDismissed] = useState<string[]>([])
+  const [dismissed, setDismissed] = useState<string[]>([]);
 
   if (!messages || messages.length === 0) {
-    return null
+    return null;
   }
 
-  const visibleMessages = messages.filter(m => !dismissed.includes(m.id))
+  const visibleMessages = messages.filter(m => !dismissed.includes(m.id));
 
   if (visibleMessages.length === 0) {
-    return null
+    return null;
   }
 
   const handleDismiss = (messageId: string) => {
-    setDismissed([...dismissed, messageId])
-  }
+    setDismissed([...dismissed, messageId]);
+  };
 
   return (
     <div className="space-y-3">
@@ -45,10 +45,10 @@ export function CoachingMessages({ messages }: { messages: CoachingMessage[] }) 
             message.message_type === 'celebration'
               ? 'bg-green-50 border-green-500'
               : message.message_type === 'warning'
-              ? 'bg-yellow-50 border-yellow-500'
-              : message.message_type === 'progress'
-              ? 'bg-blue-50 border-blue-500'
-              : 'bg-purple-50 border-purple-500'
+                ? 'bg-yellow-50 border-yellow-500'
+                : message.message_type === 'progress'
+                  ? 'bg-blue-50 border-blue-500'
+                  : 'bg-purple-50 border-purple-500'
           }`}
         >
           <button
@@ -63,18 +63,14 @@ export function CoachingMessages({ messages }: { messages: CoachingMessage[] }) 
               {MESSAGE_EMOJIS[message.message_type] || '📢'}
             </div>
             <div className="flex-1">
-              <h3 className="font-semibold text-gray-900 mb-1">
-                {message.title}
-              </h3>
-              <p className="text-sm text-gray-700">
-                {message.content}
-              </p>
+              <h3 className="font-semibold text-gray-900 mb-1">{message.title}</h3>
+              <p className="text-sm text-gray-700">{message.content}</p>
               <div className="text-xs text-gray-500 mt-2">
                 {new Date(message.created_at).toLocaleDateString('en-US', {
                   month: 'short',
                   day: 'numeric',
                   hour: 'numeric',
-                  minute: '2-digit',
+                  minute: '2-digit'
                 })}
               </div>
             </div>
@@ -82,5 +78,5 @@ export function CoachingMessages({ messages }: { messages: CoachingMessage[] }) 
         </div>
       ))}
     </div>
-  )
+  );
 }

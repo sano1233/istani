@@ -10,7 +10,8 @@ const path = require('path');
 
 // Supabase configuration
 const SUPABASE_URL = 'https://kxsmgrlpojdsgvjdodda.supabase.co';
-const SERVICE_ROLE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt4c21ncmxwb2pkc2d2amRvZGRhIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MDA2NDYyMSwiZXhwIjoyMDc1NjQwNjIxfQ.6a5eSOaxQyl_GVXyKhnT45qn2ws-xUT5qYB5eeQooME';
+const SERVICE_ROLE_KEY =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt4c21ncmxwb2pkc2d2amRvZGRhIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MDA2NDYyMSwiZXhwIjoyMDc1NjQwNjIxfQ.6a5eSOaxQyl_GVXyKhnT45qn2ws-xUT5qYB5eeQooME';
 
 // Migration files to execute (in order)
 const migrations = [
@@ -29,8 +30,8 @@ async function executeSql(sql) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'apikey': SERVICE_ROLE_KEY,
-      'Authorization': `Bearer ${SERVICE_ROLE_KEY}`
+      apikey: SERVICE_ROLE_KEY,
+      Authorization: `Bearer ${SERVICE_ROLE_KEY}`
     },
     body: JSON.stringify({ query: sql })
   });
@@ -48,16 +49,13 @@ async function executeSql(sql) {
  */
 async function tableExists(tableName) {
   try {
-    const response = await fetch(
-      `${SUPABASE_URL}/rest/v1/${tableName}?limit=1`,
-      {
-        method: 'GET',
-        headers: {
-          'apikey': SERVICE_ROLE_KEY,
-          'Authorization': `Bearer ${SERVICE_ROLE_KEY}`
-        }
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/${tableName}?limit=1`, {
+      method: 'GET',
+      headers: {
+        apikey: SERVICE_ROLE_KEY,
+        Authorization: `Bearer ${SERVICE_ROLE_KEY}`
       }
-    );
+    });
     return response.ok;
   } catch (error) {
     return false;
@@ -81,19 +79,18 @@ async function runMigrations() {
 
     // Verify achievement count
     try {
-      const response = await fetch(
-        `${SUPABASE_URL}/rest/v1/achievements?select=count`,
-        {
-          method: 'GET',
-          headers: {
-            'apikey': SERVICE_ROLE_KEY,
-            'Authorization': `Bearer ${SERVICE_ROLE_KEY}`,
-            'Prefer': 'count=exact'
-          }
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/achievements?select=count`, {
+        method: 'GET',
+        headers: {
+          apikey: SERVICE_ROLE_KEY,
+          Authorization: `Bearer ${SERVICE_ROLE_KEY}`,
+          Prefer: 'count=exact'
         }
-      );
+      });
       const count = response.headers.get('content-range');
-      console.log(`   - Achievements seeded: ${count ? count.split('/')[1] : 'unknown'} achievements\n`);
+      console.log(
+        `   - Achievements seeded: ${count ? count.split('/')[1] : 'unknown'} achievements\n`
+      );
     } catch (error) {
       console.log('   - Could not verify achievement count\n');
     }
@@ -123,7 +120,6 @@ async function runMigrations() {
       // Note: Supabase REST API doesn't support direct SQL execution
       // Instead, we'll output instructions for manual execution
       console.log('   ℹ️  Manual execution required via Supabase SQL Editor\n');
-
     } catch (error) {
       console.error(`   ❌ Error reading ${migrationFile}:`, error.message);
       throw error;
@@ -141,7 +137,9 @@ async function runMigrations() {
   console.log('3. Click "Run" for each migration\n');
   console.log('Alternatively, use the Supabase CLI:');
   console.log('   npm install -g supabase');
-  console.log('   supabase db push --db-url "postgresql://postgres:[PASSWORD]@db.kxsmgrlpojdsgvjdodda.supabase.co:5432/postgres"\n');
+  console.log(
+    '   supabase db push --db-url "postgresql://postgres:[PASSWORD]@db.kxsmgrlpojdsgvjdodda.supabase.co:5432/postgres"\n'
+  );
 }
 
 /**

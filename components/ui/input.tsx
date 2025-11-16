@@ -1,17 +1,15 @@
-import { InputHTMLAttributes, forwardRef } from 'react'
-import { cn } from '@/lib/utils'
+import { InputHTMLAttributes, forwardRef } from 'react';
+import { cn } from '@/lib/utils';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-  label?: string
+  label?: string;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ className, label, type, ...props }, ref) => {
     return (
       <label className="flex flex-col w-full">
-        {label && (
-          <span className="pb-2 text-base font-medium text-white">{label}</span>
-        )}
+        {label && <span className="pb-2 text-base font-medium text-white">{label}</span>}
         <input
           ref={ref}
           type={type}
@@ -22,10 +20,10 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           {...props}
         />
       </label>
-    )
+    );
   }
-)
+);
 
-Input.displayName = 'Input'
+Input.displayName = 'Input';
 
-export { Input }
+export { Input };

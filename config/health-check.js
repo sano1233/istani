@@ -135,7 +135,6 @@ function main() {
       console.log();
       process.exit(1);
     }
-
   } catch (error) {
     printHeader('ERROR');
     printError(error.message);
