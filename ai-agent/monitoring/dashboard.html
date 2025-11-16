@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ISTANI AI Agent - Monitoring Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.5); }
+      50% { box-shadow: 0 0 40px rgba(59, 130, 246, 0.8); }
+    }
+    .pulse-glow {
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900 min-h-screen text-white">
+  <div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <header class="mb-8">
+      <h1 class="text-5xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+        🤖 ISTANI Autonomous AI Agent
+      </h1>
+      <p class="text-gray-400 text-lg">Ultra-Secured Automated PR Processing System</p>
+      <div class="flex gap-2 mt-4">
+        <span class="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-sm flex items-center gap-2">
+          <span class="w-2 h-2 bg-green-400 rounded-full pulse-glow"></span>
+          System Online
+        </span>
+        <span id="uptime" class="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-sm">
+          Uptime: Loading...
+        </span>
+      </div>
+    </header>
+
+    <!-- Statistics Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <!-- PRs Processed -->
+      <div class="bg-gray-800/50 backdrop-blur-lg rounded-xl p-6 border border-gray-700 hover:border-blue-500 transition-all">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-gray-400 text-sm uppercase tracking-wide">PRs Processed</h3>
+          <span class="text-3xl">📋</span>
+        </div>
+        <p id="prs-processed" class="text-4xl font-bold text-blue-400">0</p>
+        <p class="text-gray-500 text-sm mt-2">Total pull requests analyzed</p>
+      </div>
+
+      <!-- Build Success Rate -->
+      <div class="bg-gray-800/50 backdrop-blur-lg rounded-xl p-6 border border-gray-700 hover:border-green-500 transition-all">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-gray-400 text-sm uppercase tracking-wide">Build Success</h3>
+          <span class="text-3xl">🏗️</span>
+        </div>
+        <p id="build-success" class="text-4xl font-bold text-green-400">0%</p>
+        <p class="text-gray-500 text-sm mt-2">
+          <span id="builds-succeeded">0</span> / <span id="builds-total">0</span> successful
+        </p>
+      </div>
+
+      <!-- Deployments -->
+      <div class="bg-gray-800/50 backdrop-blur-lg rounded-xl p-6 border border-gray-700 hover:border-purple-500 transition-all">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-gray-400 text-sm uppercase tracking-wide">Deployments</h3>
+          <span class="text-3xl">🚀</span>
+        </div>
+        <p id="deployments-succeeded" class="text-4xl font-bold text-purple-400">0</p>
+        <p class="text-gray-500 text-sm mt-2">
+          <span id="deployments-failed" class="text-red-400">0</span> failed
+        </p>
+      </div>
+
+      <!-- Security Issues -->
+      <div class="bg-gray-800/50 backdrop-blur-lg rounded-xl p-6 border border-gray-700 hover:border-yellow-500 transition-all">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-gray-400 text-sm uppercase tracking-wide">Security Issues</h3>
+          <span class="text-3xl">🔒</span>
+        </div>
+        <p id="security-issues" class="text-4xl font-bold text-yellow-400">0</p>
+        <p class="text-gray-500 text-sm mt-2">Vulnerabilities detected</p>
+      </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      <!-- Processing Time Chart -->
+      <div class="bg-gray-800/50 backdrop-blur-lg rounded-xl p-6 border border-gray-700">
+        <h3 class="text-xl font-bold mb-4">⏱️ Processing Time Trend</h3>
+        <canvas id="processingTimeChart"></canvas>
+      </div>
+
+      <!-- Success Rate Chart -->
+      <div class="bg-gray-800/50 backdrop-blur-lg rounded-xl p-6 border border-gray-700">
+        <h3 class="text-xl font-bold mb-4">📊 Success Rate Distribution</h3>
+        <canvas id="successRateChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="bg-gray-800/50 backdrop-blur-lg rounded-xl p-6 border border-gray-700 mb-8">
+      <h3 class="text-xl font-bold mb-4">📜 Recent Activity</h3>
+      <div id="recent-activity" class="space-y-3">
+        <div class="flex items-center gap-4 p-3 bg-gray-700/30 rounded-lg">
+          <span class="text-2xl">🔄</span>
+          <div class="flex-1">
+            <p class="text-sm text-gray-400">Loading recent activity...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- System Status -->
+    <div class="bg-gray-800/50 backdrop-blur-lg rounded-xl p-6 border border-gray-700">
+      <h3 class="text-xl font-bold mb-4">⚙️ System Status</h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="p-4 bg-gray-700/30 rounded-lg">
+          <p class="text-sm text-gray-400 mb-1">Claude API</p>
+          <p id="claude-status" class="text-lg font-semibold text-green-400">✅ Connected</p>
+        </div>
+        <div class="p-4 bg-gray-700/30 rounded-lg">
+          <p class="text-sm text-gray-400 mb-1">GitHub API</p>
+          <p id="github-status" class="text-lg font-semibold text-green-400">✅ Connected</p>
+        </div>
+        <div class="p-4 bg-gray-700/30 rounded-lg">
+          <p class="text-sm text-gray-400 mb-1">Webhook Server</p>
+          <p id="webhook-status" class="text-lg font-semibold text-green-400">✅ Online</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-8 text-center text-gray-500 text-sm">
+      <p>Powered by <span class="text-blue-400">Claude AI</span> & <span class="text-purple-400">Anthropic</span></p>
+      <p class="mt-1">ISTANI Autonomous AI Agent v1.0.0</p>
+    </footer>
+  </div>
+
+  <script>
+    // API endpoint (adjust for your deployment)
+    const API_URL = 'http://localhost:3001';
+
+    // Fetch and update stats
+    async function updateStats() {
+      try {
+        const response = await fetch(`${API_URL}/stats`);
+        const stats = await response.json();
+
+        // Update stat cards
+        document.getElementById('prs-processed').textContent = stats.prsProcessed;
+        document.getElementById('builds-succeeded').textContent = stats.buildsSucceeded;
+        const buildsTotal = stats.buildsSucceeded + stats.buildsFailed;
+        document.getElementById('builds-total').textContent = buildsTotal;
+        const buildSuccessRate = buildsTotal > 0 ? Math.round((stats.buildsSucceeded / buildsTotal) * 100) : 0;
+        document.getElementById('build-success').textContent = buildSuccessRate + '%';
+        document.getElementById('deployments-succeeded').textContent = stats.deploymentsSucceeded;
+        document.getElementById('deployments-failed').textContent = stats.deploymentsFailed;
+        document.getElementById('security-issues').textContent = stats.securityIssuesFound;
+        document.getElementById('uptime').textContent = `Uptime: ${formatUptime(stats.uptime)}`;
+
+      } catch (error) {
+        console.error('Failed to fetch stats:', error);
+      }
+    }
+
+    // Format uptime
+    function formatUptime(seconds) {
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      if (hours > 0) return `${hours}h ${minutes}m`;
+      if (minutes > 0) return `${minutes}m`;
+      return `${Math.floor(seconds)}s`;
+    }
+
+    // Initialize charts
+    const processingTimeCtx = document.getElementById('processingTimeChart').getContext('2d');
+    const processingTimeChart = new Chart(processingTimeCtx, {
+      type: 'line',
+      data: {
+        labels: ['1h ago', '50m', '40m', '30m', '20m', '10m', 'Now'],
+        datasets: [{
+          label: 'Avg Processing Time (s)',
+          data: [45, 42, 38, 40, 35, 33, 30],
+          borderColor: 'rgb(59, 130, 246)',
+          backgroundColor: 'rgba(59, 130, 246, 0.1)',
+          tension: 0.4,
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+          legend: { labels: { color: '#9CA3AF' } }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: { color: '#9CA3AF' },
+            grid: { color: 'rgba(156, 163, 175, 0.1)' }
+          },
+          x: {
+            ticks: { color: '#9CA3AF' },
+            grid: { color: 'rgba(156, 163, 175, 0.1)' }
+          }
+        }
+      }
+    });
+
+    const successRateCtx = document.getElementById('successRateChart').getContext('2d');
+    const successRateChart = new Chart(successRateCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Build Success', 'Build Failed', 'Tests Passed', 'Tests Failed'],
+        datasets: [{
+          data: [85, 15, 90, 10],
+          backgroundColor: [
+            'rgb(34, 197, 94)',
+            'rgb(239, 68, 68)',
+            'rgb(168, 85, 247)',
+            'rgb(251, 146, 60)'
+          ]
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: { color: '#9CA3AF' }
+          }
+        }
+      }
+    });
+
+    // Update stats every 10 seconds
+    updateStats();
+    setInterval(updateStats, 10000);
+
+    // Check health
+    async function checkHealth() {
+      try {
+        const response = await fetch(`${API_URL}/health`);
+        const health = await response.json();
+
+        if (health.status === 'healthy') {
+          document.getElementById('webhook-status').innerHTML = '✅ Online';
+        } else {
+          document.getElementById('webhook-status').innerHTML = '❌ Offline';
+        }
+      } catch (error) {
+        document.getElementById('webhook-status').innerHTML = '❌ Offline';
+        document.getElementById('claude-status').innerHTML = '⚠️ Unknown';
+        document.getElementById('github-status').innerHTML = '⚠️ Unknown';
+      }
+    }
+
+    checkHealth();
+    setInterval(checkHealth, 30000);
+  </script>
+</body>
+</html>
