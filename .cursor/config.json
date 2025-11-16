@@ -1,0 +1,8 @@
+{
+  "aiProviders": {
+    "primary": "unified",
+    "fallback": ["gemini", "claude", "codex", "qwen"]
+  },
+  "autoComplete": true,
+  "autoReview": true
+}
