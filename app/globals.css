@@ -15,7 +15,7 @@
 
 @layer base {
   * {
-    @apply border-gray-800;
+    @apply border-white/10;
   }
   body {
     @apply bg-background-dark text-white font-display;

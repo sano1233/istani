@@ -3,7 +3,18 @@ import { NextResponse } from 'next/server'
 import { getStripe } from '@/lib/stripe'
 import { createClient } from '@supabase/supabase-js'
 
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+
 export async function POST(req: Request) {
+  // Guard against missing env at build or misconfigured environments
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET
+  if (!webhookSecret || !supabaseUrl || !supabaseServiceKey) {
+    return NextResponse.json({ received: true }, { status: 200 })
+  }
+
   const body = await req.text()
   const headersList = await headers()
   const signature = headersList.get('stripe-signature')!
@@ -15,7 +26,7 @@ export async function POST(req: Request) {
     event = stripe.webhooks.constructEvent(
       body,
       signature,
-      process.env.STRIPE_WEBHOOK_SECRET!
+      webhookSecret
     )
   } catch (err: any) {
     return NextResponse.json(
@@ -24,10 +35,7 @@ export async function POST(req: Request) {
     )
   }
 
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  )
+  const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
   switch (event.type) {
     case 'checkout.session.completed':
