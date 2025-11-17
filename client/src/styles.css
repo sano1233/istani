@@ -27,8 +27,13 @@ body {
   margin: 0;
   padding: 0;
   height: 100%;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
-    "Inter", sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'SF Pro Text',
+    'Inter',
+    sans-serif;
   background: radial-gradient(circle at top left, #111827 0, #020617 45%, #000 100%);
   color: var(--text);
 }
@@ -120,13 +125,18 @@ body {
   color: var(--text-muted);
   font-size: 13px;
   cursor: pointer;
-  transition: background 0.18s, color 0.18s, transform 0.08s;
+  transition:
+    background 0.18s,
+    color 0.18s,
+    transform 0.08s;
 }
 
 .tab-btn-active {
   background: radial-gradient(circle at top left, var(--accent-soft), #020617);
   color: #e5e7eb;
-  box-shadow: 0 0 0 1px rgba(129, 140, 248, 0.8), 0 10px 25px rgba(79, 70, 229, 0.4);
+  box-shadow:
+    0 0 0 1px rgba(129, 140, 248, 0.8),
+    0 10px 25px rgba(79, 70, 229, 0.4);
 }
 
 .tab-btn:hover {
@@ -287,7 +297,11 @@ body {
   padding: 8px 14px;
   cursor: pointer;
   white-space: nowrap;
-  transition: background 0.15s, transform 0.08s, box-shadow 0.15s, opacity 0.12s;
+  transition:
+    background 0.15s,
+    transform 0.08s,
+    box-shadow 0.15s,
+    opacity 0.12s;
 }
 
 .btn.primary {
@@ -321,7 +335,8 @@ body {
 }
 
 .voice-btn-active {
-  box-shadow: 0 0 0 1px rgba(96, 165, 250, 0.8),
+  box-shadow:
+    0 0 0 1px rgba(96, 165, 250, 0.8),
     0 0 25px rgba(96, 165, 250, 0.8);
 }
 
@@ -380,7 +395,9 @@ body {
   font-size: 13px;
   text-align: left;
   cursor: pointer;
-  transition: border 0.12s, background 0.12s;
+  transition:
+    border 0.12s,
+    background 0.12s;
 }
 
 .slot-item-active {

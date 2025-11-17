@@ -34,7 +34,7 @@ class IstaniAIAgent {
       securityEnabled: config.securityEnabled !== false,
       autoMerge: config.autoMerge !== false,
       autoDeploy: config.autoDeploy !== false,
-      ...config
+      ...config,
     };
 
     this.initializeClients();
@@ -47,7 +47,7 @@ class IstaniAIAgent {
       deploymentsSucceeded: 0,
       deploymentsFailed: 0,
       securityIssuesFound: 0,
-      codeReviewsCompleted: 0
+      codeReviewsCompleted: 0,
     };
   }
 
@@ -55,22 +55,22 @@ class IstaniAIAgent {
     // Initialize Anthropic Claude client
     if (this.config.anthropicApiKey) {
       this.claude = new Anthropic({
-        apiKey: this.config.anthropicApiKey
+        apiKey: this.config.anthropicApiKey,
       });
     }
 
     // Initialize GitHub client
     if (this.config.githubToken) {
       this.github = new Octokit({
-        auth: this.config.githubToken
+        auth: this.config.githubToken,
       });
     } else if (this.config.githubAppId && this.config.githubAppPrivateKey) {
       this.github = new Octokit({
         authStrategy: createAppAuth,
         auth: {
           appId: this.config.githubAppId,
-          privateKey: this.config.githubAppPrivateKey
-        }
+          privateKey: this.config.githubAppPrivateKey,
+        },
       });
     }
   }
@@ -129,9 +129,8 @@ class IstaniAIAgent {
         duration,
         review,
         buildResult,
-        testResult
+        testResult,
       };
-
     } catch (error) {
       this.log(`❌ Error processing PR #${prNumber}: ${error.message}`, 'error');
       await this.handleError(prNumber, error);
@@ -146,14 +145,14 @@ class IstaniAIAgent {
     const { data: pr } = await this.github.pulls.get({
       owner: this.config.owner,
       repo: this.config.repo,
-      pull_number: prNumber
+      pull_number: prNumber,
     });
 
     // Fetch files changed
     const { data: files } = await this.github.pulls.listFiles({
       owner: this.config.owner,
       repo: this.config.repo,
-      pull_number: prNumber
+      pull_number: prNumber,
     });
 
     pr.files = files;
@@ -167,7 +166,8 @@ class IstaniAIAgent {
     this.log(`🔍 Analyzing changes in ${pr.files.length} files`, 'info');
 
     const filesContent = await Promise.all(
-      pr.files.slice(0, 50).map(async (file) => { // Limit to 50 files
+      pr.files.slice(0, 50).map(async (file) => {
+        // Limit to 50 files
         try {
           if (file.status === 'removed') {
             return { filename: file.filename, status: 'removed', patch: file.patch };
@@ -177,7 +177,7 @@ class IstaniAIAgent {
             owner: this.config.owner,
             repo: this.config.repo,
             path: file.filename,
-            ref: pr.head.sha
+            ref: pr.head.sha,
           });
 
           const content = Buffer.from(data.content, 'base64').toString('utf-8');
@@ -187,16 +187,16 @@ class IstaniAIAgent {
             patch: file.patch,
             additions: file.additions,
             deletions: file.deletions,
-            status: file.status
+            status: file.status,
           };
         } catch (error) {
           return {
             filename: file.filename,
             error: error.message,
-            patch: file.patch
+            patch: file.patch,
           };
         }
-      })
+      }),
     );
 
     const prompt = this.buildAnalysisPrompt(pr, filesContent);
@@ -204,10 +204,12 @@ class IstaniAIAgent {
     const response = await this.claude.messages.create({
       model: this.config.model,
       max_tokens: this.config.maxTokens,
-      messages: [{
-        role: 'user',
-        content: prompt
-      }]
+      messages: [
+        {
+          role: 'user',
+          content: prompt,
+        },
+      ],
     });
 
     const analysisText = response.content[0].text;
@@ -215,7 +217,7 @@ class IstaniAIAgent {
     return {
       summary: analysisText,
       filesAnalyzed: filesContent.length,
-      totalChanges: pr.files.reduce((sum, f) => sum + f.additions + f.deletions, 0)
+      totalChanges: pr.files.reduce((sum, f) => sum + f.additions + f.deletions, 0),
     };
   }
 
@@ -230,10 +232,12 @@ class IstaniAIAgent {
     const response = await this.claude.messages.create({
       model: this.config.model,
       max_tokens: this.config.maxTokens,
-      messages: [{
-        role: 'user',
-        content: reviewPrompt
-      }]
+      messages: [
+        {
+          role: 'user',
+          content: reviewPrompt,
+        },
+      ],
     });
 
     const reviewText = response.content[0].text;
@@ -247,7 +251,7 @@ class IstaniAIAgent {
       text: reviewText,
       approved,
       reviewer: 'ISTANI AI Agent (Claude)',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
   }
 
@@ -278,7 +282,7 @@ class IstaniAIAgent {
               file: file.filename,
               issue: 'Potential sensitive data exposure',
               severity: 'HIGH',
-              pattern: pattern.toString()
+              pattern: pattern.toString(),
             });
           }
         }
@@ -286,11 +290,11 @@ class IstaniAIAgent {
 
       // Check for dangerous file modifications
       const dangerousFiles = ['.env', 'credentials.json', 'secrets.yaml', 'private.key'];
-      if (dangerousFiles.some(df => file.filename.includes(df))) {
+      if (dangerousFiles.some((df) => file.filename.includes(df))) {
         securityIssues.push({
           file: file.filename,
           issue: 'Modification of sensitive configuration file',
-          severity: 'MEDIUM'
+          severity: 'MEDIUM',
         });
       }
     }
@@ -299,7 +303,7 @@ class IstaniAIAgent {
       this.stats.securityIssuesFound += securityIssues.length;
       await this.reportSecurityIssues(pr, securityIssues);
 
-      if (securityIssues.some(i => i.severity === 'HIGH')) {
+      if (securityIssues.some((i) => i.severity === 'HIGH')) {
         throw new Error('HIGH severity security issues found. PR blocked.');
       }
     }
@@ -366,7 +370,7 @@ class IstaniAIAgent {
       if (this.config.vercelToken) {
         execSync('vercel --prod --yes --token=$VERCEL_TOKEN', {
           stdio: 'inherit',
-          env: { ...process.env, VERCEL_TOKEN: this.config.vercelToken }
+          env: { ...process.env, VERCEL_TOKEN: this.config.vercelToken },
         });
         this.stats.deploymentsSucceeded++;
         this.log(`✅ Deployed to Vercel`, 'success');
@@ -376,7 +380,7 @@ class IstaniAIAgent {
       if (this.config.netlifyToken) {
         execSync('netlify deploy --prod --auth=$NETLIFY_TOKEN', {
           stdio: 'inherit',
-          env: { ...process.env, NETLIFY_TOKEN: this.config.netlifyToken }
+          env: { ...process.env, NETLIFY_TOKEN: this.config.netlifyToken },
         });
         this.log(`✅ Deployed to Netlify`, 'success');
       }
@@ -403,7 +407,7 @@ class IstaniAIAgent {
       pull_number: pr.number,
       merge_method: 'squash',
       commit_title: `${pr.title} (#${pr.number})`,
-      commit_message: `Automatically merged by ISTANI AI Agent\n\n${pr.body || ''}`
+      commit_message: `Automatically merged by ISTANI AI Agent\n\n${pr.body || ''}`,
     });
 
     this.log(`✅ PR #${pr.number} merged successfully`, 'success');
@@ -419,7 +423,7 @@ class IstaniAIAgent {
       owner: this.config.owner,
       repo: this.config.repo,
       issue_number: pr.number,
-      body: comment
+      body: comment,
     });
 
     // Submit review
@@ -428,7 +432,7 @@ class IstaniAIAgent {
       repo: this.config.repo,
       pull_number: pr.number,
       event: review.approved ? 'APPROVE' : 'COMMENT',
-      body: review.text
+      body: review.text,
     });
   }
 
@@ -436,18 +440,19 @@ class IstaniAIAgent {
    * Report security issues
    */
   async reportSecurityIssues(pr, issues) {
-    const comment = `## 🔒 Security Scan Results\n\n` +
+    const comment =
+      `## 🔒 Security Scan Results\n\n` +
       `Found ${issues.length} potential security issue(s):\n\n` +
-      issues.map(issue =>
-        `- **${issue.severity}**: ${issue.issue} in \`${issue.file}\``
-      ).join('\n') +
+      issues
+        .map((issue) => `- **${issue.severity}**: ${issue.issue} in \`${issue.file}\``)
+        .join('\n') +
       `\n\n⚠️ Please review these findings before merging.`;
 
     await this.github.issues.createComment({
       owner: this.config.owner,
       repo: this.config.repo,
       issue_number: pr.number,
-      body: comment
+      body: comment,
     });
   }
 
@@ -455,7 +460,8 @@ class IstaniAIAgent {
    * Post deployment comment
    */
   async postDeploymentComment(pr) {
-    const comment = `## 🚀 Deployment Successful\n\n` +
+    const comment =
+      `## 🚀 Deployment Successful\n\n` +
       `This PR has been automatically deployed:\n\n` +
       `- ✅ Vercel: https://istaniorg.vercel.app\n` +
       `- ✅ Netlify: https://istaniorg.netlify.app\n\n` +
@@ -465,7 +471,7 @@ class IstaniAIAgent {
       owner: this.config.owner,
       repo: this.config.repo,
       issue_number: pr.number,
-      body: comment
+      body: comment,
     });
   }
 
@@ -473,7 +479,8 @@ class IstaniAIAgent {
    * Handle errors
    */
   async handleError(prNumber, error) {
-    const comment = `## ❌ AI Agent Error\n\n` +
+    const comment =
+      `## ❌ AI Agent Error\n\n` +
       `The autonomous AI agent encountered an error while processing this PR:\n\n` +
       `\`\`\`\n${error.message}\n\`\`\`\n\n` +
       `Stack trace:\n\`\`\`\n${error.stack}\n\`\`\`\n\n` +
@@ -484,7 +491,7 @@ class IstaniAIAgent {
         owner: this.config.owner,
         repo: this.config.repo,
         issue_number: prNumber,
-        body: comment
+        body: comment,
       });
     } catch (commentError) {
       this.log(`Failed to post error comment: ${commentError.message}`, 'error');
@@ -503,14 +510,18 @@ Author: @${pr.user.login}
 Description: ${pr.body || 'No description provided'}
 
 Files changed (${filesContent.length}):
-${filesContent.map(f => `
+${filesContent
+  .map(
+    (f) => `
 File: ${f.filename}
 Status: ${f.status}
 Changes: +${f.additions || 0} -${f.deletions || 0}
 
 ${f.content ? 'Content:\n```\n' + f.content + '\n```' : ''}
 ${f.patch ? 'Diff:\n```diff\n' + f.patch + '\n```' : ''}
-`).join('\n---\n')}
+`,
+  )
+  .join('\n---\n')}
 
 Please analyze these changes and provide:
 1. Summary of what this PR does
@@ -555,13 +566,21 @@ Start your response with APPROVE or REQUEST_CHANGES, followed by your detailed r
   determineApproval(reviewText) {
     const text = reviewText.toLowerCase();
 
-    if (text.startsWith('approve') || text.includes('approval status**: yes') ||
-        text.includes('**approval**: yes') || text.includes('should be approved: yes')) {
+    if (
+      text.startsWith('approve') ||
+      text.includes('approval status**: yes') ||
+      text.includes('**approval**: yes') ||
+      text.includes('should be approved: yes')
+    ) {
       return true;
     }
 
-    if (text.includes('high severity') || text.includes('critical issue') ||
-        text.includes('security vulnerability') || text.startsWith('request_changes')) {
+    if (
+      text.includes('high severity') ||
+      text.includes('critical issue') ||
+      text.includes('security vulnerability') ||
+      text.startsWith('request_changes')
+    ) {
       return false;
     }
 
@@ -576,12 +595,14 @@ Start your response with APPROVE or REQUEST_CHANGES, followed by your detailed r
     const emoji = review.approved ? '✅' : '⚠️';
     const status = review.approved ? 'APPROVED' : 'CHANGES REQUESTED';
 
-    return `## ${emoji} AI Code Review - ${status}\n\n` +
+    return (
+      `## ${emoji} AI Code Review - ${status}\n\n` +
       `**Reviewer**: ${review.reviewer}\n` +
       `**Timestamp**: ${review.timestamp}\n\n` +
       `---\n\n${review.text}\n\n` +
       `---\n\n` +
-      `*This review was performed automatically by the ISTANI Autonomous AI Agent powered by Claude.*`;
+      `*This review was performed automatically by the ISTANI Autonomous AI Agent powered by Claude.*`
+    );
   }
 
   /**
@@ -594,7 +615,7 @@ Start your response with APPROVE or REQUEST_CHANGES, followed by your detailed r
       owner: this.config.owner,
       repo: this.config.repo,
       state: 'open',
-      per_page: 100
+      per_page: 100,
     });
 
     this.log(`Found ${prs.length} open PR(s)`, 'info');
@@ -611,7 +632,7 @@ Start your response with APPROVE or REQUEST_CHANGES, followed by your detailed r
         results.push({
           success: false,
           prNumber: pr.number,
-          error: error.message
+          error: error.message,
         });
       }
     }
@@ -626,7 +647,7 @@ Start your response with APPROVE or REQUEST_CHANGES, followed by your detailed r
     return {
       ...this.stats,
       uptime: process.uptime(),
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
   }
 
@@ -635,12 +656,13 @@ Start your response with APPROVE or REQUEST_CHANGES, followed by your detailed r
    */
   log(message, level = 'info') {
     const timestamp = new Date().toISOString();
-    const prefix = {
-      info: 'ℹ️',
-      success: '✅',
-      warn: '⚠️',
-      error: '❌'
-    }[level] || 'ℹ️';
+    const prefix =
+      {
+        info: 'ℹ️',
+        success: '✅',
+        warn: '⚠️',
+        error: '❌',
+      }[level] || 'ℹ️';
 
     console.log(`[${timestamp}] ${prefix} ${message}`);
   }
@@ -649,7 +671,7 @@ Start your response with APPROVE or REQUEST_CHANGES, followed by your detailed r
    * Sleep utility
    */
   sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   /**

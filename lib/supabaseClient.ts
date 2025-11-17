@@ -9,4 +9,7 @@ export function getSupabaseClient() {
 }
 
 // Export for backward compatibility
-export const supabaseClient = typeof process !== 'undefined' && process.env.NEXT_PUBLIC_SUPABASE_URL ? getSupabaseClient() : null as any;
+export const supabaseClient =
+  typeof process !== 'undefined' && process.env.NEXT_PUBLIC_SUPABASE_URL
+    ? getSupabaseClient()
+    : (null as any);

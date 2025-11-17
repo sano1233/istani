@@ -39,6 +39,7 @@ The workflow `.github/workflows/ai-brain-auto-fix-prs.yml` keeps the fixer runni
 ### Prerequisites
 
 1. **GitHub CLI**: Must be installed and authenticated
+
    ```bash
    gh auth login
    ```
@@ -46,6 +47,7 @@ The workflow `.github/workflows/ai-brain-auto-fix-prs.yml` keeps the fixer runni
 2. **Node.js**: Version 18+ required
 
 3. **Dependencies**: Install AI brain dependencies
+
    ```bash
    cd ai-brain && npm install
    ```

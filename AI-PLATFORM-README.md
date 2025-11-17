@@ -39,6 +39,7 @@ ai-platform/
 ### Installation
 
 1. **Install Ollama and pull a model:**
+
    ```bash
    # Install Ollama from https://ollama.com
    ollama pull qwen2.5
@@ -47,6 +48,7 @@ ai-platform/
    ```
 
 2. **Configure the backend:**
+
    ```bash
    cd server
    # Edit .env file with your settings
@@ -55,6 +57,7 @@ ai-platform/
    ```
 
 3. **Start the backend:**
+
    ```bash
    cd server
    npm run dev
@@ -62,6 +65,7 @@ ai-platform/
    ```
 
 4. **Start the frontend:**
+
    ```bash
    cd client
    npm run dev
@@ -169,12 +173,14 @@ The voice assistant uses browser-based Web Speech API:
 ### Change the AI Model
 
 Edit `server/.env`:
+
 ```env
 OLLAMA_MODEL=llama3
 # or mistral, codellama, etc.
 ```
 
 Then pull the model:
+
 ```bash
 ollama pull llama3
 ```
@@ -188,13 +194,11 @@ The current implementation uses in-memory storage. To add persistence:
 3. Add database connection in `server/index.js`
 
 Example with Supabase:
-```javascript
-import { createClient } from '@supabase/supabase-js'
 
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_KEY
-)
+```javascript
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
 // Replace in-memory storage with database calls
 ```
@@ -202,6 +206,7 @@ const supabase = createClient(
 ### Customize the UI
 
 Edit `client/src/styles.css` to change:
+
 - Color scheme (CSS variables in `:root`)
 - Layout and spacing
 - Typography and fonts
@@ -209,13 +214,14 @@ Edit `client/src/styles.css` to change:
 ### Add More Social Platforms
 
 Extend `server/index.js`:
+
 ```javascript
 async function postToTwitter({ content }) {
   // Implement Twitter API integration
 }
 
 // In POST /api/post-social:
-if (platform === "twitter") {
+if (platform === 'twitter') {
   await postToTwitter({ content });
 }
 ```
@@ -225,18 +231,21 @@ if (platform === "twitter") {
 ### Ollama Connection Issues
 
 **Error**: "Ollama error: ECONNREFUSED"
+
 - **Solution**: Make sure Ollama is running (`ollama serve`)
 - Check `OLLAMA_BASE_URL` in `.env` matches your Ollama instance
 
 ### Voice Not Working
 
 **Error**: "Voice not supported in this browser"
+
 - **Solution**: Use Chrome or Edge on desktop
 - Safari and Firefox have limited Web Speech API support
 
 ### Mastodon Posting Fails
 
 **Error**: "Mastodon post failed: 401 Unauthorized"
+
 - **Solution**: Check your `MASTODON_ACCESS_TOKEN` is valid
 - Ensure token has `write:statuses` permission
 - Verify `MASTODON_BASE_URL` is correct (no trailing slash)
@@ -244,6 +253,7 @@ if (platform === "twitter") {
 ### Port Already in Use
 
 **Error**: "EADDRINUSE: address already in use"
+
 - **Solution**: Change `PORT` in `server/.env` or kill the process using that port
 
 ## Development
@@ -293,6 +303,7 @@ pm2 start index.js --name ai-platform-server
 ## Tech Stack
 
 **Backend:**
+
 - Express.js - Web framework
 - Ollama - Local LLM inference
 - Mastodon API - Social media posting
@@ -300,6 +311,7 @@ pm2 start index.js --name ai-platform-server
 - node-fetch - HTTP requests
 
 **Frontend:**
+
 - React 18 - UI framework
 - Vite - Build tool and dev server
 - Web Speech API - Voice recognition and synthesis
@@ -312,6 +324,7 @@ MIT License - Feel free to use this for personal or commercial projects.
 ## Contributing
 
 Contributions welcome! Please:
+
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
@@ -320,6 +333,7 @@ Contributions welcome! Please:
 ## Support
 
 For issues or questions:
+
 - Open an issue on GitHub
 - Check the troubleshooting section above
 - Review Ollama docs: https://ollama.com/docs

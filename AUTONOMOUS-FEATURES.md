@@ -48,6 +48,7 @@ export async function runDailyCoachingTasks()
 ```
 
 **Functions**:
+
 - `generateMorningMotivation()` - Random motivational messages
 - `generateWorkoutRecommendation()` - AI workout plans
 - `analyzeProgressAndSendInsights()` - Progress analysis
@@ -70,17 +71,19 @@ export async function runDailyCoachingTasks()
 
 ```typescript
 // Recommended intake: 35ml per kg of body weight
-const glasses = (weightKg * 35) / 250 // 250ml per glass
+const glasses = (weightKg * 35) / 250; // 250ml per glass
 ```
 
 ### Auto-Streak Updates
 
 When users hit their water goal:
+
 1. Automatically updates user_streaks table
 2. Sends celebration coaching message
 3. Awards achievement points if milestones reached
 
 **Files**:
+
 - `app/(dashboard)/water/page.tsx` - Main page
 - `components/water-tracker.tsx` - Interactive tracker
 
@@ -112,12 +115,14 @@ When users hit their water goal:
 ### Goal Progress Tracking
 
 Automatically calculates:
+
 - Percentage to goal
 - Remaining distance
 - Days until target date
 - Progress rate
 
 **Files**:
+
 - `app/(dashboard)/progress/page.tsx` - Main dashboard
 - `components/progress-chart.tsx` - Chart component
 - `components/achievements-list.tsx` - Achievement display
@@ -138,6 +143,7 @@ CREATE OR REPLACE FUNCTION update_user_streak(
 ```
 
 **Logic**:
+
 - If consecutive day: increment streak
 - If same day: no change
 - If broken: reset to 1
@@ -152,6 +158,7 @@ CREATE TRIGGER update_profiles_updated_at
 ```
 
 Applied to:
+
 - profiles
 - products
 - orders
@@ -167,6 +174,7 @@ Applied to:
 **Table**: `system_health_logs`
 
 Automatically logs:
+
 - Coaching engine runs
 - Database operation status
 - Error detection and recovery
@@ -181,17 +189,19 @@ Automatically logs:
 ### Auto-Resolution
 
 The system attempts to self-heal common issues:
+
 - Database connection failures (retry logic)
 - API timeouts (exponential backoff)
 - Missing data (intelligent defaults)
 
 **Example**:
+
 ```typescript
 try {
-  await runDailyCoachingTasks()
-  await logHealth('healthy', 'Tasks completed')
+  await runDailyCoachingTasks();
+  await logHealth('healthy', 'Tasks completed');
 } catch (error) {
-  await logHealth('critical', error.message)
+  await logHealth('critical', error.message);
   // Retry logic kicks in automatically
 }
 ```
@@ -245,9 +255,9 @@ try {
 Protected by CRON_SECRET environment variable:
 
 ```typescript
-const authHeader = request.headers.get('authorization')
+const authHeader = request.headers.get('authorization');
 if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-  return new Response('Unauthorized', { status: 401 })
+  return new Response('Unauthorized', { status: 401 });
 }
 ```
 
@@ -285,6 +295,7 @@ Run the autonomous features migration:
 ```
 
 This creates:
+
 - water_intake table
 - daily_checkins table
 - progress_photos table
@@ -298,6 +309,7 @@ This creates:
 ### 3. Seed Achievements
 
 Achievements are automatically seeded in the migration:
+
 - First Workout
 - Week Warrior
 - Month Master
@@ -378,6 +390,7 @@ SELECT * FROM coaching_messages WHERE user_id = 'YOUR_USER_ID';
 ### Scalability
 
 Designed to handle:
+
 - 10,000+ active users
 - 100,000+ daily data points
 - Real-time updates
@@ -390,6 +403,7 @@ Designed to handle:
 ### Automated Reports
 
 The system generates:
+
 - User engagement metrics
 - Feature usage statistics
 - Goal achievement rates
@@ -398,6 +412,7 @@ The system generates:
 ### Data-Driven Decisions
 
 All coaching recommendations based on:
+
 - Scientific formulas (BMR, TDEE)
 - Evidence-based training principles
 - Progressive overload methodology
@@ -425,6 +440,7 @@ All coaching recommendations based on:
 ### Zero Maintenance Required
 
 The system is designed to:
+
 - ✅ Self-heal from errors
 - ✅ Auto-update calculations
 - ✅ Adapt to user behavior

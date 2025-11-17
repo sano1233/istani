@@ -10,7 +10,10 @@ const projectRoot = path.resolve(__dirname, '..');
 function listTrackedFiles() {
   try {
     const output = execSync('git ls-files', { cwd: projectRoot, encoding: 'utf8' });
-    return output.split('\n').map(line => line.trim()).filter(Boolean);
+    return output
+      .split('\n')
+      .map((line) => line.trim())
+      .filter(Boolean);
   } catch (error) {
     return [];
   }
@@ -39,9 +42,9 @@ function scanForTodos(files) {
     /<!--\s*(TODO|FIXME)/i,
     /\/\*\s*(TODO|FIXME)/i,
     /\*\s*(TODO|FIXME)/i,
-    /--\s*(TODO|FIXME)/i
+    /--\s*(TODO|FIXME)/i,
   ];
-  files.forEach(file => {
+  files.forEach((file) => {
     const filePath = path.join(projectRoot, file);
     if (!fs.existsSync(filePath) || fs.statSync(filePath).isDirectory()) {
       return;
@@ -49,7 +52,7 @@ function scanForTodos(files) {
     const content = fs.readFileSync(filePath, 'utf8');
     const lines = content.split('\n');
     lines.forEach((line, index) => {
-      if (patterns.some(pattern => pattern.test(line))) {
+      if (patterns.some((pattern) => pattern.test(line))) {
         todoMatches.push({ file, line: index + 1, content: line.trim() });
       }
     });
@@ -59,7 +62,10 @@ function scanForTodos(files) {
 
 function scanUnstagedChanges() {
   try {
-    const output = execSync('git status --porcelain', { cwd: projectRoot, encoding: 'utf8' }).trim();
+    const output = execSync('git status --porcelain', {
+      cwd: projectRoot,
+      encoding: 'utf8',
+    }).trim();
     return output ? output.split('\n') : [];
   } catch (error) {
     return [];
@@ -81,7 +87,7 @@ function printScanReport() {
     console.log('No merge conflicts detected.');
   } else {
     console.log('Merge conflicts detected in:');
-    conflicts.forEach(file => console.log(`  - ${file}`));
+    conflicts.forEach((file) => console.log(`  - ${file}`));
   }
 
   const todos = scanForTodos(files);
@@ -89,7 +95,7 @@ function printScanReport() {
     console.log('No TODO/FIXME markers detected.');
   } else {
     console.log('\nTODO/FIXME markers:');
-    todos.slice(0, 20).forEach(match => {
+    todos.slice(0, 20).forEach((match) => {
       console.log(`  - ${match.file}:${match.line} -> ${match.content}`);
     });
     if (todos.length > 20) {
@@ -102,7 +108,7 @@ function printScanReport() {
     console.log('\nWorking tree clean.');
   } else {
     console.log('\nUnstaged changes:');
-    unstaged.forEach(line => console.log(`  ${line}`));
+    unstaged.forEach((line) => console.log(`  ${line}`));
   }
 }
 

@@ -1,7 +1,7 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
+import { useState } from 'react';
+import { createClient } from '@/lib/supabase/client';
 
 const WORKOUT_TYPES = [
   { value: 'strength', label: 'Strength Training', emoji: '💪' },
@@ -10,7 +10,7 @@ const WORKOUT_TYPES = [
   { value: 'hiit', label: 'HIIT', emoji: '🔥' },
   { value: 'sports', label: 'Sports', emoji: '⚽' },
   { value: 'other', label: 'Other', emoji: '🎯' },
-]
+];
 
 const EXERCISE_LIBRARY = {
   strength: [
@@ -39,45 +39,45 @@ const EXERCISE_LIBRARY = {
     { name: 'High Knees', muscleGroup: 'cardio' },
     { name: 'Box Jumps', muscleGroup: 'legs' },
   ],
-}
+};
 
 interface Exercise {
-  name: string
-  sets: number
-  reps: number
-  weight_kg: number
-  notes: string
+  name: string;
+  sets: number;
+  reps: number;
+  weight_kg: number;
+  notes: string;
 }
 
 export function WorkoutLogger({ userId }: { userId: string }) {
-  const [workoutType, setWorkoutType] = useState('strength')
-  const [duration, setDuration] = useState(45)
+  const [workoutType, setWorkoutType] = useState('strength');
+  const [duration, setDuration] = useState(45);
   const [exercises, setExercises] = useState<Exercise[]>([
-    { name: '', sets: 3, reps: 10, weight_kg: 0, notes: '' }
-  ])
-  const [loading, setLoading] = useState(false)
-  const [success, setSuccess] = useState(false)
+    { name: '', sets: 3, reps: 10, weight_kg: 0, notes: '' },
+  ]);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
-  const supabase = createClient()
+  const supabase = createClient();
 
   const addExercise = () => {
-    setExercises([...exercises, { name: '', sets: 3, reps: 10, weight_kg: 0, notes: '' }])
-  }
+    setExercises([...exercises, { name: '', sets: 3, reps: 10, weight_kg: 0, notes: '' }]);
+  };
 
   const removeExercise = (index: number) => {
-    setExercises(exercises.filter((_, i) => i !== index))
-  }
+    setExercises(exercises.filter((_, i) => i !== index));
+  };
 
   const updateExercise = (index: number, field: keyof Exercise, value: any) => {
-    const updated = [...exercises]
-    updated[index] = { ...updated[index], [field]: value }
-    setExercises(updated)
-  }
+    const updated = [...exercises];
+    updated[index] = { ...updated[index], [field]: value };
+    setExercises(updated);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setSuccess(false)
+    e.preventDefault();
+    setLoading(true);
+    setSuccess(false);
 
     try {
       // Create workout
@@ -90,51 +90,51 @@ export function WorkoutLogger({ userId }: { userId: string }) {
           completed_at: new Date().toISOString(),
         })
         .select()
-        .single()
+        .single();
 
-      if (workoutError) throw workoutError
+      if (workoutError) throw workoutError;
 
       // Add exercises if any
-      const validExercises = exercises.filter(e => e.name.trim() !== '')
+      const validExercises = exercises.filter((e) => e.name.trim() !== '');
       if (validExercises.length > 0) {
-        const exerciseRecords = validExercises.map(ex => ({
+        const exerciseRecords = validExercises.map((ex) => ({
           workout_id: workout.id,
           exercise_name: ex.name,
           sets: ex.sets,
           reps: ex.reps,
           weight_kg: ex.weight_kg || null,
           notes: ex.notes || null,
-        }))
+        }));
 
         const { error: exerciseError } = await supabase
           .from('workout_exercises')
-          .insert(exerciseRecords)
+          .insert(exerciseRecords);
 
-        if (exerciseError) throw exerciseError
+        if (exerciseError) throw exerciseError;
       }
 
       // Update workout streak
-      const today = new Date().toISOString().split('T')[0]
+      const today = new Date().toISOString().split('T')[0];
       await supabase.rpc('update_user_streak', {
         p_user_id: userId,
         p_streak_type: 'workout',
         p_activity_date: today,
-      })
+      });
 
-      setSuccess(true)
+      setSuccess(true);
       // Reset form
-      setExercises([{ name: '', sets: 3, reps: 10, weight_kg: 0, notes: '' }])
-      setDuration(45)
+      setExercises([{ name: '', sets: 3, reps: 10, weight_kg: 0, notes: '' }]);
+      setDuration(45);
 
       // Reload page after short delay to show updated stats
-      setTimeout(() => window.location.reload(), 1500)
+      setTimeout(() => window.location.reload(), 1500);
     } catch (error: any) {
-      console.error('Error logging workout:', error)
-      alert('Failed to log workout: ' + error.message)
+      console.error('Error logging workout:', error);
+      alert('Failed to log workout: ' + error.message);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="bg-white rounded-lg border p-6">
@@ -145,7 +145,7 @@ export function WorkoutLogger({ userId }: { userId: string }) {
         <div>
           <label className="block text-sm font-medium mb-2">Workout Type</label>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-            {WORKOUT_TYPES.map(type => (
+            {WORKOUT_TYPES.map((type) => (
               <button
                 key={type.value}
                 type="button"
@@ -165,9 +165,7 @@ export function WorkoutLogger({ userId }: { userId: string }) {
 
         {/* Duration */}
         <div>
-          <label className="block text-sm font-medium mb-2">
-            Duration: {duration} minutes
-          </label>
+          <label className="block text-sm font-medium mb-2">Duration: {duration} minutes</label>
           <input
             type="range"
             min="5"
@@ -207,9 +205,11 @@ export function WorkoutLogger({ userId }: { userId: string }) {
                         list={`exercises-${workoutType}`}
                       />
                       <datalist id={`exercises-${workoutType}`}>
-                        {(EXERCISE_LIBRARY[workoutType as keyof typeof EXERCISE_LIBRARY] || []).map(ex => (
-                          <option key={ex.name} value={ex.name} />
-                        ))}
+                        {(EXERCISE_LIBRARY[workoutType as keyof typeof EXERCISE_LIBRARY] || []).map(
+                          (ex) => (
+                            <option key={ex.name} value={ex.name} />
+                          ),
+                        )}
                       </datalist>
                     </div>
                     {exercises.length > 1 && (
@@ -286,5 +286,5 @@ export function WorkoutLogger({ userId }: { userId: string }) {
         )}
       </form>
     </div>
-  )
+  );
 }

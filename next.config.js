@@ -24,6 +24,6 @@ const nextConfig = {
     // !! WARN !!
     ignoreBuildErrors: false,
   },
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

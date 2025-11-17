@@ -1,15 +1,15 @@
-'use client'
+'use client';
 
 interface NutritionRecommendation {
-  id: string
-  meal_type: string
-  suggestions: string[]
-  target_calories: number
-  target_protein_g: number
-  target_carbs_g: number
-  target_fats_g: number
-  reason: string
-  created_at: string
+  id: string;
+  meal_type: string;
+  suggestions: string[];
+  target_calories: number;
+  target_protein_g: number;
+  target_carbs_g: number;
+  target_fats_g: number;
+  reason: string;
+  created_at: string;
 }
 
 const MEAL_EMOJIS: Record<string, string> = {
@@ -19,14 +19,14 @@ const MEAL_EMOJIS: Record<string, string> = {
   snack: '🍎',
   'pre-workout': '💪',
   'post-workout': '🥤',
-}
+};
 
 export function NutritionRecommendations({
   recommendations,
   userId,
 }: {
-  recommendations: NutritionRecommendation[]
-  userId: string
+  recommendations: NutritionRecommendation[];
+  userId: string;
 }) {
   if (!recommendations || recommendations.length === 0) {
     return (
@@ -40,37 +40,28 @@ export function NutritionRecommendations({
           </p>
         </div>
       </div>
-    )
+    );
   }
 
   return (
     <div className="bg-white rounded-lg border p-6">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold">AI Meal Plans</h2>
-        <span className="text-xs text-gray-500">
-          {recommendations.length} available
-        </span>
+        <span className="text-xs text-gray-500">{recommendations.length} available</span>
       </div>
 
       <div className="space-y-4">
-        {recommendations.map(rec => (
-          <div
-            key={rec.id}
-            className="border rounded-lg p-4 hover:shadow-md transition-shadow"
-          >
+        {recommendations.map((rec) => (
+          <div key={rec.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
             {/* Header */}
             <div className="flex items-start justify-between mb-3">
               <div className="flex items-center gap-2">
-                <div className="text-2xl">
-                  {MEAL_EMOJIS[rec.meal_type] || '🍽️'}
-                </div>
+                <div className="text-2xl">{MEAL_EMOJIS[rec.meal_type] || '🍽️'}</div>
                 <div>
                   <div className="font-medium capitalize">
                     {rec.meal_type.replace('_', ' ').replace('-', ' ')}
                   </div>
-                  <div className="text-xs text-gray-500">
-                    {rec.target_calories} cal
-                  </div>
+                  <div className="text-xs text-gray-500">{rec.target_calories} cal</div>
                 </div>
               </div>
               <div className="text-right text-xs text-gray-600">
@@ -81,9 +72,7 @@ export function NutritionRecommendations({
             </div>
 
             {/* Reason */}
-            <p className="text-sm text-gray-700 mb-3">
-              {rec.reason}
-            </p>
+            <p className="text-sm text-gray-700 mb-3">{rec.reason}</p>
 
             {/* Suggestions */}
             {rec.suggestions && rec.suggestions.length > 0 && (
@@ -117,5 +106,5 @@ export function NutritionRecommendations({
         💡 AI creates personalized meal plans based on your goals and progress
       </div>
     </div>
-  )
+  );
 }
