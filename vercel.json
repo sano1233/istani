@@ -1,4 +1,9 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "git": { "productionBranch": "main" }
+  "git": {
+    "productionBranch": "main"
+  },
+  "buildCommand": "npm run build",
+  "framework": "nextjs",
+  "installCommand": "npm install"
 }

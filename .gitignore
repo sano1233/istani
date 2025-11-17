@@ -12,6 +12,8 @@ dist/
 build/
 .vercel
 .turbo
+tsconfig.tsbuildinfo
+*.tsbuildinfo
 
 # AI Platform
 server/node_modules/
