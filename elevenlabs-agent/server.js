@@ -40,7 +40,7 @@ const MODEL_API_KEYS = {
   'meta-llama/llama-3.1-70b': process.env.OR_KEY_LLAMA,
   'deepseek/deepseek-coder': process.env.OR_KEY_DEEPSEEK,
   'alibaba/qwen-max': process.env.OR_KEY_QWEN,
-  'cohere/command-r-plus': process.env.OR_KEY_COHERE
+  'cohere/command-r-plus': process.env.OR_KEY_COHERE,
 };
 
 // Fitness-oriented system prompt
@@ -81,7 +81,7 @@ app.post('/chat', async (req, res) => {
     if (!apiKey) {
       return res.status(500).json({
         error: `API key not configured for model: ${model}`,
-        hint: `Set environment variable OR_KEY_${model.replace(/[\/\-\.]/g, '_').toUpperCase()}`
+        hint: `Set environment variable OR_KEY_${model.replace(/[\/\-\.]/g, '_').toUpperCase()}`,
       });
     }
 
@@ -89,7 +89,7 @@ app.post('/chat', async (req, res) => {
     const messages = [
       { role: 'system', content: FITNESS_SYSTEM_PROMPT },
       ...conversationHistory,
-      { role: 'user', content: prompt }
+      { role: 'user', content: prompt },
     ];
 
     // Call OpenRouter API
@@ -99,16 +99,16 @@ app.post('/chat', async (req, res) => {
         model,
         messages,
         temperature: 0.7,
-        max_tokens: 1000
+        max_tokens: 1000,
       },
       {
         headers: {
-          'Authorization': `Bearer ${apiKey}`,
+          Authorization: `Bearer ${apiKey}`,
           'Content-Type': 'application/json',
           'HTTP-Referer': 'https://istani-dpoolwes1-istanis-projects.vercel.app',
-          'X-Title': 'Istani Fitness Agent'
-        }
-      }
+          'X-Title': 'Istani Fitness Agent',
+        },
+      },
     );
 
     const aiResponse = response.data.choices[0].message.content;
@@ -117,14 +117,13 @@ app.post('/chat', async (req, res) => {
       success: true,
       response: aiResponse,
       model,
-      usage: response.data.usage
+      usage: response.data.usage,
     });
-
   } catch (error) {
     console.error('Chat error:', error.response?.data || error.message);
     res.status(500).json({
       error: 'Failed to process chat request',
-      details: error.response?.data || error.message
+      details: error.response?.data || error.message,
     });
   }
 });
@@ -150,20 +149,20 @@ app.post('/schedule', async (req, res) => {
       description: description || 'Workout scheduled via Istani Fitness Agent',
       start: {
         dateTime: start.toISOString(),
-        timeZone: 'America/New_York'
+        timeZone: 'America/New_York',
       },
       end: {
         dateTime: end.toISOString(),
-        timeZone: 'America/New_York'
+        timeZone: 'America/New_York',
       },
       attendees: email ? [{ email }] : [],
       reminders: {
         useDefault: false,
         overrides: [
           { method: 'email', minutes: 60 },
-          { method: 'popup', minutes: 30 }
-        ]
-      }
+          { method: 'popup', minutes: 30 },
+        ],
+      },
     };
 
     // In production, call actual Google Calendar API
@@ -174,28 +173,27 @@ app.post('/schedule', async (req, res) => {
       return res.json({
         success: true,
         message: 'Workout scheduled (demo mode)',
-        event: calendarEvent
+        event: calendarEvent,
       });
     }
 
     // Call Google Calendar API
     const calendarResponse = await axios.post(
       `https://www.googleapis.com/calendar/v3/calendars/primary/events?key=${calendarApiKey}`,
-      calendarEvent
+      calendarEvent,
     );
 
     res.json({
       success: true,
       message: 'Workout scheduled successfully',
       eventId: calendarResponse.data.id,
-      eventLink: calendarResponse.data.htmlLink
+      eventLink: calendarResponse.data.htmlLink,
     });
-
   } catch (error) {
     console.error('Schedule error:', error.message);
     res.status(500).json({
       error: 'Failed to schedule workout',
-      details: error.message
+      details: error.message,
     });
   }
 });
@@ -220,26 +218,25 @@ app.get('/file/search', async (req, res) => {
         message: 'Search completed (demo mode)',
         files: [
           { id: 'demo1', name: 'Push Day Workout Plan.pdf', type: 'application/pdf' },
-          { id: 'demo2', name: 'Meal Prep Guide.pdf', type: 'application/pdf' }
-        ]
+          { id: 'demo2', name: 'Meal Prep Guide.pdf', type: 'application/pdf' },
+        ],
       });
     }
 
     // Call Google Drive API
     const searchResponse = await axios.get(
-      `https://www.googleapis.com/drive/v3/files?q=name contains '${query}'&key=${driveApiKey}`
+      `https://www.googleapis.com/drive/v3/files?q=name contains '${query}'&key=${driveApiKey}`,
     );
 
     res.json({
       success: true,
-      files: searchResponse.data.files
+      files: searchResponse.data.files,
     });
-
   } catch (error) {
     console.error('Search error:', error.message);
     res.status(500).json({
       error: 'Failed to search files',
-      details: error.message
+      details: error.message,
     });
   }
 });
@@ -257,32 +254,31 @@ app.get('/file/:id', async (req, res) => {
         success: true,
         message: 'File retrieved (demo mode)',
         fileId: id,
-        content: 'Demo file content would appear here'
+        content: 'Demo file content would appear here',
       });
     }
 
     // Get file metadata
     const metadataResponse = await axios.get(
-      `https://www.googleapis.com/drive/v3/files/${id}?key=${driveApiKey}`
+      `https://www.googleapis.com/drive/v3/files/${id}?key=${driveApiKey}`,
     );
 
     // Get file content
     const contentResponse = await axios.get(
       `https://www.googleapis.com/drive/v3/files/${id}?alt=media&key=${driveApiKey}`,
-      { responseType: 'arraybuffer' }
+      { responseType: 'arraybuffer' },
     );
 
     res.json({
       success: true,
       file: metadataResponse.data,
-      content: Buffer.from(contentResponse.data).toString('base64')
+      content: Buffer.from(contentResponse.data).toString('base64'),
     });
-
   } catch (error) {
     console.error('File retrieval error:', error.message);
     res.status(500).json({
       error: 'Failed to retrieve file',
-      details: error.message
+      details: error.message,
     });
   }
 });
@@ -303,9 +299,9 @@ app.get('/health', (req, res) => {
       chat: '/chat',
       schedule: '/schedule',
       fileSearch: '/file/search',
-      fileGet: '/file/:id'
+      fileGet: '/file/:id',
     },
-    contact: 'istaniDOTstore@proton.me'
+    contact: 'istaniDOTstore@proton.me',
   });
 });
 

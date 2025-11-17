@@ -1,39 +1,39 @@
-'use client'
+'use client';
 
 interface MacroTrackerProps {
   current: {
-    calories: number
-    protein: number
-    carbs: number
-    fats: number
-  }
+    calories: number;
+    protein: number;
+    carbs: number;
+    fats: number;
+  };
   targets: {
-    calories: number
-    protein: number
-    carbs: number
-    fats: number
-  }
+    calories: number;
+    protein: number;
+    carbs: number;
+    fats: number;
+  };
   streak: {
-    current_streak: number
-    longest_streak: number
-  } | null
+    current_streak: number;
+    longest_streak: number;
+  } | null;
 }
 
 export function MacroTracker({ current, targets, streak }: MacroTrackerProps) {
   const calculatePercentage = (current: number, target: number) => {
-    return Math.min(Math.round((current / target) * 100), 100)
-  }
+    return Math.min(Math.round((current / target) * 100), 100);
+  };
 
   const getProgressColor = (percentage: number) => {
-    if (percentage >= 90) return 'bg-green-500'
-    if (percentage >= 70) return 'bg-yellow-500'
-    return 'bg-blue-500'
-  }
+    if (percentage >= 90) return 'bg-green-500';
+    if (percentage >= 70) return 'bg-yellow-500';
+    return 'bg-blue-500';
+  };
 
-  const caloriesPercent = calculatePercentage(current.calories, targets.calories)
-  const proteinPercent = calculatePercentage(current.protein, targets.protein)
-  const carbsPercent = calculatePercentage(current.carbs, targets.carbs)
-  const fatsPercent = calculatePercentage(current.fats, targets.fats)
+  const caloriesPercent = calculatePercentage(current.calories, targets.calories);
+  const proteinPercent = calculatePercentage(current.protein, targets.protein);
+  const carbsPercent = calculatePercentage(current.carbs, targets.carbs);
+  const fatsPercent = calculatePercentage(current.fats, targets.fats);
 
   return (
     <div className="bg-white rounded-lg border p-6">
@@ -84,9 +84,7 @@ export function MacroTracker({ current, targets, streak }: MacroTrackerProps) {
               style={{ width: `${proteinPercent}%` }}
             />
           </div>
-          <div className="text-xs text-center text-gray-600 mt-1">
-            {proteinPercent}%
-          </div>
+          <div className="text-xs text-center text-gray-600 mt-1">{proteinPercent}%</div>
         </div>
 
         {/* Carbs */}
@@ -102,9 +100,7 @@ export function MacroTracker({ current, targets, streak }: MacroTrackerProps) {
               style={{ width: `${carbsPercent}%` }}
             />
           </div>
-          <div className="text-xs text-center text-gray-600 mt-1">
-            {carbsPercent}%
-          </div>
+          <div className="text-xs text-center text-gray-600 mt-1">{carbsPercent}%</div>
         </div>
 
         {/* Fats */}
@@ -120,9 +116,7 @@ export function MacroTracker({ current, targets, streak }: MacroTrackerProps) {
               style={{ width: `${fatsPercent}%` }}
             />
           </div>
-          <div className="text-xs text-center text-gray-600 mt-1">
-            {fatsPercent}%
-          </div>
+          <div className="text-xs text-center text-gray-600 mt-1">{fatsPercent}%</div>
         </div>
       </div>
 
@@ -141,5 +135,5 @@ export function MacroTracker({ current, targets, streak }: MacroTrackerProps) {
         )}
       </div>
     </div>
-  )
+  );
 }

@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
     height: i.height ?? null,
   }));
 
-  const supabaseAdmin = getSupabaseAdmin()
+  const supabaseAdmin = getSupabaseAdmin();
   const { data, error } = await supabaseAdmin
     .from('image_assets')
     .upsert(rows, { onConflict: 'source,external_id' })

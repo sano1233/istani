@@ -38,6 +38,7 @@ gh pr list --state open --json number,title,state,mergeable
 ### Found PRs Needing Fixes
 
 The script identified **29 PRs** that need fixing:
+
 - PR #133, #132, #131, #120, #116, #113, #112, #107, #101, #90, #84, #78, #77, #76, #75, #74, #73, #71, #70, #69, #65, #63, #62, #61, #60, #56, #54, #52, #49
 
 ### Optional: Enable AI-Powered Resolution
@@ -51,6 +52,7 @@ export QWEN_API_KEY="your-key-here"        # Optional
 ```
 
 Then re-run:
+
 ```bash
 node ai-brain/fix-failed-prs.js
 ```

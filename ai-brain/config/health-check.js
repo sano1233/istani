@@ -15,15 +15,15 @@ try {
     green: (s) => s,
     yellow: (s) => s,
     red: (s) => s,
-    blue: (s) => s
+    blue: (s) => s,
   };
 }
 
 // Define secret categories and their importance
 const secretsConfig = {
   required: {
-    'GitHub': ['GITHUB_TOKEN'],
-    'Supabase': ['SUPABASE_URL', 'SUPABASE_ANON_KEY']
+    GitHub: ['GITHUB_TOKEN'],
+    Supabase: ['SUPABASE_URL', 'SUPABASE_ANON_KEY'],
   },
   optional: {
     'AI Services': [
@@ -33,15 +33,10 @@ const secretsConfig = {
       'QWEN_API_KEY',
       'DEEPSEEK_API_KEY',
       'COHERE_API_KEY',
-      'HUGGINGFACE_API_KEY'
+      'HUGGINGFACE_API_KEY',
     ],
-    'Deployment': [
-      'VERCEL_TOKEN',
-      'VERCEL_ORG_ID',
-      'VERCEL_PROJECT_ID',
-      'SUPABASE_SERVICE_ROLE_KEY'
-    ]
-  }
+    Deployment: ['VERCEL_TOKEN', 'VERCEL_ORG_ID', 'VERCEL_PROJECT_ID', 'SUPABASE_SERVICE_ROLE_KEY'],
+  },
 };
 
 let hasErrors = false;
@@ -54,7 +49,7 @@ console.log('━'.repeat(60));
 console.log('\n📋 Required Secrets:');
 Object.entries(secretsConfig.required).forEach(([category, secrets]) => {
   console.log(`\n  ${category}:`);
-  secrets.forEach(secret => {
+  secrets.forEach((secret) => {
     const value = process.env[secret];
     if (!value || value === '' || value === 'undefined') {
       console.log(`    ❌ ${secret} - MISSING (REQUIRED)`);
@@ -73,7 +68,7 @@ Object.entries(secretsConfig.optional).forEach(([category, secrets]) => {
   const configured = [];
   const missing = [];
 
-  secrets.forEach(secret => {
+  secrets.forEach((secret) => {
     const value = process.env[secret];
     if (!value || value === '' || value === 'undefined') {
       missing.push(secret);
@@ -82,13 +77,13 @@ Object.entries(secretsConfig.optional).forEach(([category, secrets]) => {
     }
   });
 
-  configured.forEach(secret => {
+  configured.forEach((secret) => {
     const value = process.env[secret];
     const preview = value.substring(0, 8) + '...' + value.substring(value.length - 4);
     console.log(`    ✅ ${secret} - Configured (${preview})`);
   });
 
-  missing.forEach(secret => {
+  missing.forEach((secret) => {
     console.log(`    ⚠️  ${secret} - Not configured (optional)`);
     hasWarnings = true;
   });

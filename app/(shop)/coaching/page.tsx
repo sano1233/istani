@@ -1,11 +1,11 @@
-import Link from 'next/link'
-import { Dumbbell, Check } from 'lucide-react'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import Link from 'next/link';
+import { Dumbbell, Check } from 'lucide-react';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 
 export const metadata = {
   title: 'Elite Coaching - Istani Fitness',
   description: 'Transform your body with 1-on-1 elite coaching',
-}
+};
 
 export default function CoachingPage() {
   const plans = [
@@ -51,7 +51,7 @@ export default function CoachingPage() {
         'Lifetime program library access',
       ],
     },
-  ]
+  ];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -122,7 +122,9 @@ export default function CoachingPage() {
                   </div>
                   <div className="text-4xl font-display font-bold mb-2">
                     ${plan.price}
-                    {plan.name !== 'Onboarding Session' && <span className="text-lg text-gray-600">/month</span>}
+                    {plan.name !== 'Onboarding Session' && (
+                      <span className="text-lg text-gray-600">/month</span>
+                    )}
                   </div>
                   <p className="text-sm text-gray-600 font-normal">{plan.description}</p>
                 </CardTitle>
@@ -155,11 +157,10 @@ export default function CoachingPage() {
       {/* Contact CTA */}
       <section className="bg-white py-16">
         <div className="container-custom text-center">
-          <h2 className="text-3xl font-display font-bold mb-4">
-            Ready to Transform Your Body?
-          </h2>
+          <h2 className="text-3xl font-display font-bold mb-4">Ready to Transform Your Body?</h2>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Book a free 15-minute consultation to discuss your goals and find the perfect coaching plan
+            Book a free 15-minute consultation to discuss your goals and find the perfect coaching
+            plan
           </p>
           <a
             href="mailto:istaniDOTstore@proton.me?subject=Free Coaching Consultation"
@@ -186,5 +187,5 @@ export default function CoachingPage() {
         </div>
       </footer>
     </div>
-  )
+  );
 }

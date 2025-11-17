@@ -1,4 +1,5 @@
 # ISTANI - Full Stack Autonomous Fitness Platform
+
 ## Enterprise-Grade Architecture & Implementation Plan
 
 ---
@@ -23,6 +24,7 @@ Istani will be a **fully autonomous, AI-powered fitness platform** that surpasse
 ## Current State Analysis
 
 ### What We Have
+
 - ✅ Next.js 15 + React 18 + TypeScript
 - ✅ Supabase (Auth + PostgreSQL database)
 - ✅ Stripe payment processing
@@ -36,6 +38,7 @@ Istani will be a **fully autonomous, AI-powered fitness platform** that surpasse
 - ✅ Row-level security (RLS)
 
 ### What's Missing
+
 - ❌ Barcode scanner
 - ❌ USDA-verified nutrition database
 - ❌ Micronutrient tracking (vitamins, minerals)
@@ -59,6 +62,7 @@ Istani will be a **fully autonomous, AI-powered fitness platform** that surpasse
 ## Technical Architecture
 
 ### Frontend Stack
+
 ```
 Next.js 15 (App Router + Server Components)
 ├── React 18.3
@@ -73,6 +77,7 @@ Next.js 15 (App Router + Server Components)
 ```
 
 ### Backend Stack
+
 ```
 Supabase
 ├── PostgreSQL 15
@@ -90,6 +95,7 @@ Next.js API Routes
 ```
 
 ### AI/ML Stack
+
 ```
 OpenAI GPT-4 (meal/workout recommendations)
 ├── Vision API (food photo recognition)
@@ -106,6 +112,7 @@ TensorFlow.js (client-side)
 ```
 
 ### Integrations
+
 ```
 Health & Fitness APIs
 ├── Apple HealthKit (iOS)
@@ -130,6 +137,7 @@ Payment & Communication
 ```
 
 ### Security & Compliance
+
 ```
 Encryption
 ├── TLS 1.3 (data in transit)
@@ -161,6 +169,7 @@ Monitoring & Error Tracking
 ```
 
 ### DevOps & Automation
+
 ```
 CI/CD Pipeline
 ├── GitHub Actions
@@ -196,6 +205,7 @@ Self-Healing System
 ### Phase 1: Core Enhancements (Weeks 1-2)
 
 #### 1.1 Enhanced Nutrition Tracking
+
 - [ ] Integrate USDA FoodData Central API
 - [ ] Implement barcode scanner (Open Food Facts API)
 - [ ] Add 30+ micronutrient tracking (vitamins A-K, minerals, omega-3, etc.)
@@ -206,6 +216,7 @@ Self-Healing System
 - [ ] Build meal templates (e.g., "Breakfast #1")
 
 #### 1.2 Advanced Workout Features
+
 - [ ] Exercise video library with form guides
 - [ ] Rest timer with notifications
 - [ ] Workout templates & programs (e.g., "5x5 Strength")
@@ -216,6 +227,7 @@ Self-Healing System
 - [ ] Muscle group heatmap (weekly volume)
 
 #### 1.3 Data Visualization
+
 - [ ] Weight trend chart (7/30/90/365 day views)
 - [ ] Body measurements chart (chest, waist, hips over time)
 - [ ] Macro distribution pie chart
@@ -228,6 +240,7 @@ Self-Healing System
 ### Phase 2: AI & Automation (Weeks 3-4)
 
 #### 2.1 AI-Powered Features
+
 - [ ] Meal recommendations based on:
   - Macro targets
   - Food preferences
@@ -254,6 +267,7 @@ Self-Healing System
   - Suggest exercise weights based on history
 
 #### 2.2 Autonomous Coaching
+
 - [ ] Daily personalized coaching messages
 - [ ] Adaptive goal adjustments
   - If weight stalls → suggest calorie adjustment
@@ -265,6 +279,7 @@ Self-Healing System
 - [ ] Deload week suggestions
 
 #### 2.3 Automated Bug Resolution
+
 - [ ] Error boundary with auto-retry
 - [ ] Offline data queue (sync when online)
 - [ ] API fallbacks (if USDA fails → use Edamam)
@@ -275,6 +290,7 @@ Self-Healing System
 ### Phase 3: Integrations & Social (Weeks 5-6)
 
 #### 3.1 Device Integrations
+
 - [ ] Apple Health (iOS)
   - Import: steps, workouts, heart rate, sleep
   - Export: logged meals, water, workouts
@@ -292,6 +308,7 @@ Self-Healing System
   - Running/cycling activities
 
 #### 3.2 Social Features
+
 - [ ] Add friends
 - [ ] Activity feed (see friends' workouts)
 - [ ] Challenges
@@ -304,6 +321,7 @@ Self-Healing System
 - [ ] Success story wall
 
 #### 3.3 Advanced Features
+
 - [ ] Recipe builder
   - Add ingredients → auto-calculate macros
   - Adjust servings → recalculate
@@ -323,6 +341,7 @@ Self-Healing System
 ### Phase 4: Enterprise & Security (Week 7)
 
 #### 4.1 Security Enhancements
+
 - [ ] Implement field-level encryption for sensitive data
 - [ ] Add 2FA/MFA option
 - [ ] Implement WebAuthn (biometric login)
@@ -333,6 +352,7 @@ Self-Healing System
 - [ ] Implement data anonymization for analytics
 
 #### 4.2 GDPR Compliance
+
 - [ ] Cookie consent banner
 - [ ] Data export feature (JSON/CSV)
 - [ ] Account deletion with data purge
@@ -342,6 +362,7 @@ Self-Healing System
 - [ ] User consent management
 
 #### 4.3 Performance & Scalability
+
 - [ ] Implement Redis caching
 - [ ] Database query optimization
 - [ ] Image optimization (WebP, lazy loading)
@@ -356,6 +377,7 @@ Self-Healing System
 #### 5.1 Free vs. Premium Tiers
 
 **Free Forever:**
+
 - ✅ Barcode scanner (unlimited)
 - ✅ Macro tracking
 - ✅ Micronutrient tracking (basic 12 vitamins/minerals)
@@ -367,6 +389,7 @@ Self-Healing System
 - ✅ Community access
 
 **Premium ($4.99/month or $39.99/year):**
+
 - 🌟 Advanced micronutrients (30+)
 - 🌟 Unlimited progress photos
 - 🌟 AI meal recommendations
@@ -383,6 +406,7 @@ Self-Healing System
 - 🌟 Custom coaching programs
 
 **Pro ($19.99/month):**
+
 - 💎 Everything in Premium
 - 💎 1-on-1 coaching calls (2/month)
 - 💎 Custom meal plans
@@ -393,6 +417,7 @@ Self-Healing System
 - 💎 White-label for trainers
 
 #### 5.2 Additional Revenue Streams
+
 - [ ] Affiliate commissions (supplements, equipment)
 - [ ] Premium courses
 - [ ] Certification programs for trainers
@@ -621,48 +646,56 @@ CREATE TABLE meal_plan_items (
 ## Implementation Order (Priority)
 
 ### Week 1: Foundation
+
 1. ✅ USDA API integration
 2. ✅ Barcode scanner
 3. ✅ Micronutrient tracking
 4. ✅ Advanced food search
 
 ### Week 2: Visualization
+
 5. ✅ Charts library (Recharts)
 6. ✅ Weight trend chart
 7. ✅ Macro pie chart
 8. ✅ Progress photo comparison
 
 ### Week 3: AI
+
 9. ✅ OpenAI integration
 10. ✅ Meal recommendations
 11. ✅ Workout recommendations
 12. ✅ Voice commands (Web Speech API)
 
 ### Week 4: Automation
+
 13. ✅ Photo food recognition
 14. ✅ Automated coaching
 15. ✅ Smart predictions
 16. ✅ Error handling & auto-retry
 
 ### Week 5: Integrations
+
 17. ✅ Apple Health integration
 18. ✅ Google Fit integration
 19. ✅ Fitbit integration
 20. ✅ Recipe builder
 
 ### Week 6: Social
+
 21. ✅ Friends system
 22. ✅ Challenges
 23. ✅ Activity feed
 24. ✅ Meal planning
 
 ### Week 7: Security & Performance
+
 25. ✅ Security hardening
 26. ✅ GDPR compliance
 27. ✅ Performance optimization
 28. ✅ Automated testing
 
 ### Week 8: Polish & Launch
+
 29. ✅ Premium features
 30. ✅ Onboarding flow
 31. ✅ Documentation
@@ -673,6 +706,7 @@ CREATE TABLE meal_plan_items (
 ## Success Metrics (KPIs)
 
 ### User Engagement
+
 - Daily Active Users (DAU)
 - Weekly Active Users (WAU)
 - Monthly Active Users (MAU)
@@ -681,6 +715,7 @@ CREATE TABLE meal_plan_items (
 - Logs per user per day
 
 ### Feature Adoption
+
 - % using barcode scanner
 - % using AI recommendations
 - % using device integrations
@@ -688,6 +723,7 @@ CREATE TABLE meal_plan_items (
 - % using meal planning
 
 ### Quality Metrics
+
 - App crash rate (target: <0.1%)
 - API error rate (target: <0.5%)
 - Page load time (target: <2s)
@@ -695,6 +731,7 @@ CREATE TABLE meal_plan_items (
 - Lighthouse score (target: >90)
 
 ### Business Metrics
+
 - Conversion rate (free → premium)
 - Churn rate
 - Customer Lifetime Value (LTV)
@@ -705,27 +742,28 @@ CREATE TABLE meal_plan_items (
 
 ## Competitive Differentiation Summary
 
-| Feature | MyFitnessPal | Cronometer | Lose It | **ISTANI** |
-|---------|--------------|------------|---------|------------|
-| **Barcode Scanner (Free)** | ❌ | ✅ | ❌ | ✅ |
-| **Micronutrients** | ❌ | ✅ | ❌ | ✅ |
-| **USDA Verified Data** | ❌ | ✅ | ❌ | ✅ |
-| **AI Recommendations** | ❌ | ❌ | ❌ | ✅ |
-| **Photo Food Recognition** | ❌ | ❌ | ❌ | ✅ |
-| **Voice Commands** | ❌ | ❌ | ❌ | ✅ |
-| **Device Integrations** | ⚠️ Limited | ✅ | ⚠️ Limited | ✅ All |
-| **Recipe Builder** | ⚠️ Premium | ⚠️ Premium | ❌ | ✅ Free |
-| **Meal Planning** | ⚠️ Premium | ⚠️ Premium | ❌ | ✅ Free |
-| **Real Human Support** | ❌ | ⚠️ Email | ❌ | ✅ |
-| **Social Features** | ⚠️ Limited | ❌ | ✅ | ✅ Better |
-| **Price (Annual)** | $79.99 | $49.99 | $39.99 | **$39.99** |
-| **Free Tier Quality** | ⭐⭐ | ⭐⭐⭐ | ⭐⭐ | ⭐⭐⭐⭐⭐ |
+| Feature                    | MyFitnessPal | Cronometer | Lose It    | **ISTANI** |
+| -------------------------- | ------------ | ---------- | ---------- | ---------- |
+| **Barcode Scanner (Free)** | ❌           | ✅         | ❌         | ✅         |
+| **Micronutrients**         | ❌           | ✅         | ❌         | ✅         |
+| **USDA Verified Data**     | ❌           | ✅         | ❌         | ✅         |
+| **AI Recommendations**     | ❌           | ❌         | ❌         | ✅         |
+| **Photo Food Recognition** | ❌           | ❌         | ❌         | ✅         |
+| **Voice Commands**         | ❌           | ❌         | ❌         | ✅         |
+| **Device Integrations**    | ⚠️ Limited   | ✅         | ⚠️ Limited | ✅ All     |
+| **Recipe Builder**         | ⚠️ Premium   | ⚠️ Premium | ❌         | ✅ Free    |
+| **Meal Planning**          | ⚠️ Premium   | ⚠️ Premium | ❌         | ✅ Free    |
+| **Real Human Support**     | ❌           | ⚠️ Email   | ❌         | ✅         |
+| **Social Features**        | ⚠️ Limited   | ❌         | ✅         | ✅ Better  |
+| **Price (Annual)**         | $79.99       | $49.99     | $39.99     | **$39.99** |
+| **Free Tier Quality**      | ⭐⭐         | ⭐⭐⭐     | ⭐⭐       | ⭐⭐⭐⭐⭐ |
 
 ---
 
 ## Next Steps
 
 **Immediate Actions:**
+
 1. ✅ Get Cursor agent details from user
 2. ✅ Get instani-forge design files/access
 3. ✅ Start implementing USDA API integration
@@ -733,6 +771,7 @@ CREATE TABLE meal_plan_items (
 5. ✅ Enhance database schema with new tables
 
 **Ready to begin implementation as soon as you provide:**
+
 - Cursor agent configuration
 - Instani-forge design files/screenshots
 - Any specific design preferences or brand guidelines

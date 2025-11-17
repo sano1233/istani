@@ -1,18 +1,18 @@
-'use client'
+'use client';
 
-import { useEffect } from 'react'
-import Link from 'next/link'
-import { CheckCircle, Dumbbell } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { useCartStore } from '@/lib/store/cart-store'
+import { useEffect } from 'react';
+import Link from 'next/link';
+import { CheckCircle, Dumbbell } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useCartStore } from '@/lib/store/cart-store';
 
 export default function CheckoutSuccessPage() {
-  const clearCart = useCartStore((state) => state.clearCart)
+  const clearCart = useCartStore((state) => state.clearCart);
 
   useEffect(() => {
     // Clear cart after successful checkout
-    clearCart()
-  }, [clearCart])
+    clearCart();
+  }, [clearCart]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -31,9 +31,7 @@ export default function CheckoutSuccessPage() {
         <div className="max-w-2xl mx-auto text-center">
           <CheckCircle className="w-24 h-24 text-green-500 mx-auto mb-6" />
 
-          <h1 className="text-4xl font-display font-bold mb-4">
-            Order Successful!
-          </h1>
+          <h1 className="text-4xl font-display font-bold mb-4">Order Successful!</h1>
 
           <p className="text-xl text-gray-600 mb-8">
             Thank you for your purchase. Your order has been confirmed and will be shipped soon.
@@ -82,9 +80,7 @@ export default function CheckoutSuccessPage() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/dashboard">
-              <Button size="lg">
-                Go to Dashboard
-              </Button>
+              <Button size="lg">Go to Dashboard</Button>
             </Link>
             <Link href="/products">
               <Button variant="outline" size="lg">
@@ -94,8 +90,12 @@ export default function CheckoutSuccessPage() {
           </div>
 
           <div className="mt-8 text-gray-600">
-            <p>Need help? Contact us at{' '}
-              <a href="mailto:istaniDOTstore@proton.me" className="text-brand-primary hover:underline">
+            <p>
+              Need help? Contact us at{' '}
+              <a
+                href="mailto:istaniDOTstore@proton.me"
+                className="text-brand-primary hover:underline"
+              >
                 istaniDOTstore@proton.me
               </a>
             </p>
@@ -103,5 +103,5 @@ export default function CheckoutSuccessPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

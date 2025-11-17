@@ -1,31 +1,32 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-import { createClient } from '@/lib/supabase/client'
+import { useState, useEffect } from 'react';
+import { createClient } from '@/lib/supabase/client';
 
 interface Achievement {
-  id: string
-  name: string
-  description: string
-  icon: string
-  unlocked_at: string
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  unlocked_at: string;
 }
 
 export function AchievementToast({ userId }: { userId: string }) {
-  const [achievements, setAchievements] = useState<Achievement[]>([])
-  const [dismissed, setDismissed] = useState<string[]>([])
+  const [achievements, setAchievements] = useState<Achievement[]>([]);
+  const [dismissed, setDismissed] = useState<string[]>([]);
 
-  const supabase = createClient()
+  const supabase = createClient();
 
   useEffect(() => {
     // Check for recent achievements (last 24 hours)
     const checkRecentAchievements = async () => {
-      const yesterday = new Date()
-      yesterday.setDate(yesterday.getDate() - 1)
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
 
       const { data } = await supabase
         .from('user_achievements')
-        .select(`
+        .select(
+          `
           id,
           unlocked_at,
           achievements (
@@ -33,10 +34,11 @@ export function AchievementToast({ userId }: { userId: string }) {
             description,
             icon
           )
-        `)
+        `,
+        )
         .eq('user_id', userId)
         .gte('unlocked_at', yesterday.toISOString())
-        .order('unlocked_at', { ascending: false })
+        .order('unlocked_at', { ascending: false });
 
       if (data && data.length > 0) {
         const formattedAchievements = data.map((item: any) => ({
@@ -45,12 +47,12 @@ export function AchievementToast({ userId }: { userId: string }) {
           description: item.achievements.description,
           icon: item.achievements.icon,
           unlocked_at: item.unlocked_at,
-        }))
-        setAchievements(formattedAchievements)
+        }));
+        setAchievements(formattedAchievements);
       }
-    }
+    };
 
-    checkRecentAchievements()
+    checkRecentAchievements();
 
     // Subscribe to new achievements
     const subscription = supabase
@@ -69,7 +71,7 @@ export function AchievementToast({ userId }: { userId: string }) {
             .from('achievements')
             .select('*')
             .eq('id', payload.new.achievement_id)
-            .single()
+            .single();
 
           if (data) {
             setAchievements((prev) => [
@@ -81,21 +83,21 @@ export function AchievementToast({ userId }: { userId: string }) {
                 unlocked_at: payload.new.unlocked_at,
               },
               ...prev,
-            ])
+            ]);
           }
-        }
+        },
       )
-      .subscribe()
+      .subscribe();
 
     return () => {
-      subscription.unsubscribe()
-    }
-  }, [userId, supabase])
+      subscription.unsubscribe();
+    };
+  }, [userId, supabase]);
 
-  const visibleAchievements = achievements.filter((a) => !dismissed.includes(a.id))
+  const visibleAchievements = achievements.filter((a) => !dismissed.includes(a.id));
 
   if (visibleAchievements.length === 0) {
-    return null
+    return null;
   }
 
   return (
@@ -162,5 +164,5 @@ export function AchievementToast({ userId }: { userId: string }) {
         }
       `}</style>
     </div>
-  )
+  );
 }

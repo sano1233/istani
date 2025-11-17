@@ -10,7 +10,7 @@ async function query(prompt) {
   return new Promise((resolve, reject) => {
     const data = JSON.stringify({
       model: 'qwen-max',
-      input: { messages: [{ role: 'user', content: prompt }] }
+      input: { messages: [{ role: 'user', content: prompt }] },
     });
 
     const options = {
@@ -18,14 +18,14 @@ async function query(prompt) {
       path: '/api/v1/services/aigc/text-generation/generation',
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json'
-      }
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
     };
 
-    const req = https.request(options, res => {
+    const req = https.request(options, (res) => {
       let body = '';
-      res.on('data', chunk => body += chunk);
+      res.on('data', (chunk) => (body += chunk));
       res.on('end', () => {
         try {
           const parsed = JSON.parse(body);
@@ -43,7 +43,7 @@ async function query(prompt) {
       });
     });
 
-    req.on('error', error => {
+    req.on('error', (error) => {
       console.log(`Qwen request error: ${error.message}`);
       resolve();
     });
@@ -62,12 +62,12 @@ async function getPrompt() {
     // Read from stdin
     return new Promise((resolve) => {
       let data = '';
-      process.stdin.on('data', chunk => data += chunk);
+      process.stdin.on('data', (chunk) => (data += chunk));
       process.stdin.on('end', () => resolve(data.trim() || 'Hello'));
     });
   }
 }
 
 getPrompt()
-  .then(prompt => query(prompt))
-  .catch(err => console.log(`Qwen error: ${err.message}`));
+  .then((prompt) => query(prompt))
+  .catch((err) => console.log(`Qwen error: ${err.message}`));

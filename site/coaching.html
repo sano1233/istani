@@ -1,412 +1,536 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Exclusive Coaching - Istani Fitness</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Exclusive Coaching - Istani Fitness</title>
 
-  <link rel="stylesheet" href="css/pico.min.css">
-  <link rel="stylesheet" href="css/custom-theme.css">
+    <link rel="stylesheet" href="css/pico.min.css" />
+    <link rel="stylesheet" href="css/custom-theme.css" />
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-client.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-client.js"></script>
 
-  <style>
-    :root {
-      --primary: #FF6B35;
-      --secondary: #004E89;
-      --success: #06D6A0;
-      --gold: #FFD700;
-    }
+    <style>
+      :root {
+        --primary: #ff6b35;
+        --secondary: #004e89;
+        --success: #06d6a0;
+        --gold: #ffd700;
+      }
 
-    nav {
-      background: var(--secondary);
-      padding: 1rem 0;
-      color: white;
-    }
+      nav {
+        background: var(--secondary);
+        padding: 1rem 0;
+        color: white;
+      }
 
-    .nav-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 1rem;
-    }
+      .nav-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem;
+      }
 
-    .nav-links a {
-      color: white;
-      margin: 0 1rem;
-      text-decoration: none;
-      font-weight: 600;
-    }
+      .nav-links a {
+        color: white;
+        margin: 0 1rem;
+        text-decoration: none;
+        font-weight: 600;
+      }
 
-    .hero-coaching {
-      background: linear-gradient(135deg, var(--gold) 0%, #FFA500 100%);
-      color: #333;
-      padding: 4rem 2rem;
-      text-align: center;
-      border-radius: 20px;
-      margin: 2rem 0;
-      box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
-    }
+      .hero-coaching {
+        background: linear-gradient(135deg, var(--gold) 0%, #ffa500 100%);
+        color: #333;
+        padding: 4rem 2rem;
+        text-align: center;
+        border-radius: 20px;
+        margin: 2rem 0;
+        box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+      }
 
-    .hero-coaching h1 {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-      font-weight: 900;
-    }
+      .hero-coaching h1 {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        font-weight: 900;
+      }
 
-    .pricing-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 2rem;
-      margin: 3rem 0;
-      max-width: 1200px;
-    }
+      .pricing-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 2rem;
+        margin: 3rem 0;
+        max-width: 1200px;
+      }
 
-    .pricing-card {
-      background: white;
-      border-radius: 20px;
-      padding: 2.5rem;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-      text-align: center;
-      transition: all 0.3s;
-      border: 3px solid #e0e0e0;
-    }
+      .pricing-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2.5rem;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        transition: all 0.3s;
+        border: 3px solid #e0e0e0;
+      }
 
-    .pricing-card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 15px 40px rgba(0,0,0,0.15);
-    }
+      .pricing-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+      }
 
-    .pricing-card.featured {
-      border-color: var(--gold);
-      background: linear-gradient(180deg, #FFF9E5 0%, white 100%);
-      transform: scale(1.05);
-    }
+      .pricing-card.featured {
+        border-color: var(--gold);
+        background: linear-gradient(180deg, #fff9e5 0%, white 100%);
+        transform: scale(1.05);
+      }
 
-    .pricing-card.featured .pricing-badge {
-      background: var(--gold);
-      color: #333;
-      padding: 0.5rem 1.5rem;
-      border-radius: 20px;
-      font-weight: 800;
-      display: inline-block;
-      margin-bottom: 1rem;
-    }
+      .pricing-card.featured .pricing-badge {
+        background: var(--gold);
+        color: #333;
+        padding: 0.5rem 1.5rem;
+        border-radius: 20px;
+        font-weight: 800;
+        display: inline-block;
+        margin-bottom: 1rem;
+      }
 
-    .price-tag {
-      font-size: 3.5rem;
-      font-weight: 900;
-      color: var(--primary);
-      margin: 1.5rem 0;
-    }
+      .price-tag {
+        font-size: 3.5rem;
+        font-weight: 900;
+        color: var(--primary);
+        margin: 1.5rem 0;
+      }
 
-    .price-period {
-      font-size: 1.2rem;
-      color: #666;
-      font-weight: normal;
-    }
+      .price-period {
+        font-size: 1.2rem;
+        color: #666;
+        font-weight: normal;
+      }
 
-    .feature-list {
-      text-align: left;
-      margin: 2rem 0;
-      list-style: none;
-      padding: 0;
-    }
+      .feature-list {
+        text-align: left;
+        margin: 2rem 0;
+        list-style: none;
+        padding: 0;
+      }
 
-    .feature-list li {
-      padding: 0.75rem 0;
-      border-bottom: 1px solid #f0f0f0;
-      display: flex;
-      align-items: center;
-    }
+      .feature-list li {
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f0f0f0;
+        display: flex;
+        align-items: center;
+      }
 
-    .feature-list li::before {
-      content: "✓";
-      color: var(--success);
-      font-weight: 900;
-      font-size: 1.5rem;
-      margin-right: 1rem;
-    }
+      .feature-list li::before {
+        content: '✓';
+        color: var(--success);
+        font-weight: 900;
+        font-size: 1.5rem;
+        margin-right: 1rem;
+      }
 
-    .cta-btn {
-      background: var(--primary);
-      color: white;
-      padding: 1.25rem 2.5rem;
-      border: none;
-      border-radius: 50px;
-      font-size: 1.2rem;
-      font-weight: 800;
-      cursor: pointer;
-      width: 100%;
-      transition: all 0.3s;
-      box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
-    }
+      .cta-btn {
+        background: var(--primary);
+        color: white;
+        padding: 1.25rem 2.5rem;
+        border: none;
+        border-radius: 50px;
+        font-size: 1.2rem;
+        font-weight: 800;
+        cursor: pointer;
+        width: 100%;
+        transition: all 0.3s;
+        box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+      }
 
-    .cta-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 25px rgba(255, 107, 53, 0.5);
-    }
+      .cta-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(255, 107, 53, 0.5);
+      }
 
-    .cta-btn.featured {
-      background: var(--gold);
-      color: #333;
-    }
+      .cta-btn.featured {
+        background: var(--gold);
+        color: #333;
+      }
 
-    .testimonial-coaching {
-      background: white;
-      padding: 2rem;
-      border-radius: 15px;
-      box-shadow: 0 3px 15px rgba(0,0,0,0.1);
-      margin: 2rem 0;
-    }
+      .testimonial-coaching {
+        background: white;
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+        margin: 2rem 0;
+      }
 
-    .testimonial-author {
-      font-weight: 700;
-      color: var(--primary);
-      margin-top: 1rem;
-    }
+      .testimonial-author {
+        font-weight: 700;
+        color: var(--primary);
+        margin-top: 1rem;
+      }
 
-    .guarantee-box {
-      background: linear-gradient(135deg, #E8F5E9, #C8E6C9);
-      padding: 2rem;
-      border-radius: 15px;
-      text-align: center;
-      margin: 3rem 0;
-    }
+      .guarantee-box {
+        background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+        padding: 2rem;
+        border-radius: 15px;
+        text-align: center;
+        margin: 3rem 0;
+      }
 
-    .bonus-badge {
-      background: #FF4444;
-      color: white;
-      padding: 0.5rem 1rem;
-      border-radius: 20px;
-      font-weight: 700;
-      display: inline-block;
-      margin: 0.5rem;
-    }
-  </style>
-</head>
-<body>
-  <nav>
-    <div class="nav-container">
-      <div style="font-size: 1.5rem; font-weight: 800;">💪 Istani Fitness</div>
-      <div class="nav-links">
-        <a href="/dashboard.html">Dashboard</a>
-        <a href="/workouts.html">Workouts</a>
-        <a href="/nutrition.html">Nutrition</a>
-        <a href="/progress.html">Progress</a>
-        <a href="/coaching.html">Coaching</a>
-      </div>
-    </div>
-  </nav>
-
-  <main class="container" style="max-width: 1400px; padding: 2rem;">
-    <!-- Hero -->
-    <div class="hero-coaching">
-      <h1>🏆 Elite 1-on-1 Coaching</h1>
-      <p style="font-size: 1.4rem; margin-bottom: 1rem;">Work Directly With Certified Coaches Who've Transformed 1000+ Bodies</p>
-      <p style="font-size: 1.1rem; opacity: 0.9;">Limited Spots Available - Transform Your Body in 90 Days or Less</p>
-    </div>
-
-    <!-- Pricing Tiers (Hormozi Model) -->
-    <section>
-      <h2 style="text-align: center; margin: 3rem 0 2rem;">Choose Your Transformation Path</h2>
-
-      <div class="pricing-grid">
-        <!-- Onboarding -->
-        <div class="pricing-card">
-          <h3>🚀 Kickstart Onboarding</h3>
-          <div class="price-tag">$297</div>
-          <p style="color: #666; margin-bottom: 2rem;">One-Time Session</p>
-
-          <ul class="feature-list">
-            <li>90-Minute Intensive Session</li>
-            <li>Complete Fitness Assessment</li>
-            <li>Body Composition Analysis</li>
-            <li>Custom Workout Program</li>
-            <li>Personalized Nutrition Plan</li>
-            <li>Goal Setting & Timeline</li>
-            <li>Video Recording for Review</li>
-          </ul>
-
-          <button class="cta-btn" onclick="bookCoaching('onboarding', 297)">
-            Book Onboarding
-          </button>
-
-          <p style="font-size: 0.85rem; color: #888; margin-top: 1rem;">Perfect for getting started</p>
-        </div>
-
-        <!-- Monthly Coaching (Featured) -->
-        <div class="pricing-card featured">
-          <div class="pricing-badge">⭐ MOST POPULAR</div>
-          <h3>💎 Elite Monthly Coaching</h3>
-          <div class="price-tag">$1,997<span class="price-period">/month</span></div>
-          <p style="color: #666; margin-bottom: 2rem;">The Complete Transformation</p>
-
-          <ul class="feature-list">
-            <li>4 Weekly 1-on-1 Coaching Calls</li>
-            <li>24/7 Direct Coach Access (Text/Email)</li>
-            <li>Custom Workout & Meal Plans</li>
-            <li>Weekly Program Adjustments</li>
-            <li>Supplement Protocol & Guidance</li>
-            <li>Progress Photos & Accountability</li>
-            <li>Private Community Access</li>
-            <li>Form Checks & Video Analysis</li>
-            <li>Monthly Body Measurements</li>
-          </ul>
-
-          <span class="bonus-badge">🎁 BONUS: Meal Prep Templates</span>
-          <span class="bonus-badge">🎁 BONUS: Exercise Video Library</span>
-
-          <button class="cta-btn featured" onclick="bookCoaching('monthly', 1997)">
-            Start Transformation
-          </button>
-
-          <p style="font-size: 0.85rem; color: #888; margin-top: 1rem;">Average: -20 lbs fat, +10 lbs muscle in 90 days</p>
-        </div>
-
-        <!-- Weekly Check-In -->
-        <div class="pricing-card">
-          <h3>📊 Weekly Check-In</h3>
-          <div class="price-tag">$497<span class="price-period">/session</span></div>
-          <p style="color: #666; margin-bottom: 2rem;">Ongoing Support</p>
-
-          <ul class="feature-list">
-            <li>60-Minute Coaching Call</li>
-            <li>Progress Review & Analysis</li>
-            <li>Program Adjustments</li>
-            <li>Form & Technique Review</li>
-            <li>Nutrition Plan Updates</li>
-            <li>Q&A Session</li>
-            <li>Action Plan for Next Week</li>
-          </ul>
-
-          <button class="cta-btn" onclick="bookCoaching('weekly', 497)">
-            Book Check-In
-          </button>
-
-          <p style="font-size: 0.85rem; color: #888; margin-top: 1rem;">Great for maintaining momentum</p>
+      .bonus-badge {
+        background: #ff4444;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 700;
+        display: inline-block;
+        margin: 0.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <div class="nav-container">
+        <div style="font-size: 1.5rem; font-weight: 800">💪 Istani Fitness</div>
+        <div class="nav-links">
+          <a href="/dashboard.html">Dashboard</a>
+          <a href="/workouts.html">Workouts</a>
+          <a href="/nutrition.html">Nutrition</a>
+          <a href="/progress.html">Progress</a>
+          <a href="/coaching.html">Coaching</a>
         </div>
       </div>
-    </section>
+    </nav>
 
-    <!-- Guarantee -->
-    <div class="guarantee-box">
-      <h2>💯 Our Ironclad Guarantee</h2>
-      <p style="font-size: 1.2rem; margin: 1rem 0;">If you don't see measurable progress in 30 days following our program exactly, we'll work with you for FREE until you do.</p>
-      <p style="color: #666;">We're that confident in our system.</p>
-    </div>
-
-    <!-- Success Stories -->
-    <section>
-      <h2 style="text-align: center; margin: 3rem 0 2rem;">Real Results from Real People</h2>
-
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
-        <div class="testimonial-coaching">
-          <p>"Lost 50 lbs and gained my confidence back! The 1-on-1 coaching kept me accountable when I wanted to quit."</p>
-          <div class="testimonial-author">- Sarah M.</div>
-          <div style="margin-top: 0.5rem; color: var(--success); font-weight: 700;">Transformation: 6 months, -50 lbs</div>
-        </div>
-
-        <div class="testimonial-coaching">
-          <p>"Went from 185 lbs to 205 lbs of pure muscle. Best investment I've ever made in myself."</p>
-          <div class="testimonial-author">- Marcus T.</div>
-          <div style="margin-top: 0.5rem; color: var(--success); font-weight: 700;">Transformation: 4 months, +20 lbs muscle</div>
-        </div>
-
-        <div class="testimonial-coaching">
-          <p>"Finally broke through my plateau after 2 years of spinning my wheels. The personalized approach made all the difference."</p>
-          <div class="testimonial-author">- Jennifer K.</div>
-          <div style="margin-top: 0.5rem; color: var(--success); font-weight: 700;">Transformation: 3 months, -18 lbs fat</div>
-        </div>
+    <main class="container" style="max-width: 1400px; padding: 2rem">
+      <!-- Hero -->
+      <div class="hero-coaching">
+        <h1>🏆 Elite 1-on-1 Coaching</h1>
+        <p style="font-size: 1.4rem; margin-bottom: 1rem">
+          Work Directly With Certified Coaches Who've Transformed 1000+ Bodies
+        </p>
+        <p style="font-size: 1.1rem; opacity: 0.9">
+          Limited Spots Available - Transform Your Body in 90 Days or Less
+        </p>
       </div>
-    </section>
 
-    <!-- What You Get -->
-    <section style="background: white; padding: 3rem; border-radius: 15px; margin: 3rem 0;">
-      <h2 style="text-align: center; margin-bottom: 2rem;">What Makes Our Coaching Different</h2>
+      <!-- Pricing Tiers (Hormozi Model) -->
+      <section>
+        <h2 style="text-align: center; margin: 3rem 0 2rem">Choose Your Transformation Path</h2>
 
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
-        <div>
-          <h3>🎯 Customized Everything</h3>
-          <p>No cookie-cutter programs. Every workout, meal plan, and strategy is tailored to YOUR body, YOUR schedule, YOUR goals.</p>
+        <div class="pricing-grid">
+          <!-- Onboarding -->
+          <div class="pricing-card">
+            <h3>🚀 Kickstart Onboarding</h3>
+            <div class="price-tag">$297</div>
+            <p style="color: #666; margin-bottom: 2rem">One-Time Session</p>
+
+            <ul class="feature-list">
+              <li>90-Minute Intensive Session</li>
+              <li>Complete Fitness Assessment</li>
+              <li>Body Composition Analysis</li>
+              <li>Custom Workout Program</li>
+              <li>Personalized Nutrition Plan</li>
+              <li>Goal Setting & Timeline</li>
+              <li>Video Recording for Review</li>
+            </ul>
+
+            <button class="cta-btn" onclick="bookCoaching('onboarding', 297)">
+              Book Onboarding
+            </button>
+
+            <p style="font-size: 0.85rem; color: #888; margin-top: 1rem">
+              Perfect for getting started
+            </p>
+          </div>
+
+          <!-- Monthly Coaching (Featured) -->
+          <div class="pricing-card featured">
+            <div class="pricing-badge">⭐ MOST POPULAR</div>
+            <h3>💎 Elite Monthly Coaching</h3>
+            <div class="price-tag">$1,997<span class="price-period">/month</span></div>
+            <p style="color: #666; margin-bottom: 2rem">The Complete Transformation</p>
+
+            <ul class="feature-list">
+              <li>4 Weekly 1-on-1 Coaching Calls</li>
+              <li>24/7 Direct Coach Access (Text/Email)</li>
+              <li>Custom Workout & Meal Plans</li>
+              <li>Weekly Program Adjustments</li>
+              <li>Supplement Protocol & Guidance</li>
+              <li>Progress Photos & Accountability</li>
+              <li>Private Community Access</li>
+              <li>Form Checks & Video Analysis</li>
+              <li>Monthly Body Measurements</li>
+            </ul>
+
+            <span class="bonus-badge">🎁 BONUS: Meal Prep Templates</span>
+            <span class="bonus-badge">🎁 BONUS: Exercise Video Library</span>
+
+            <button class="cta-btn featured" onclick="bookCoaching('monthly', 1997)">
+              Start Transformation
+            </button>
+
+            <p style="font-size: 0.85rem; color: #888; margin-top: 1rem">
+              Average: -20 lbs fat, +10 lbs muscle in 90 days
+            </p>
+          </div>
+
+          <!-- Weekly Check-In -->
+          <div class="pricing-card">
+            <h3>📊 Weekly Check-In</h3>
+            <div class="price-tag">$497<span class="price-period">/session</span></div>
+            <p style="color: #666; margin-bottom: 2rem">Ongoing Support</p>
+
+            <ul class="feature-list">
+              <li>60-Minute Coaching Call</li>
+              <li>Progress Review & Analysis</li>
+              <li>Program Adjustments</li>
+              <li>Form & Technique Review</li>
+              <li>Nutrition Plan Updates</li>
+              <li>Q&A Session</li>
+              <li>Action Plan for Next Week</li>
+            </ul>
+
+            <button class="cta-btn" onclick="bookCoaching('weekly', 497)">Book Check-In</button>
+
+            <p style="font-size: 0.85rem; color: #888; margin-top: 1rem">
+              Great for maintaining momentum
+            </p>
+          </div>
         </div>
+      </section>
 
-        <div>
-          <h3>📱 24/7 Access</h3>
-          <p>Text or email your coach anytime. Get answers within hours, not days. We're in this together.</p>
-        </div>
-
-        <div>
-          <h3>📊 Data-Driven</h3>
-          <p>We track 50+ metrics and adjust based on results, not guesswork. Science-backed methods that actually work.</p>
-        </div>
-
-        <div>
-          <h3>🏆 Proven System</h3>
-          <p>Our coaches have transformed 1000+ clients using the exact same system we'll use with you.</p>
-        </div>
-
-        <div>
-          <h3>💪 Accountability</h3>
-          <p>Weekly check-ins, progress photos, and measurements. We'll hold you accountable when motivation fades.</p>
-        </div>
-
-        <div>
-          <h3>🎓 Education</h3>
-          <p>Learn WHY we do what we do. Build knowledge for life, not just a temporary transformation.</p>
-        </div>
+      <!-- Guarantee -->
+      <div class="guarantee-box">
+        <h2>💯 Our Ironclad Guarantee</h2>
+        <p style="font-size: 1.2rem; margin: 1rem 0">
+          If you don't see measurable progress in 30 days following our program exactly, we'll work
+          with you for FREE until you do.
+        </p>
+        <p style="color: #666">We're that confident in our system.</p>
       </div>
-    </section>
 
-    <!-- FAQ -->
-    <section>
-      <h2 style="text-align: center; margin: 3rem 0 2rem;">Frequently Asked Questions</h2>
+      <!-- Success Stories -->
+      <section>
+        <h2 style="text-align: center; margin: 3rem 0 2rem">Real Results from Real People</h2>
 
-      <div style="max-width: 800px; margin: 0 auto;">
-        <details style="background: white; padding: 1.5rem; margin: 1rem 0; border-radius: 12px; cursor: pointer;">
-          <summary style="font-weight: 700; font-size: 1.1rem;">Who is coaching right for?</summary>
-          <p style="margin-top: 1rem; color: #666;">Anyone serious about transforming their body. Whether you're a beginner or advanced, if you're committed to the process, we can help you get results.</p>
-        </details>
+        <div
+          style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+          "
+        >
+          <div class="testimonial-coaching">
+            <p>
+              "Lost 50 lbs and gained my confidence back! The 1-on-1 coaching kept me accountable
+              when I wanted to quit."
+            </p>
+            <div class="testimonial-author">- Sarah M.</div>
+            <div style="margin-top: 0.5rem; color: var(--success); font-weight: 700">
+              Transformation: 6 months, -50 lbs
+            </div>
+          </div>
 
-        <details style="background: white; padding: 1.5rem; margin: 1rem 0; border-radius: 12px; cursor: pointer;">
-          <summary style="font-weight: 700; font-size: 1.1rem;">How quickly will I see results?</summary>
-          <p style="margin-top: 1rem; color: #666;">Most clients see noticeable changes within 2-3 weeks. Dramatic transformations typically happen in 90 days with consistent effort.</p>
-        </details>
+          <div class="testimonial-coaching">
+            <p>
+              "Went from 185 lbs to 205 lbs of pure muscle. Best investment I've ever made in
+              myself."
+            </p>
+            <div class="testimonial-author">- Marcus T.</div>
+            <div style="margin-top: 0.5rem; color: var(--success); font-weight: 700">
+              Transformation: 4 months, +20 lbs muscle
+            </div>
+          </div>
 
-        <details style="background: white; padding: 1.5rem; margin: 1rem 0; border-radius: 12px; cursor: pointer;">
-          <summary style="font-weight: 700; font-size: 1.1rem;">What if I travel or have a busy schedule?</summary>
-          <p style="margin-top: 1rem; color: #666;">We design programs around YOUR lifestyle. Travel workouts, flexible meal plans, and scheduled calls that work for you.</p>
-        </details>
+          <div class="testimonial-coaching">
+            <p>
+              "Finally broke through my plateau after 2 years of spinning my wheels. The
+              personalized approach made all the difference."
+            </p>
+            <div class="testimonial-author">- Jennifer K.</div>
+            <div style="margin-top: 0.5rem; color: var(--success); font-weight: 700">
+              Transformation: 3 months, -18 lbs fat
+            </div>
+          </div>
+        </div>
+      </section>
 
-        <details style="background: white; padding: 1.5rem; margin: 1rem 0; border-radius: 12px; cursor: pointer;">
-          <summary style="font-weight: 700; font-size: 1.1rem;">Can I cancel anytime?</summary>
-          <p style="margin-top: 1rem; color: #666;">Monthly coaching can be cancelled with 30 days notice. We're confident you'll want to stay once you see results.</p>
-        </details>
+      <!-- What You Get -->
+      <section style="background: white; padding: 3rem; border-radius: 15px; margin: 3rem 0">
+        <h2 style="text-align: center; margin-bottom: 2rem">What Makes Our Coaching Different</h2>
+
+        <div
+          style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+          "
+        >
+          <div>
+            <h3>🎯 Customized Everything</h3>
+            <p>
+              No cookie-cutter programs. Every workout, meal plan, and strategy is tailored to YOUR
+              body, YOUR schedule, YOUR goals.
+            </p>
+          </div>
+
+          <div>
+            <h3>📱 24/7 Access</h3>
+            <p>
+              Text or email your coach anytime. Get answers within hours, not days. We're in this
+              together.
+            </p>
+          </div>
+
+          <div>
+            <h3>📊 Data-Driven</h3>
+            <p>
+              We track 50+ metrics and adjust based on results, not guesswork. Science-backed
+              methods that actually work.
+            </p>
+          </div>
+
+          <div>
+            <h3>🏆 Proven System</h3>
+            <p>
+              Our coaches have transformed 1000+ clients using the exact same system we'll use with
+              you.
+            </p>
+          </div>
+
+          <div>
+            <h3>💪 Accountability</h3>
+            <p>
+              Weekly check-ins, progress photos, and measurements. We'll hold you accountable when
+              motivation fades.
+            </p>
+          </div>
+
+          <div>
+            <h3>🎓 Education</h3>
+            <p>
+              Learn WHY we do what we do. Build knowledge for life, not just a temporary
+              transformation.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ -->
+      <section>
+        <h2 style="text-align: center; margin: 3rem 0 2rem">Frequently Asked Questions</h2>
+
+        <div style="max-width: 800px; margin: 0 auto">
+          <details
+            style="
+              background: white;
+              padding: 1.5rem;
+              margin: 1rem 0;
+              border-radius: 12px;
+              cursor: pointer;
+            "
+          >
+            <summary style="font-weight: 700; font-size: 1.1rem">
+              Who is coaching right for?
+            </summary>
+            <p style="margin-top: 1rem; color: #666">
+              Anyone serious about transforming their body. Whether you're a beginner or advanced,
+              if you're committed to the process, we can help you get results.
+            </p>
+          </details>
+
+          <details
+            style="
+              background: white;
+              padding: 1.5rem;
+              margin: 1rem 0;
+              border-radius: 12px;
+              cursor: pointer;
+            "
+          >
+            <summary style="font-weight: 700; font-size: 1.1rem">
+              How quickly will I see results?
+            </summary>
+            <p style="margin-top: 1rem; color: #666">
+              Most clients see noticeable changes within 2-3 weeks. Dramatic transformations
+              typically happen in 90 days with consistent effort.
+            </p>
+          </details>
+
+          <details
+            style="
+              background: white;
+              padding: 1.5rem;
+              margin: 1rem 0;
+              border-radius: 12px;
+              cursor: pointer;
+            "
+          >
+            <summary style="font-weight: 700; font-size: 1.1rem">
+              What if I travel or have a busy schedule?
+            </summary>
+            <p style="margin-top: 1rem; color: #666">
+              We design programs around YOUR lifestyle. Travel workouts, flexible meal plans, and
+              scheduled calls that work for you.
+            </p>
+          </details>
+
+          <details
+            style="
+              background: white;
+              padding: 1.5rem;
+              margin: 1rem 0;
+              border-radius: 12px;
+              cursor: pointer;
+            "
+          >
+            <summary style="font-weight: 700; font-size: 1.1rem">Can I cancel anytime?</summary>
+            <p style="margin-top: 1rem; color: #666">
+              Monthly coaching can be cancelled with 30 days notice. We're confident you'll want to
+              stay once you see results.
+            </p>
+          </details>
+        </div>
+      </section>
+
+      <!-- Final CTA -->
+      <div
+        style="
+          background: linear-gradient(135deg, var(--primary), var(--secondary));
+          color: white;
+          padding: 4rem 2rem;
+          border-radius: 20px;
+          text-align: center;
+          margin: 4rem 0;
+        "
+      >
+        <h2 style="font-size: 2.5rem; margin-bottom: 1rem">Ready to Transform Your Body?</h2>
+        <p style="font-size: 1.3rem; margin-bottom: 2rem; opacity: 0.95">
+          Limited spots available. Book your coaching session today.
+        </p>
+        <button
+          class="cta-btn"
+          onclick="bookCoaching('monthly', 1997)"
+          style="background: var(--gold); color: #333; font-size: 1.3rem; padding: 1.5rem 3rem"
+        >
+          Book Your Coaching Now
+        </button>
+        <p style="margin-top: 1.5rem; font-size: 0.95rem; opacity: 0.9">
+          Questions? Email:
+          <a href="mailto:istaniDOTstore@proton.me" style="color: white; font-weight: 700"
+            >istaniDOTstore@proton.me</a
+          >
+        </p>
       </div>
-    </section>
+    </main>
 
-    <!-- Final CTA -->
-    <div style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 4rem 2rem; border-radius: 20px; text-align: center; margin: 4rem 0;">
-      <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">Ready to Transform Your Body?</h2>
-      <p style="font-size: 1.3rem; margin-bottom: 2rem; opacity: 0.95;">Limited spots available. Book your coaching session today.</p>
-      <button class="cta-btn" onclick="bookCoaching('monthly', 1997)" style="background: var(--gold); color: #333; font-size: 1.3rem; padding: 1.5rem 3rem;">
-        Book Your Coaching Now
-      </button>
-      <p style="margin-top: 1.5rem; font-size: 0.95rem; opacity: 0.9;">
-        Questions? Email: <a href="mailto:istaniDOTstore@proton.me" style="color: white; font-weight: 700;">istaniDOTstore@proton.me</a>
-      </p>
-    </div>
-  </main>
+    <script>
+      function bookCoaching(type, price) {
+        const email = prompt('Enter your email to book a coaching session:');
 
-  <script>
-    function bookCoaching(type, price) {
-      const email = prompt('Enter your email to book a coaching session:');
-
-      if (email && email.includes('@')) {
-        alert(`✅ Booking Request Submitted!
+        if (email && email.includes('@')) {
+          alert(`✅ Booking Request Submitted!
 
 Type: ${type.charAt(0).toUpperCase() + type.slice(1)} Coaching
 Price: $${price}
@@ -415,25 +539,25 @@ We'll contact you at ${email} within 24 hours to schedule your session.
 
 You can also email us directly at: istaniDOTstore@proton.me`);
 
-        // Track coaching interest
-        if (window.SupabaseAPI) {
-          SupabaseAPI.trackEvent('coaching_booking_request', {
-            type,
-            price,
-            email
-          });
+          // Track coaching interest
+          if (window.SupabaseAPI) {
+            SupabaseAPI.trackEvent('coaching_booking_request', {
+              type,
+              price,
+              email,
+            });
+          }
+        } else if (email) {
+          alert('Please enter a valid email address.');
         }
-      } else if (email) {
-        alert('Please enter a valid email address.');
       }
-    }
 
-    // Track page view
-    window.addEventListener('load', () => {
-      if (window.SupabaseAPI) {
-        SupabaseAPI.trackEvent('page_view', { page: 'coaching' });
-      }
-    });
-  </script>
-</body>
+      // Track page view
+      window.addEventListener('load', () => {
+        if (window.SupabaseAPI) {
+          SupabaseAPI.trackEvent('page_view', { page: 'coaching' });
+        }
+      });
+    </script>
+  </body>
 </html>

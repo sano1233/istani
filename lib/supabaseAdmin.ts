@@ -10,4 +10,7 @@ export function getSupabaseAdmin() {
 }
 
 // Export for backward compatibility
-export const supabaseAdmin = typeof process !== 'undefined' && process.env.NEXT_PUBLIC_SUPABASE_URL ? getSupabaseAdmin() : null as any;
+export const supabaseAdmin =
+  typeof process !== 'undefined' && process.env.NEXT_PUBLIC_SUPABASE_URL
+    ? getSupabaseAdmin()
+    : (null as any);
