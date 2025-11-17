@@ -52,6 +52,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (dbError) {
+      // eslint-disable-next-line no-console
       console.error('Error saving meal plan:', dbError);
     }
 
@@ -60,10 +61,11 @@ export async function POST(request: NextRequest) {
       mealPlan: mealPlan.choices?.[0]?.message?.content || mealPlan,
       timestamp: new Date().toISOString(),
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
     return NextResponse.json(
       {
-        error: error.message,
+        error: errorMessage,
         timestamp: new Date().toISOString(),
       },
       { status: 500 }

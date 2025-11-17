@@ -14,8 +14,9 @@ export async function GET() {
       const supabase = await createClient();
       const { error } = await supabase.from('profiles').select('count').limit(1);
       if (error) throw error;
-    } catch (error: any) {
-      supabaseStatus = `error: ${error.message}`;
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      supabaseStatus = `error: ${errorMessage}`;
     }
 
     // Check all external APIs
@@ -45,11 +46,12 @@ export async function GET() {
         hasOpenAIKey: !!process.env.OPENAI_API_KEY,
       },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
     return NextResponse.json(
       {
         status: 'error',
-        message: error.message,
+        message: errorMessage,
         timestamp: new Date().toISOString(),
       },
       { status: 500 }

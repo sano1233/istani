@@ -15,11 +15,21 @@ export async function GET(request: NextRequest) {
     const pexels = new PexelsAPI();
     const unsplash = new UnsplashAPI();
 
-    const results: {
-      pexels?: any;
-      unsplash?: any;
+    interface ImageSearchResults {
+      pexels?: {
+        photos?: unknown[];
+        total?: number;
+        error?: string;
+      };
+      unsplash?: {
+        photos?: unknown[];
+        total?: number;
+        error?: string;
+      };
       error?: string;
-    } = {};
+    }
+
+    const results: ImageSearchResults = {};
 
     if (source === 'pexels' || source === 'both') {
       try {
@@ -28,8 +38,9 @@ export async function GET(request: NextRequest) {
           photos: pexelsData.photos || [],
           total: pexelsData.total_results || 0,
         };
-      } catch (error: any) {
-        results.pexels = { error: error.message };
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        results.pexels = { error: errorMessage };
       }
     }
 
@@ -40,8 +51,9 @@ export async function GET(request: NextRequest) {
           photos: unsplashData.results || [],
           total: unsplashData.total || 0,
         };
-      } catch (error: any) {
-        results.unsplash = { error: error.message };
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        results.unsplash = { error: errorMessage };
       }
     }
 
@@ -51,10 +63,11 @@ export async function GET(request: NextRequest) {
       results,
       timestamp: new Date().toISOString(),
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
     return NextResponse.json(
       {
-        error: error.message,
+        error: errorMessage,
         timestamp: new Date().toISOString(),
       },
       { status: 500 }

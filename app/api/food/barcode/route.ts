@@ -52,10 +52,11 @@ export async function GET(request: NextRequest) {
       product: formattedProduct,
       timestamp: new Date().toISOString(),
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
     return NextResponse.json(
       {
-        error: error.message,
+        error: errorMessage,
         timestamp: new Date().toISOString(),
       },
       { status: 500 }

@@ -19,21 +19,41 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Missing stripe-signature header' }, { status: 400 });
   }
 
-  let event: any;
+  interface StripeEvent {
+    type: string;
+    data: {
+      object: {
+        id?: string;
+        metadata?: { user_id?: string };
+        amount_total?: number;
+        payment_intent?: string;
+      };
+    };
+  }
+
+  let event: StripeEvent;
 
   try {
     const stripe = getStripe();
-    event = stripe.webhooks.constructEvent(body, signature, process.env.STRIPE_WEBHOOK_SECRET!);
-  } catch (err: any) {
-    console.error('Webhook signature verification failed:', err.message);
-    return NextResponse.json({ error: `Webhook Error: ${err.message}` }, { status: 400 });
+    event = stripe.webhooks.constructEvent(body, signature, process.env.STRIPE_WEBHOOK_SECRET!) as StripeEvent;
+  } catch (err: unknown) {
+    const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+    // eslint-disable-next-line no-console
+    console.error('Webhook signature verification failed:', errorMessage);
+    return NextResponse.json({ error: `Webhook Error: ${errorMessage}` }, { status: 400 });
   }
 
   // Handle the event
   try {
     switch (event.type) {
       case 'checkout.session.completed': {
-        const session = event.data.object;
+        const session = event.data.object as { id?: string; metadata?: { user_id?: string }; amount_total?: number; payment_intent?: string };
+
+        if (!session.id) {
+          // eslint-disable-next-line no-console
+          console.error('Session ID missing');
+          break;
+        }
 
         // Get line items from session
         const stripe = getStripe();
@@ -41,23 +61,30 @@ export async function POST(request: NextRequest) {
 
         // Create order in database
         const supabaseAdmin = getSupabaseAdmin();
-        const { data: order, error: orderError } = await supabaseAdmin
-          .from('orders')
+        
+        // Type assertion needed due to strict Supabase types
+        const { data: order, error: orderError } = await (supabaseAdmin
+          .from('orders') as unknown as {
+            insert: (values: Record<string, unknown>) => {
+              select: () => { single: () => Promise<{ data: { id: string } | null; error: unknown }> };
+            };
+          })
           .insert({
             user_id: session.metadata?.user_id || null,
             status: 'processing',
-            total_amount: session.amount_total! / 100, // Convert from cents
-            stripe_payment_intent_id: session.payment_intent as string,
-          } as any)
+            total_amount: session.amount_total ? session.amount_total / 100 : 0, // Convert from cents
+            stripe_payment_intent_id: session.payment_intent || null,
+          })
           .select()
           .single();
 
         if (orderError || !order) {
+          // eslint-disable-next-line no-console
           console.error('Failed to create order:', orderError);
           break;
         }
 
-        const orderId = (order as any).id;
+        const orderId = (order as { id: string }).id;
 
         // Create order items
         for (const item of lineItems.data) {
@@ -65,12 +92,15 @@ export async function POST(request: NextRequest) {
           const unitAmount = item.price?.unit_amount || 0;
 
           // Note: In production, you'd want to match products by ID stored in metadata
-          await supabaseAdmin.from('order_items').insert({
+          // Type assertion needed due to strict Supabase types
+          await (supabaseAdmin.from('order_items') as unknown as {
+            insert: (values: Record<string, unknown>) => Promise<unknown>;
+          }).insert({
             order_id: orderId,
             product_id: null, // You'd want to store product_id in metadata
             quantity: item.quantity || 1,
             price_at_time: unitAmount / 100,
-          } as any);
+          });
         }
 
         // Log order creation (console.log is acceptable for webhook logging)
@@ -86,9 +116,15 @@ export async function POST(request: NextRequest) {
 
         // Update order status to completed
         const supabaseAdmin = getSupabaseAdmin();
-        await (supabaseAdmin.from('orders') as any)
+        const paymentIntentObj = paymentIntent as { id: string };
+        // Type assertion needed due to strict Supabase types
+        await (supabaseAdmin.from('orders') as unknown as {
+          update: (values: Record<string, unknown>) => {
+            eq: (column: string, value: string) => Promise<unknown>;
+          };
+        })
           .update({ status: 'completed' })
-          .eq('stripe_payment_intent_id', paymentIntent.id);
+          .eq('stripe_payment_intent_id', paymentIntentObj.id);
 
         break;
       }
@@ -100,9 +136,15 @@ export async function POST(request: NextRequest) {
 
         // Update order status to cancelled
         const supabaseAdmin = getSupabaseAdmin();
-        await (supabaseAdmin.from('orders') as any)
+        const paymentIntentObj = paymentIntent as { id: string };
+        // Type assertion needed due to strict Supabase types
+        await (supabaseAdmin.from('orders') as unknown as {
+          update: (values: Record<string, unknown>) => {
+            eq: (column: string, value: string) => Promise<unknown>;
+          };
+        })
           .update({ status: 'cancelled' })
-          .eq('stripe_payment_intent_id', paymentIntent.id);
+          .eq('stripe_payment_intent_id', paymentIntentObj.id);
 
         break;
       }
@@ -113,8 +155,10 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({ received: true });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    // eslint-disable-next-line no-console
     console.error('Webhook handler error:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }

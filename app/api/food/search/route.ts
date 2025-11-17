@@ -22,11 +22,21 @@ export async function GET(request: NextRequest) {
     const usda = new USDAAPI();
     const openFoodFacts = new OpenFoodFactsAPI();
 
-    const results: {
-      usda?: any;
-      openFoodFacts?: any;
+    interface SearchResults {
+      usda?: {
+        foods?: unknown[];
+        totalHits?: number;
+        error?: string;
+      };
+      openFoodFacts?: {
+        products?: unknown[];
+        count?: number;
+        error?: string;
+      };
       error?: string;
-    } = {};
+    }
+
+    const results: SearchResults = {};
 
     if (source === 'usda' || source === 'both') {
       try {
@@ -39,8 +49,9 @@ export async function GET(request: NextRequest) {
         } else {
           results.usda = { error: 'USDA API key not configured' };
         }
-      } catch (error: any) {
-        results.usda = { error: error.message };
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        results.usda = { error: errorMessage };
       }
     }
 
@@ -51,8 +62,9 @@ export async function GET(request: NextRequest) {
           products: offData.products || [],
           count: offData.count || 0,
         };
-      } catch (error: any) {
-        results.openFoodFacts = { error: error.message };
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        results.openFoodFacts = { error: errorMessage };
       }
     }
 
@@ -62,10 +74,11 @@ export async function GET(request: NextRequest) {
       results,
       timestamp: new Date().toISOString(),
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
     return NextResponse.json(
       {
-        error: error.message,
+        error: errorMessage,
         timestamp: new Date().toISOString(),
       },
       { status: 500 }

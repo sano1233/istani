@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
 
     // Get product details from Supabase
     const supabase = await createClient();
-    const productIds = items.map((item: any) => item.product_id);
+    const productIds = items.map((item: { product_id: string }) => item.product_id);
 
     const { data: products, error: productsError } = await supabase
       .from('products')
@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create line items for Stripe
-    const lineItems = items.map((item: any) => {
+    const lineItems = items.map((item: { product_id: string; quantity: number }) => {
       const product = products.find((p) => p.id === item.product_id);
 
       if (!product) {
@@ -65,10 +65,12 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json({ sessionId: session.id });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    // eslint-disable-next-line no-console
     console.error('Checkout error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Failed to create checkout session';
     return NextResponse.json(
-      { error: error.message || 'Failed to create checkout session' },
+      { error: errorMessage },
       { status: 500 },
     );
   }

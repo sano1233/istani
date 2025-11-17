@@ -29,13 +29,15 @@ export async function GET(request: Request) {
       message: 'Daily coaching tasks completed',
       timestamp: new Date().toISOString(),
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    // eslint-disable-next-line no-console
     console.error('Cron job error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
 
     return NextResponse.json(
       {
         success: false,
-        error: error.message,
+        error: errorMessage,
         timestamp: new Date().toISOString(),
       },
       { status: 500 },
