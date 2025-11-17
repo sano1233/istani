@@ -1,0 +1,290 @@
+version: '3.8'
+
+services:
+  # Next.js Frontend Application
+  nextjs-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: istani-nextjs
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
+      - NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - PEXELS_API_KEY=${PEXELS_API_KEY}
+      - UNSPLASH_ACCESS_KEY=${UNSPLASH_ACCESS_KEY}
+      - ADMIN_REFRESH_TOKEN=${ADMIN_REFRESH_TOKEN}
+    volumes:
+      - ./.next:/app/.next
+      - ./public:/app/public
+    networks:
+      - fitai-network
+    depends_on:
+      - redis
+      - qdrant
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ElevenLabs Agent Backend
+  elevenlabs-agent:
+    build:
+      context: ./elevenlabs-agent
+      dockerfile: Dockerfile
+    container_name: istani-elevenlabs
+    restart: unless-stopped
+    ports:
+      - "3002:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - OR_KEY_MINIMAX_MINIMAX_M2=${OR_KEY_MINIMAX_MINIMAX_M2}
+      - OR_KEY_GOOGLE_GEMINI_FLASH=${OR_KEY_GOOGLE_GEMINI_FLASH}
+      - OR_KEY_ANTHROPIC_CLAUDE=${OR_KEY_ANTHROPIC_CLAUDE}
+      - OR_KEY_OPENAI_GPT4=${OR_KEY_OPENAI_GPT4}
+      - OR_KEY_LLAMA=${OR_KEY_LLAMA}
+      - OR_KEY_DEEPSEEK=${OR_KEY_DEEPSEEK}
+      - OR_KEY_QWEN=${OR_KEY_QWEN}
+      - OR_KEY_COHERE=${OR_KEY_COHERE}
+      - GOOGLE_CALENDAR_API_KEY=${GOOGLE_CALENDAR_API_KEY}
+      - GOOGLE_DRIVE_API_KEY=${GOOGLE_DRIVE_API_KEY}
+      - ELEVENLABS_API_KEY=${ELEVENLABS_API_KEY}
+    networks:
+      - fitai-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # AI Agent for Autonomous Operations
+  ai-agent:
+    build:
+      context: ./ai-agent
+      dockerfile: Dockerfile
+    container_name: istani-ai-agent
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - GITHUB_OWNER=${GITHUB_OWNER:-sano1233}
+      - GITHUB_REPO=${GITHUB_REPO:-istani}
+      - VERCEL_TOKEN=${VERCEL_TOKEN}
+      - NETLIFY_TOKEN=${NETLIFY_TOKEN}
+      - GITHUB_WEBHOOK_SECRET=${GITHUB_WEBHOOK_SECRET}
+    volumes:
+      - ./ai-agent/logs:/app/logs
+    networks:
+      - fitai-network
+    depends_on:
+      - redis
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # n8n Workflow Automation
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: istani-n8n
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=${N8N_BASIC_AUTH_USER:-admin}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD:-admin}
+      - N8N_HOST=${N8N_HOST:-localhost}
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=${N8N_PROTOCOL:-http}
+      - NODE_ENV=production
+      - WEBHOOK_URL=${N8N_WEBHOOK_URL:-http://localhost:5678/}
+      - N8N_ISTANI_SHARED_SECRET=${N8N_ISTANI_SHARED_SECRET}
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+      - GENERIC_TIMEZONE=Europe/Bucharest
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=${N8N_DB_NAME:-n8n}
+      - DB_POSTGRESDB_USER=${N8N_DB_USER:-n8n}
+      - DB_POSTGRESDB_PASSWORD=${N8N_DB_PASSWORD}
+    volumes:
+      - n8n-data:/home/node/.n8n
+      - ./n8n/workflows:/home/node/.n8n/workflows
+    networks:
+      - fitai-network
+    depends_on:
+      - postgres
+      - redis
+
+  # PostgreSQL for n8n
+  postgres:
+    image: postgres:16-alpine
+    container_name: istani-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${N8N_DB_USER:-n8n}
+      - POSTGRES_PASSWORD=${N8N_DB_PASSWORD}
+      - POSTGRES_DB=${N8N_DB_NAME:-n8n}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - fitai-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${N8N_DB_USER:-n8n}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache & Queue
+  redis:
+    image: redis:7-alpine
+    container_name: istani-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - fitai-network
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-istani-redis-2025}
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Ollama Local AI Models
+  ollama:
+    image: ollama/ollama:latest
+    container_name: istani-ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    networks:
+      - fitai-network
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Qdrant Vector Database
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: istani-qdrant
+    restart: unless-stopped
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant-data:/qdrant/storage
+    environment:
+      - QDRANT__SERVICE__API_KEY=${QDRANT_API_KEY}
+    networks:
+      - fitai-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:6333/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Prometheus Monitoring
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: istani-prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    networks:
+      - fitai-network
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.enable-lifecycle'
+
+  # Grafana Visualization
+  grafana:
+    image: grafana/grafana:latest
+    container_name: istani-grafana
+    restart: unless-stopped
+    ports:
+      - "3003:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
+      - GF_INSTALL_PLUGINS=redis-datasource,postgres-datasource
+      - GF_SERVER_ROOT_URL=${GF_SERVER_ROOT_URL:-http://localhost:3003}
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./monitoring/grafana:/etc/grafana/provisioning
+    networks:
+      - fitai-network
+    depends_on:
+      - prometheus
+      - postgres
+
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    container_name: istani-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - nginx-logs:/var/log/nginx
+    networks:
+      - fitai-network
+    depends_on:
+      - nextjs-app
+      - elevenlabs-agent
+      - ai-agent
+      - n8n
+
+networks:
+  fitai-network:
+    driver: bridge
+
+volumes:
+  n8n-data:
+  postgres-data:
+  redis-data:
+  ollama-data:
+  qdrant-data:
+  prometheus-data:
+  grafana-data:
+  nginx-logs:
