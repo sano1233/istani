@@ -17,6 +17,7 @@ This guide documents the integration with Cursor's agent system and provides too
 The Cursor agents page requires authentication to view agent-specific data. When accessing the page without authentication, users are redirected to a sign-in page.
 
 **Implications:**
+
 - Direct web scraping without authentication will not work
 - Need to authenticate with Cursor account to access agent data
 - May need to use Cursor API with proper authentication tokens
@@ -28,6 +29,7 @@ The Cursor agents page requires authentication to view agent-specific data. When
 **Location**: `/workspace/scripts/fetch-cursor-agent.js`
 
 **Usage**:
+
 ```bash
 # Fetch specific agent
 node scripts/fetch-cursor-agent.js bc-371b6b86-5cff-40fb-922b-af0f42218c24
@@ -37,6 +39,7 @@ node scripts/fetch-cursor-agent.js
 ```
 
 **Features**:
+
 - Supports both Puppeteer (headless browser) and curl fallback
 - Extracts metadata, content, and agent-specific information
 - Saves data to JSON format in `/workspace/data/`
@@ -97,10 +100,11 @@ The Cursor agent can be integrated with the ISTANI Autonomous AI Agent system:
 ### Immediate Actions
 
 1. **Authentication Setup**
+
    ```bash
    # Export Cursor authentication token
    export CURSOR_AUTH_TOKEN="your-token-here"
-   
+
    # Or add to .env file
    echo "CURSOR_AUTH_TOKEN=your-token-here" >> .env
    ```
@@ -170,6 +174,7 @@ GET https://api.cursor.com/v1/agents/{agent-id}/activity
 **Problem**: Cannot access agent data without authentication
 
 **Solution**:
+
 1. Sign in to Cursor account
 2. Extract authentication token from browser
 3. Add token to environment variables
@@ -180,6 +185,7 @@ GET https://api.cursor.com/v1/agents/{agent-id}/activity
 **Problem**: Too many requests to Cursor API
 
 **Solution**:
+
 1. Implement request throttling
 2. Cache responses locally
 3. Use exponential backoff for retries
@@ -189,6 +195,7 @@ GET https://api.cursor.com/v1/agents/{agent-id}/activity
 **Problem**: Cursor API response format changed
 
 **Solution**:
+
 1. Update parser to handle new format
 2. Add version detection
 3. Implement backward compatibility

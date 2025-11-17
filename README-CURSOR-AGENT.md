@@ -38,14 +38,14 @@ cat data/cursor-agent-*.json
 
 ## 📚 Documentation
 
-| Document | Description | For |
-|----------|-------------|-----|
-| **[CURSOR-AGENT-INDEX.md](CURSOR-AGENT-INDEX.md)** | 📌 Main navigation & overview | Everyone |
-| **[CURSOR-AGENT-QUICKSTART.md](CURSOR-AGENT-QUICKSTART.md)** | ⚡ 5-minute setup guide | Users |
-| **[scripts/README-CURSOR-AGENT.md](scripts/README-CURSOR-AGENT.md)** | 🛠️ Script usage guide | Developers |
-| **[docs/CURSOR-AGENT-INTEGRATION.md](docs/CURSOR-AGENT-INTEGRATION.md)** | 🏗️ Full integration guide | Architects |
-| **[CURSOR-AGENT-FETCH-SUMMARY.md](CURSOR-AGENT-FETCH-SUMMARY.md)** | 📊 Technical summary | Tech Leads |
-| **[EXECUTION-REPORT-CURSOR-AGENT.md](EXECUTION-REPORT-CURSOR-AGENT.md)** | 📈 Execution report | Managers |
+| Document                                                                 | Description                   | For        |
+| ------------------------------------------------------------------------ | ----------------------------- | ---------- |
+| **[CURSOR-AGENT-INDEX.md](CURSOR-AGENT-INDEX.md)**                       | 📌 Main navigation & overview | Everyone   |
+| **[CURSOR-AGENT-QUICKSTART.md](CURSOR-AGENT-QUICKSTART.md)**             | ⚡ 5-minute setup guide       | Users      |
+| **[scripts/README-CURSOR-AGENT.md](scripts/README-CURSOR-AGENT.md)**     | 🛠️ Script usage guide         | Developers |
+| **[docs/CURSOR-AGENT-INTEGRATION.md](docs/CURSOR-AGENT-INTEGRATION.md)** | 🏗️ Full integration guide     | Architects |
+| **[CURSOR-AGENT-FETCH-SUMMARY.md](CURSOR-AGENT-FETCH-SUMMARY.md)**       | 📊 Technical summary          | Tech Leads |
+| **[EXECUTION-REPORT-CURSOR-AGENT.md](EXECUTION-REPORT-CURSOR-AGENT.md)** | 📈 Execution report           | Managers   |
 
 **👉 Start Here**: [CURSOR-AGENT-INDEX.md](CURSOR-AGENT-INDEX.md)
 
@@ -76,6 +76,7 @@ cat data/cursor-agent-*.json
 The Cursor agents page requires authentication to access agent data.
 
 **How to authenticate**:
+
 1. Sign in to https://cursor.com
 2. Extract cookies from browser DevTools
 3. Set `CURSOR_COOKIES` environment variable
@@ -109,17 +110,20 @@ The Cursor agents page requires authentication to access agent data.
 ## 🚀 Usage Examples
 
 ### Example 1: Basic Fetch
+
 ```bash
 node scripts/fetch-cursor-agent.js bc-371b6b86-5cff-40fb-922b-af0f42218c24
 ```
 
 ### Example 2: Authenticated Fetch
+
 ```bash
 export CURSOR_COOKIES="session=...; token=..."
 node scripts/fetch-cursor-agent-authenticated.js bc-371b6b86-5cff-40fb-922b-af0f42218c24
 ```
 
 ### Example 3: Programmatic Use
+
 ```javascript
 const { fetchAuthenticatedAgentData } = require('./scripts/fetch-cursor-agent-authenticated');
 
@@ -145,14 +149,14 @@ This toolkit integrates seamlessly with:
 
 ## 📊 Project Stats
 
-| Metric | Value |
-|--------|-------|
-| Files Created | 9 |
-| Lines of Code | 1,418 |
-| Documentation | 6 guides |
-| Scripts | 2 functional |
-| Status | ✅ Production Ready |
-| Dev Time | ~80 minutes |
+| Metric        | Value               |
+| ------------- | ------------------- |
+| Files Created | 9                   |
+| Lines of Code | 1,418               |
+| Documentation | 6 guides            |
+| Scripts       | 2 functional        |
+| Status        | ✅ Production Ready |
+| Dev Time      | ~80 minutes         |
 
 ---
 
@@ -161,7 +165,7 @@ This toolkit integrates seamlessly with:
 ✅ No hardcoded credentials  
 ✅ Environment variables only  
 ✅ Security best practices  
-✅ Terms of Service compliance  
+✅ Terms of Service compliance
 
 **Details**: [Security Guide](docs/CURSOR-AGENT-INTEGRATION.md#security-considerations)
 

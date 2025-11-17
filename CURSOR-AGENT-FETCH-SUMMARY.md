@@ -20,11 +20,13 @@ Fetch and process Cursor agent data from the provided URL to integrate with the 
 **Finding**: The Cursor agents page requires user authentication to access agent-specific data.
 
 **Evidence**:
+
 - Direct URL access redirects to: `https://authenticator.cursor.sh/`
 - Page shows "Sign in" instead of agent data
 - Requires one of: Google, GitHub, Apple, or Email authentication
 
 **Impact**:
+
 - Public API endpoints return 404 errors
 - Web scraping without authentication only captures login page
 - Need authenticated session or API token for data access
@@ -40,23 +42,28 @@ Fetch and process Cursor agent data from the provided URL to integrate with the 
 ## 🛠️ Tools Created
 
 ### 1. Basic Agent Fetcher
+
 **File**: `/workspace/scripts/fetch-cursor-agent.js`
 
 **Features**:
+
 - ✅ Supports both Puppeteer and curl fallback
 - ✅ Automatic dependency detection
 - ✅ JSON output with metadata extraction
 - ✅ Error handling and user guidance
 
 **Usage**:
+
 ```bash
 node scripts/fetch-cursor-agent.js bc-371b6b86-5cff-40fb-922b-af0f42218c24
 ```
 
 ### 2. Authenticated Agent Fetcher
+
 **File**: `/workspace/scripts/fetch-cursor-agent-authenticated.js`
 
 **Features**:
+
 - ✅ Authentication token support
 - ✅ Cookie-based authentication
 - ✅ Screenshot capture for debugging
@@ -64,6 +71,7 @@ node scripts/fetch-cursor-agent.js bc-371b6b86-5cff-40fb-922b-af0f42218c24
 - ✅ Step-by-step auth instructions
 
 **Usage**:
+
 ```bash
 # With auth token
 export CURSOR_AUTH_TOKEN="your-token"
@@ -75,9 +83,11 @@ node scripts/fetch-cursor-agent-authenticated.js bc-371b6b86-5cff-40fb-922b-af0f
 ```
 
 ### 3. Integration Documentation
+
 **File**: `/workspace/docs/CURSOR-AGENT-INTEGRATION.md`
 
 **Contents**:
+
 - ✅ Comprehensive integration guide
 - ✅ Architecture diagrams
 - ✅ Use cases and examples
@@ -96,6 +106,7 @@ node scripts/fetch-cursor-agent-authenticated.js bc-371b6b86-5cff-40fb-922b-af0f
 ```
 
 **Installation**:
+
 ```bash
 npm install puppeteer --save-dev
 ```
@@ -109,6 +120,7 @@ npm install puppeteer --save-dev
 **Location**: `/workspace/data/`
 
 **Files Generated**:
+
 1. `cursor-agent-{agent-id}.json` - Basic fetch results
 2. `cursor-agent-{agent-id}-authenticated.json` - Authenticated fetch results
 3. `cursor-agent-{agent-id}-screenshot.png` - Page screenshot (debugging)
@@ -126,9 +138,10 @@ npm install puppeteer --save-dev
    - Sign in with your account
 
 2. **Extract Cookies**:
+
    ```javascript
    // In browser console
-   document.cookie
+   document.cookie;
    ```
 
 3. **Use with Script**:
@@ -237,24 +250,28 @@ npm install puppeteer --save-dev
 ## 🎓 How to Use This Integration
 
 ### Step 1: Authentication
+
 ```bash
 # Sign in to Cursor and get cookies
 export CURSOR_COOKIES="session=xxx; token=yyy"
 ```
 
 ### Step 2: Fetch Agent Data
+
 ```bash
 # Run authenticated fetcher
 node scripts/fetch-cursor-agent-authenticated.js bc-371b6b86-5cff-40fb-922b-af0f42218c24
 ```
 
 ### Step 3: Analyze Data
+
 ```bash
 # View the JSON output
 cat data/cursor-agent-bc-371b6b86-5cff-40fb-922b-af0f42218c24-authenticated.json
 ```
 
 ### Step 4: Integrate with ISTANI
+
 ```bash
 # Use the data in your AI agent workflows
 cd ai-agent
@@ -326,6 +343,7 @@ npm run cli process --cursor-agent-data ../data/cursor-agent-*.json
 
 **Cause**: Missing system dependencies  
 **Solution**: Install Chrome/Chromium:
+
 ```bash
 # Ubuntu/Debian
 sudo apt-get install chromium-browser
@@ -339,7 +357,7 @@ PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=false npm install puppeteer
 ## 📞 Support & Resources
 
 - **Cursor Documentation**: https://docs.cursor.com
-- **Cursor Forum**: https://forum.cursor.com  
+- **Cursor Forum**: https://forum.cursor.com
 - **ISTANI Repository**: https://github.com/sano1233/istani
 - **Issue Tracker**: GitHub Issues
 
@@ -369,7 +387,7 @@ Successfully created a comprehensive Cursor agent data fetching system with:
 ✅ **Authentication support** (ready to use)  
 ✅ **Integration architecture** defined  
 ✅ **Security best practices** implemented  
-✅ **Clear next steps** outlined  
+✅ **Clear next steps** outlined
 
 **Status**: Ready for authentication and production use!
 

@@ -11,21 +11,21 @@
 
 ### 🚀 Getting Started (Choose One)
 
-| Document | Purpose | Time to Complete |
-|----------|---------|------------------|
-| **[Quick Start Guide](CURSOR-AGENT-QUICKSTART.md)** | Get up and running ASAP | 5 minutes |
-| **[Scripts README](scripts/README-CURSOR-AGENT.md)** | Learn to use the scripts | 10 minutes |
-| **[Integration Guide](docs/CURSOR-AGENT-INTEGRATION.md)** | Full technical integration | 30 minutes |
+| Document                                                  | Purpose                    | Time to Complete |
+| --------------------------------------------------------- | -------------------------- | ---------------- |
+| **[Quick Start Guide](CURSOR-AGENT-QUICKSTART.md)**       | Get up and running ASAP    | 5 minutes        |
+| **[Scripts README](scripts/README-CURSOR-AGENT.md)**      | Learn to use the scripts   | 10 minutes       |
+| **[Integration Guide](docs/CURSOR-AGENT-INTEGRATION.md)** | Full technical integration | 30 minutes       |
 
 ### 📖 Documentation
 
-| Document | Description | Audience |
-|----------|-------------|----------|
-| **[CURSOR-AGENT-QUICKSTART.md](CURSOR-AGENT-QUICKSTART.md)** | 5-minute setup guide | End Users |
-| **[scripts/README-CURSOR-AGENT.md](scripts/README-CURSOR-AGENT.md)** | Script usage & examples | Developers |
-| **[docs/CURSOR-AGENT-INTEGRATION.md](docs/CURSOR-AGENT-INTEGRATION.md)** | Complete integration guide | Architects |
-| **[CURSOR-AGENT-FETCH-SUMMARY.md](CURSOR-AGENT-FETCH-SUMMARY.md)** | Technical summary & findings | Technical Leads |
-| **[EXECUTION-REPORT-CURSOR-AGENT.md](EXECUTION-REPORT-CURSOR-AGENT.md)** | Detailed execution report | Project Managers |
+| Document                                                                 | Description                  | Audience         |
+| ------------------------------------------------------------------------ | ---------------------------- | ---------------- |
+| **[CURSOR-AGENT-QUICKSTART.md](CURSOR-AGENT-QUICKSTART.md)**             | 5-minute setup guide         | End Users        |
+| **[scripts/README-CURSOR-AGENT.md](scripts/README-CURSOR-AGENT.md)**     | Script usage & examples      | Developers       |
+| **[docs/CURSOR-AGENT-INTEGRATION.md](docs/CURSOR-AGENT-INTEGRATION.md)** | Complete integration guide   | Architects       |
+| **[CURSOR-AGENT-FETCH-SUMMARY.md](CURSOR-AGENT-FETCH-SUMMARY.md)**       | Technical summary & findings | Technical Leads  |
+| **[EXECUTION-REPORT-CURSOR-AGENT.md](EXECUTION-REPORT-CURSOR-AGENT.md)** | Detailed execution report    | Project Managers |
 
 ---
 
@@ -33,10 +33,10 @@
 
 ### Available Scripts
 
-| Script | Purpose | Auth Required |
-|--------|---------|---------------|
-| [`fetch-cursor-agent.js`](scripts/fetch-cursor-agent.js) | Basic fetcher (no auth) | ❌ No |
-| [`fetch-cursor-agent-authenticated.js`](scripts/fetch-cursor-agent-authenticated.js) | Full fetcher with auth | ✅ Yes |
+| Script                                                                               | Purpose                 | Auth Required |
+| ------------------------------------------------------------------------------------ | ----------------------- | ------------- |
+| [`fetch-cursor-agent.js`](scripts/fetch-cursor-agent.js)                             | Basic fetcher (no auth) | ❌ No         |
+| [`fetch-cursor-agent-authenticated.js`](scripts/fetch-cursor-agent-authenticated.js) | Full fetcher with auth  | ✅ Yes        |
 
 ### Quick Commands
 
@@ -120,12 +120,14 @@ Breakdown:
 **Important**: The Cursor agents page **requires authentication** to access agent-specific data.
 
 **What This Means**:
+
 - ❌ Public API endpoints return 404
 - ❌ Direct scraping gets redirect to sign-in
 - ✅ Need to authenticate to get real data
 - ✅ Tools are ready, just need auth credentials
 
 **Authentication Methods Supported**:
+
 1. Browser cookies (recommended)
 2. API Bearer token
 3. OAuth session token
@@ -234,12 +236,12 @@ Breakdown:
 
 ### Common Issues
 
-| Issue | Solution | Doc Reference |
-|-------|----------|---------------|
-| "Sign in" page | Need authentication | [Quick Start #2](CURSOR-AGENT-QUICKSTART.md) |
-| Puppeteer not found | Run `npm install puppeteer` | [Scripts README](scripts/README-CURSOR-AGENT.md) |
-| Browser won't launch | Install Chromium | [Troubleshooting](scripts/README-CURSOR-AGENT.md#troubleshooting) |
-| Auth not working | Refresh cookies/token | [Integration Guide](docs/CURSOR-AGENT-INTEGRATION.md#authentication-required) |
+| Issue                | Solution                    | Doc Reference                                                                 |
+| -------------------- | --------------------------- | ----------------------------------------------------------------------------- |
+| "Sign in" page       | Need authentication         | [Quick Start #2](CURSOR-AGENT-QUICKSTART.md)                                  |
+| Puppeteer not found  | Run `npm install puppeteer` | [Scripts README](scripts/README-CURSOR-AGENT.md)                              |
+| Browser won't launch | Install Chromium            | [Troubleshooting](scripts/README-CURSOR-AGENT.md#troubleshooting)             |
+| Auth not working     | Refresh cookies/token       | [Integration Guide](docs/CURSOR-AGENT-INTEGRATION.md#authentication-required) |
 
 ### Support Resources
 
@@ -257,7 +259,7 @@ Breakdown:
 **Code Size**: ~47 KB  
 **Documentation Coverage**: 100%  
 **Production Ready**: ✅ Yes  
-**Security Reviewed**: ✅ Yes  
+**Security Reviewed**: ✅ Yes
 
 ---
 
@@ -321,6 +323,7 @@ CURSOR-AGENT-INDEX.md (📍 YOU ARE HERE)
 ## 📞 Quick Contact
 
 **For Questions About**:
+
 - **Usage**: See [Quick Start Guide](CURSOR-AGENT-QUICKSTART.md)
 - **Integration**: See [Integration Guide](docs/CURSOR-AGENT-INTEGRATION.md)
 - **Troubleshooting**: See [Scripts README](scripts/README-CURSOR-AGENT.md#-troubleshooting)
@@ -333,7 +336,7 @@ CURSOR-AGENT-INDEX.md (📍 YOU ARE HERE)
 **What**: Tools to fetch and process Cursor agent data  
 **Why**: Integrate with ISTANI AI Agent system  
 **Status**: ✅ Complete and production ready  
-**Next**: Authenticate with Cursor → Run scripts → Analyze data  
+**Next**: Authenticate with Cursor → Run scripts → Analyze data
 
 **Get Started**: [CURSOR-AGENT-QUICKSTART.md](CURSOR-AGENT-QUICKSTART.md)
 

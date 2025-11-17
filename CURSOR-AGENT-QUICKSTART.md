@@ -44,6 +44,7 @@ xdg-open data/cursor-agent-bc-371b6b86-5cff-40fb-922b-af0f42218c24-screenshot.pn
 ## ✅ That's It!
 
 You now have:
+
 - ✅ Cursor agent data in JSON format
 - ✅ Screenshot of the agent page
 - ✅ Authentication working
@@ -86,16 +87,19 @@ async function yourFunction() {
 ## 🆘 Having Issues?
 
 ### "Puppeteer not found"
+
 ```bash
 npm install puppeteer --save-dev
 ```
 
 ### "Still getting Sign In page"
+
 - Verify your cookies are correct
 - Check if you're signed in at cursor.com
 - Try getting fresh cookies
 
 ### "Browser won't launch"
+
 ```bash
 sudo apt-get install chromium-browser
 ```
@@ -103,11 +107,13 @@ sudo apt-get install chromium-browser
 ## 💡 Pro Tips
 
 1. **Save cookies in .env file**:
+
    ```bash
    echo "CURSOR_COOKIES='your-cookies'" >> .env
    ```
 
 2. **Use with different agents**:
+
    ```bash
    node scripts/fetch-cursor-agent-authenticated.js <different-agent-id>
    ```

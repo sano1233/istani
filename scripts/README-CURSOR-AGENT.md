@@ -9,6 +9,7 @@ This directory contains scripts for fetching and processing Cursor agent data.
 Basic fetcher that works without authentication (limited data).
 
 **Usage**:
+
 ```bash
 node fetch-cursor-agent.js [agent-id]
 
@@ -17,11 +18,13 @@ node fetch-cursor-agent.js bc-371b6b86-5cff-40fb-922b-af0f42218c24
 ```
 
 **Features**:
+
 - Automatic fallback between Puppeteer and curl
 - Basic metadata extraction
 - JSON output
 
 **Limitations**:
+
 - Cannot access authenticated agent data
 - Will capture sign-in page if auth required
 
@@ -32,6 +35,7 @@ node fetch-cursor-agent.js bc-371b6b86-5cff-40fb-922b-af0f42218c24
 Advanced fetcher with full authentication support.
 
 **Usage**:
+
 ```bash
 # With environment variable
 export CURSOR_COOKIES="your-cookies-here"
@@ -46,6 +50,7 @@ node fetch-cursor-agent-authenticated.js [agent-id] --cookies="your-cookies"
 ```
 
 **Features**:
+
 - Full authentication support (cookies + tokens)
 - Screenshot capture for debugging
 - Comprehensive data extraction
@@ -53,6 +58,7 @@ node fetch-cursor-agent-authenticated.js [agent-id] --cookies="your-cookies"
 - Detailed error messages
 
 **Requires**:
+
 - Puppeteer installed: `npm install puppeteer`
 
 ---
@@ -84,11 +90,13 @@ node fetch-cursor-agent-authenticated.js [agent-id] --cookies="your-cookies"
 **Location**: `/workspace/data/`
 
 1. **Basic JSON**:
+
    ```
    cursor-agent-{agent-id}.json
    ```
 
 2. **Authenticated JSON**:
+
    ```
    cursor-agent-{agent-id}-authenticated.json
    ```
@@ -190,7 +198,7 @@ const { fetchAuthenticatedAgentData } = require('./fetch-cursor-agent-authentica
 
 async function integrateWithISTANI() {
   const agentData = await fetchAuthenticatedAgentData();
-  
+
   // Process with ISTANI AI Agent
   // ...
 }
@@ -209,6 +217,7 @@ node unified.js "Analyze cursor agent data from ../data/cursor-agent-*.json"
 ## 📚 Documentation
 
 See also:
+
 - [Cursor Agent Integration Guide](../docs/CURSOR-AGENT-INTEGRATION.md)
 - [Complete Summary](../CURSOR-AGENT-FETCH-SUMMARY.md)
 - [ISTANI AI Agent README](../ai-agent/README.md)
@@ -218,6 +227,7 @@ See also:
 ## 🤝 Contributing
 
 Improvements welcome! Please:
+
 1. Test your changes
 2. Update documentation
 3. Follow existing code style
