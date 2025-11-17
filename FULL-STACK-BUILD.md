@@ -19,6 +19,7 @@
 #### Pages & Routes (26 total)
 
 **Public Pages**:
+
 - `/` - Homepage
 - `/login` - Authentication
 - `/register` - User registration
@@ -31,6 +32,7 @@
 - `/products/[slug]` - Product details
 
 **Protected Dashboard Pages**:
+
 - `/dashboard` - Main dashboard
 - `/workouts` - Workout tracking
 - `/nutrition` - Nutrition tracking
@@ -39,6 +41,7 @@
 - `/settings` - User settings
 
 **API Routes**:
+
 - `/api/auth` - Authentication endpoints
 - `/api/checkout` - Payment processing
 - `/api/cron/daily-coaching` - Automated coaching
@@ -50,17 +53,20 @@
 ### Backend Services
 
 #### Supabase Integration
+
 - **Database**: PostgreSQL
 - **Authentication**: Supabase Auth
 - **Storage**: Supabase Storage
 - **Real-time**: Supabase Realtime
 
 #### Payment Processing
+
 - **Stripe**: Payment processing
 - **Webhooks**: Event handling
 - **Checkout**: Secure checkout flow
 
 #### Repository Aggregator
+
 - **GitHub API**: Repository metadata
 - **Data Aggregation**: Automated repo data collection
 - **Dashboard**: Repository visualization
@@ -68,12 +74,14 @@
 ### Components
 
 #### UI Components (`components/ui/`)
+
 - Button
 - Card
 - Input
 - Sidebar
 
 #### Feature Components
+
 - `achievement-toast.tsx` - Achievement notifications
 - `achievements-list.tsx` - Achievement display
 - `body-measurements.tsx` - Body tracking
@@ -94,6 +102,7 @@
 ### Libraries & Utilities
 
 #### Core Libraries
+
 - `lib/supabase/` - Supabase client utilities
 - `lib/stripe.ts` - Stripe integration
 - `lib/store/` - State management (Zustand)
@@ -101,6 +110,7 @@
 - `lib/repoDataUtils.ts` - Repository data utilities
 
 #### Type Definitions
+
 - `types/` - TypeScript type definitions
 
 ## 📊 Build Output
@@ -144,6 +154,7 @@ Route (app)                                 Size  First Load JS
 ## 🔧 Key Features
 
 ### 1. Repository Aggregator
+
 - **Script**: `scripts/aggregateRepos.js`
 - **Component**: `components/repo-dashboard.tsx`
 - **Utilities**: `lib/repoDataUtils.ts`
@@ -151,6 +162,7 @@ Route (app)                                 Size  First Load JS
 - **Workflow**: `.github/workflows/aggregate-repos.yml`
 
 ### 2. Fitness Platform
+
 - Workout tracking and logging
 - Nutrition tracking with macros
 - Water intake monitoring
@@ -159,6 +171,7 @@ Route (app)                                 Size  First Load JS
 - Achievement system
 
 ### 3. E-Commerce
+
 - Product catalog
 - Shopping cart
 - Stripe payment integration
@@ -166,12 +179,14 @@ Route (app)                                 Size  First Load JS
 - Checkout flow
 
 ### 4. Coaching Services
+
 - Coaching packages ($297-$1,997)
 - Booking system
 - AI coaching messages
 - Daily check-ins
 
 ### 5. Authentication & User Management
+
 - Supabase Auth integration
 - User profiles
 - Protected routes
@@ -180,6 +195,7 @@ Route (app)                                 Size  First Load JS
 ## 📦 Dependencies
 
 ### Production Dependencies
+
 - `next@^15.1.2` - Next.js framework
 - `react@^18.3.1` - React library
 - `@supabase/ssr@^0.5.2` - Supabase SSR
@@ -193,6 +209,7 @@ Route (app)                                 Size  First Load JS
 - `react-hook-form@^7.53.2` - Form handling
 
 ### Development Dependencies
+
 - `typescript@^5` - TypeScript
 - `tailwindcss@^3.4.1` - CSS framework
 - `eslint@^8` - Linting
@@ -201,6 +218,7 @@ Route (app)                                 Size  First Load JS
 ## 🚀 Deployment
 
 ### Vercel Configuration
+
 - **Framework**: Next.js 15
 - **Build Command**: `npm run build`
 - **Output Directory**: `.next`
@@ -209,19 +227,23 @@ Route (app)                                 Size  First Load JS
 ### Environment Variables Required
 
 **Supabase**:
+
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`
 
 **Stripe**:
+
 - `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
 - `STRIPE_SECRET_KEY`
 - `STRIPE_WEBHOOK_SECRET`
 
 **GitHub** (for aggregator):
+
 - `GITHUB_TOKEN`
 
 **Other**:
+
 - `CRON_SECRET` - For cron jobs
 
 ## 📝 Scripts
@@ -246,6 +268,7 @@ npm run aggregate    # Aggregate GitHub repos
 ## 🔄 Automated Workflows
 
 ### GitHub Actions
+
 - **CI/CD**: `.github/workflows/ci.yml`
 - **Repository Aggregation**: `.github/workflows/aggregate-repos.yml`
 - **Auto-Merge**: `.github/workflows/auto-merge-all-prs.yml`
@@ -274,6 +297,7 @@ npm run aggregate    # Aggregate GitHub repos
    - Deploy automatically on push
 
 2. **Run Repository Aggregator**:
+
    ```bash
    export GITHUB_TOKEN=your_token
    npm run aggregate
@@ -308,6 +332,7 @@ npm run aggregate    # Aggregate GitHub repos
 The full stack build for istani.org is **complete and ready for deployment**!
 
 **Key Achievements**:
+
 - ✅ 26 pages/routes built and optimized
 - ✅ Repository aggregator integrated
 - ✅ Full fitness platform features

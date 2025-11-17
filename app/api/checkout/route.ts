@@ -68,10 +68,8 @@ export async function POST(request: NextRequest) {
   } catch (error: unknown) {
     // eslint-disable-next-line no-console
     console.error('Checkout error:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Failed to create checkout session';
-    return NextResponse.json(
-      { error: errorMessage },
-      { status: 500 },
-    );
+    const errorMessage =
+      error instanceof Error ? error.message : 'Failed to create checkout session';
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }

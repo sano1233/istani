@@ -27,17 +27,20 @@
 ## 🏗️ Architecture Overview
 
 ### Frontend
+
 - Next.js 15 with App Router
 - React 18 with TypeScript
 - Tailwind CSS for styling
 - Zustand for state management
 
 ### Backend
+
 - Supabase (PostgreSQL, Auth, Storage)
 - Stripe (Payments)
 - GitHub API (Repository aggregator)
 
 ### Features
+
 - ✅ Fitness tracking (workouts, nutrition, water)
 - ✅ Progress analytics and charts
 - ✅ E-commerce with Stripe
@@ -56,6 +59,7 @@
    - Build passes
 
 2. **Run Repository Aggregator**:
+
    ```bash
    export GITHUB_TOKEN=your_token
    npm run aggregate
@@ -80,6 +84,7 @@
 ## ✅ Verification
 
 All checks passed:
+
 - [x] Build successful
 - [x] TypeScript compilation
 - [x] All dependencies installed

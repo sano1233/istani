@@ -72,9 +72,7 @@ export function AIWorkoutGenerator() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-white/80 mb-2">
-            Experience Level
-          </label>
+          <label className="block text-sm font-medium text-white/80 mb-2">Experience Level</label>
           <select
             value={formData.experience}
             onChange={(e) => setFormData({ ...formData, experience: e.target.value })}

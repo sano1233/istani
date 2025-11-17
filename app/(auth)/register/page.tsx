@@ -48,7 +48,7 @@ export default function RegisterPage() {
 
   async function handleGoogleSignup() {
     if (!origin) return;
-    
+
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {

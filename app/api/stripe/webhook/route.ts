@@ -12,7 +12,10 @@ export async function POST(req: Request) {
 
   try {
     const stripe = getStripe();
-    event = stripe.webhooks.constructEvent(body, signature, process.env.STRIPE_WEBHOOK_SECRET!) as { type: string; data: { object: unknown } };
+    event = stripe.webhooks.constructEvent(body, signature, process.env.STRIPE_WEBHOOK_SECRET!) as {
+      type: string;
+      data: { object: unknown };
+    };
   } catch (err: unknown) {
     const errorMessage = err instanceof Error ? err.message : 'Unknown error';
     return NextResponse.json({ error: `Webhook Error: ${errorMessage}` }, { status: 400 });

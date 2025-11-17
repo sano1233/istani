@@ -35,7 +35,11 @@ export async function POST(request: NextRequest) {
 
   try {
     const stripe = getStripe();
-    event = stripe.webhooks.constructEvent(body, signature, process.env.STRIPE_WEBHOOK_SECRET!) as StripeEvent;
+    event = stripe.webhooks.constructEvent(
+      body,
+      signature,
+      process.env.STRIPE_WEBHOOK_SECRET!,
+    ) as StripeEvent;
   } catch (err: unknown) {
     const errorMessage = err instanceof Error ? err.message : 'Unknown error';
     // eslint-disable-next-line no-console
@@ -47,7 +51,12 @@ export async function POST(request: NextRequest) {
   try {
     switch (event.type) {
       case 'checkout.session.completed': {
-        const session = event.data.object as { id?: string; metadata?: { user_id?: string }; amount_total?: number; payment_intent?: string };
+        const session = event.data.object as {
+          id?: string;
+          metadata?: { user_id?: string };
+          amount_total?: number;
+          payment_intent?: string;
+        };
 
         if (!session.id) {
           // eslint-disable-next-line no-console
@@ -61,14 +70,17 @@ export async function POST(request: NextRequest) {
 
         // Create order in database
         const supabaseAdmin = getSupabaseAdmin();
-        
+
         // Type assertion needed due to strict Supabase types
-        const { data: order, error: orderError } = await (supabaseAdmin
-          .from('orders') as unknown as {
+        const { data: order, error: orderError } = await (
+          supabaseAdmin.from('orders') as unknown as {
             insert: (values: Record<string, unknown>) => {
-              select: () => { single: () => Promise<{ data: { id: string } | null; error: unknown }> };
+              select: () => {
+                single: () => Promise<{ data: { id: string } | null; error: unknown }>;
+              };
             };
-          })
+          }
+        )
           .insert({
             user_id: session.metadata?.user_id || null,
             status: 'processing',
@@ -93,9 +105,11 @@ export async function POST(request: NextRequest) {
 
           // Note: In production, you'd want to match products by ID stored in metadata
           // Type assertion needed due to strict Supabase types
-          await (supabaseAdmin.from('order_items') as unknown as {
-            insert: (values: Record<string, unknown>) => Promise<unknown>;
-          }).insert({
+          await (
+            supabaseAdmin.from('order_items') as unknown as {
+              insert: (values: Record<string, unknown>) => Promise<unknown>;
+            }
+          ).insert({
             order_id: orderId,
             product_id: null, // You'd want to store product_id in metadata
             quantity: item.quantity || 1,
@@ -118,11 +132,13 @@ export async function POST(request: NextRequest) {
         const supabaseAdmin = getSupabaseAdmin();
         const paymentIntentObj = paymentIntent as { id: string };
         // Type assertion needed due to strict Supabase types
-        await (supabaseAdmin.from('orders') as unknown as {
-          update: (values: Record<string, unknown>) => {
-            eq: (column: string, value: string) => Promise<unknown>;
-          };
-        })
+        await (
+          supabaseAdmin.from('orders') as unknown as {
+            update: (values: Record<string, unknown>) => {
+              eq: (column: string, value: string) => Promise<unknown>;
+            };
+          }
+        )
           .update({ status: 'completed' })
           .eq('stripe_payment_intent_id', paymentIntentObj.id);
 
@@ -138,11 +154,13 @@ export async function POST(request: NextRequest) {
         const supabaseAdmin = getSupabaseAdmin();
         const paymentIntentObj = paymentIntent as { id: string };
         // Type assertion needed due to strict Supabase types
-        await (supabaseAdmin.from('orders') as unknown as {
-          update: (values: Record<string, unknown>) => {
-            eq: (column: string, value: string) => Promise<unknown>;
-          };
-        })
+        await (
+          supabaseAdmin.from('orders') as unknown as {
+            update: (values: Record<string, unknown>) => {
+              eq: (column: string, value: string) => Promise<unknown>;
+            };
+          }
+        )
           .update({ status: 'cancelled' })
           .eq('stripe_payment_intent_id', paymentIntentObj.id);
 
