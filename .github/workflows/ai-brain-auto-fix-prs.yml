@@ -1,0 +1,63 @@
+name: 🤖 AI Brain Auto Fix & Merge
+
+on:
+  schedule:
+    # Run every 30 minutes to keep PR queue healthy
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+  repository_dispatch:
+    types: [ai-brain-auto-fix]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  auto-fix:
+    name: Run AI Brain PR fixer
+    runs-on: ubuntu-latest
+    environment: unified-software-automated-developer-and-deployer
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      ANTHROPIC_API_KEY: ${{ secrets.CLAUDE }}
+      QWEN_API_KEY: ${{ secrets.QWEN_API_KEY }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Ensure GitHub CLI is available
+        run: |
+          if ! command -v gh >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y gh
+          fi
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install AI Brain dependencies
+        run: |
+          cd ai-brain
+          npm install
+
+      - name: Configure git identity
+        run: |
+          git config --global user.name "AI Brain Bot"
+          git config --global user.email "ai-brain@istani.org"
+
+      - name: Authenticate gh CLI
+        run: |
+          gh auth status >/dev/null 2>&1 || echo "${GH_TOKEN}" | gh auth login --with-token --hostname github.com
+          gh auth status
+
+      - name: Run AI Brain fixer
+        run: node ai-brain/fix-failed-prs.js

@@ -25,6 +25,17 @@ Or directly:
 node ai-brain/fix-failed-prs.js
 ```
 
+### GitHub Actions Automation
+
+The workflow `.github/workflows/ai-brain-auto-fix-prs.yml` keeps the fixer running automatically:
+
+- ⏱️ Triggers every 30 minutes, plus manual `workflow_dispatch` and custom `repository_dispatch` events
+- 🧠 Installs and runs `node ai-brain/fix-failed-prs.js` inside GitHub Actions with the same logic as the local script
+- 🔐 Requires only the built-in `GITHUB_TOKEN` plus optional AI keys (`GEMINI_API_KEY`, `ANTHROPIC_API_KEY`, `QWEN_API_KEY`) for smarter fixes
+- ✍️ Uses the `AI Brain Bot` git identity to push fixes back to contributor branches
+
+> To monitor or re-run on demand, go to **Actions → 🤖 AI Brain Auto Fix & Merge** and trigger it manually.
+
 ### Prerequisites
 
 1. **GitHub CLI**: Must be installed and authenticated
