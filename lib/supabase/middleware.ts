@@ -13,7 +13,9 @@ export async function updateSession(request: NextRequest) {
 
   if (!supabaseUrl || !supabaseAnonKey) {
     if (process.env.NODE_ENV === 'development') {
-      console.warn('[middleware] Supabase environment variables missing – skipping session refresh.');
+      console.warn(
+        '[middleware] Supabase environment variables missing – skipping session refresh.',
+      );
     }
     return response;
   }
