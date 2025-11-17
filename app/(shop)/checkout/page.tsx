@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, type FormEvent } from 'react';
 import { useCartStore } from '@/lib/store/cart-store';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,13 +12,20 @@ export default function CheckoutPage() {
   const { items, getTotalPrice } = useCartStore();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  if (items.length === 0) {
-    router.push('/cart');
+  useEffect(() => {
+    setMounted(true);
+    if (items.length === 0) {
+      router.push('/cart');
+    }
+  }, [items.length, router]);
+
+  if (!mounted || items.length === 0) {
     return null;
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
     // Here you would integrate with Stripe

@@ -17,7 +17,7 @@ An intelligent fitness platform powered by AI that provides personalized workout
 
 ### Frontend
 
-- **Next.js 14** - React framework with App Router
+- **Next.js 15** - React framework with App Router
 - **TypeScript** - Type-safe development
 - **Tailwind CSS** - Utility-first styling
 - **React Hook Form** - Form management

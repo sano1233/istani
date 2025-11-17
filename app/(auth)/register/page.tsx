@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type FormEvent } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { Input } from '@/components/ui/input';
@@ -18,7 +18,7 @@ export default function RegisterPage() {
   const router = useRouter();
   const supabase = createClient();
 
-  async function handleRegister(e: React.FormEvent) {
+  async function handleRegister(e: FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError('');

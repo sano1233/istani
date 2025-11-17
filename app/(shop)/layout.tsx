@@ -1,3 +1,5 @@
-export default function ShopLayout({ children }: { children: React.ReactNode }) {
+import type { ReactNode } from 'react';
+
+export default function ShopLayout({ children }: { children: ReactNode }) {
   return <div className="min-h-screen bg-background-dark">{children}</div>;
 }
