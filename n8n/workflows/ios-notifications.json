@@ -47,13 +47,13 @@
   ],
   "connections": {
     "Send Notification Webhook": {
-      "main": [ [ { "node": "Verify & Prepare", "type": "main", "index": 0 } ] ]
+      "main": [[{ "node": "Verify & Prepare", "type": "main", "index": 0 }]]
     },
     "Verify & Prepare": {
-      "main": [ [ { "node": "Send via APNs", "type": "main", "index": 0 } ] ]
+      "main": [[{ "node": "Send via APNs", "type": "main", "index": 0 }]]
     },
     "Send via APNs": {
-      "main": [ [ { "node": "Confirm Delivery", "type": "main", "index": 0 } ] ]
+      "main": [[{ "node": "Confirm Delivery", "type": "main", "index": 0 }]]
     }
   },
   "active": true,

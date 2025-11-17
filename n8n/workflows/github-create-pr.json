@@ -73,8 +73,8 @@
     }
   ],
   "connections": {
-    "Webhook": { "main": [ [ { "node": "Verify Signature", "type": "main", "index": 0 } ] ] },
-    "Verify Signature": { "main": [ [ { "node": "Create GitHub PR", "type": "main", "index": 0 } ] ] }
+    "Webhook": { "main": [[{ "node": "Verify Signature", "type": "main", "index": 0 }]] },
+    "Verify Signature": { "main": [[{ "node": "Create GitHub PR", "type": "main", "index": 0 }]] }
   },
   "active": true,
   "settings": { "executionOrder": "v1" }

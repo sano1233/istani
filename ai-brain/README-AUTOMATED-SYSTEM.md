@@ -30,6 +30,7 @@ ai-brain/
 ## 🚀 Quick Start
 
 ### Interactive Mode
+
 ```bash
 ./ai-brain/launcher.sh
 ```
@@ -73,6 +74,7 @@ export GH_TOKEN="your-github-token"
 ### GitHub Actions
 
 The system runs automatically via GitHub Actions:
+
 - **Workflow**: `.github/workflows/automated-code-resolver-merger.yml`
 - **Triggers**: PR events, schedule, manual
 - **Environment**: `unified-software-automated-developer-and-deployer`
@@ -120,6 +122,7 @@ node ai-brain/system-validator.js --full
 ```
 
 Validates:
+
 - Node.js version
 - Git configuration
 - GitHub CLI
@@ -132,6 +135,7 @@ Validates:
 ### For Pull Requests
 
 The system automatically:
+
 1. Fixes code quality issues
 2. Resolves merge conflicts
 3. Performs AI review
@@ -214,6 +218,7 @@ node ai-brain/automated-code-fixer.js --check-only
 ### Common Issues
 
 1. **API Keys Not Set**
+
    ```bash
    export GEMINI_API_KEY="your-key"
    export ANTHROPIC_API_KEY="your-key"
@@ -221,12 +226,14 @@ node ai-brain/automated-code-fixer.js --check-only
    ```
 
 2. **GitHub CLI Not Authenticated**
+
    ```bash
    gh auth login
    gh auth status
    ```
 
 3. **Dependencies Missing**
+
    ```bash
    npm install
    cd ai-brain && npm install
@@ -307,4 +314,4 @@ node ai-brain/pr-analyzer.js --analyze
 
 **Built with ❤️ using AI Brain technology**
 
-*Powered by: Google Gemini, Anthropic Claude, and Alibaba Qwen*
+_Powered by: Google Gemini, Anthropic Claude, and Alibaba Qwen_

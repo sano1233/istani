@@ -29,7 +29,10 @@ function parseEnvFile(filePath) {
       }
       const [rawKey, ...rest] = trimmed.split('=');
       const key = rawKey.trim();
-      const value = rest.join('=').trim().replace(/^['"]|['"]$/g, '');
+      const value = rest
+        .join('=')
+        .trim()
+        .replace(/^['"]|['"]$/g, '');
       if (key) {
         acc[key] = value;
       }
@@ -55,19 +58,16 @@ function detectEnvStatus() {
   const required = ['GEMINI_API_KEY', 'ANTHROPIC_API_KEY', 'QWEN_API_KEY'];
   const envFile = path.join(projectRoot, '.env.local');
   const fileValues = parseEnvFile(envFile);
-  return required.map(name => ({
+  return required.map((name) => ({
     name,
     exported: Boolean(process.env[name]),
     configured: Boolean(fileValues[name]),
-    preview: maskValue(fileValues[name] || '')
+    preview: maskValue(fileValues[name] || ''),
   }));
 }
 
 function digestFile(filePath) {
-  return crypto
-    .createHash('sha1')
-    .update(fs.readFileSync(filePath))
-    .digest('hex');
+  return crypto.createHash('sha1').update(fs.readFileSync(filePath)).digest('hex');
 }
 
 function computeDependencySignature() {
@@ -92,7 +92,7 @@ function detectDependencyStatus() {
 
   const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
   const deps = Object.keys(pkg.dependencies || {});
-  const status = deps.map(dep => {
+  const status = deps.map((dep) => {
     const depPath = path.join(aiBrainDir, 'node_modules', dep);
     return { name: dep, installed: fs.existsSync(depPath) };
   });
@@ -107,14 +107,14 @@ function detectDependencyStatus() {
         recorded: true,
         upToDate: recordedSignature === currentSignature,
         recordedSignature,
-        currentSignature
+        currentSignature,
       };
     } else {
       installState = {
         recorded: false,
         upToDate: false,
         recordedSignature: null,
-        currentSignature
+        currentSignature,
       };
     }
   }
@@ -135,13 +135,13 @@ function getNpmVersion() {
   try {
     const output = execSync('npm --version', {
       encoding: 'utf8',
-      stdio: ['ignore', 'pipe', 'pipe']
+      stdio: ['ignore', 'pipe', 'pipe'],
     });
     const lines = output
       .split(/\r?\n/)
-      .map(line => line.trim())
+      .map((line) => line.trim())
       .filter(Boolean)
-      .filter(line => !line.toLowerCase().startsWith('npm warn'));
+      .filter((line) => !line.toLowerCase().startsWith('npm warn'));
     return lines.pop() || 'unknown';
   } catch (error) {
     return 'npm CLI not available';
@@ -152,7 +152,7 @@ function getGhVersion() {
   try {
     const output = execSync('gh --version', {
       encoding: 'utf8',
-      stdio: ['ignore', 'pipe', 'pipe']
+      stdio: ['ignore', 'pipe', 'pipe'],
     })
       .split('\n')[0]
       .trim();
@@ -171,7 +171,7 @@ function printStatus() {
 
   const envStatus = detectEnvStatus();
   console.log(formatHeader('Environment Variables'));
-  envStatus.forEach(entry => {
+  envStatus.forEach((entry) => {
     if (entry.exported) {
       console.log(`${entry.name}: exported in current shell`);
     } else if (entry.configured) {
@@ -188,7 +188,7 @@ function printStatus() {
     console.log(`Error: ${dependencyStatus.error}`);
   } else {
     console.log(formatHeader('Dependencies'));
-    dependencyStatus.dependencies.forEach(dep => {
+    dependencyStatus.dependencies.forEach((dep) => {
       console.log(`${dep.name}: ${dep.installed ? 'installed' : 'missing'}`);
     });
     if (dependencyStatus.installState) {
@@ -204,7 +204,9 @@ function printStatus() {
 
   const envFile = path.join(projectRoot, '.env.local');
   console.log(formatHeader('Config Files'));
-  console.log(`${path.relative(projectRoot, envFile)}: ${fs.existsSync(envFile) ? 'present' : 'missing'}`);
+  console.log(
+    `${path.relative(projectRoot, envFile)}: ${fs.existsSync(envFile) ? 'present' : 'missing'}`,
+  );
 }
 
 function main() {

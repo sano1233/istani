@@ -122,7 +122,7 @@ This comprehensive system automates the entire code review, fixing, conflict res
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - Git 2.30+
 - GitHub CLI (`gh`) installed and authenticated
 - npm or yarn
@@ -130,21 +130,23 @@ This comprehensive system automates the entire code review, fixing, conflict res
 ### Setup Steps
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/yourusername/yourrepo.git
    cd yourrepo
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    cd ai-brain && npm install
    ```
 
 3. **Configure API keys**
-   
+
    Create environment variables or GitHub Secrets:
-   
+
    ```bash
    export GEMINI_API_KEY="your-gemini-api-key"
    export ANTHROPIC_API_KEY="your-claude-api-key"  # or CLAUDE
@@ -208,6 +210,7 @@ node ai-brain/intelligent-conflict-resolver.js --pr 123 --commit
 ```
 
 **Available Strategies:**
+
 - `auto` - Automatically select best strategy (default)
 - `ai` - Use AI-powered resolution
 - `theirs` - Accept incoming changes
@@ -268,6 +271,7 @@ The system runs automatically on:
 **Purpose**: Automatically detect and fix code quality issues
 
 **Features**:
+
 - ESLint auto-fix for JavaScript/TypeScript
 - Prettier formatting
 - Security vulnerability scanning (npm audit)
@@ -277,6 +281,7 @@ The system runs automatically on:
 - Merge conflict detection
 
 **Usage**:
+
 ```javascript
 const fixer = require('./ai-brain/automated-code-fixer');
 
@@ -292,6 +297,7 @@ await fixer.fixDependencyIssues();
 **Purpose**: Resolve merge conflicts using AI consensus
 
 **Features**:
+
 - Multi-AI consensus resolution (Gemini, Claude, Qwen)
 - Context-aware conflict analysis
 - Smart strategy selection based on file type
@@ -299,6 +305,7 @@ await fixer.fixDependencyIssues();
 - Validation of resolved code
 
 **Usage**:
+
 ```javascript
 const resolver = require('./ai-brain/intelligent-conflict-resolver');
 
@@ -313,6 +320,7 @@ const analysis = resolver.analyzeConflict(content, 'src/app.js');
 ```
 
 **Resolution Strategies**:
+
 1. **AI**: Multi-AI consensus resolution
 2. **Theirs**: Accept incoming changes
 3. **Ours**: Keep current changes
@@ -324,6 +332,7 @@ const analysis = resolver.analyzeConflict(content, 'src/app.js');
 **Purpose**: Review and merge PRs based on AI consensus
 
 **Features**:
+
 - Comprehensive code review from 3 AI models
 - Consensus-based approval (configurable threshold)
 - Security and quality checks
@@ -331,6 +340,7 @@ const analysis = resolver.analyzeConflict(content, 'src/app.js');
 - Detailed review comments
 
 **Usage**:
+
 ```javascript
 const merger = require('./ai-brain/automated-merger');
 
@@ -352,6 +362,7 @@ const { reviews, approvals } = await merger.performAICodeReview(pr);
 **Purpose**: Validate system health and configuration
 
 **Features**:
+
 - Node.js version check
 - Git installation and configuration
 - GitHub CLI validation
@@ -360,6 +371,7 @@ const { reviews, approvals } = await merger.performAICodeReview(pr);
 - Component functionality tests
 
 **Usage**:
+
 ```bash
 # Quick check
 node ai-brain/system-validator.js --quick
@@ -393,7 +405,7 @@ Edit `.github/workflows/automated-code-resolver-merger.yml`:
 
 ```yaml
 env:
-  NODE_VERSION: '20'  # Node.js version
+  NODE_VERSION: '20' # Node.js version
 
 jobs:
   ai-review-and-merge:
@@ -408,7 +420,7 @@ Adjust required approvals in workflow:
 ```yaml
 inputs:
   required_approvals:
-    default: '2'  # Require 2 out of 3 AI approvals
+    default: '2' # Require 2 out of 3 AI approvals
 ```
 
 ---
@@ -420,6 +432,7 @@ inputs:
 The workflow consists of 5 main jobs:
 
 #### 1. **Auto-Fix Code** (`auto-fix-code`)
+
 - Runs on: PR events, workflow_dispatch
 - Actions:
   - Checkout code
@@ -428,6 +441,7 @@ The workflow consists of 5 main jobs:
   - Commit and push fixes
 
 #### 2. **Resolve Conflicts** (`resolve-conflicts`)
+
 - Runs after: auto-fix-code
 - Actions:
   - Check for merge conflicts
@@ -435,6 +449,7 @@ The workflow consists of 5 main jobs:
   - Commit resolutions
 
 #### 3. **AI Review & Merge** (`ai-review-and-merge`)
+
 - Runs after: auto-fix-code, resolve-conflicts
 - Actions:
   - Perform multi-AI code review
@@ -442,6 +457,7 @@ The workflow consists of 5 main jobs:
   - Approve and merge if consensus reached
 
 #### 4. **Health Check** (`health-check`)
+
 - Runs after: all previous jobs
 - Actions:
   - Run tests
@@ -450,6 +466,7 @@ The workflow consists of 5 main jobs:
   - Generate workflow summary
 
 #### 5. **Notify Results** (`notify-results`)
+
 - Runs after: all jobs
 - Actions:
   - Post status comment on PR
@@ -464,8 +481,8 @@ on:
   push:
     branches: [main, master]
   schedule:
-    - cron: '0 */6 * * *'  # Every 6 hours
-  workflow_dispatch:  # Manual trigger
+    - cron: '0 */6 * * *' # Every 6 hours
+  workflow_dispatch: # Manual trigger
 ```
 
 ---
@@ -475,18 +492,21 @@ on:
 The system uses three AI models for consensus-based decision making:
 
 ### 1. **Google Gemini Pro**
+
 - **Strengths**: Fast response, broad knowledge
 - **Use Cases**: Code analysis, quick reviews
 - **API**: Google AI Studio
 - **Configuration**: `GEMINI_API_KEY`
 
 ### 2. **Anthropic Claude 3.5 Sonnet**
+
 - **Strengths**: Deep code understanding, reasoning
 - **Use Cases**: Complex code review, architecture analysis
 - **API**: Anthropic API
 - **Configuration**: `ANTHROPIC_API_KEY` or `CLAUDE`
 
 ### 3. **Alibaba Qwen Max**
+
 - **Strengths**: Alternative perspective, diverse knowledge
 - **Use Cases**: Validation, additional insights
 - **API**: Dashscope API
@@ -514,6 +534,7 @@ node ai-brain/automated-merger.js --pr 123 --auto-fix --require 2
 ```
 
 **What happens**:
+
 1. ✅ Fetches PR details
 2. 🔧 Runs code quality fixes
 3. 🔀 Resolves any conflicts
@@ -543,10 +564,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Auto-fix code quality
         run: node ai-brain/automated-code-fixer.js --commit
-      
+
       - name: Validate fixes
         run: node ai-brain/system-validator.js --quick
 ```
@@ -562,6 +583,7 @@ jobs:
 **Problem**: AI service returns error about missing API key
 
 **Solution**:
+
 ```bash
 # Set environment variables
 export GEMINI_API_KEY="your-key-here"
@@ -577,6 +599,7 @@ export QWEN_API_KEY="your-key-here"
 **Problem**: `gh` commands fail with authentication error
 
 **Solution**:
+
 ```bash
 # Authenticate GitHub CLI
 gh auth login
@@ -590,6 +613,7 @@ gh auth status
 **Problem**: AI fails to resolve conflicts
 
 **Solution**:
+
 ```bash
 # Try different strategy
 node ai-brain/intelligent-conflict-resolver.js --pr 123 --strategy theirs
@@ -605,6 +629,7 @@ git commit
 **Problem**: Less than 2/3 AIs approved
 
 **Solution**:
+
 - Review AI feedback in PR comments
 - Address concerns raised by AIs
 - Push fixes and re-run
@@ -615,6 +640,7 @@ git commit
 **Problem**: System validator reports failures
 
 **Solution**:
+
 ```bash
 # Run full validation to see details
 node ai-brain/system-validator.js --full
@@ -677,12 +703,14 @@ NODE_ENV=development node ai-brain/automated-merger.js --pr 123
 ### API Key Management
 
 ✅ **DO**:
+
 - Store API keys in GitHub Secrets
 - Use environment-specific keys
 - Rotate keys regularly
 - Limit key permissions
 
 ❌ **DON'T**:
+
 - Commit API keys to repository
 - Share keys in logs or comments
 - Use production keys in development
@@ -690,6 +718,7 @@ NODE_ENV=development node ai-brain/automated-merger.js --pr 123
 ### Code Review
 
 The system performs security checks for:
+
 - Exposed credentials
 - Known vulnerabilities (npm audit)
 - Suspicious code patterns
@@ -790,4 +819,4 @@ MIT License - see [LICENSE](LICENSE) file for details
 
 **Built with ❤️ by the AI Brain team**
 
-*Last updated: 2025-11-17*
+_Last updated: 2025-11-17_

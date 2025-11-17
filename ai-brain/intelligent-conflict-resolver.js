@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 /**
  * Intelligent Conflict Resolver - AI-Powered Merge Conflict Resolution
- * 
+ *
  * Features:
  * - Multi-AI consensus for conflict resolution
  * - Context-aware conflict analysis
  * - Smart strategy selection (theirs, ours, AI-resolved)
  * - Preserves code semantics and intent
  * - Validates resolved code before applying
- * 
+ *
  * Usage: node ai-brain/intelligent-conflict-resolver.js [options]
  * Options:
  *   --pr <number>        Resolve conflicts in specific PR
@@ -31,7 +31,7 @@ const colors = {
   yellow: '\x1b[33m',
   red: '\x1b[31m',
   cyan: '\x1b[36m',
-  gray: '\x1b[90m'
+  gray: '\x1b[90m',
 };
 
 function log(message, color = 'reset') {
@@ -47,8 +47,8 @@ const resolutionStats = {
     ai: 0,
     theirs: 0,
     ours: 0,
-    manual: 0
-  }
+    manual: 0,
+  },
 };
 
 /**
@@ -60,13 +60,13 @@ async function runAI(prompt, tool = 'gemini') {
     const { stdout, stderr } = await execAsync(`node "${helperPath}"`, {
       input: prompt,
       timeout: 30000,
-      maxBuffer: 2 * 1024 * 1024 // 2MB buffer
+      maxBuffer: 2 * 1024 * 1024, // 2MB buffer
     });
-    
+
     if (stderr && !stderr.includes('Warning')) {
       log(`   ${tool} warning: ${stderr}`, 'yellow');
     }
-    
+
     return stdout.trim();
   } catch (error) {
     log(`   ${tool} error: ${error.message}`, 'red');
@@ -79,7 +79,7 @@ async function runAI(prompt, tool = 'gemini') {
  */
 async function getConsensusResolution(conflictContent, fileName) {
   log(`   Consulting AI models for resolution...`, 'cyan');
-  
+
   const prompt = `You are a code merge conflict resolver. Analyze this merge conflict and provide the COMPLETE resolved file content.
 
 File: ${fileName}
@@ -102,46 +102,49 @@ Provide the complete resolved file content:`;
   const [geminiResult, claudeResult, qwenResult] = await Promise.all([
     runAI(prompt, 'gemini'),
     runAI(prompt, 'claude'),
-    runAI(prompt, 'qwen')
+    runAI(prompt, 'qwen'),
   ]);
-  
+
   const results = [
     { name: 'Gemini', content: geminiResult },
     { name: 'Claude', content: claudeResult },
-    { name: 'Qwen', content: qwenResult }
-  ].filter(r => r.content && !r.content.includes('error'));
-  
+    { name: 'Qwen', content: qwenResult },
+  ].filter((r) => r.content && !r.content.includes('error'));
+
   if (results.length === 0) {
     log(`   ❌ No AI models available for resolution`, 'red');
     return null;
   }
-  
+
   log(`   ✅ Received ${results.length} AI resolutions`, 'green');
-  
+
   // Clean up responses (remove code block markers if present)
-  const cleanedResults = results.map(r => {
+  const cleanedResults = results.map((r) => {
     let content = r.content;
-    
+
     // Remove markdown code blocks
     const codeBlockMatch = content.match(/```[\w]*\n([\s\S]*?)\n```/);
     if (codeBlockMatch) {
       content = codeBlockMatch[1];
     }
-    
+
     // Remove conflict markers if AI failed to remove them
     content = content.replace(/^<{7}\s.*$/gm, '');
     content = content.replace(/^={7}$/gm, '');
     content = content.replace(/^>{7}\s.*$/gm, '');
-    
+
     return { ...r, content };
   });
-  
+
   // Use the longest/most complete resolution (heuristic for best resolution)
   cleanedResults.sort((a, b) => b.content.length - a.content.length);
-  
+
   const bestResolution = cleanedResults[0];
-  log(`   Selected ${bestResolution.name}'s resolution (${bestResolution.content.length} chars)`, 'cyan');
-  
+  log(
+    `   Selected ${bestResolution.name}'s resolution (${bestResolution.content.length} chars)`,
+    'cyan',
+  );
+
   return bestResolution.content;
 }
 
@@ -153,19 +156,19 @@ function analyzeConflict(content, fileName) {
     type: 'unknown',
     complexity: 'medium',
     recommendedStrategy: 'ai',
-    reason: ''
+    reason: '',
   };
-  
+
   // Check file type
   const isLockFile = /package-lock\.json|yarn\.lock|pnpm-lock\.yaml/.test(fileName);
   const isConfig = /\.config\.(js|ts|mjs)|\.json$/.test(fileName);
   const isMarkdown = /\.md$/.test(fileName);
   const isCode = /\.(js|jsx|ts|tsx|py|java|go|rs)$/.test(fileName);
-  
+
   // Check conflict size
   const conflictSections = (content.match(/<{7}\s/g) || []).length;
   const fileSize = content.length;
-  
+
   if (isLockFile) {
     analysis.type = 'lockfile';
     analysis.recommendedStrategy = 'regenerate';
@@ -196,7 +199,7 @@ function analyzeConflict(content, fileName) {
     analysis.recommendedStrategy = 'ai';
     analysis.reason = 'Config conflicts are typically simple';
   }
-  
+
   return analysis;
 }
 
@@ -205,37 +208,37 @@ function analyzeConflict(content, fileName) {
  */
 async function resolveFileConflict(filePath, strategy = 'auto') {
   log(`\n🔀 Resolving conflict in: ${filePath}`, 'cyan');
-  
+
   try {
     // Read file content
     const content = await fs.readFile(filePath, 'utf8');
-    
+
     // Check if file actually has conflicts
     if (!/^<{7}\s|^={7}$|^>{7}\s/m.test(content)) {
       log(`   ✅ No conflicts in file`, 'green');
       return { success: true, strategy: 'none' };
     }
-    
+
     resolutionStats.totalConflicts++;
-    
+
     // Analyze conflict
     const analysis = analyzeConflict(content, filePath);
     log(`   📊 Conflict type: ${analysis.type} (${analysis.complexity} complexity)`, 'gray');
-    
+
     // Determine strategy
     const resolveStrategy = strategy === 'auto' ? analysis.recommendedStrategy : strategy;
     log(`   🎯 Strategy: ${resolveStrategy}`, 'cyan');
     log(`   💡 Reason: ${analysis.reason}`, 'gray');
-    
+
     let resolved = false;
     let usedStrategy = resolveStrategy;
-    
+
     // Apply resolution strategy
     switch (resolveStrategy) {
       case 'ai':
         log(`   🤖 Using AI-powered resolution...`, 'cyan');
         const aiResolved = await getConsensusResolution(content, filePath);
-        
+
         if (aiResolved) {
           // Validate that AI actually removed conflict markers
           if (/^<{7}\s|^={7}$|^>{7}\s/m.test(aiResolved)) {
@@ -259,36 +262,36 @@ async function resolveFileConflict(filePath, strategy = 'auto') {
           resolved = true;
         }
         break;
-        
+
       case 'theirs':
         log(`   📥 Accepting incoming changes (theirs)...`, 'cyan');
         await execAsync(`git checkout --theirs "${filePath}"`);
         usedStrategy = 'theirs';
         resolved = true;
         break;
-        
+
       case 'ours':
         log(`   📤 Keeping current changes (ours)...`, 'cyan');
         await execAsync(`git checkout --ours "${filePath}"`);
         usedStrategy = 'ours';
         resolved = true;
         break;
-        
+
       case 'regenerate':
         log(`   🔄 Regenerating lock file...`, 'cyan');
         await execAsync(`git checkout --theirs "${filePath}"`);
-        
+
         // Try to regenerate based on file type
         if (filePath.includes('package-lock.json')) {
           await execAsync('npm install --package-lock-only').catch(() => {});
         } else if (filePath.includes('yarn.lock')) {
           await execAsync('yarn install --mode update-lockfile').catch(() => {});
         }
-        
+
         usedStrategy = 'regenerate';
         resolved = true;
         break;
-        
+
       case 'manual':
         log(`   ⚠️  Conflict requires manual resolution`, 'yellow');
         log(`      File: ${filePath}`, 'yellow');
@@ -296,7 +299,7 @@ async function resolveFileConflict(filePath, strategy = 'auto') {
         resolved = false;
         break;
     }
-    
+
     if (resolved) {
       // Stage the resolved file
       await execAsync(`git add "${filePath}"`);
@@ -307,7 +310,7 @@ async function resolveFileConflict(filePath, strategy = 'auto') {
       resolutionStats.failed++;
       resolutionStats.strategies.manual++;
     }
-    
+
     return { success: resolved, strategy: usedStrategy };
   } catch (error) {
     log(`   ❌ Error resolving conflict: ${error.message}`, 'red');
@@ -325,12 +328,12 @@ async function findConflictedFiles() {
     return stdout.trim().split('\n').filter(Boolean);
   } catch (error) {
     log(`   ⚠️  Could not get conflicted files from git`, 'yellow');
-    
+
     // Fallback: scan all tracked files
     try {
       const { stdout } = await execAsync('git ls-files');
       const files = stdout.trim().split('\n').filter(Boolean);
-      
+
       const conflictedFiles = [];
       for (const file of files) {
         try {
@@ -342,7 +345,7 @@ async function findConflictedFiles() {
           // Skip unreadable files
         }
       }
-      
+
       return conflictedFiles;
     } catch (scanError) {
       return [];
@@ -355,12 +358,12 @@ async function findConflictedFiles() {
  */
 async function resolveAllConflicts(options = {}) {
   const { strategy = 'auto', prNumber = null, branch = null } = options;
-  
+
   log('═'.repeat(70), 'cyan');
   log('  INTELLIGENT CONFLICT RESOLVER', 'bright');
   log('  AI-Powered Merge Conflict Resolution', 'gray');
   log('═'.repeat(70), 'cyan');
-  
+
   // Handle PR checkout
   if (prNumber) {
     log(`\n📋 Checking out PR #${prNumber}...`, 'cyan');
@@ -381,63 +384,68 @@ async function resolveAllConflicts(options = {}) {
       return false;
     }
   }
-  
+
   // Find conflicted files
   log(`\n🔍 Scanning for conflicts...`, 'cyan');
   const conflictedFiles = await findConflictedFiles();
-  
+
   if (conflictedFiles.length === 0) {
     log(`   ✅ No conflicts found!`, 'green');
     return true;
   }
-  
+
   log(`   Found ${conflictedFiles.length} conflicted files:`, 'yellow');
-  conflictedFiles.forEach(f => log(`      - ${f}`, 'yellow'));
-  
+  conflictedFiles.forEach((f) => log(`      - ${f}`, 'yellow'));
+
   // Resolve each conflict
   log(`\n🔧 Resolving conflicts...`, 'cyan');
-  
+
   for (const file of conflictedFiles) {
     await resolveFileConflict(file, strategy);
   }
-  
+
   // Generate summary
   log('\n' + '═'.repeat(70), 'cyan');
   log('  RESOLUTION SUMMARY', 'bright');
   log('═'.repeat(70), 'cyan');
-  
+
   log(`\n📊 Statistics:`, 'cyan');
   log(`   Total conflicts: ${resolutionStats.totalConflicts}`, 'gray');
   log(`   Resolved: ${resolutionStats.resolved}`, 'green');
   log(`   Failed: ${resolutionStats.failed}`, resolutionStats.failed > 0 ? 'red' : 'gray');
-  
+
   if (resolutionStats.totalConflicts > 0) {
-    const successRate = Math.round((resolutionStats.resolved / resolutionStats.totalConflicts) * 100);
-    log(`   Success rate: ${successRate}%`, successRate === 100 ? 'green' : successRate > 50 ? 'yellow' : 'red');
+    const successRate = Math.round(
+      (resolutionStats.resolved / resolutionStats.totalConflicts) * 100,
+    );
+    log(
+      `   Success rate: ${successRate}%`,
+      successRate === 100 ? 'green' : successRate > 50 ? 'yellow' : 'red',
+    );
   }
-  
+
   log(`\n🎯 Strategies used:`, 'cyan');
   Object.entries(resolutionStats.strategies).forEach(([strategy, count]) => {
     if (count > 0) {
       log(`   ${strategy}: ${count}`, 'gray');
     }
   });
-  
+
   log('\n' + '═'.repeat(70), 'cyan');
-  
+
   // Check if there are still unresolved conflicts
   const remainingConflicts = await findConflictedFiles();
-  
+
   if (remainingConflicts.length === 0 && resolutionStats.resolved > 0) {
     log('\n✅ All conflicts resolved successfully!', 'green');
     log('   You can now commit the changes.', 'green');
     return true;
   } else if (remainingConflicts.length > 0) {
     log(`\n⚠️  ${remainingConflicts.length} conflicts require manual resolution:`, 'yellow');
-    remainingConflicts.forEach(f => log(`   - ${f}`, 'yellow'));
+    remainingConflicts.forEach((f) => log(`   - ${f}`, 'yellow'));
     return false;
   }
-  
+
   return true;
 }
 
@@ -446,33 +454,33 @@ async function resolveAllConflicts(options = {}) {
  */
 async function commitResolution() {
   log('\n📝 Committing conflict resolution...', 'cyan');
-  
+
   try {
     // Check for staged changes
     const { stdout: status } = await execAsync('git status --porcelain');
-    
+
     if (!status.trim()) {
       log('   No changes to commit', 'gray');
       return false;
     }
-    
+
     const commitMessage = `🔀 Resolve merge conflicts via AI Brain
 
 Conflict resolution summary:
 - Total conflicts resolved: ${resolutionStats.resolved}
 - Strategies used: ${Object.entries(resolutionStats.strategies)
-  .filter(([_, count]) => count > 0)
-  .map(([strategy, count]) => `${strategy}(${count})`)
-  .join(', ')}
+      .filter(([_, count]) => count > 0)
+      .map(([strategy, count]) => `${strategy}(${count})`)
+      .join(', ')}
 
 This resolution was performed using AI-powered analysis with multiple
 models providing consensus-based solutions.
 
 🤖 Generated by AI Brain - Intelligent Conflict Resolver`;
-    
+
     await execAsync(`git commit -m "${commitMessage.replace(/"/g, '\\"')}"`);
     log('   ✅ Changes committed', 'green');
-    
+
     return true;
   } catch (error) {
     log(`   ⚠️  Commit failed: ${error.message}`, 'yellow');
@@ -485,28 +493,28 @@ models providing consensus-based solutions.
  */
 async function main() {
   const args = process.argv.slice(2);
-  
+
   const options = {
     strategy: 'auto',
     prNumber: null,
     branch: null,
     file: null,
-    commit: args.includes('--commit')
+    commit: args.includes('--commit'),
   };
-  
+
   // Parse arguments
   const prIndex = args.indexOf('--pr');
   if (prIndex >= 0) options.prNumber = args[prIndex + 1];
-  
+
   const branchIndex = args.indexOf('--branch');
   if (branchIndex >= 0) options.branch = args[branchIndex + 1];
-  
+
   const fileIndex = args.indexOf('--file');
   if (fileIndex >= 0) options.file = args[fileIndex + 1];
-  
+
   const strategyIndex = args.indexOf('--strategy');
   if (strategyIndex >= 0) options.strategy = args[strategyIndex + 1];
-  
+
   // Show help
   if (args.includes('--help') || args.includes('-h')) {
     console.log(`
@@ -535,13 +543,13 @@ Examples:
 `);
     return;
   }
-  
+
   // Resolve conflicts
   if (options.file) {
     await resolveFileConflict(options.file, options.strategy);
   } else {
     const success = await resolveAllConflicts(options);
-    
+
     if (success && options.commit) {
       await commitResolution();
     }
@@ -550,7 +558,7 @@ Examples:
 
 // Run if called directly
 if (require.main === module) {
-  main().catch(error => {
+  main().catch((error) => {
     log(`\n❌ Error: ${error.message}`, 'red');
     if (error.stack) {
       log(error.stack, 'gray');
@@ -564,5 +572,5 @@ module.exports = {
   resolveAllConflicts,
   findConflictedFiles,
   analyzeConflict,
-  getConsensusResolution
+  getConsensusResolution,
 };

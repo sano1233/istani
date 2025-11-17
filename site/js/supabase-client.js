@@ -13,8 +13,10 @@
 const SUPABASE_CONFIG = {
   projectId: 'kxsmgrlpojdsgvjdodda',
   url: 'https://kxsmgrlpojdsgvjdodda.supabase.co',
-  anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt4c21ncmxwb2pkc2d2amRvZGRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAwNjQ2MjEsImV4cCI6MjA3NTY0MDYyMX0.AUiGtq9JrkFWwzm4cN6XE3ldOXUv7tSuKm0O5Oo74sw',
-  serviceRoleKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt4c21ncmxwb2pkc2d2amRvZGRhIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MDA2NDYyMSwiZXhwIjoyMDc1NjQwNjIxfQ.6a5eSOaxQyl_GVXyKhnT45qn2ws-xUT5qYB5eeQooME'
+  anonKey:
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt4c21ncmxwb2pkc2d2amRvZGRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAwNjQ2MjEsImV4cCI6MjA3NTY0MDYyMX0.AUiGtq9JrkFWwzm4cN6XE3ldOXUv7tSuKm0O5Oo74sw',
+  serviceRoleKey:
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt4c21ncmxwb2pkc2d2amRvZGRhIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MDA2NDYyMSwiZXhwIjoyMDc1NjQwNjIxfQ.6a5eSOaxQyl_GVXyKhnT45qn2ws-xUT5qYB5eeQooME',
 };
 
 // Initialize Supabase client (browser)
@@ -25,10 +27,7 @@ function initSupabaseClient() {
   const script = document.createElement('script');
   script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
   script.onload = () => {
-    window.supabaseClient = supabase.createClient(
-      SUPABASE_CONFIG.url,
-      SUPABASE_CONFIG.anonKey
-    );
+    window.supabaseClient = supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
   };
   document.head.appendChild(script);
 }
@@ -43,7 +42,7 @@ const SupabaseAPI = {
         email,
         full_name: fullName,
         signup_source: source,
-        interests
+        interests,
       })
       .select()
       .single();
@@ -62,8 +61,8 @@ const SupabaseAPI = {
       email,
       password,
       options: {
-        data: { full_name: fullName }
-      }
+        data: { full_name: fullName },
+      },
     });
 
     if (authError) throw authError;
@@ -74,7 +73,7 @@ const SupabaseAPI = {
       .insert({
         id: authData.user.id,
         email,
-        full_name: fullName
+        full_name: fullName,
       })
       .select()
       .single();
@@ -95,7 +94,7 @@ const SupabaseAPI = {
         duration_minutes: durationMinutes,
         calories_burned: caloriesBurned,
         exercises,
-        completed: true
+        completed: true,
       })
       .select()
       .single();
@@ -115,12 +114,12 @@ const SupabaseAPI = {
         user_id: userId,
         meal_date: new Date().toISOString().split('T')[0],
         meal_type: mealType,
-        meal_name: foods.map(f => f.name).join(', '),
+        meal_name: foods.map((f) => f.name).join(', '),
         calories,
         protein_g: macros.protein,
         carbs_g: macros.carbs,
         fat_g: macros.fat,
-        foods
+        foods,
       })
       .select()
       .single();
@@ -138,7 +137,7 @@ const SupabaseAPI = {
       onboarding: 297,
       weekly: 497,
       monthly: 1997,
-      emergency: 997
+      emergency: 997,
     };
 
     const { data, error } = await window.supabaseClient
@@ -148,7 +147,7 @@ const SupabaseAPI = {
         session_date: sessionDate,
         session_type: sessionType,
         price_paid: prices[sessionType],
-        status: 'scheduled'
+        status: 'scheduled',
       })
       .select()
       .single();
@@ -170,7 +169,7 @@ const SupabaseAPI = {
         donation_type: 'one_time',
         buymeacoffee_username: 'istanifitn',
         message,
-        is_anonymous: isAnonymous
+        is_anonymous: isAnonymous,
       })
       .select()
       .single();
@@ -186,16 +185,31 @@ const SupabaseAPI = {
   async getUserProgress(userId) {
     const [user, workouts, meals, measurements] = await Promise.all([
       window.supabaseClient.from('users').select('*').eq('id', userId).single(),
-      window.supabaseClient.from('workout_sessions').select('*').eq('user_id', userId).order('workout_date', { ascending: false }).limit(30),
-      window.supabaseClient.from('meals').select('*').eq('user_id', userId).order('meal_date', { ascending: false }).limit(30),
-      window.supabaseClient.from('body_measurements').select('*').eq('user_id', userId).order('measurement_date', { ascending: false }).limit(10)
+      window.supabaseClient
+        .from('workout_sessions')
+        .select('*')
+        .eq('user_id', userId)
+        .order('workout_date', { ascending: false })
+        .limit(30),
+      window.supabaseClient
+        .from('meals')
+        .select('*')
+        .eq('user_id', userId)
+        .order('meal_date', { ascending: false })
+        .limit(30),
+      window.supabaseClient
+        .from('body_measurements')
+        .select('*')
+        .eq('user_id', userId)
+        .order('measurement_date', { ascending: false })
+        .limit(10),
     ]);
 
     return {
       user: user.data,
       workouts: workouts.data,
       meals: meals.data,
-      measurements: measurements.data
+      measurements: measurements.data,
     };
   },
 
@@ -215,14 +229,12 @@ const SupabaseAPI = {
   // Analytics
   async trackEvent(eventType, eventData = {}) {
     try {
-      await window.supabaseClient
-        .from('analytics_events')
-        .insert({
-          event_type: eventType,
-          event_data: eventData,
-          session_id: sessionStorage.getItem('session_id') || null,
-          user_agent: navigator.userAgent
-        });
+      await window.supabaseClient.from('analytics_events').insert({
+        event_type: eventType,
+        event_data: eventData,
+        session_id: sessionStorage.getItem('session_id') || null,
+        user_agent: navigator.userAgent,
+      });
     } catch (error) {
       console.error('Analytics error:', error);
     }
@@ -264,7 +276,7 @@ const SupabaseAPI = {
     const { data, error } = await query;
     if (error) throw error;
     return data;
-  }
+  },
 };
 
 // Auto-initialize on page load
@@ -274,7 +286,10 @@ if (typeof window !== 'undefined') {
 
     // Generate session ID for analytics
     if (!sessionStorage.getItem('session_id')) {
-      sessionStorage.setItem('session_id', 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9));
+      sessionStorage.setItem(
+        'session_id',
+        'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+      );
     }
   });
 }

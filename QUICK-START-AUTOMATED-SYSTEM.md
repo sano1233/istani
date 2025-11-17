@@ -48,6 +48,7 @@ node ai-brain/automated-merger.js --all --auto-fix
 ### 1. Add Secrets
 
 Go to **Settings → Secrets → Actions** and add:
+
 - `GEMINI_API_KEY`
 - `CLAUDE` (or `ANTHROPIC_API_KEY`)
 - `QWEN_API_KEY`
@@ -58,6 +59,7 @@ The workflow is already configured at:
 `.github/workflows/automated-code-resolver-merger.yml`
 
 It runs automatically on:
+
 - Pull requests
 - Every 6 hours (scheduled)
 - Manual trigger
@@ -109,6 +111,7 @@ For complete details, see: [AUTOMATED-CODE-RESOLVER-MERGER-GUIDE.md](./AUTOMATED
 ## 🆘 Troubleshooting
 
 ### "API key not configured"
+
 ```bash
 export GEMINI_API_KEY="your-key"
 export ANTHROPIC_API_KEY="your-key"
@@ -116,6 +119,7 @@ export QWEN_API_KEY="your-key"
 ```
 
 ### "gh command not found"
+
 ```bash
 # Install GitHub CLI
 # macOS: brew install gh
@@ -124,6 +128,7 @@ gh auth login
 ```
 
 ### "Module not found"
+
 ```bash
 npm install
 cd ai-brain && npm install
@@ -134,6 +139,7 @@ cd ai-brain && npm install
 You're ready to automate your GitHub workflow!
 
 **Next Steps:**
+
 1. Try the interactive launcher: `./ai-brain/launcher.sh`
 2. Process a test PR
 3. Check GitHub Actions logs

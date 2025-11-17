@@ -42,21 +42,25 @@ Welcome to Istani Fitness! 🏋️ I'm your 24/7 AI fitness coach. I can help yo
 ## 🛠️ Tools Configured
 
 ### 1. fitness_chat
+
 - **Endpoint**: `/chat`
 - **Purpose**: General fitness conversations and AI responses
 - **Models Supported**: 8+ OpenRouter models
 
 ### 2. schedule_event
+
 - **Endpoint**: `/schedule`
 - **Purpose**: Create Google Calendar events
 - **Features**: Workout scheduling, coach appointments
 
 ### 3. file_search
+
 - **Endpoint**: `/file/search`
 - **Purpose**: Search Google Drive for fitness resources
 - **Use Cases**: Workout plans, meal plans, progress reports
 
 ### 4. file_get
+
 - **Endpoint**: `/file/{id}`
 - **Purpose**: Retrieve specific files by ID
 - **Use Cases**: Download workout PDFs, meal plans
@@ -68,6 +72,7 @@ Welcome to Istani Fitness! 🏋️ I'm your 24/7 AI fitness coach. I can help yo
 ### Location
 
 The backend server is located in:
+
 ```
 elevenlabs-agent/
 ├── server.js          # Express.js server with all endpoints
@@ -254,9 +259,9 @@ elevenlabs-convai {
   --widget-size: 60px;
 
   /* Colors (match Istani brand) */
-  --primary-color: #FF6B35;
-  --secondary-color: #004E89;
-  --accent-color: #06D6A0;
+  --primary-color: #ff6b35;
+  --secondary-color: #004e89;
+  --accent-color: #06d6a0;
 }
 
 /* Hide widget on mobile if desired */
@@ -292,6 +297,7 @@ Edit `components/voice-assistant.tsx`:
 ### Track Conversations
 
 ElevenLabs provides built-in analytics:
+
 - Total conversations
 - Average conversation duration
 - User satisfaction ratings
@@ -307,14 +313,14 @@ Add event tracking in `components/voice-assistant.tsx`:
 useEffect(() => {
   window.addEventListener('elevenlabs:conversation:start', () => {
     // Track conversation start
-    console.log('Voice conversation started')
-  })
+    console.log('Voice conversation started');
+  });
 
   window.addEventListener('elevenlabs:conversation:end', () => {
     // Track conversation end
-    console.log('Voice conversation ended')
-  })
-}, [])
+    console.log('Voice conversation ended');
+  });
+}, []);
 ```
 
 ---
@@ -347,6 +353,7 @@ useEffect(() => {
 ### Widget Not Appearing
 
 1. **Check Agent ID**:
+
    ```bash
    # Verify environment variable is set
    echo $NEXT_PUBLIC_ELEVENLABS_AGENT_ID
@@ -359,18 +366,20 @@ useEffect(() => {
 3. **Verify Script Loading**:
    ```typescript
    // Add to voice-assistant.tsx
-   script.onload = () => console.log('ElevenLabs loaded')
-   script.onerror = () => console.error('ElevenLabs failed to load')
+   script.onload = () => console.log('ElevenLabs loaded');
+   script.onerror = () => console.error('ElevenLabs failed to load');
    ```
 
 ### Backend Not Responding
 
 1. **Check Server Status**:
+
    ```bash
    curl https://your-backend-url.com/health
    ```
 
 2. **View Logs**:
+
    ```bash
    # Railway
    railway logs
@@ -396,6 +405,7 @@ useEffect(() => {
    - Ensure Calendar API is enabled
 
 2. **Test OAuth Flow**:
+
    ```bash
    # Visit in browser
    https://your-backend-url.com/oauth/authorize
@@ -431,18 +441,22 @@ Before going live:
 ### For Users
 
 **Example 1: Log Workout**
+
 > User: "I just did 4 sets of bench press with 80kg"
 > Agent: "Great work! I've logged your bench press workout. 4 sets at 80kg is solid progress!"
 
 **Example 2: Schedule Training**
+
 > User: "Schedule my leg day for Friday at 7 AM"
 > Agent: "Done! I've added 'Leg Day' to your calendar for Friday at 7:00 AM."
 
 **Example 3: Nutrition Question**
+
 > User: "How much protein should I eat?"
 > Agent: "Based on your profile, aim for 150-170g of protein daily. This supports muscle growth and recovery."
 
 **Example 4: Find Resources**
+
 > User: "Find my meal plan"
 > Agent: "I found your meal plan in Google Drive. Would you like me to summarize it?"
 

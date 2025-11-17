@@ -36,7 +36,7 @@ async function runAI(prompt, tool) {
     const { stdout, stderr } = await execAsync(`node "${helperPath}"`, {
       input: prompt,
       timeout: 30000, // 30 second timeout
-      maxBuffer: 1024 * 1024 // 1MB buffer
+      maxBuffer: 1024 * 1024, // 1MB buffer
     });
 
     if (stderr) {
@@ -108,14 +108,14 @@ async function handlePR(prNumber) {
       }
     }
 
-    const files = (prData.files || []).map(f => f.path).join(', ');
+    const files = (prData.files || []).map((f) => f.path).join(', ');
     const prompt = `Review PR: ${prData.title}. Files: ${files}. Approve if safe.`;
 
     console.log('\nRunning AI analysis...');
     const [gemini, claude, qwen] = await Promise.all([
       runAI(prompt, 'gemini'),
       runAI(prompt, 'claude'),
-      runAI(prompt, 'qwen')
+      runAI(prompt, 'qwen'),
     ]);
 
     const comment = `## AI Brain Analysis\n\n### GEMINI\n${gemini}\n\n### CLAUDE\n${claude}\n\n### QWEN\n${qwen}`;
@@ -133,8 +133,8 @@ async function handlePR(prNumber) {
       await fs.unlink(tempFile).catch(() => {});
     }
 
-    const approvals = [gemini, claude, qwen].filter(r =>
-      r && r.toLowerCase().includes('approve')
+    const approvals = [gemini, claude, qwen].filter(
+      (r) => r && r.toLowerCase().includes('approve'),
     ).length;
 
     console.log(`\nApprovals: ${approvals}/3`);
@@ -167,7 +167,7 @@ if (!prNumber) {
   process.exit(1);
 }
 
-handlePR(prNumber).catch(error => {
+handlePR(prNumber).catch((error) => {
   console.error('Unhandled error:', error);
   process.exit(1);
 });

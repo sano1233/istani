@@ -46,9 +46,13 @@
     }
   ],
   "connections": {
-    "Quantum Webhook": { "main": [ [ { "node": "Quantum Intelligence Brain", "type": "main", "index": 0 } ] ] },
-    "Quantum Intelligence Brain": { "main": [ [ { "node": "Quantum Analyzer", "type": "main", "index": 0 } ] ] },
-    "Quantum Analyzer": { "main": [ [ { "node": "Quantum Completion", "type": "main", "index": 0 } ] ] }
+    "Quantum Webhook": {
+      "main": [[{ "node": "Quantum Intelligence Brain", "type": "main", "index": 0 }]]
+    },
+    "Quantum Intelligence Brain": {
+      "main": [[{ "node": "Quantum Analyzer", "type": "main", "index": 0 }]]
+    },
+    "Quantum Analyzer": { "main": [[{ "node": "Quantum Completion", "type": "main", "index": 0 }]] }
   },
   "active": true,
   "settings": { "executionOrder": "v1" }

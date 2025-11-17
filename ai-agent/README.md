@@ -50,13 +50,14 @@
 
 The agent leverages **three powerful AI models** working together:
 
-| Model | Purpose | Strengths |
-|-------|---------|-----------|
-| **Claude AI** | Primary code review | Deep analysis, security, architecture review |
-| **GitHub Copilot** | Code suggestions | Contextual completions, best practices |
-| **OpenAI Codex** | Error fixing | Advanced debugging, auto-fix generation |
+| Model              | Purpose             | Strengths                                    |
+| ------------------ | ------------------- | -------------------------------------------- |
+| **Claude AI**      | Primary code review | Deep analysis, security, architecture review |
+| **GitHub Copilot** | Code suggestions    | Contextual completions, best practices       |
+| **OpenAI Codex**   | Error fixing        | Advanced debugging, auto-fix generation      |
 
 **Benefits:**
+
 - **Higher Accuracy** - Cross-validation catches more issues
 - **Better Fixes** - Multiple AI models generate and rank solutions
 - **Consensus Decisions** - 70% approval threshold for confidence
@@ -248,7 +249,7 @@ const agent = new IstaniAIAgent({
   maxTokens: 8000,
   securityEnabled: true,
   autoMerge: true,
-  autoDeploy: true
+  autoDeploy: true,
 });
 ```
 
@@ -288,6 +289,7 @@ npx serve ai-agent/monitoring
 ```
 
 The dashboard shows:
+
 - PRs processed
 - Build success rate
 - Deployment statistics
@@ -311,6 +313,7 @@ The dashboard shows:
 ### Permissions Required
 
 GitHub Token needs:
+
 - `repo` - Repository access
 - `workflow` - Workflow management
 - `write:packages` - Package publishing
@@ -319,6 +322,7 @@ GitHub Token needs:
 ### Secret Scanning
 
 The agent automatically scans for:
+
 - API keys and tokens
 - Private keys (SSH, SSL, etc.)
 - Database credentials

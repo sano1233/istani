@@ -1,25 +1,21 @@
-import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
+import { createClient } from '@/lib/supabase/server';
+import { redirect } from 'next/navigation';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 
 export default async function SettingsPage() {
-  const supabase = await createClient()
+  const supabase = await createClient();
 
   const {
     data: { user },
-  } = await supabase.auth.getUser()
+  } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect('/login')
+    redirect('/login');
   }
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', user.id)
-    .single()
+  const { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).single();
 
   return (
     <main className="flex-1 p-8 overflow-y-auto">
@@ -34,20 +30,17 @@ export default async function SettingsPage() {
         <div className="mb-10 p-4">
           <div className="flex items-center gap-5">
             <div className="w-24 h-24 rounded-full bg-primary/20 flex items-center justify-center">
-              <span className="material-symbols-outlined text-primary text-5xl">
-                person
-              </span>
+              <span className="material-symbols-outlined text-primary text-5xl">person</span>
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-white">
-                {profile?.full_name || 'User'}
-              </h2>
+              <h2 className="text-2xl font-bold text-white">{profile?.full_name || 'User'}</h2>
               <p className="text-white/60">
                 Member since{' '}
-                {profile?.member_since && new Date(profile.member_since).toLocaleDateString('en-US', {
-                  month: 'long',
-                  year: 'numeric',
-                })}
+                {profile?.member_since &&
+                  new Date(profile.member_since).toLocaleDateString('en-US', {
+                    month: 'long',
+                    year: 'numeric',
+                  })}
               </p>
             </div>
           </div>
@@ -56,13 +49,9 @@ export default async function SettingsPage() {
         {/* Profile Section */}
         <Card className="mb-8">
           <h2 className="text-2xl font-bold text-white mb-2">Profile</h2>
-          <p className="text-white/60 mb-6">
-            Manage your personal and physical information.
-          </p>
+          <p className="text-white/60 mb-6">Manage your personal and physical information.</p>
 
-          <h3 className="text-xl font-bold text-white pt-5 pb-3">
-            Personal Details
-          </h3>
+          <h3 className="text-xl font-bold text-white pt-5 pb-3">Personal Details</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Input
               label="Full Name"
@@ -75,27 +64,24 @@ export default async function SettingsPage() {
               placeholder="jane@istani.com"
               defaultValue={profile?.email || ''}
             />
-            <Input
-              label="Age"
-              type="number"
-              placeholder="28"
-              defaultValue={profile?.age || ''}
-            />
+            <Input label="Age" type="number" placeholder="28" defaultValue={profile?.age || ''} />
             <div className="flex flex-col">
-              <label className="pb-2 text-base font-medium text-white">
-                Sex
-              </label>
+              <label className="pb-2 text-base font-medium text-white">Sex</label>
               <select className="w-full h-12 p-3 text-base font-normal leading-normal text-white bg-white/5 rounded-lg border border-white/10 focus:ring-1 focus:ring-primary focus:border-primary">
-                <option className="bg-background-dark" value="female">Female</option>
-                <option className="bg-background-dark" value="male">Male</option>
-                <option className="bg-background-dark" value="">Prefer not to say</option>
+                <option className="bg-background-dark" value="female">
+                  Female
+                </option>
+                <option className="bg-background-dark" value="male">
+                  Male
+                </option>
+                <option className="bg-background-dark" value="">
+                  Prefer not to say
+                </option>
               </select>
             </div>
           </div>
 
-          <h3 className="mt-8 text-xl font-bold text-white pt-5 pb-3">
-            Physical Metrics
-          </h3>
+          <h3 className="mt-8 text-xl font-bold text-white pt-5 pb-3">Physical Metrics</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Input
               label="Height (cm)"
@@ -125,9 +111,7 @@ export default async function SettingsPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="flex flex-col">
-              <label className="pb-2 text-base font-medium text-white">
-                Primary Goal
-              </label>
+              <label className="pb-2 text-base font-medium text-white">Primary Goal</label>
               <select className="w-full h-12 p-3 text-base font-normal leading-normal text-white bg-white/5 rounded-lg border border-white/10 focus:ring-1 focus:ring-primary focus:border-primary">
                 <option className="bg-background-dark">Fat Loss</option>
                 <option className="bg-background-dark">Muscle Gain</option>
@@ -140,5 +124,5 @@ export default async function SettingsPage() {
         </Card>
       </div>
     </main>
-  )
+  );
 }

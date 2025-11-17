@@ -1,5 +1,5 @@
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 export default function HomePage() {
   return (
@@ -21,7 +21,9 @@ export default function HomePage() {
               <Button size="lg">Shop Now</Button>
             </Link>
             <Link href="/register">
-              <Button size="lg" variant="outline">Start Free Trial</Button>
+              <Button size="lg" variant="outline">
+                Start Free Trial
+              </Button>
             </Link>
           </div>
         </div>
@@ -34,12 +36,9 @@ export default function HomePage() {
             <span className="material-symbols-outlined text-primary text-5xl mb-4 block">
               science
             </span>
-            <h3 className="text-2xl font-bold text-white mb-4">
-              Truth Fitness Science
-            </h3>
+            <h3 className="text-2xl font-bold text-white mb-4">Truth Fitness Science</h3>
             <p className="text-white/60">
-              Evidence-based training programs backed by scientific research and
-              real-world results.
+              Evidence-based training programs backed by scientific research and real-world results.
             </p>
           </div>
 
@@ -47,12 +46,9 @@ export default function HomePage() {
             <span className="material-symbols-outlined text-primary text-5xl mb-4 block">
               shopping_bag
             </span>
-            <h3 className="text-2xl font-bold text-white mb-4">
-              Premium Products
-            </h3>
+            <h3 className="text-2xl font-bold text-white mb-4">Premium Products</h3>
             <p className="text-white/60">
-              High-quality supplements and equipment tested and approved by
-              professionals.
+              High-quality supplements and equipment tested and approved by professionals.
             </p>
           </div>
 
@@ -60,12 +56,9 @@ export default function HomePage() {
             <span className="material-symbols-outlined text-primary text-5xl mb-4 block">
               trending_up
             </span>
-            <h3 className="text-2xl font-bold text-white mb-4">
-              Track Progress
-            </h3>
+            <h3 className="text-2xl font-bold text-white mb-4">Track Progress</h3>
             <p className="text-white/60">
-              Advanced analytics to monitor your fitness journey and achieve
-              your goals.
+              Advanced analytics to monitor your fitness journey and achieve your goals.
             </p>
           </div>
         </div>
@@ -74,9 +67,7 @@ export default function HomePage() {
       {/* CTA Section */}
       <section className="px-4 py-20 bg-white/5">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="mb-6 text-5xl font-black text-white">
-            Ready to Transform?
-          </h2>
+          <h2 className="mb-6 text-5xl font-black text-white">Ready to Transform?</h2>
           <p className="mb-8 text-xl text-white/80">
             Join thousands of athletes achieving their fitness goals with Istani.
           </p>
@@ -86,5 +77,5 @@ export default function HomePage() {
         </div>
       </section>
     </div>
-  )
+  );
 }

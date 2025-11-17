@@ -13,7 +13,7 @@ async function query(prompt) {
     const message = await client.messages.create({
       model: 'claude-3-5-sonnet-20241022',
       max_tokens: 4096,
-      messages: [{ role: 'user', content: prompt }]
+      messages: [{ role: 'user', content: prompt }],
     });
     console.log(message.content[0].text);
   } catch (error) {
@@ -30,12 +30,12 @@ async function getPrompt() {
     // Read from stdin
     return new Promise((resolve) => {
       let data = '';
-      process.stdin.on('data', chunk => data += chunk);
+      process.stdin.on('data', (chunk) => (data += chunk));
       process.stdin.on('end', () => resolve(data.trim() || 'Hello'));
     });
   }
 }
 
 getPrompt()
-  .then(prompt => query(prompt))
-  .catch(err => console.log(`Claude error: ${err.message}`));
+  .then((prompt) => query(prompt))
+  .catch((err) => console.log(`Claude error: ${err.message}`));
