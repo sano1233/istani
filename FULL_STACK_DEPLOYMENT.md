@@ -128,6 +128,7 @@ The platform includes a **Unified AI Client** that intelligently routes requests
 See `.env.production.example` for the complete list. Key variables:
 
 #### Core Platform
+
 ```env
 NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
@@ -135,6 +136,7 @@ STRIPE_SECRET_KEY=sk_live_your-key
 ```
 
 #### AI Services
+
 ```env
 ANTHROPIC_API_KEY=sk-ant-your-key
 OPENAI_API_KEY=sk-your-key
@@ -143,12 +145,14 @@ ELEVENLABS_API_KEY=your-elevenlabs-key
 ```
 
 #### Google APIs
+
 ```env
 GOOGLE_CALENDAR_API_KEY=your-calendar-key
 GOOGLE_DRIVE_API_KEY=your-drive-key
 ```
 
 #### Workflow Automation
+
 ```env
 N8N_ENCRYPTION_KEY=generate-secure-64-char-key
 N8N_ISTANI_SHARED_SECRET=generate-secure-secret
@@ -269,6 +273,7 @@ kubectl apply -f k8s/
 ### Pre-built Dashboards
 
 Import these Grafana dashboards:
+
 - **Node.js Apps**: Dashboard ID 11159
 - **Redis**: Dashboard ID 11835
 - **PostgreSQL**: Dashboard ID 9628

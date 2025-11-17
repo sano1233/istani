@@ -9,16 +9,13 @@ export async function POST(req: NextRequest) {
     const { calories, macros, dietaryRestrictions } = body;
 
     if (!calories || !macros) {
-      return NextResponse.json(
-        { error: 'Calories and macros are required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Calories and macros are required' }, { status: 400 });
     }
 
     const response = await unifiedAI.generateNutritionPlan(
       calories,
       macros,
-      dietaryRestrictions || []
+      dietaryRestrictions || [],
     );
 
     return NextResponse.json({
@@ -34,7 +31,7 @@ export async function POST(req: NextRequest) {
         success: false,
         error: error.message || 'Failed to generate nutrition plan',
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

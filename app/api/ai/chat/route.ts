@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
         success: false,
         error: error.message || 'Failed to process AI request',
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

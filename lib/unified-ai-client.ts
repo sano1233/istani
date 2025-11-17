@@ -63,7 +63,7 @@ export class UnifiedAIClient {
   private async sendToProvider(
     provider: string,
     messages: AIMessage[],
-    options: any
+    options: any,
   ): Promise<AIResponse> {
     switch (provider) {
       case 'openai':
@@ -302,7 +302,7 @@ Provide a detailed weekly workout plan with specific exercises.`,
   async generateNutritionPlan(
     calories: number,
     macros: { protein: number; carbs: number; fats: number },
-    dietaryRestrictions: string[]
+    dietaryRestrictions: string[],
   ) {
     const messages: AIMessage[] = [
       {

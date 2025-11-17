@@ -9,16 +9,13 @@ export async function POST(req: NextRequest) {
     const { goals, fitnessLevel, equipment } = body;
 
     if (!goals || !fitnessLevel) {
-      return NextResponse.json(
-        { error: 'Goals and fitness level are required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Goals and fitness level are required' }, { status: 400 });
     }
 
     const response = await unifiedAI.generateWorkoutPlan(
       goals,
       fitnessLevel,
-      equipment || ['bodyweight']
+      equipment || ['bodyweight'],
     );
 
     return NextResponse.json({
@@ -34,7 +31,7 @@ export async function POST(req: NextRequest) {
         success: false,
         error: error.message || 'Failed to generate workout plan',
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
