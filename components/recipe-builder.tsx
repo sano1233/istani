@@ -7,7 +7,7 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Card } from './ui/card';
 import type { FoodNutrition } from '@/lib/usda-api';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { createClient } from '@/lib/supabase/client';
 
 interface RecipeIngredient {
   food: FoodNutrition;
@@ -32,7 +32,7 @@ export function RecipeBuilder() {
   const [error, setError] = useState<string | null>(null);
   const [isPublic, setIsPublic] = useState(false);
 
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
 
   const handleFoodSelect = (food: FoodNutrition) => {
     const newIngredient: RecipeIngredient = {

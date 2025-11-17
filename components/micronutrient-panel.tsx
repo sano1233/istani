@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Activity, TrendingUp, AlertCircle } from 'lucide-react';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { createClient } from '@/lib/supabase/client';
 import { Card } from './ui/card';
 import { DAILY_VALUES, calculateDailyValuePercent } from '@/lib/usda-api';
 
@@ -53,7 +53,7 @@ export function MicronutrientPanel() {
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'vitamin' | 'mineral' | 'other'>('all');
 
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
 
   useEffect(() => {
     fetchMicronutrients();

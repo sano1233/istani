@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { format, subDays, startOfDay } from 'date-fns';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { createClient } from '@/lib/supabase/client';
 import { Card } from './ui/card';
 import { TrendingDown, TrendingUp, Minus } from 'lucide-react';
 
@@ -22,7 +22,7 @@ export function WeightTrendChart({ days = 30 }: WeightTrendChartProps) {
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState<7 | 30 | 90 | 365>(days);
 
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
 
   useEffect(() => {
     fetchWeightData();

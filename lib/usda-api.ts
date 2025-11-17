@@ -168,7 +168,7 @@ function parseNutrients(nutrients: USDANutrient[]): Partial<FoodNutrition> {
   nutrients.forEach(nutrient => {
     const key = NUTRIENT_MAP[nutrient.nutrientId];
     if (key) {
-      nutrition[key] = nutrient.value;
+      (nutrition as any)[key] = nutrient.value;
     }
   });
 
@@ -307,7 +307,7 @@ export function calculateServingNutrition(
   // Scale all numeric nutrients
   Object.entries(food).forEach(([key, value]) => {
     if (typeof value === 'number' && key !== 'fdcId' && key !== 'servingSize') {
-      scaledNutrition[key as keyof FoodNutrition] = value * multiplier;
+      (scaledNutrition as any)[key] = value * multiplier;
     }
   });
 

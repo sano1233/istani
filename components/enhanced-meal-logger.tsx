@@ -7,7 +7,7 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Card } from './ui/card';
 import type { FoodNutrition } from '@/lib/usda-api';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { createClient } from '@/lib/supabase/client';
 
 interface MealItem {
   food: FoodNutrition;
@@ -28,7 +28,7 @@ export function EnhancedMealLogger({ onMealLogged }: EnhancedMealLoggerProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
 
   const handleFoodSelect = (food: FoodNutrition) => {
     const newItem: MealItem = {
