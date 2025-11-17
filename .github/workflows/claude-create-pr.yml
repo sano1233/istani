@@ -1,0 +1,203 @@
+name: 🤖 Claude - Create PR and Auto-Merge
+
+# Creates PR for Claude branches and triggers auto-merge
+# This workflow handles branches created by Claude Code
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch_name:
+        description: 'Branch name to create PR from'
+        required: false
+        default: ''
+  push:
+    branches:
+      - 'claude/**'
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  create-pr:
+    name: 🔀 Create PR for Claude Branch
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract branch info
+        id: branch
+        run: |
+          if [ -n "${{ github.event.inputs.branch_name }}" ]; then
+            BRANCH_NAME="${{ github.event.inputs.branch_name }}"
+          else
+            BRANCH_NAME="${GITHUB_REF#refs/heads/}"
+          fi
+          echo "name=$BRANCH_NAME" >> $GITHUB_OUTPUT
+
+          # Get last commit message as PR title
+          TITLE=$(git log -1 --pretty=%s)
+          echo "title=$TITLE" >> $GITHUB_OUTPUT
+
+          # Get commit body as PR body
+          BODY=$(git log -1 --pretty=%b)
+          if [ -z "$BODY" ]; then
+            # If no body, create a detailed one from the commit
+            BODY="Auto-created PR from Claude Code branch: $BRANCH_NAME"
+          fi
+          echo "body<<EOF" >> $GITHUB_OUTPUT
+          echo "$BODY" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create Pull Request
+        id: create_pr
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const branch = '${{ steps.branch.outputs.name }}';
+            const title = '${{ steps.branch.outputs.title }}';
+            let body = `${{ steps.branch.outputs.body }}`;
+
+            // Enhance body with automation info
+            body += `
+
+---
+
+## 🤖 Automated Deployment Process
+
+This PR was automatically created by Claude Code and will be auto-merged after checks pass.
+
+### What happens next:
+1. ✅ GitHub Actions CI runs tests and builds
+2. ✅ Auto-merge workflow reviews the changes
+3. ✅ If all checks pass, PR is automatically merged
+4. ✅ Vercel deploys to production
+
+### Automation Status
+- **Created**: Automatically by Claude Code
+- **Merge**: Will auto-merge when checks pass
+- **Deploy**: Automatic on merge
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+            `;
+
+            try {
+              // Check if PR already exists
+              const { data: existingPRs } = await github.rest.pulls.list({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                head: `${context.repo.owner}:${branch}`,
+                state: 'open'
+              });
+
+              if (existingPRs.length > 0) {
+                const pr = existingPRs[0];
+                console.log(`ℹ️  PR already exists: #${pr.number}`);
+                console.log(`URL: ${pr.html_url}`);
+                core.setOutput('pr_number', pr.number);
+                core.setOutput('pr_url', pr.html_url);
+                core.setOutput('already_exists', 'true');
+                return;
+              }
+
+              // Create new PR
+              const { data: pr } = await github.rest.pulls.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: title,
+                body: body,
+                head: branch,
+                base: 'main'
+              });
+
+              console.log(`✅ Created PR #${pr.number}: ${pr.html_url}`);
+              core.setOutput('pr_number', pr.number);
+              core.setOutput('pr_url', pr.html_url);
+              core.setOutput('already_exists', 'false');
+
+              // Add labels
+              try {
+                await github.rest.issues.addLabels({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: pr.number,
+                  labels: ['claude-code', 'auto-merge', 'deployment']
+                });
+              } catch (labelError) {
+                console.log('ℹ️  Could not add labels (may not exist)');
+              }
+
+            } catch (error) {
+              if (error.message.includes('A pull request already exists')) {
+                console.log('ℹ️  PR already exists for this branch');
+              } else {
+                throw error;
+              }
+            }
+
+      - name: Post PR comment
+        if: steps.create_pr.outputs.already_exists != 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = '${{ steps.create_pr.outputs.pr_number }}';
+
+            if (!prNumber || prNumber === '') {
+              console.log('No PR number, skipping comment');
+              return;
+            }
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: parseInt(prNumber),
+              body: `## 🤖 Automated Deployment Pipeline Activated
+
+This PR has entered the automated deployment pipeline:
+
+### ✅ Current Status
+- ✅ PR created successfully
+- ⏳ Waiting for CI checks to complete
+- ⏳ Auto-merge will trigger when all checks pass
+
+### 🔄 What's Happening
+1. **CI Checks**: Running tests, linting, type-checking, and build
+2. **Auto-Merge**: Once checks pass, this PR will automatically merge
+3. **Deployment**: Vercel will automatically deploy to production
+
+### 📊 Files Changed
+See the "Files changed" tab above for detailed diff.
+
+### 🔍 Review
+The auto-merge system will verify:
+- ✅ All CI checks pass
+- ✅ Build completes successfully
+- ✅ No merge conflicts
+- ✅ Code quality standards met
+
+---
+
+💡 **Tip**: You can manually merge this PR at any time if you prefer not to wait for auto-merge.
+
+🤖 Managed by Claude Code Auto-Merge System
+              `
+            });
+
+      - name: Summary
+        run: |
+          echo "## 🎉 PR Creation Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Branch**: ${{ steps.branch.outputs.name }}" >> $GITHUB_STEP_SUMMARY
+          echo "**PR**: #${{ steps.create_pr.outputs.pr_number }}" >> $GITHUB_STEP_SUMMARY
+          echo "**URL**: ${{ steps.create_pr.outputs.pr_url }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Next Steps" >> $GITHUB_STEP_SUMMARY
+          echo "1. CI checks will run automatically" >> $GITHUB_STEP_SUMMARY
+          echo "2. Auto-merge will activate when checks pass" >> $GITHUB_STEP_SUMMARY
+          echo "3. Vercel will deploy to production on merge" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "🤖 **Fully automated - no manual intervention required!**" >> $GITHUB_STEP_SUMMARY

@@ -23,7 +23,7 @@ export async function POST(req: Request) {
   );
 
   switch (event.type) {
-    case 'checkout.session.completed':
+    case 'checkout.session.completed': {
       const session = event.data.object;
 
       // Update order status
@@ -33,14 +33,17 @@ export async function POST(req: Request) {
         .eq('stripe_payment_intent_id', session.payment_intent);
 
       break;
+    }
 
-    case 'payment_intent.succeeded':
+    case 'payment_intent.succeeded': {
       // Handle successful payment
       break;
+    }
 
-    case 'payment_intent.payment_failed':
+    case 'payment_intent.payment_failed': {
       // Handle failed payment
       break;
+    }
   }
 
   return NextResponse.json({ received: true });

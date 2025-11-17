@@ -38,7 +38,7 @@ export default function CheckoutSuccessPage() {
           </p>
 
           <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
-            <h2 className="text-2xl font-display font-bold mb-4">What's Next?</h2>
+            <h2 className="text-2xl font-display font-bold mb-4">What&apos;s Next?</h2>
             <div className="space-y-4 text-left">
               <div className="flex items-start gap-4">
                 <div className="w-8 h-8 bg-brand-primary text-white rounded-full flex items-center justify-center flex-shrink-0 font-bold">
@@ -47,7 +47,7 @@ export default function CheckoutSuccessPage() {
                 <div>
                   <h3 className="font-semibold mb-1">Check Your Email</h3>
                   <p className="text-gray-600 text-sm">
-                    You'll receive an order confirmation email with all the details
+                    You&apos;ll receive an order confirmation email with all the details
                   </p>
                 </div>
               </div>

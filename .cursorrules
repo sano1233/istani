@@ -1,0 +1,52 @@
+# Cursor Rules for Istani Fitness Platform
+
+## CodeRabbit CLI Integration
+
+CodeRabbit is already installed in the terminal. Run it as a way to review your code. Run the command: `cr -h` for details on commands available. 
+
+In general, I want you to run coderabbit with the `--prompt-only` flag. To review uncommitted changes (this is what we'll use most of the time) run: `coderabbit --prompt-only -t uncommitted`.
+
+IMPORTANT: When running CodeRabbit to review code changes, don't run it more than 3 times in a given set of changes.
+
+## Code Review Workflow
+
+When implementing features or fixing issues:
+1. Implement the requested changes
+2. Run `coderabbit --prompt-only -t uncommitted` to review uncommitted changes
+3. Wait for CodeRabbit to complete (may take 7-30 minutes)
+4. Analyze the suggestions and create a task list
+5. Fix critical issues (you can ignore nits if requested)
+6. Repeat if necessary (max 3 times per changeset)
+
+## Project Context
+
+- **Framework**: Next.js 15 with App Router
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **Backend**: Supabase (PostgreSQL)
+- **Payments**: Stripe
+- **Deployment**: Vercel
+
+## Code Standards
+
+- Use TypeScript for all new code
+- Follow Next.js 15 best practices
+- Use functional components with hooks
+- Implement proper error handling
+- Add type safety with TypeScript
+- Use ESLint and Prettier for formatting
+- Write self-documenting code with clear variable names
+
+## Testing
+
+- Run `npm run build` before committing
+- Run `npm run typecheck` to verify types
+- Run `npm run lint` to check code quality
+- Ensure all pages generate successfully
+
+## Deployment
+
+- All deployment fixes should be tested locally first
+- Verify build passes before creating PR
+- Use automated workflows for merging
+- Check CI/CD status before deployment
