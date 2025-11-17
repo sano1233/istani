@@ -7,9 +7,11 @@ The ISTANI repository is equipped with a **fully automated deployment pipeline**
 ## 🚀 Automated Workflows
 
 ### 1. **Claude PR Creation** (`claude-create-pr.yml`)
+
 **Trigger**: Push to `claude/**` branches
 
 **What it does:**
+
 - ✅ Automatically creates a PR when Claude pushes code
 - ✅ Adds detailed deployment status and labels
 - ✅ Posts informative comments about the automation pipeline
@@ -20,11 +22,14 @@ The ISTANI repository is equipped with a **fully automated deployment pipeline**
 ---
 
 ### 2. **Auto-Merge All PRs** (`auto-merge-all-prs.yml`)
+
 **Trigger**:
+
 - Every 6 hours (cron schedule)
 - Manual trigger via workflow_dispatch
 
 **What it does:**
+
 - ✅ Discovers all open PRs
 - ✅ Syncs each PR with base branch
 - ✅ Applies ESLint auto-fixes
@@ -35,6 +40,7 @@ The ISTANI repository is equipped with a **fully automated deployment pipeline**
 - ✅ Posts status comments on PRs
 
 **Features**:
+
 - Processes up to 100 PRs
 - Runs 3 PRs in parallel
 - Squash merge by default
@@ -45,12 +51,15 @@ The ISTANI repository is equipped with a **fully automated deployment pipeline**
 ---
 
 ### 3. **Auto-Resolve Failures** (`auto-resolve-failures.yml`)
+
 **Trigger**:
+
 - When any workflow completes (on failure)
 - Every 15 minutes (cron schedule)
 - Manual trigger via workflow_dispatch
 
 **What it does:**
+
 - ✅ Detects failed workflow runs in last 24 hours
 - ✅ Analyzes failure logs for common patterns
 - ✅ Applies automatic fixes:
@@ -65,6 +74,7 @@ The ISTANI repository is equipped with a **fully automated deployment pipeline**
 - ✅ Generates detailed status reports
 
 **Failure Patterns Detected**:
+
 1. Missing dependencies (`npm install`)
 2. ESLint errors (auto-fix)
 3. Prettier formatting (auto-format)
@@ -131,7 +141,9 @@ The ISTANI repository is equipped with a **fully automated deployment pipeline**
 ## ⚙️ Configuration
 
 ### GitHub Actions Permissions
+
 All workflows have these permissions:
+
 ```yaml
 permissions:
   contents: write
@@ -142,6 +154,7 @@ permissions:
 ```
 
 ### Vercel Configuration
+
 Location: `vercel.json`
 
 ```json
@@ -158,6 +171,7 @@ Location: `vercel.json`
 ### Environment Variables Required
 
 **In Vercel Dashboard** (for deployment):
+
 ```env
 # Supabase
 NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
@@ -189,30 +203,35 @@ ADMIN_REFRESH_TOKEN=your-admin-token
 ## 🎯 Benefits of This Setup
 
 ### 1. **Zero Manual Intervention**
+
 - PRs are created automatically
 - Errors are fixed automatically
 - PRs are merged automatically
 - Deployments happen automatically
 
 ### 2. **Always Up-to-Date**
+
 - Code is automatically formatted (Prettier)
 - Linting errors are auto-fixed (ESLint)
 - Conflicts are auto-resolved
 - Failed runs are automatically retried
 
 ### 3. **Cost-Effective**
+
 - 100% FREE automation
 - No paid API keys required
 - Uses only GitHub Actions free tier
 - Vercel free tier for hosting
 
 ### 4. **Robust Error Handling**
+
 - Detects 7+ common failure patterns
 - Automatically applies fixes
 - Retries with exponential backoff
 - Detailed logging and reporting
 
 ### 5. **High Velocity**
+
 - Code goes from commit to production in minutes
 - Multiple PRs processed in parallel
 - Continuous integration and deployment
@@ -223,13 +242,17 @@ ADMIN_REFRESH_TOKEN=your-admin-token
 ## 📈 Monitoring and Status
 
 ### Check Workflow Status
+
 View all workflow runs at:
+
 ```
 https://github.com/sano1233/istani/actions
 ```
 
 ### View PR Status
+
 All PRs will have automated comments showing:
+
 - ✅ Which checks have passed
 - ⏳ Which checks are pending
 - ❌ Which checks failed (with auto-fix attempts)
@@ -238,6 +261,7 @@ All PRs will have automated comments showing:
 ### Manual Triggers
 
 **Trigger Auto-Merge Manually**:
+
 1. Go to: https://github.com/sano1233/istani/actions/workflows/auto-merge-all-prs.yml
 2. Click "Run workflow"
 3. Select branch: `main`
@@ -245,6 +269,7 @@ All PRs will have automated comments showing:
 5. Click "Run workflow"
 
 **Trigger Error Resolution Manually**:
+
 1. Go to: https://github.com/sano1233/istani/actions/workflows/auto-resolve-failures.yml
 2. Click "Run workflow"
 3. Select branch: `main`
@@ -255,12 +280,14 @@ All PRs will have automated comments showing:
 ## 🔒 Security
 
 ### Secrets Management
+
 - All API keys stored in Vercel environment variables
 - GitHub secrets used for workflow tokens
 - No secrets committed to repository
 - `.env.local` in `.gitignore`
 
 ### Auto-Fix Safety
+
 - Only applies non-destructive fixes
 - Preserves git history
 - Creates new commits (never force pushes)
@@ -270,15 +297,15 @@ All PRs will have automated comments showing:
 
 ## 🚦 Current Status
 
-| Component | Status | Details |
-|-----------|--------|---------|
-| Build | ✅ Passing | No errors |
-| TypeCheck | ✅ Passing | No type errors |
-| Lint | ✅ Passing | Warnings only (non-blocking) |
-| Auto-PR Creation | ✅ Active | For claude/* branches |
-| Auto-Merge | ✅ Active | Runs every 6 hours |
-| Auto-Fix | ✅ Active | Runs every 15 minutes |
-| Vercel Deployment | ✅ Ready | Configured and waiting |
+| Component         | Status     | Details                      |
+| ----------------- | ---------- | ---------------------------- |
+| Build             | ✅ Passing | No errors                    |
+| TypeCheck         | ✅ Passing | No type errors               |
+| Lint              | ✅ Passing | Warnings only (non-blocking) |
+| Auto-PR Creation  | ✅ Active  | For claude/\* branches       |
+| Auto-Merge        | ✅ Active  | Runs every 6 hours           |
+| Auto-Fix          | ✅ Active  | Runs every 15 minutes        |
+| Vercel Deployment | ✅ Ready   | Configured and waiting       |
 
 ---
 

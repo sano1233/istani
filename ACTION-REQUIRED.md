@@ -15,6 +15,7 @@
 👉 **Go to**: https://github.com/sano1233/istani/pulls
 
 **Look for PR with**:
+
 - Title containing: "fix-deployment-errors" or "deployment errors"
 - From branch: `claude/fix-deployment-errors-012e2iWFeSURxjVPD4mB5D7m`
 - To branch: `main`
@@ -38,27 +39,31 @@
 👉 **Quick Link**: https://github.com/sano1233/istani/compare/main...claude/fix-deployment-errors-012e2iWFeSURxjVPD4mB5D7m
 
 **PR Title**:
+
 ```
 fix: Resolve all deployment errors and merge automated deploy
 ```
 
 **PR Description**:
+
 ```markdown
 ## ✅ All Deployment Errors Resolved
 
 This PR consolidates all deployment fixes and resolves build errors.
 
 ### Changes
+
 - ✅ Fixed missing dependencies (lucide-react, prettier)
 - ✅ Resolved all build errors
 - ✅ Fixed TypeScript type imports
-- ✅ Updated CI/CD workflows for claude/** branches
+- ✅ Updated CI/CD workflows for claude/\*\* branches
 - ✅ Fixed SSR issues in checkout page
 - ✅ Updated ESLint configuration
 - ✅ Added comprehensive documentation
 - ✅ Resolved merge conflicts
 
 ### Verification
+
 - ✅ Build passes (26 pages generated)
 - ✅ TypeScript type checking passes
 - ✅ All dependencies installed
@@ -66,11 +71,13 @@ This PR consolidates all deployment fixes and resolves build errors.
 - ✅ Branch pushed to remote
 
 ### Ready for Auto-Merge
+
 - All checks should pass
 - Auto-merge workflows are active
 - Ready for production deployment
 
 ### Documentation
+
 - `TRIGGER-AUTOMATION.md` - Complete automation guide
 - `BRANCH-CONSOLIDATION.md` - Branch details
 - `DEPLOYMENT-STATUS.md` - Deployment status
@@ -92,14 +99,15 @@ This PR consolidates all deployment fixes and resolves build errors.
 
 1. **Check the error** in the PR checks section
 2. **Common fixes**:
+
    ```bash
    # If build fails
    npm install
    npm run build
-   
+
    # If TypeScript fails
    npm run typecheck
-   
+
    # If linting fails
    npm run lint -- --fix
    ```
@@ -129,6 +137,7 @@ This PR consolidates all deployment fixes and resolves build errors.
 ## 📚 Full Documentation
 
 All detailed instructions are in:
+
 - **`TRIGGER-AUTOMATION.md`** ← **START HERE for complete guide**
 - `BRANCH-CONSOLIDATION.md` - Branch analysis
 - `DEPLOYMENT-STATUS.md` - Deployment details

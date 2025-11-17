@@ -11,6 +11,7 @@
 The `claude-create-pr.yml` workflow should have automatically created a PR when you pushed.
 
 **Check if PR exists:**
+
 1. Go to: https://github.com/sano1233/istani/pulls
 2. Look for a PR from branch `claude/fix-deployment-errors-012e2iWFeSURxjVPD4mB5D7m`
 
@@ -18,6 +19,7 @@ The `claude-create-pr.yml` workflow should have automatically created a PR when 
 **If NO PR** → Create it manually:
 
 ### Create PR Manually
+
 1. Visit: https://github.com/sano1233/istani/compare/main...claude/fix-deployment-errors-012e2iWFeSURxjVPD4mB5D7m
 2. Click "Create pull request"
 3. Title: `Fix all deployment errors and prepare for automated deployment`
@@ -25,9 +27,11 @@ The `claude-create-pr.yml` workflow should have automatically created a PR when 
 
 ```markdown
 ## Summary
+
 This PR fixes all Vercel deployment errors, GitHub Actions CI failures, and prepares the repository for automated deployment.
 
 ## Changes Made
+
 - ✅ Fixed build errors (installed lucide-react)
 - ✅ Updated ESLint configuration for Next.js 15
 - ✅ Added missing package.json scripts (typecheck, format:check)
@@ -37,11 +41,13 @@ This PR fixes all Vercel deployment errors, GitHub Actions CI failures, and prep
 - ✅ Created comprehensive automation documentation
 
 ## Test Results
+
 - ✅ Build: PASSING
 - ✅ TypeCheck: PASSING
 - ✅ Lint: PASSING (warnings only, non-blocking)
 
 ## Automation
+
 This PR will be automatically merged by the auto-merge system once all checks pass.
 
 🤖 Created with Claude Code
@@ -54,6 +60,7 @@ This PR will be automatically merged by the auto-merge system once all checks pa
 ## ✅ Step 2: Wait for CI Checks (or Monitor)
 
 GitHub Actions CI will automatically run:
+
 - `npm ci` - Install dependencies
 - `npm run format:check` - Format validation
 - `npm run lint` - Linting
@@ -61,6 +68,7 @@ GitHub Actions CI will automatically run:
 - `npm run build` - Production build
 
 **Monitor Progress:**
+
 - Go to: https://github.com/sano1233/istani/actions
 - Watch the CI workflow (should complete in ~2-5 minutes)
 
@@ -73,7 +81,9 @@ GitHub Actions CI will automatically run:
 You have **3 options**:
 
 ### Option A: Wait for Automatic Merge (Easiest)
+
 The `auto-merge-all-prs.yml` workflow runs every 6 hours. It will:
+
 - Detect your PR
 - Verify all checks pass
 - Automatically merge it
@@ -81,6 +91,7 @@ The `auto-merge-all-prs.yml` workflow runs every 6 hours. It will:
 **Timeline**: Within 6 hours (next scheduled run)
 
 ### Option B: Manually Trigger Auto-Merge (Recommended - Fastest)
+
 1. Go to: https://github.com/sano1233/istani/actions/workflows/auto-merge-all-prs.yml
 2. Click **"Run workflow"** button (top right)
 3. **Use workflow from**: Select `main`
@@ -90,6 +101,7 @@ The `auto-merge-all-prs.yml` workflow runs every 6 hours. It will:
 **Timeline**: ~5-10 minutes
 
 **What it does:**
+
 - Discovers your open PR
 - Applies ESLint/Prettier auto-fixes (if needed)
 - Resolves any conflicts
@@ -97,6 +109,7 @@ The `auto-merge-all-prs.yml` workflow runs every 6 hours. It will:
 - Auto-merges to main
 
 ### Option C: Manual Merge (If You Prefer)
+
 1. Go to your PR page
 2. Wait for all checks to pass (green checkmarks)
 3. Click **"Squash and merge"**
@@ -111,12 +124,14 @@ The `auto-merge-all-prs.yml` workflow runs every 6 hours. It will:
 After the PR is merged to `main`, set up Vercel deployment:
 
 ### 4.1 Import Repository to Vercel
+
 1. Go to: https://vercel.com/new
 2. Click **"Import Git Repository"**
 3. Select **`sano1233/istani`**
 4. Click **"Import"**
 
 ### 4.2 Configure Build Settings
+
 Vercel should auto-detect these settings (verify they match):
 
 ```
@@ -128,6 +143,7 @@ Development Command: npm run dev
 ```
 
 ### 4.3 Set Production Branch
+
 - **Production Branch**: `main`
 
 ---
@@ -137,6 +153,7 @@ Development Command: npm run dev
 **CRITICAL**: Add these environment variables in Vercel dashboard before deploying.
 
 ### 5.1 Navigate to Environment Variables
+
 1. In your Vercel project dashboard
 2. Click **"Settings"** tab
 3. Click **"Environment Variables"** in left sidebar
@@ -146,6 +163,7 @@ Development Command: npm run dev
 Copy these from your actual values (replace placeholders):
 
 #### Supabase (Required)
+
 ```
 Name: NEXT_PUBLIC_SUPABASE_URL
 Value: https://your-project-id.supabase.co
@@ -166,6 +184,7 @@ Environment: Production, Preview, Development
 ```
 
 #### Stripe (Required for payments)
+
 ```
 Name: NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 Value: pk_test_... (or pk_live_... for production)
@@ -187,6 +206,7 @@ Environment: Production, Preview, Development
 ```
 
 #### ElevenLabs (For voice agent)
+
 ```
 Name: NEXT_PUBLIC_ELEVENLABS_AGENT_ID
 Value: your-agent-id-from-elevenlabs-dashboard
@@ -201,6 +221,7 @@ Environment: Production, Preview, Development
 ```
 
 #### USDA (For nutrition data)
+
 ```
 Name: USDA_API_KEY
 Value: your-usda-api-key
@@ -209,6 +230,7 @@ Get free key: https://fdc.nal.usda.gov/api-key-signup.html
 ```
 
 #### Images (Required)
+
 ```
 Name: PEXELS_API_KEY
 Value: your-pexels-api-key
@@ -224,6 +246,7 @@ Get free key: https://unsplash.com/developers
 ```
 
 #### Admin (Optional)
+
 ```
 Name: ADMIN_REFRESH_TOKEN
 Value: change-me-to-secure-random-string
@@ -248,11 +271,13 @@ If you don't have API keys yet:
 After environment variables are set:
 
 ### Option A: Automatic Deployment (When PR Merges)
+
 Vercel will automatically deploy when your PR merges to `main`.
 
 **Timeline**: ~2-5 minutes after merge
 
 ### Option B: Manual Trigger (If Needed)
+
 1. Go to Vercel dashboard
 2. Click **"Deployments"** tab
 3. Click **"Redeploy"** on latest deployment
@@ -264,11 +289,13 @@ Vercel will automatically deploy when your PR merges to `main`.
 Once deployed, verify everything works:
 
 ### 7.1 Check Deployment Status
+
 1. In Vercel dashboard, check deployment status
 2. Should see: **"Ready"** with green checkmark
 3. Note your production URL: `https://your-project.vercel.app`
 
 ### 7.2 Test Core Features
+
 Visit your production URL and test:
 
 - ✅ Homepage loads
@@ -279,6 +306,7 @@ Visit your production URL and test:
 - ✅ ElevenLabs voice agent works (if integrated)
 
 ### 7.3 Check Browser Console
+
 - Open DevTools (F12)
 - Check Console for errors
 - Verify no API key errors
@@ -316,27 +344,32 @@ Use this to track your progress:
 ## 🔧 Troubleshooting
 
 ### Build Fails in Vercel
+
 - Check Vercel build logs for specific error
 - Verify all environment variables are set
 - Ensure `NEXT_PUBLIC_*` variables are spelled correctly
 - Check that values don't have trailing spaces
 
 ### Supabase Connection Fails
+
 - Verify `NEXT_PUBLIC_SUPABASE_URL` matches your project URL
 - Check that `NEXT_PUBLIC_SUPABASE_ANON_KEY` is the public key (not service role)
 - Ensure RLS policies are configured in Supabase
 
 ### Stripe Payment Fails
+
 - Verify you're using matching keys (both test or both live)
 - Check webhook secret matches Stripe dashboard
 - Ensure webhook endpoint is configured: `https://your-domain.vercel.app/api/webhooks/stripe`
 
 ### Images Don't Load
+
 - Verify `PEXELS_API_KEY` is set correctly
 - Check API key is active on Pexels dashboard
 - Look for rate limit errors in console
 
 ### Auto-Merge Doesn't Trigger
+
 - Manually trigger via: https://github.com/sano1233/istani/actions/workflows/auto-merge-all-prs.yml
 - Check workflow logs for errors
 - Verify PR is in "open" state with passing checks
