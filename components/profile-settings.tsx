@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type FormEvent } from 'react';
 import { createClient } from '@/lib/supabase/client';
 
 interface Profile {
@@ -29,7 +29,7 @@ export function ProfileSettings({ profile, userId }: { profile: Profile | null; 
 
   const supabase = createClient();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setSuccess(false);

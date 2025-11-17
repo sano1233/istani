@@ -162,7 +162,7 @@ export default async function NutritionPage() {
 
           {/* AI Recommendations - Takes 1 column */}
           <div>
-            <NutritionRecommendations recommendations={recommendations || []} userId={user.id} />
+            <NutritionRecommendations recommendations={recommendations || []} />
           </div>
         </div>
       </div>

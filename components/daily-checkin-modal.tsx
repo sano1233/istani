@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type FormEvent } from 'react';
 import { createClient } from '@/lib/supabase/client';
 
 interface DailyCheckInModalProps {
@@ -22,7 +22,7 @@ export function DailyCheckInModal({ userId, onClose }: DailyCheckInModalProps) {
   const moodEmojis = ['😢', '😕', '😐', '😊', '🤩'];
   const energyEmojis = ['😴', '😪', '😐', '💪', '⚡'];
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setSuccess(false);
@@ -73,14 +73,14 @@ export function DailyCheckInModal({ userId, onClose }: DailyCheckInModalProps) {
         </div>
 
         <p className="text-sm text-gray-600 mb-6">
-          Take a moment to reflect on how you're feeling today. Your AI coach uses this data to
+          Take a moment to reflect on how you&apos;re feeling today. Your AI coach uses this data to
           personalize your recommendations.
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Mood */}
           <div>
-            <label className="block text-sm font-medium mb-2">How's your mood today?</label>
+            <label className="block text-sm font-medium mb-2">How&apos;s your mood today?</label>
             <div className="flex items-center justify-between gap-2">
               {moodEmojis.map((emoji, index) => (
                 <button

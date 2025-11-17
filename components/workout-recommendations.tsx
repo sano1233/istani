@@ -27,10 +27,8 @@ const DIFFICULTY_COLORS: Record<string, string> = {
 
 export function WorkoutRecommendations({
   recommendations,
-  userId,
 }: {
   recommendations: WorkoutRecommendation[];
-  userId: string;
 }) {
   if (!recommendations || recommendations.length === 0) {
     return (

@@ -26,7 +26,8 @@ export function ProgressChart({ title, data, dataKey, unit, color, target }: Pro
 
     const minValue = Math.min(...values);
     const maxValue = Math.max(...values);
-    const range = maxValue - minValue || 1;
+    // Range calculated but not directly used - kept for potential future use
+    // const range = maxValue - minValue || 1;
 
     // Add target to range calculation if provided
     const adjustedMin = target ? Math.min(minValue, target) : minValue;

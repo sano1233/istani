@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import { useState, useEffect } from 'react';
 
 /**
  * Repository Dashboard Component
@@ -70,11 +70,11 @@ interface ReposData {
 }
 
 export function RepositoryDashboard() {
-  const [reposData, setReposData] = React.useState<ReposData | null>(null);
-  const [loading, setLoading] = React.useState(true);
-  const [error, setError] = React.useState<string | null>(null);
+  const [reposData, setReposData] = useState<ReposData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     async function loadData() {
       try {
         // In production, fetch from an API endpoint instead

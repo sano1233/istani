@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, type FormEvent } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { Input } from '@/components/ui/input';
@@ -15,10 +15,15 @@ export default function RegisterPage() {
   const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [origin, setOrigin] = useState('');
   const router = useRouter();
   const supabase = createClient();
 
-  async function handleRegister(e: React.FormEvent) {
+  useEffect(() => {
+    setOrigin(window.location.origin);
+  }, []);
+
+  async function handleRegister(e: FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError('');
@@ -42,10 +47,12 @@ export default function RegisterPage() {
   }
 
   async function handleGoogleSignup() {
+    if (!origin) return;
+    
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: `${origin}/auth/callback`,
       },
     });
 

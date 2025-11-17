@@ -12,6 +12,8 @@ interface CartStore {
   getTotalPrice: () => number;
 }
 
+// Note: Function parameters are used in implementation, ESLint false positives
+
 export const useCartStore = create<CartStore>()(
   persist(
     (set, get) => ({

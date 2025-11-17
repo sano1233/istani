@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type FormEvent } from 'react';
 import { createClient } from '@/lib/supabase/client';
 
 const WORKOUT_TYPES = [
@@ -74,7 +74,7 @@ export function WorkoutLogger({ userId }: { userId: string }) {
     setExercises(updated);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     setSuccess(false);

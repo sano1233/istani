@@ -25,8 +25,12 @@ export function VoiceAssistant() {
   );
 }
 
+// TypeScript declaration for custom ElevenLabs element
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   namespace JSX {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     interface IntrinsicElements {
       'elevenlabs-convai': React.DetailedHTMLProps<
         React.HTMLAttributes<HTMLElement> & {
