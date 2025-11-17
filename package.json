@@ -6,14 +6,21 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "aggregate": "node scripts/aggregateRepos.js",
+    "review": "bash scripts/coderabbit-review.sh",
+    "review:plain": "export PATH=\"$HOME/.local/bin:$PATH\" && coderabbit --plain -t uncommitted",
+    "review:prompt": "export PATH=\"$HOME/.local/bin:$PATH\" && coderabbit --prompt-only -t uncommitted"
   },
   "dependencies": {
+    "@octokit/rest": "^20.0.2",
     "@stripe/stripe-js": "^4.10.0",
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.45.6",
     "@tailwindcss/forms": "^0.5.9",
     "clsx": "^2.1.1",
+    "lucide-react": "^0.553.0",
     "next": "^15.1.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
