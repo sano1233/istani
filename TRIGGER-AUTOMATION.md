@@ -22,27 +22,31 @@ git push origin claude/fix-deployment-errors-012e2iWFeSURxjVPD4mB5D7m
 4. **Fill in PR details**:
    - Title: `fix: Resolve all deployment errors and merge automated deploy`
    - Description:
+
      ```markdown
      ## ✅ All Deployment Errors Resolved
-     
+
      This PR consolidates all deployment fixes and resolves build errors.
-     
+
      ### Changes
+
      - ✅ Fixed missing dependencies (lucide-react, prettier)
      - ✅ Resolved all build errors
      - ✅ Fixed TypeScript type imports
-     - ✅ Updated CI/CD workflows for claude/** branches
+     - ✅ Updated CI/CD workflows for claude/\*\* branches
      - ✅ Fixed SSR issues in checkout page
      - ✅ Updated ESLint configuration
      - ✅ Added comprehensive documentation
-     
+
      ### Verification
+
      - ✅ Build passes (26 pages generated)
      - ✅ TypeScript type checking passes
      - ✅ All dependencies installed
      - ✅ CI/CD workflows configured
-     
+
      ### Ready for Auto-Merge
+
      - All checks should pass
      - Auto-merge workflows are active
      - Ready for production deployment
@@ -52,7 +56,9 @@ git push origin claude/fix-deployment-errors-012e2iWFeSURxjVPD4mB5D7m
 ### Step 3: Trigger Auto-Merge
 
 #### Option A: Automatic (Recommended)
+
 The automated workflows will automatically:
+
 1. Run CI checks
 2. Apply auto-fixes
 3. Merge when all checks pass
@@ -60,6 +66,7 @@ The automated workflows will automatically:
 **Just wait!** The workflows run automatically on PR creation.
 
 #### Option B: Manual Trigger via Comment
+
 If you want to manually trigger, add a comment to the PR:
 
 ```
@@ -73,6 +80,7 @@ Or:
 ```
 
 #### Option C: Manual Workflow Dispatch
+
 1. Go to **Actions** tab: https://github.com/sano1233/istani/actions
 2. Find workflow: **"🔀 Auto-Merge All Open PRs (FREE)"**
 3. Click **"Run workflow"**
@@ -102,12 +110,13 @@ Or:
 3. **Common Issues**
 
    **Issue**: Build fails
+
    ```bash
    # Fix locally
    npm install
    npm run build
    npm run typecheck
-   
+
    # Commit and push
    git add .
    git commit -m "fix: Resolve build errors"
@@ -115,10 +124,11 @@ Or:
    ```
 
    **Issue**: TypeScript errors
+
    ```bash
    # Check types
    npm run typecheck
-   
+
    # Fix errors, then commit and push
    git add .
    git commit -m "fix: Resolve TypeScript errors"
@@ -126,10 +136,11 @@ Or:
    ```
 
    **Issue**: Linting errors
+
    ```bash
    # Auto-fix
    npm run lint -- --fix
-   
+
    # Commit and push
    git add .
    git commit -m "fix: Resolve linting errors"
@@ -137,11 +148,12 @@ Or:
    ```
 
    **Issue**: Merge conflicts
+
    ```bash
    # Update from main
    git fetch origin
    git merge origin/main
-   
+
    # Resolve conflicts, then
    git add .
    git commit -m "fix: Resolve merge conflicts"
@@ -168,6 +180,7 @@ All environment variables are configured at:
 https://github.com/sano1233/istani/settings/environments/9873530056/edit
 
 **Required Variables** (already configured):
+
 - ✅ SUPABASE_PROJECT_URL
 - ✅ SUPABASE_ANON_PUBLIC
 - ✅ SUPABASE_SERVICE_ROLE_SECRECT

@@ -16,11 +16,21 @@
     "no-console": "warn",
     "no-unused-vars": "warn",
     "no-undef": "off",
-    "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }],
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }
+    ],
     "react/react-in-jsx-scope": "off",
     "react/prop-types": "off",
     "react/no-unescaped-entities": "warn",
     "react/no-unknown-property": "warn"
   },
-  "ignorePatterns": ["node_modules/", "dist/", "build/", "istani-rebuild/assets/", "*.min.js", ".next/"]
+  "ignorePatterns": [
+    "node_modules/",
+    "dist/",
+    "build/",
+    "istani-rebuild/assets/",
+    "*.min.js",
+    ".next/"
+  ]
 }

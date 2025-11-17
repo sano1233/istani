@@ -79,6 +79,7 @@ cp .env.example .env.local
 ```
 
 Update the following variables:
+
 - Supabase credentials (already configured)
 - Stripe API keys
 - OpenAI API key
@@ -117,6 +118,7 @@ npm run docker:down
 ```
 
 This will start:
+
 - Next.js app (port 3000)
 - n8n workflow automation (port 5678)
 - Ollama AI models (port 11434)
