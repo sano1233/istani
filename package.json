@@ -6,9 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "aggregate": "node scripts/aggregateRepos.js"
   },
   "dependencies": {
+    "@octokit/rest": "^20.0.2",
     "@stripe/stripe-js": "^4.10.0",
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.45.6",
