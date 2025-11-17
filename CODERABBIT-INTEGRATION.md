@@ -26,6 +26,7 @@ curl -fsSL https://cli.coderabbit.ai/install.sh | sh
 ```
 
 Restart your shell:
+
 ```bash
 source ~/.zshrc  # or ~/.bashrc
 ```
@@ -88,6 +89,7 @@ let it run as long as it needs and fix any issues.
 ```
 
 Key components:
+
 - **Implement the feature**: Cursor codes the requested functionality
 - **Run CodeRabbit**: Uses `--prompt-only` flag for AI-optimized output
 - **Review uncommitted changes**: Uses `-t uncommitted` flag so CodeRabbit only reviews current changes
@@ -96,6 +98,7 @@ Key components:
 #### Step 2: Cursor Implements and Runs CodeRabbit
 
 Cursor will:
+
 1. Implement the requested feature
 2. Run `coderabbit --prompt-only -t uncommitted`
 3. Wait for review (may take 7-30 minutes depending on changes)
@@ -103,6 +106,7 @@ Cursor will:
 #### Step 3: CodeRabbit Analysis and Task Creation
 
 When CodeRabbit completes, Cursor:
+
 1. Reads the `--prompt-only` output (plain text optimized for AI agents)
 2. Creates a task list addressing each issue CodeRabbit surfaced
 3. Shows you the planned fixes before implementing them
@@ -131,6 +135,7 @@ Then run coderabbit --prompt-only -t uncommitted, review the suggestions then fi
 ### CodeRabbit Analysis
 
 CodeRabbit analyzes the webhook code and identifies issues:
+
 - Missing signature verification
 - Race conditions in payment state updates
 - Insufficient error handling for network failures
@@ -139,6 +144,7 @@ CodeRabbit analyzes the webhook code and identifies issues:
 ### Cursor Fixes
 
 Cursor automatically applies fixes:
+
 - Adds HMAC signature verification
 - Implements database transactions for state consistency
 - Adds retry logic with exponential backoff
@@ -159,6 +165,7 @@ coderabbit --prompt-only
 ```
 
 This mode:
+
 - Provides succinct issue context
 - Uses token-efficient formatting
 - Includes specific file locations and line numbers
@@ -167,6 +174,7 @@ This mode:
 ### Configure CodeRabbit for Cursor
 
 CodeRabbit automatically reads your `cursor.md` file, so you can add context there on:
+
 - How code reviews should run
 - Your coding standards
 - Architectural preferences
@@ -182,12 +190,12 @@ If CodeRabbit isn't detecting expected issues:
 1. **Check authentication status**: Run `coderabbit auth status` (authentication improves review quality but isn't required)
 2. **Verify git status**: CodeRabbit analyzes tracked changes - check `git status`
 3. **Consider review type**: Use the `--type` flag to specify what to review:
-   * `coderabbit --type uncommitted` - only uncommitted changes
-   * `coderabbit --type committed` - only committed changes
-   * `coderabbit --type all` - both committed and uncommitted (default)
+   - `coderabbit --type uncommitted` - only uncommitted changes
+   - `coderabbit --type committed` - only committed changes
+   - `coderabbit --type all` - both committed and uncommitted (default)
 4. **Specify base branch**: If your main branch isn't `main`, use `--base`:
-   * `coderabbit --base develop`
-   * `coderabbit --base master`
+   - `coderabbit --base develop`
+   - `coderabbit --base master`
 5. **Review file types**: CodeRabbit focuses on code files, not docs or configuration
 
 ### Managing Review Duration
@@ -196,13 +204,13 @@ CodeRabbit reviews may take 7 to 30+ minutes depending on the scope of changes:
 
 1. **Ensure background execution**: Configure Cursor to run CodeRabbit in the background so you can continue working
 2. **Review smaller changesets**: Adjust what you're reviewing to reduce analysis time:
-   * Use `--type uncommitted` to review only uncommitted changes
-   * Work on smaller feature branches compared to main
-   * Break large features into smaller, reviewable chunks
+   - Use `--type uncommitted` to review only uncommitted changes
+   - Work on smaller feature branches compared to main
+   - Break large features into smaller, reviewable chunks
 3. **Configure the diff scope**: Control what changes are analyzed:
-   * **Review uncommitted changes only**: Use `--type uncommitted` to analyze just working directory changes
-   * **Configure base branch**: Use `--base develop` or `--base main` to set the comparison point
-   * **Use feature branches**: Work on focused feature branches instead of large staging branches
+   - **Review uncommitted changes only**: Use `--type uncommitted` to analyze just working directory changes
+   - **Configure base branch**: Use `--base develop` or `--base main` to set the comparison point
+   - **Use feature branches**: Work on focused feature branches instead of large staging branches
 
 ## Integration with Current Workflow
 
