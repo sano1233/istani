@@ -107,9 +107,7 @@ export function BarcodeScanner() {
                   />
                 )}
                 <h3 className="text-xl font-bold text-white mb-2">{result.name}</h3>
-                {result.brand && (
-                  <p className="text-white/60 mb-4">Brand: {result.brand}</p>
-                )}
+                {result.brand && <p className="text-white/60 mb-4">Brand: {result.brand}</p>}
                 <p className="text-sm text-white/40">Barcode: {result.barcode}</p>
                 <p className="text-sm text-white/40">Serving Size: {result.servingSize}</p>
               </div>

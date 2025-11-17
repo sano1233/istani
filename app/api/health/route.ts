@@ -52,7 +52,7 @@ export async function GET() {
         message: error.message,
         timestamp: new Date().toISOString(),
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

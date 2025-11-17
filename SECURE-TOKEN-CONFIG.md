@@ -45,6 +45,7 @@ npm run aggregate
 ## Security Reminder
 
 ⚠️ **NEVER commit tokens to git!**
+
 - ✅ Use `.env.local` (already in `.gitignore`)
 - ✅ Use GitHub Secrets for CI/CD
 - ✅ Use Vercel Environment Variables for deployment

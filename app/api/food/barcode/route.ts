@@ -11,20 +11,14 @@ export async function GET(request: NextRequest) {
     const code = searchParams.get('code');
 
     if (!code) {
-      return NextResponse.json(
-        { error: 'Barcode code parameter is required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Barcode code parameter is required' }, { status: 400 });
     }
 
     const openFoodFacts = new OpenFoodFactsAPI();
     const product = await openFoodFacts.getProductByBarcode(code);
 
     if (product.status === 0) {
-      return NextResponse.json(
-        { error: 'Product not found', code },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Product not found', code }, { status: 404 });
     }
 
     // Format the product data for our app
@@ -58,7 +52,7 @@ export async function GET(request: NextRequest) {
         error: error.message,
         timestamp: new Date().toISOString(),
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

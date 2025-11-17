@@ -13,10 +13,7 @@ export async function GET(request: NextRequest) {
     const pageSize = parseInt(searchParams.get('page_size') || '20');
 
     if (!query) {
-      return NextResponse.json(
-        { error: 'Query parameter is required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Query parameter is required' }, { status: 400 });
     }
 
     const usda = new USDAAPI();
@@ -68,7 +65,7 @@ export async function GET(request: NextRequest) {
         error: error.message,
         timestamp: new Date().toISOString(),
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

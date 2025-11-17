@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
     if (!goals || !experience || !equipment || !timeAvailable) {
       return NextResponse.json(
         { error: 'Missing required fields: goals, experience, equipment, timeAvailable' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
         error: error.message,
         timestamp: new Date().toISOString(),
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

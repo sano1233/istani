@@ -9,11 +9,13 @@ This guide explains how to securely configure tokens and API keys for the istani
 ### For Local Development
 
 1. **Create a `.env.local` file** (if it doesn't exist):
+
    ```bash
    cp .env.example .env.local
    ```
 
 2. **Add your GitHub token**:
+
    ```bash
    GITHUB_TOKEN=CjPDxxAcQnFU9bmKYJWidxHEFloK9g46rUtslyfF
    ```
@@ -70,12 +72,14 @@ curl -H "Authorization: token CjPDxxAcQnFU9bmKYJWidxHEFloK9g46rUtslyfF" https://
 ### Verify Token Permissions
 
 The token should have these scopes:
+
 - `repo` - Full control of private repositories
 - `read:org` - Read org and team membership
 
 ## Security Best Practices
 
 ### ✅ DO:
+
 - Store tokens in environment variables
 - Use `.env.local` for local development
 - Add tokens to GitHub Secrets for CI/CD
@@ -84,6 +88,7 @@ The token should have these scopes:
 - Use fine-grained tokens with minimal permissions
 
 ### ❌ DON'T:
+
 - Commit tokens to git
 - Share tokens in chat/email
 - Use tokens in client-side code
@@ -93,11 +98,13 @@ The token should have these scopes:
 ## Token Usage Locations
 
 ### Repository Aggregator
+
 - **Script**: `scripts/aggregateRepos.js`
 - **Environment Variable**: `GITHUB_TOKEN`
 - **Usage**: Fetches repository metadata, commits, and issues
 
 ### GitHub Actions Workflow
+
 - **File**: `.github/workflows/aggregate-repos.yml`
 - **Secret**: `secrets.GITHUB_TOKEN`
 - **Usage**: Automated repository aggregation
@@ -105,11 +112,13 @@ The token should have these scopes:
 ## Environment Variables Reference
 
 ### Required for Repository Aggregator
+
 ```bash
 GITHUB_TOKEN=CjPDxxAcQnFU9bmKYJWidxHEFloK9g46rUtslyfF
 ```
 
 ### Other Required Variables
+
 ```bash
 # Supabase
 NEXT_PUBLIC_SUPABASE_URL=https://kxsmgrlpojdsgvjdodda.supabase.co
@@ -157,6 +166,7 @@ npm run aggregate
    - Token needs `read:org` for organization repos
 
 3. **Check rate limits**:
+
    ```bash
    curl -H "Authorization: token CjPDxxAcQnFU9bmKYJWidxHEFloK9g46rUtslyfF" \
         https://api.github.com/rate_limit

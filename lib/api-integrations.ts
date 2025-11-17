@@ -1,6 +1,6 @@
 /**
  * Unified API Integration Library
- * 
+ *
  * Centralized management for all external API integrations
  * Used across the istani.org platform
  */
@@ -55,7 +55,7 @@ export class PexelsAPI {
         headers: {
           Authorization: this.apiKey,
         },
-      }
+      },
     );
     return response.json();
   }
@@ -95,7 +95,7 @@ export class UnsplashAPI {
         headers: {
           Authorization: `Client-ID ${this.accessKey}`,
         },
-      }
+      },
     );
     return response.json();
   }
@@ -104,7 +104,7 @@ export class UnsplashAPI {
     const url = query
       ? `${this.baseURL}/photos/random?count=${count}&query=${encodeURIComponent(query)}`
       : `${this.baseURL}/photos/random?count=${count}`;
-    
+
     const response = await fetch(url, {
       headers: {
         Authorization: `Client-ID ${this.accessKey}`,
@@ -140,7 +140,8 @@ export class OpenAIAPI {
         messages: [
           {
             role: 'system',
-            content: 'You are an expert fitness coach. Generate personalized workout plans based on user goals, experience level, available equipment, and time constraints.',
+            content:
+              'You are an expert fitness coach. Generate personalized workout plans based on user goals, experience level, available equipment, and time constraints.',
           },
           {
             role: 'user',
@@ -170,7 +171,8 @@ export class OpenAIAPI {
         messages: [
           {
             role: 'system',
-            content: 'You are a nutritionist. Generate personalized meal plans based on user goals, dietary restrictions, calorie needs, and macro targets.',
+            content:
+              'You are a nutritionist. Generate personalized meal plans based on user goals, dietary restrictions, calorie needs, and macro targets.',
           },
           {
             role: 'user',
@@ -183,11 +185,7 @@ export class OpenAIAPI {
     return response.json();
   }
 
-  async analyzeProgress(data: {
-    workouts: any[];
-    nutrition: any[];
-    measurements: any[];
-  }) {
+  async analyzeProgress(data: { workouts: any[]; nutrition: any[]; measurements: any[] }) {
     const response = await fetch(`${this.baseURL}/chat/completions`, {
       method: 'POST',
       headers: {
@@ -199,7 +197,8 @@ export class OpenAIAPI {
         messages: [
           {
             role: 'system',
-            content: 'You are a fitness coach analyzing user progress. Provide insights, recommendations, and motivation based on their data.',
+            content:
+              'You are a fitness coach analyzing user progress. Provide insights, recommendations, and motivation based on their data.',
           },
           {
             role: 'user',
@@ -234,29 +233,24 @@ export class USDAAPI {
           query,
           pageSize,
         }),
-      }
+      },
     );
     return response.json();
   }
 
   async getFoodDetails(fdcId: string) {
-    const response = await fetch(
-      `${this.baseURL}/food/${fdcId}?api_key=${this.apiKey}`,
-    );
+    const response = await fetch(`${this.baseURL}/food/${fdcId}?api_key=${this.apiKey}`);
     return response.json();
   }
 
   async getFoodsByIds(fdcIds: string[]) {
-    const response = await fetch(
-      `${this.baseURL}/foods?api_key=${this.apiKey}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ fdcIds }),
-      }
-    );
+    const response = await fetch(`${this.baseURL}/foods?api_key=${this.apiKey}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ fdcIds }),
+    });
     return response.json();
   }
 }
@@ -272,7 +266,7 @@ export class OpenFoodFactsAPI {
 
   async searchProducts(query: string, pageSize = 20) {
     const response = await fetch(
-      `${this.baseURL}/cgi/search.pl?search_terms=${encodeURIComponent(query)}&page_size=${pageSize}&json=true`
+      `${this.baseURL}/cgi/search.pl?search_terms=${encodeURIComponent(query)}&page_size=${pageSize}&json=true`,
     );
     return response.json();
   }

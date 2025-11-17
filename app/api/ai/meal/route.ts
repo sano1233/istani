@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
     if (!goals || !calories || !macros) {
       return NextResponse.json(
         { error: 'Missing required fields: goals, calories, macros' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
         error: error.message,
         timestamp: new Date().toISOString(),
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

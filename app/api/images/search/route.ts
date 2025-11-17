@@ -57,7 +57,7 @@ export async function GET(request: NextRequest) {
         error: error.message,
         timestamp: new Date().toISOString(),
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
