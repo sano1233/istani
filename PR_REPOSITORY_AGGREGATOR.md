@@ -10,6 +10,7 @@ Add a comprehensive GitHub Repository Aggregator that collects and consolidates 
 ## Features
 
 ### 🚀 Core Aggregator (`scripts/aggregateRepos.js`)
+
 - Fetches repository metadata (stars, forks, description, topics, etc.)
 - Retrieves recent commits (configurable, default: 5 per repo)
 - Fetches open issues (configurable, default: 5 per repo)
@@ -19,7 +20,9 @@ Add a comprehensive GitHub Repository Aggregator that collects and consolidates 
 - Outputs structured JSON to `data/reposData.json`
 
 ### 📊 Pre-configured Repositories
+
 The aggregator comes pre-configured with 10 repositories:
+
 - sano1233/codex
 - sano1233/n8n
 - sano1233/next.js
@@ -32,6 +35,7 @@ The aggregator comes pre-configured with 10 repositories:
 - sano1233/typescript
 
 ### 🎨 React Components
+
 - **`components/repo-dashboard.tsx`**: Production-ready dashboard component
   - Responsive grid layout
   - Real-time data loading with error states
@@ -40,6 +44,7 @@ The aggregator comes pre-configured with 10 repositories:
   - Tailwind CSS styling
 
 ### 🛠️ Utility Library
+
 - **`lib/repoDataUtils.ts`**: TypeScript utilities with 15+ helper functions
   - Data loading and type definitions
   - Statistics calculations (total stars, forks, issues)
@@ -49,6 +54,7 @@ The aggregator comes pre-configured with 10 repositories:
   - Date formatting helpers
 
 ### 📚 Documentation
+
 - **`scripts/README-AGGREGATOR.md`**: Comprehensive main documentation
   - Quick start guide
   - Configuration instructions
@@ -68,6 +74,7 @@ The aggregator comes pre-configured with 10 repositories:
   - Search and filter implementations
 
 ### ⚙️ Automation
+
 - **`.github/workflows/aggregate-repos.yml`**: GitHub Actions workflow
   - Runs automatically every 6 hours
   - Manual trigger support via workflow_dispatch
@@ -76,6 +83,7 @@ The aggregator comes pre-configured with 10 repositories:
   - Generates run summaries with statistics
 
 ### 📦 Example Data
+
 - **`data/reposData.example.json`**: Sample output structure
   - Shows expected data format
   - Includes realistic example data
@@ -84,31 +92,38 @@ The aggregator comes pre-configured with 10 repositories:
 ## Installation & Usage
 
 ### 1. Install Dependencies
+
 ```bash
 npm install
 ```
 
 ### 2. Set Up GitHub Token
+
 Create a Personal Access Token at https://github.com/settings/tokens with scopes:
+
 - `repo` (all sub-scopes)
 - `read:org`
 
 Then set it as an environment variable:
+
 ```bash
 export GITHUB_TOKEN=your_token_here
 ```
 
 Or add to `.env.local`:
+
 ```env
 GITHUB_TOKEN=your_token_here
 ```
 
 ### 3. Run the Aggregator
+
 ```bash
 npm run aggregate
 ```
 
 ### 4. Use in Your Application
+
 ```typescript
 // Option 1: Use the dashboard component
 import { RepositoryDashboard } from '@/components/repo-dashboard';
@@ -129,6 +144,7 @@ export async function RepoStats() {
 ## Files Changed
 
 ### New Files
+
 - ✅ `scripts/aggregateRepos.js` - Main aggregator script (executable)
 - ✅ `scripts/README-AGGREGATOR.md` - Comprehensive documentation
 - ✅ `scripts/INTEGRATION-EXAMPLES.md` - Integration code examples
@@ -139,6 +155,7 @@ export async function RepoStats() {
 - ✅ `data/reposData.example.json` - Example output structure
 
 ### Modified Files
+
 - ✅ `package.json` - Added `@octokit/rest` dependency and `aggregate` script
 - ✅ `.env.example` - Added `GITHUB_TOKEN` configuration with instructions
 - ✅ `.gitignore` - Added `data/reposData.json` to ignore generated files
@@ -157,9 +174,15 @@ The aggregator generates `data/reposData.json` with the following structure:
   "repositories": [
     {
       "repository": "owner/repo",
-      "metadata": { /* stars, forks, topics, etc. */ },
-      "recentCommits": [ /* commit objects */ ],
-      "openIssues": [ /* issue objects */ ],
+      "metadata": {
+        /* stars, forks, topics, etc. */
+      },
+      "recentCommits": [
+        /* commit objects */
+      ],
+      "openIssues": [
+        /* issue objects */
+      ],
       "aggregatedAt": "2025-11-17T08:37:00.000Z"
     }
   ]
@@ -169,7 +192,9 @@ The aggregator generates `data/reposData.json` with the following structure:
 ## Configuration
 
 ### Customize Repository List
+
 Edit the `repos` array in `scripts/aggregateRepos.js`:
+
 ```javascript
 const repos = [
   'owner/repo1',
@@ -179,10 +204,12 @@ const repos = [
 ```
 
 ### Adjust Fetch Limits
+
 Modify constants in `scripts/aggregateRepos.js`:
+
 ```javascript
-const COMMITS_LIMIT = 5;  // Number of commits per repo
-const ISSUES_LIMIT = 5;   // Number of issues per repo
+const COMMITS_LIMIT = 5; // Number of commits per repo
+const ISSUES_LIMIT = 5; // Number of issues per repo
 ```
 
 ## Security
@@ -196,6 +223,7 @@ const ISSUES_LIMIT = 5;   // Number of issues per repo
 ## Automation
 
 The GitHub Actions workflow will:
+
 - Run automatically every 6 hours
 - Can be triggered manually from the Actions tab
 - Commit updated data automatically
@@ -205,6 +233,7 @@ The GitHub Actions workflow will:
 ## Testing
 
 All dependencies installed successfully:
+
 ```
 ✅ npm install completed
 ✅ @octokit/rest v20.0.2 installed
@@ -215,6 +244,7 @@ All dependencies installed successfully:
 ## TypeScript Support
 
 All components and utilities are fully typed for TypeScript projects:
+
 - Complete type definitions for all data structures
 - IntelliSense support
 - Type-safe utility functions
@@ -223,6 +253,7 @@ All components and utilities are fully typed for TypeScript projects:
 ## Next Steps
 
 After merging, you can:
+
 1. Run `npm run aggregate` to generate initial data
 2. Set up your `GITHUB_TOKEN` in repository secrets for automation
 3. Import and use the dashboard component in your pages
@@ -232,6 +263,7 @@ After merging, you can:
 ## Related Issues
 
 This PR provides infrastructure for:
+
 - Repository monitoring and insights
 - Cross-project activity tracking
 - Automated data aggregation
@@ -252,6 +284,7 @@ This PR provides infrastructure for:
 ## Preview
 
 The repository dashboard will display:
+
 - Repository cards with stars, forks, and issues
 - Recent commit activity
 - Open issues with labels
@@ -269,6 +302,7 @@ Visit this URL to create the pull request:
 https://github.com/sano1233/istani/pull/new/claude/add-repo-aggregator-01AKpjrvEcA6Rud56MDkDqjH
 
 Or use the GitHub CLI:
+
 ```bash
 gh pr create --title "feat: Add GitHub Repository Aggregator with Complete Integration Suite" --body-file PR_REPOSITORY_AGGREGATOR.md
 ```

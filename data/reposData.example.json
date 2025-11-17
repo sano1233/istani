@@ -23,13 +23,7 @@
         "pushedAt": "2025-11-17T07:30:00Z",
         "size": 12456,
         "visibility": "public",
-        "topics": [
-          "fitness",
-          "nextjs",
-          "typescript",
-          "ai",
-          "supabase"
-        ]
+        "topics": ["fitness", "nextjs", "typescript", "ai", "supabase"]
       },
       "recentCommits": [
         {
@@ -82,10 +76,7 @@
           "body": "Users should be able to customize their profile with avatar, bio, and preferences...",
           "state": "open",
           "author": "contributor1",
-          "labels": [
-            "enhancement",
-            "good first issue"
-          ],
+          "labels": ["enhancement", "good first issue"],
           "createdAt": "2025-11-15T10:00:00Z",
           "updatedAt": "2025-11-16T14:30:00Z",
           "comments": 3,
@@ -98,10 +89,7 @@
           "body": "The workout page doesn't display correctly on mobile devices. The buttons are too small and overlap...",
           "state": "open",
           "author": "contributor2",
-          "labels": [
-            "bug",
-            "ui"
-          ],
+          "labels": ["bug", "ui"],
           "createdAt": "2025-11-14T16:20:00Z",
           "updatedAt": "2025-11-15T09:45:00Z",
           "comments": 1,
@@ -130,13 +118,7 @@
         "pushedAt": "2025-11-17T07:45:00Z",
         "size": 245678,
         "visibility": "public",
-        "topics": [
-          "automation",
-          "workflow",
-          "nodejs",
-          "typescript",
-          "low-code"
-        ]
+        "topics": ["automation", "workflow", "nodejs", "typescript", "low-code"]
       },
       "recentCommits": [
         {
@@ -175,10 +157,7 @@
           "body": "The current Slack node doesn't support Block Kit messages. This would allow for richer message formatting...",
           "state": "open",
           "author": "community-user",
-          "labels": [
-            "enhancement",
-            "node-enhancement"
-          ],
+          "labels": ["enhancement", "node-enhancement"],
           "createdAt": "2025-11-16T12:00:00Z",
           "updatedAt": "2025-11-17T08:00:00Z",
           "comments": 7,

@@ -109,7 +109,8 @@ export function RepositoryDashboard() {
     return (
       <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
         <p className="text-red-800">
-          Error loading repository data. Please run <code className="bg-red-100 px-2 py-1 rounded">npm run aggregate</code> first.
+          Error loading repository data. Please run{' '}
+          <code className="bg-red-100 px-2 py-1 rounded">npm run aggregate</code> first.
         </p>
       </div>
     );
@@ -121,21 +122,9 @@ export function RepositoryDashboard() {
       <div className="bg-white rounded-lg shadow p-6">
         <h2 className="text-2xl font-bold mb-4">Repository Overview</h2>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <StatCard
-            label="Total Repositories"
-            value={reposData.totalRepositories}
-            icon="📦"
-          />
-          <StatCard
-            label="Successful"
-            value={reposData.successfulAggregations}
-            icon="✅"
-          />
-          <StatCard
-            label="Failed"
-            value={reposData.failedAggregations}
-            icon="❌"
-          />
+          <StatCard label="Total Repositories" value={reposData.totalRepositories} icon="📦" />
+          <StatCard label="Successful" value={reposData.successfulAggregations} icon="✅" />
+          <StatCard label="Failed" value={reposData.failedAggregations} icon="❌" />
           <StatCard
             label="Total Stars"
             value={reposData.repositories.reduce((sum, r) => sum + r.metadata.stars, 0)}
@@ -182,9 +171,7 @@ function RepositoryCard({ repo }: { repo: Repository }) {
         >
           {repo.metadata.name}
         </a>
-        <p className="text-sm text-gray-600 mt-1 line-clamp-2">
-          {repo.metadata.description}
-        </p>
+        <p className="text-sm text-gray-600 mt-1 line-clamp-2">{repo.metadata.description}</p>
       </div>
 
       {/* Stats */}
@@ -245,9 +232,7 @@ function RepositoryCard({ repo }: { repo: Repository }) {
       {repo.recentCommits.length > 0 && (
         <div className="border-t mt-4 pt-4">
           <p className="text-xs text-gray-500 mb-1">Latest commit:</p>
-          <p className="text-sm text-gray-700 line-clamp-2">
-            {repo.recentCommits[0].message}
-          </p>
+          <p className="text-sm text-gray-700 line-clamp-2">{repo.recentCommits[0].message}</p>
           <p className="text-xs text-gray-500 mt-1">
             by {repo.recentCommits[0].author.name} •{' '}
             {new Date(repo.recentCommits[0].author.date).toLocaleDateString()}

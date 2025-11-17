@@ -40,6 +40,7 @@ npm install @octokit/rest
 2. **Set up your GitHub token**:
 
 Create a GitHub Personal Access Token:
+
 - Go to https://github.com/settings/tokens
 - Click **"Generate new token (classic)"**
 - Select the following scopes:
@@ -76,6 +77,7 @@ node scripts/aggregateRepos.js
 ```
 
 The script will:
+
 1. Check your GitHub API rate limit
 2. Fetch data from all configured repositories
 3. Save the results to `data/reposData.json`
@@ -194,7 +196,7 @@ const repos = [
   'sano1233/next.js',
   'sano1233/istani',
   // Add your repositories here
-  'owner/repo-name'
+  'owner/repo-name',
 ];
 ```
 
@@ -203,8 +205,8 @@ const repos = [
 Modify the constants at the top of the script:
 
 ```javascript
-const COMMITS_LIMIT = 5;  // Number of commits to fetch per repository
-const ISSUES_LIMIT = 5;   // Number of open issues to fetch per repository
+const COMMITS_LIMIT = 5; // Number of commits to fetch per repository
+const ISSUES_LIMIT = 5; // Number of open issues to fetch per repository
 ```
 
 **Note**: Higher limits will consume more API quota. GitHub's rate limit for authenticated requests is 5,000 requests per hour.
@@ -233,6 +235,7 @@ const OUTPUT_FILE = path.join(OUTPUT_DIR, 'reposData.json');
 - **Unauthenticated requests**: 60 requests per hour (not recommended)
 
 The script makes approximately 3-4 API calls per repository:
+
 - 1 call for repository metadata
 - 1 call for commits
 - 1 call for issues
@@ -249,6 +252,7 @@ The script makes approximately 3-4 API calls per repository:
 ### Error: Not Found (404)
 
 **Possible causes**:
+
 - Repository doesn't exist or was renamed
 - You don't have access to the repository
 - Token doesn't have required permissions
@@ -262,6 +266,7 @@ The script makes approximately 3-4 API calls per repository:
 ### No issues or commits returned
 
 **Possible causes**:
+
 - Repository has no commits or issues
 - Branch protection or access restrictions
 
@@ -276,7 +281,7 @@ You can use the generated `reposData.json` in your Istani application:
 import reposData from '../data/reposData.json';
 
 // Display repository statistics
-reposData.repositories.forEach(repo => {
+reposData.repositories.forEach((repo) => {
   console.log(`${repo.metadata.fullName}:`);
   console.log(`  Stars: ${repo.metadata.stars}`);
   console.log(`  Recent commits: ${repo.recentCommits.length}`);
@@ -340,7 +345,7 @@ Create `.github/workflows/aggregate-repos.yml`:
 name: Aggregate Repositories
 on:
   schedule:
-    - cron: '0 * * * *'  # Every hour
+    - cron: '0 * * * *' # Every hour
   workflow_dispatch:
 
 jobs:

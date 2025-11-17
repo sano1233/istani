@@ -175,10 +175,7 @@ export async function GET() {
     const data = await readFile(dataPath, 'utf-8');
     return NextResponse.json(JSON.parse(data));
   } catch (error) {
-    return NextResponse.json(
-      { error: 'Failed to load repository data' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to load repository data' }, { status: 500 });
   }
 }
 ```
@@ -338,7 +335,7 @@ export async function GET() {
     totalRepos: data.totalRepositories,
     totalStars: getTotalStars(data),
     totalForks: getTotalForks(data),
-    lastUpdated: data.generatedAt
+    lastUpdated: data.generatedAt,
   });
 }
 ```
@@ -346,6 +343,7 @@ export async function GET() {
 ## Automation
 
 The included GitHub Actions workflow (`.github/workflows/aggregate-repos.yml`) automatically:
+
 - Runs every 6 hours
 - Commits updated data to the repository
 - Creates artifacts for download
@@ -363,6 +361,7 @@ import type { ReposData, Repository, CommitData, IssueData } from '@/lib/repoDat
 ---
 
 For more examples and documentation, see:
+
 - `scripts/README-AGGREGATOR.md` - Main aggregator documentation
 - `components/repo-dashboard.tsx` - Full dashboard example
 - `lib/repoDataUtils.ts` - Utility functions

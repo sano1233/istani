@@ -25,8 +25,8 @@ const fs = require('fs');
 const path = require('path');
 
 // Configuration constants
-const COMMITS_LIMIT = 5;  // Number of commits to fetch per repository
-const ISSUES_LIMIT = 5;   // Number of open issues to fetch per repository
+const COMMITS_LIMIT = 5; // Number of commits to fetch per repository
+const ISSUES_LIMIT = 5; // Number of open issues to fetch per repository
 const OUTPUT_DIR = path.join(__dirname, '..', 'data');
 const OUTPUT_FILE = path.join(OUTPUT_DIR, 'reposData.json');
 
@@ -42,7 +42,7 @@ const repos = [
   'sano1233/vercel',
   'sano1233/react',
   'sano1233/tailwindcss',
-  'sano1233/typescript'
+  'sano1233/typescript',
 ];
 
 /**
@@ -104,7 +104,7 @@ async function fetchRepoMetadata(octokit, owner, repo) {
       pushedAt: data.pushed_at,
       size: data.size,
       visibility: data.visibility,
-      topics: data.topics || []
+      topics: data.topics || [],
     };
   } catch (error) {
     console.error(`❌ Error fetching metadata for ${owner}/${repo}:`, error.message);
@@ -125,23 +125,23 @@ async function fetchRecentCommits(octokit, owner, repo, limit = COMMITS_LIMIT) {
     const { data } = await octokit.repos.listCommits({
       owner,
       repo,
-      per_page: limit
+      per_page: limit,
     });
 
-    return data.map(commit => ({
+    return data.map((commit) => ({
       sha: commit.sha,
       message: commit.commit.message,
       author: {
         name: commit.commit.author.name,
         email: commit.commit.author.email,
-        date: commit.commit.author.date
+        date: commit.commit.author.date,
       },
       committer: {
         name: commit.commit.committer.name,
-        date: commit.commit.committer.date
+        date: commit.commit.committer.date,
       },
       url: commit.html_url,
-      stats: commit.stats // May be undefined in list view
+      stats: commit.stats, // May be undefined in list view
     }));
   } catch (error) {
     console.error(`❌ Error fetching commits for ${owner}/${repo}:`, error.message);
@@ -165,21 +165,21 @@ async function fetchOpenIssues(octokit, owner, repo, limit = ISSUES_LIMIT) {
       state: 'open',
       per_page: limit,
       sort: 'created',
-      direction: 'desc'
+      direction: 'desc',
     });
 
-    return data.map(issue => ({
+    return data.map((issue) => ({
       number: issue.number,
       title: issue.title,
       body: issue.body ? issue.body.substring(0, 500) : '', // Truncate long bodies
       state: issue.state,
       author: issue.user.login,
-      labels: issue.labels.map(label => label.name),
+      labels: issue.labels.map((label) => label.name),
       createdAt: issue.created_at,
       updatedAt: issue.updated_at,
       comments: issue.comments,
       url: issue.html_url,
-      isPullRequest: !!issue.pull_request
+      isPullRequest: !!issue.pull_request,
     }));
   } catch (error) {
     console.error(`❌ Error fetching issues for ${owner}/${repo}:`, error.message);
@@ -202,7 +202,7 @@ async function aggregateRepository(octokit, repoString) {
     const [metadata, commits, issues] = await Promise.all([
       fetchRepoMetadata(octokit, owner, repo),
       fetchRecentCommits(octokit, owner, repo, COMMITS_LIMIT),
-      fetchOpenIssues(octokit, owner, repo, ISSUES_LIMIT)
+      fetchOpenIssues(octokit, owner, repo, ISSUES_LIMIT),
     ]);
 
     console.log(`  ✅ Fetched: ${commits.length} commits, ${issues.length} issues`);
@@ -212,14 +212,14 @@ async function aggregateRepository(octokit, repoString) {
       metadata,
       recentCommits: commits,
       openIssues: issues,
-      aggregatedAt: new Date().toISOString()
+      aggregatedAt: new Date().toISOString(),
     };
   } catch (error) {
     console.error(`  ❌ Failed to aggregate ${repoString}`);
     return {
       repository: repoString,
       error: error.message,
-      aggregatedAt: new Date().toISOString()
+      aggregatedAt: new Date().toISOString(),
     };
   }
 }
@@ -242,9 +242,9 @@ function writeOutputFile(data) {
   const output = {
     generatedAt: new Date().toISOString(),
     totalRepositories: data.length,
-    successfulAggregations: data.filter(d => !d.error).length,
-    failedAggregations: data.filter(d => d.error).length,
-    repositories: data
+    successfulAggregations: data.filter((d) => !d.error).length,
+    failedAggregations: data.filter((d) => d.error).length,
+    repositories: data,
   };
 
   fs.writeFileSync(OUTPUT_FILE, JSON.stringify(output, null, 2));
@@ -309,7 +309,7 @@ async function main() {
     results.push(result);
 
     // Small delay to avoid hitting rate limits too quickly
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
   }
 
   const endTime = Date.now();
@@ -327,7 +327,7 @@ async function main() {
 
 // Execute main function
 if (require.main === module) {
-  main().catch(error => {
+  main().catch((error) => {
     console.error('\n❌ Fatal error:', error.message);
     process.exit(1);
   });
@@ -337,5 +337,5 @@ module.exports = {
   aggregateRepository,
   fetchRepoMetadata,
   fetchRecentCommits,
-  fetchOpenIssues
+  fetchOpenIssues,
 };

@@ -115,9 +115,7 @@ export function getTotalOpenIssues(data: ReposData): number {
  * Get repositories sorted by stars (descending)
  */
 export function getReposByStars(data: ReposData): Repository[] {
-  return [...data.repositories].sort(
-    (a, b) => (b.metadata?.stars || 0) - (a.metadata?.stars || 0)
-  );
+  return [...data.repositories].sort((a, b) => (b.metadata?.stars || 0) - (a.metadata?.stars || 0));
 }
 
 /**
@@ -148,9 +146,7 @@ export function getLanguages(data: ReposData): string[] {
  * Get repositories by language
  */
 export function getReposByLanguage(data: ReposData, language: string): Repository[] {
-  return data.repositories.filter(
-    (repo) => repo.metadata?.language === language
-  );
+  return data.repositories.filter((repo) => repo.metadata?.language === language);
 }
 
 /**
@@ -168,22 +164,23 @@ export function getAllTopics(data: ReposData): string[] {
  * Get repositories by topic
  */
 export function getReposByTopic(data: ReposData, topic: string): Repository[] {
-  return data.repositories.filter((repo) =>
-    repo.metadata?.topics?.includes(topic)
-  );
+  return data.repositories.filter((repo) => repo.metadata?.topics?.includes(topic));
 }
 
 /**
  * Get most recent commits across all repositories
  */
-export function getRecentCommits(data: ReposData, limit = 10): Array<CommitData & { repoName: string }> {
+export function getRecentCommits(
+  data: ReposData,
+  limit = 10,
+): Array<CommitData & { repoName: string }> {
   const allCommits: Array<CommitData & { repoName: string }> = [];
 
   data.repositories.forEach((repo) => {
     repo.recentCommits.forEach((commit) => {
       allCommits.push({
         ...commit,
-        repoName: repo.metadata?.name || repo.repository
+        repoName: repo.metadata?.name || repo.repository,
       });
     });
   });
@@ -200,14 +197,17 @@ export function getRecentCommits(data: ReposData, limit = 10): Array<CommitData 
 /**
  * Get most recent issues across all repositories
  */
-export function getRecentIssues(data: ReposData, limit = 10): Array<IssueData & { repoName: string }> {
+export function getRecentIssues(
+  data: ReposData,
+  limit = 10,
+): Array<IssueData & { repoName: string }> {
   const allIssues: Array<IssueData & { repoName: string }> = [];
 
   data.repositories.forEach((repo) => {
     repo.openIssues.forEach((issue) => {
       allIssues.push({
         ...issue,
-        repoName: repo.metadata?.name || repo.repository
+        repoName: repo.metadata?.name || repo.repository,
       });
     });
   });
@@ -242,7 +242,7 @@ export function getRepoStats(repo: Repository) {
     lastCommit: lastCommitDate,
     daysSinceLastCommit,
     isActive: daysSinceLastCommit !== null && daysSinceLastCommit < 30,
-    hasError
+    hasError,
   };
 }
 
