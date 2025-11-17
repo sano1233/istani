@@ -8,7 +8,10 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "aggregate": "node scripts/aggregateRepos.js"
+    "aggregate": "node scripts/aggregateRepos.js",
+    "review": "bash scripts/coderabbit-review.sh",
+    "review:plain": "export PATH=\"$HOME/.local/bin:$PATH\" && coderabbit --plain -t uncommitted",
+    "review:prompt": "export PATH=\"$HOME/.local/bin:$PATH\" && coderabbit --prompt-only -t uncommitted"
   },
   "dependencies": {
     "@octokit/rest": "^20.0.2",
