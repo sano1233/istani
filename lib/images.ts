@@ -97,7 +97,7 @@ export async function loadGalleryItems({
 
   let saved: GalleryItem[] = [];
   try {
-    const supabaseClient = getSupabaseClient()
+    const supabaseClient = getSupabaseClient();
     const { data, error } = await supabaseClient
       .from('image_assets')
       .select('*')

@@ -15,7 +15,7 @@ const WEBHOOK_SECRET = process.env.GITHUB_WEBHOOK_SECRET;
 // Initialize AI Agent
 const agent = new IstaniAIAgent({
   owner: process.env.GITHUB_OWNER || 'sano1233',
-  repo: process.env.GITHUB_REPO || 'istani'
+  repo: process.env.GITHUB_REPO || 'istani',
 });
 
 // Middleware
@@ -58,7 +58,7 @@ app.post('/webhook', verifySignature, async (req, res) => {
   res.status(200).json({ status: 'received' });
 
   // Process asynchronously
-  processWebhookEvent(event, payload).catch(error => {
+  processWebhookEvent(event, payload).catch((error) => {
     console.error(`❌ Error processing webhook:`, error);
   });
 });
@@ -206,7 +206,7 @@ app.get('/health', (req, res) => {
   res.json({
     status: 'healthy',
     uptime: process.uptime(),
-    agent: stats
+    agent: stats,
   });
 });
 

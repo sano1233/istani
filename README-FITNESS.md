@@ -5,6 +5,7 @@ Science-backed fitness training powered by advanced AI integrations.
 ## Features
 
 ### AI-Powered Coaching
+
 - 15+ AI models integrated via OpenRouter
 - Personalized workout plan generation
 - Real-time form analysis and corrections
@@ -12,6 +13,7 @@ Science-backed fitness training powered by advanced AI integrations.
 - 24/7 intelligent customer support via ElevenLabs
 
 ### Science-Based Programs
+
 1. Strength and Hypertrophy Training
    - Progressive overload protocols
    - Volume optimization (10-20 sets per muscle per week)
@@ -37,6 +39,7 @@ Science-backed fitness training powered by advanced AI integrations.
    - Sleep optimization
 
 ### Nutrition Science
+
 - Protein optimization (1.6-2.2g per kg)
 - Nutrient timing strategies
 - Hydration protocols (3-4 liters daily)
@@ -45,17 +48,20 @@ Science-backed fitness training powered by advanced AI integrations.
 ### Technology Stack
 
 **Frontend**
+
 - HTML5, CSS3 with iOS-inspired design system
 - Vanilla JavaScript with modern ES6+
 - Responsive design for all devices
 
 **Backend**
+
 - Node.js with Express
 - Supabase for database and authentication
 - OpenRouter API (15+ AI models)
 - ElevenLabs voice AI agent
 
 **AI Models Integrated**
+
 - Qwen 2.5 Coder 32B Instruct
 - Mistral Small 24B Instruct
 - Hermes 3 LLaMA 3.1 405B
@@ -65,6 +71,7 @@ Science-backed fitness training powered by advanced AI integrations.
 - And 9 more models
 
 **Security**
+
 - All API keys in environment variables
 - Prompt injection detection
 - Output sanitization
@@ -74,6 +81,7 @@ Science-backed fitness training powered by advanced AI integrations.
 ## Setup
 
 ### Environment Variables
+
 Create a `.env` file with:
 
 ```bash
@@ -143,6 +151,7 @@ istani/
 ## API Endpoints
 
 ### Health Check
+
 ```
 GET /api/health
 ```
@@ -150,6 +159,7 @@ GET /api/health
 Returns service status and availability.
 
 ### AI Chat
+
 ```
 POST /api/ai-chat
 Body: { message, context }
@@ -158,6 +168,7 @@ Body: { message, context }
 Send messages to AI fitness coach.
 
 ### User Progress
+
 ```
 POST /api/users/progress
 Body: { userId, workoutData }
@@ -184,6 +195,7 @@ Retrieve user workout history.
 ## Research Citations
 
 All training protocols based on peer-reviewed research:
+
 - Schoenfeld et al. (2017) - Progressive overload
 - Damas et al. (2016) - Stimulus-Recovery-Adaptation
 - Fonseca et al. (2014) - Exercise variation
@@ -192,6 +204,7 @@ All training protocols based on peer-reviewed research:
 ## Support
 
 For issues or questions:
+
 - GitHub Issues: https://github.com/sano1233/istani/issues
 - Email: support@istani.org
 

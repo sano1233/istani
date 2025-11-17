@@ -18,7 +18,7 @@ const colors = {
   yellow: '\x1b[33m',
   red: '\x1b[31m',
   cyan: '\x1b[36m',
-  gray: '\x1b[90m'
+  gray: '\x1b[90m',
 };
 
 function colorize(text, color) {
@@ -77,7 +77,7 @@ function main() {
     // Configured secrets
     if (health.details.configured.length > 0) {
       printSection('Configured Secrets');
-      health.details.configured.forEach(secret => {
+      health.details.configured.forEach((secret) => {
         printSuccess(secret);
       });
     }
@@ -85,7 +85,7 @@ function main() {
     // Missing secrets
     if (health.details.missing.length > 0) {
       printSection('Missing Secrets (Optional)');
-      health.details.missing.forEach(secret => {
+      health.details.missing.forEach((secret) => {
         const def = secrets.SECRET_DEFINITIONS[secret];
         console.log(`  ${colorize('○', 'gray')} ${secret}`);
         console.log(`    ${colorize(def.description, 'gray')}`);
@@ -95,7 +95,7 @@ function main() {
     // Errors
     if (health.errors.length > 0) {
       printSection('Errors');
-      health.errors.forEach(error => {
+      health.errors.forEach((error) => {
         printError(error);
       });
     }
@@ -103,7 +103,7 @@ function main() {
     // Warnings
     if (health.warnings.length > 0) {
       printSection('Warnings');
-      health.warnings.forEach(warning => {
+      health.warnings.forEach((warning) => {
         printWarning(warning);
       });
     }
@@ -118,7 +118,7 @@ function main() {
 
     if (configHealth.details.aiProviders.length > 0) {
       console.log('\n  AI Providers:');
-      configHealth.details.aiProviders.forEach(provider => {
+      configHealth.details.aiProviders.forEach((provider) => {
         printSuccess(provider.toUpperCase());
       });
     }
@@ -135,7 +135,6 @@ function main() {
       console.log();
       process.exit(1);
     }
-
   } catch (error) {
     printHeader('ERROR');
     printError(error.message);

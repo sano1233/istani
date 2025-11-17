@@ -5,6 +5,7 @@ Complete voice-powered fitness assistant integrated with Istani Fitness platform
 ## 🎯 Overview
 
 An AI-powered voice agent that provides:
+
 - **Personalized Fitness Coaching** (voice-based)
 - **Workout Scheduling** (Google Calendar integration)
 - **Nutrition Guidance** (science-based recommendations)
@@ -15,16 +16,16 @@ An AI-powered voice agent that provides:
 
 Configure any of these models by setting the appropriate environment variable:
 
-| Model | Environment Variable | Use Case |
-|-------|---------------------|----------|
-| **MiniMax M2** | `OR_KEY_MINIMAX_MINIMAX_M2` | Fast, multilingual |
-| **Google Gemini Flash 1.5** | `OR_KEY_GOOGLE_GEMINI_FLASH` | Quick responses |
-| **Anthropic Claude 3.5 Sonnet** | `OR_KEY_ANTHROPIC_CLAUDE` | Deep reasoning |
-| **OpenAI GPT-4 Turbo** | `OR_KEY_OPENAI_GPT4` | Complex queries |
-| **Meta Llama 3.1 70B** | `OR_KEY_LLAMA` | Open-source |
-| **DeepSeek Coder** | `OR_KEY_DEEPSEEK` | Technical advice |
-| **Alibaba Qwen Max** | `OR_KEY_QWEN` | Alternative perspective |
-| **Cohere Command R+** | `OR_KEY_COHERE` | RAG-optimized |
+| Model                           | Environment Variable         | Use Case                |
+| ------------------------------- | ---------------------------- | ----------------------- |
+| **MiniMax M2**                  | `OR_KEY_MINIMAX_MINIMAX_M2`  | Fast, multilingual      |
+| **Google Gemini Flash 1.5**     | `OR_KEY_GOOGLE_GEMINI_FLASH` | Quick responses         |
+| **Anthropic Claude 3.5 Sonnet** | `OR_KEY_ANTHROPIC_CLAUDE`    | Deep reasoning          |
+| **OpenAI GPT-4 Turbo**          | `OR_KEY_OPENAI_GPT4`         | Complex queries         |
+| **Meta Llama 3.1 70B**          | `OR_KEY_LLAMA`               | Open-source             |
+| **DeepSeek Coder**              | `OR_KEY_DEEPSEEK`            | Technical advice        |
+| **Alibaba Qwen Max**            | `OR_KEY_QWEN`                | Alternative perspective |
+| **Cohere Command R+**           | `OR_KEY_COHERE`              | RAG-optimized           |
 
 ## 🚀 Quick Start
 
@@ -81,18 +82,20 @@ Server runs on `http://localhost:3000`
 Chat with AI fitness coach.
 
 **Request:**
+
 ```json
 {
   "prompt": "What's the best workout for muscle gain?",
   "model": "anthropic/claude-3.5-sonnet",
   "conversationHistory": [
-    {"role": "user", "content": "Previous message"},
-    {"role": "assistant", "content": "Previous response"}
+    { "role": "user", "content": "Previous message" },
+    { "role": "assistant", "content": "Previous response" }
   ]
 }
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -111,6 +114,7 @@ Chat with AI fitness coach.
 Schedule workout via Google Calendar.
 
 **Request:**
+
 ```json
 {
   "title": "Upper Body Workout",
@@ -122,6 +126,7 @@ Schedule workout via Google Calendar.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -136,6 +141,7 @@ Schedule workout via Google Calendar.
 Search Google Drive for fitness resources.
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -154,6 +160,7 @@ Search Google Drive for fitness resources.
 Retrieve specific file from Google Drive.
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -171,14 +178,12 @@ Retrieve specific file from Google Drive.
 Health check endpoint.
 
 **Response:**
+
 ```json
 {
   "status": "healthy",
   "service": "Istani Fitness Agent Backend",
-  "configuredModels": [
-    "minimax/minimax-m2",
-    "anthropic/claude-3.5-sonnet"
-  ],
+  "configuredModels": ["minimax/minimax-m2", "anthropic/claude-3.5-sonnet"],
   "endpoints": {
     "chat": "/chat",
     "schedule": "/schedule",
@@ -228,12 +233,14 @@ Platform: https://istani-dpoolwes1-istanis-projects.vercel.app
 In the ElevenLabs agent interface, add these tools:
 
 #### Tool 1: Chat with AI Coach
+
 - **Name**: `chat_fitness_ai`
 - **Description**: "Get fitness advice, workout plans, or nutrition guidance"
 - **Method**: POST
 - **URL**: `https://your-server.com/chat`
 - **Headers**: `Content-Type: application/json`
 - **Body**:
+
 ```json
 {
   "prompt": "{{user_question}}",
@@ -242,11 +249,13 @@ In the ElevenLabs agent interface, add these tools:
 ```
 
 #### Tool 2: Schedule Workout
+
 - **Name**: `schedule_workout`
 - **Description**: "Book a workout session in user's calendar"
 - **Method**: POST
 - **URL**: `https://your-server.com/schedule`
 - **Body**:
+
 ```json
 {
   "title": "{{workout_title}}",
@@ -258,12 +267,14 @@ In the ElevenLabs agent interface, add these tools:
 ```
 
 #### Tool 3: Search Fitness Resources
+
 - **Name**: `search_resources`
 - **Description**: "Find workout plans, meal guides, or exercise demonstrations"
 - **Method**: GET
 - **URL**: `https://your-server.com/file/search?query={{search_query}}`
 
 #### Tool 4: Get Fitness Document
+
 - **Name**: `get_document`
 - **Description**: "Retrieve specific fitness document by ID"
 - **Method**: GET
@@ -276,7 +287,7 @@ Add this code to your HTML:
 ```html
 <!-- ElevenLabs Voice Agent Widget -->
 <script>
-  (function() {
+  (function () {
     const agentId = 'YOUR_AGENT_ID'; // From ElevenLabs dashboard
 
     const script = document.createElement('script');
@@ -284,13 +295,13 @@ Add this code to your HTML:
     script.async = true;
     script.defer = true;
 
-    script.onload = function() {
+    script.onload = function () {
       if (window.ElevenLabsWidget) {
         window.ElevenLabsWidget.init({
           agentId: agentId,
           position: 'bottom-right',
-          greeting: 'Hi! I\'m your AI fitness coach. How can I help you today?',
-          avatar: 'https://your-site.com/coach-avatar.png'
+          greeting: "Hi! I'm your AI fitness coach. How can I help you today?",
+          avatar: 'https://your-site.com/coach-avatar.png',
         });
       }
     };
@@ -430,6 +441,7 @@ export OR_KEY_ANTHROPIC_CLAUDE=sk-or-v1-your-key-here
 ### Google Calendar not working
 
 **Solution**: Enable Google Calendar API and create credentials:
+
 1. Go to [Google Cloud Console](https://console.cloud.google.com/)
 2. Enable Calendar API
 3. Create API key
@@ -438,6 +450,7 @@ export OR_KEY_ANTHROPIC_CLAUDE=sk-or-v1-your-key-here
 ### Agent not responding
 
 **Solution**: Check server logs and verify:
+
 1. Server is running (`http://localhost:3000/health`)
 2. Environment variables are set
 3. Network connectivity to OpenRouter API

@@ -9,16 +9,19 @@ Complete open-source automation using n8n + WordPress + GitHub Actions.
 ## 🎯 What This Does
 
 ### Auto-Create PRs
+
 - Push to any feature branch → n8n receives webhook → Creates GitHub PR automatically
 - WordPress publishes post → n8n receives webhook → Creates PR with post content
 - Contact form submission → n8n processes → Optional PR creation for leads
 
 ### Auto-Merge PRs
+
 - All CI checks pass → n8n receives webhook → Merges PR automatically
 - Configurable merge strategies (squash, merge, rebase)
 - HMAC signature verification for security
 
 ### WordPress Event Processing
+
 - Contact Form 7 submissions
 - User registrations
 - Post publications
@@ -89,11 +92,13 @@ Settings → Secrets and variables → Actions → New repository secret
 ```
 
 Required secrets:
+
 - `N8N_ISTANI_SHARED_SECRET` - Same secret as in .env
 - `N8N_WEBHOOK_URL` - Your n8n webhook URL (e.g., `https://n8n.istani.org/webhook/github-create-pr`)
 - `N8N_WEBHOOK_URL_MERGE` - Merge webhook URL (e.g., `https://n8n.istani.org/webhook/github-merge-pr`)
 
 For local development:
+
 - `N8N_WEBHOOK_URL`: `http://localhost:5678/webhook/github-create-pr`
 - `N8N_WEBHOOK_URL_MERGE`: `http://localhost:5678/webhook/github-merge-pr`
 
@@ -174,10 +179,7 @@ All webhooks use HMAC-SHA256 signatures to verify authenticity:
 const body = JSON.stringify(payload);
 
 // Calculate signature
-const signature = crypto
-  .createHmac('sha256', SHARED_SECRET)
-  .update(body)
-  .digest('hex');
+const signature = crypto.createHmac('sha256', SHARED_SECRET).update(body).digest('hex');
 
 // Send with header
 headers['X-Istani-Signature'] = signature;
@@ -254,21 +256,25 @@ Edit `.github/workflows/n8n-auto-create-pr.yml`:
 ## 📊 Workflows Available
 
 ### 1. WP Contact (`wp-contact.json`)
+
 - **Trigger**: Contact Form 7 submission
 - **Actions**: Verify signature, echo data
 - **Extend to**: Send email, save to CRM, create issue
 
 ### 2. WP User Registered (`wp-user-registered.json`)
+
 - **Trigger**: WordPress user registration
 - **Actions**: Acknowledge receipt
 - **Extend to**: Send welcome email, add to mailing list
 
 ### 3. GitHub Create PR (`github-create-pr.json`)
+
 - **Trigger**: n8n webhook from GitHub Actions
 - **Actions**: Verify signature, create GitHub PR
 - **Requires**: GITHUB_TOKEN environment variable
 
 ### 4. GitHub Merge PR (`github-merge-pr.json`)
+
 - **Trigger**: n8n webhook from GitHub Actions
 - **Actions**: Verify signature, merge GitHub PR
 - **Requires**: GITHUB_TOKEN environment variable
@@ -350,6 +356,7 @@ cloudflared tunnel run istani-n8n
 ```
 
 Update GitHub secrets:
+
 - `N8N_WEBHOOK_URL`: `https://n8n.istani.org/webhook/github-create-pr`
 - `N8N_WEBHOOK_URL_MERGE`: `https://n8n.istani.org/webhook/github-merge-pr`
 

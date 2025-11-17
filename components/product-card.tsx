@@ -1,18 +1,18 @@
-'use client'
+'use client';
 
-import Image from 'next/image'
-import Link from 'next/link'
-import { Button } from './ui/button'
-import { useCartStore } from '@/lib/store/cart-store'
-import type { Product } from '@/types'
-import { formatPrice } from '@/lib/utils'
+import Image from 'next/image';
+import Link from 'next/link';
+import { Button } from './ui/button';
+import { useCartStore } from '@/lib/store/cart-store';
+import type { Product } from '@/types';
+import { formatPrice } from '@/lib/utils';
 
 interface ProductCardProps {
-  product: Product
+  product: Product;
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const addItem = useCartStore((state) => state.addItem)
+  const addItem = useCartStore((state) => state.addItem);
 
   return (
     <div className="border rounded-xl border-white/10 bg-white/5 overflow-hidden hover:border-primary/30 transition-colors group">
@@ -27,9 +27,7 @@ export function ProductCard({ product }: ProductCardProps) {
             />
           ) : (
             <div className="flex items-center justify-center h-full">
-              <span className="material-symbols-outlined text-white/20 text-6xl">
-                shopping_bag
-              </span>
+              <span className="material-symbols-outlined text-white/20 text-6xl">shopping_bag</span>
             </div>
           )}
         </div>
@@ -42,15 +40,11 @@ export function ProductCard({ product }: ProductCardProps) {
           </h3>
         </Link>
 
-        <p className="text-white/60 text-sm mb-4 line-clamp-2">
-          {product.short_description}
-        </p>
+        <p className="text-white/60 text-sm mb-4 line-clamp-2">{product.short_description}</p>
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-2xl font-bold text-primary">
-              {formatPrice(product.price)}
-            </span>
+            <span className="text-2xl font-bold text-primary">{formatPrice(product.price)}</span>
             {product.compare_at_price && (
               <span className="text-sm text-white/40 line-through">
                 {formatPrice(product.compare_at_price)}
@@ -58,18 +52,12 @@ export function ProductCard({ product }: ProductCardProps) {
             )}
           </div>
 
-          <Button
-            size="sm"
-            onClick={() => addItem(product)}
-            className="gap-2"
-          >
-            <span className="material-symbols-outlined text-sm">
-              shopping_cart
-            </span>
+          <Button size="sm" onClick={() => addItem(product)} className="gap-2">
+            <span className="material-symbols-outlined text-sm">shopping_cart</span>
             Add
           </Button>
         </div>
       </div>
     </div>
-  )
+  );
 }

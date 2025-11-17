@@ -56,12 +56,14 @@ claude mcp list
 **Method 2: Via Settings File** (Manual)
 
 On macOS/Linux:
+
 ```bash
 # Edit Claude Code settings
 code ~/.config/claude-code/mcp-servers.json
 ```
 
 On Windows:
+
 ```powershell
 # Edit Claude Code settings
 code %APPDATA%\claude-code\mcp-servers.json
@@ -74,10 +76,7 @@ Add this configuration:
   "mcpServers": {
     "huggingface": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@huggingface/mcp-server"
-      ],
+      "args": ["-y", "@huggingface/mcp-server"],
       "env": {
         "HF_TOKEN": "hf_your_token_here"
       }
@@ -374,16 +373,16 @@ Week 1: Focus on compound movements...
 
 Once integrated, Claude Code can use these HF MCP tools:
 
-| Tool | Description | Example |
-|------|-------------|---------|
-| `search_models` | Search HF models | "Find BERT models" |
-| `get_model` | Get model details | "Info on gpt2" |
-| `search_datasets` | Search datasets | "Find QA datasets" |
-| `get_dataset` | Get dataset info | "Details on IMDB" |
-| `list_spaces` | List HF Spaces | "Show image gen Spaces" |
-| `inference` | Run model inference | "Analyze sentiment" |
-| `download_model` | Download model files | "Download bert-base" |
-| `upload_model` | Upload to HF Hub | "Upload my model" |
+| Tool              | Description          | Example                 |
+| ----------------- | -------------------- | ----------------------- |
+| `search_models`   | Search HF models     | "Find BERT models"      |
+| `get_model`       | Get model details    | "Info on gpt2"          |
+| `search_datasets` | Search datasets      | "Find QA datasets"      |
+| `get_dataset`     | Get dataset info     | "Details on IMDB"       |
+| `list_spaces`     | List HF Spaces       | "Show image gen Spaces" |
+| `inference`       | Run model inference  | "Analyze sentiment"     |
+| `download_model`  | Download model files | "Download bert-base"    |
+| `upload_model`    | Upload to HF Hub     | "Upload my model"       |
 
 ---
 
@@ -451,14 +450,17 @@ Create a custom MCP server that combines HF with ISTANI-specific features:
 const { Server } = require('@modelcontextprotocol/sdk/server');
 const { StdioServerTransport } = require('@modelcontextprotocol/sdk/server/stdio');
 
-const server = new Server({
-  name: 'istani-ai',
-  version: '1.0.0',
-}, {
-  capabilities: {
-    tools: {},
+const server = new Server(
+  {
+    name: 'istani-ai',
+    version: '1.0.0',
   },
-});
+  {
+    capabilities: {
+      tools: {},
+    },
+  },
+);
 
 // Tool 1: Analyze workout form
 server.setRequestHandler('tools/call', async (request) => {
@@ -466,13 +468,16 @@ server.setRequestHandler('tools/call', async (request) => {
     const { image_url } = request.params.arguments;
 
     // Use HF Inference API
-    const response = await fetch('https://api-inference.huggingface.co/models/google/vit-base-patch16-224', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.HF_TOKEN}`,
+    const response = await fetch(
+      'https://api-inference.huggingface.co/models/google/vit-base-patch16-224',
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${process.env.HF_TOKEN}`,
+        },
+        body: JSON.stringify({ inputs: image_url }),
       },
-      body: JSON.stringify({ inputs: image_url }),
-    });
+    );
 
     return {
       content: [{ type: 'text', text: JSON.stringify(await response.json()) }],
@@ -506,16 +511,19 @@ server.connect(transport);
 ## 📚 Resources
 
 ### Documentation
+
 - **HF MCP Server**: https://huggingface.co/docs/mcp
 - **MCP Protocol**: https://modelcontextprotocol.io
 - **Claude Code MCP**: https://docs.claude.com/claude-code/mcp
 
 ### Tutorials
+
 - HF Model Hub: https://huggingface.co/models
 - HF Datasets: https://huggingface.co/datasets
 - HF Inference API: https://huggingface.co/docs/api-inference
 
 ### Community
+
 - HF Discord: https://hf.co/join/discord
 - MCP GitHub: https://github.com/modelcontextprotocol
 

@@ -48,30 +48,30 @@ node config/health-check.js
 
 ### AI Services
 
-| Service | Environment Variable | Required | Get Key From |
-|---------|---------------------|----------|--------------|
-| **Google Gemini** | `GEMINI_API_KEY` | No | https://makersuite.google.com/app/apikey |
-| **Anthropic Claude** | `ANTHROPIC_API_KEY` | No | https://console.anthropic.com/ |
-| **OpenAI** | `OPENAI_API_KEY` | No | https://platform.openai.com/api-keys |
-| **Alibaba Qwen** | `QWEN_API_KEY` | No | https://dashscope.console.aliyun.com/ |
-| **DeepSeek** | `DEEPSEEK_API_KEY` | No | https://platform.deepseek.com/ |
-| **Cohere** | `COHERE_API_KEY` | No | https://dashboard.cohere.com/ |
-| **Hugging Face** | `HUGGINGFACE_API_KEY` | No | https://huggingface.co/settings/tokens |
+| Service              | Environment Variable  | Required | Get Key From                             |
+| -------------------- | --------------------- | -------- | ---------------------------------------- |
+| **Google Gemini**    | `GEMINI_API_KEY`      | No       | https://makersuite.google.com/app/apikey |
+| **Anthropic Claude** | `ANTHROPIC_API_KEY`   | No       | https://console.anthropic.com/           |
+| **OpenAI**           | `OPENAI_API_KEY`      | No       | https://platform.openai.com/api-keys     |
+| **Alibaba Qwen**     | `QWEN_API_KEY`        | No       | https://dashscope.console.aliyun.com/    |
+| **DeepSeek**         | `DEEPSEEK_API_KEY`    | No       | https://platform.deepseek.com/           |
+| **Cohere**           | `COHERE_API_KEY`      | No       | https://dashboard.cohere.com/            |
+| **Hugging Face**     | `HUGGINGFACE_API_KEY` | No       | https://huggingface.co/settings/tokens   |
 
 ### Deployment Services
 
-| Service | Environment Variables | Required | Get From |
-|---------|----------------------|----------|----------|
-| **Vercel** | `VERCEL_TOKEN`<br>`VERCEL_ORG_ID`<br>`VERCEL_PROJECT_ID` | No | https://vercel.com/account/tokens |
-| **Supabase** | `SUPABASE_URL`<br>`SUPABASE_ANON_KEY`<br>`SUPABASE_SERVICE_ROLE_KEY` | No | https://app.supabase.com/project/_/settings/api |
+| Service      | Environment Variables                                                | Required | Get From                                        |
+| ------------ | -------------------------------------------------------------------- | -------- | ----------------------------------------------- |
+| **Vercel**   | `VERCEL_TOKEN`<br>`VERCEL_ORG_ID`<br>`VERCEL_PROJECT_ID`             | No       | https://vercel.com/account/tokens               |
+| **Supabase** | `SUPABASE_URL`<br>`SUPABASE_ANON_KEY`<br>`SUPABASE_SERVICE_ROLE_KEY` | No       | https://app.supabase.com/project/_/settings/api |
 
 ### GitHub
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `GITHUB_TOKEN` | No* | GitHub PAT or Actions token |
+| Variable       | Required | Description                 |
+| -------------- | -------- | --------------------------- |
+| `GITHUB_TOKEN` | No\*     | GitHub PAT or Actions token |
 
-*Automatically provided in GitHub Actions
+\*Automatically provided in GitHub Actions
 
 ## 💻 Local Development Setup
 
@@ -173,7 +173,7 @@ The workflow (`.github/workflows/ai-brain.yml`) automatically:
 jobs:
   analyze:
     runs-on: ubuntu-latest
-    environment: automated-development  # ← Uses unified environment
+    environment: automated-development # ← Uses unified environment
     steps:
       # ... workflow steps with all secrets available
 ```
@@ -203,7 +203,7 @@ console.log(providers);
 
 // Health check
 const health = config.healthCheck();
-console.log(health.status);  // 'healthy' or 'degraded'
+console.log(health.status); // 'healthy' or 'degraded'
 ```
 
 ### Direct Secret Access
@@ -242,6 +242,7 @@ node config/health-check.js
 ```
 
 Output includes:
+
 - Environment information
 - Secrets status (configured, missing, errors)
 - Enabled services summary
@@ -292,6 +293,7 @@ if (health.status === 'healthy') {
 ### Development
 
 1. **Environment-Specific Configs**
+
    ```bash
    # Development
    NODE_ENV=development node your-script.js
@@ -301,12 +303,14 @@ if (health.status === 'healthy') {
    ```
 
 2. **Validate Before Deployment**
+
    ```bash
    # Always validate before deploying
    node config/health-check.js
    ```
 
 3. **Use Config Abstraction**
+
    ```javascript
    // ✅ Good - uses config abstraction
    const config = require('./config');
@@ -323,6 +327,7 @@ if (health.status === 'healthy') {
 **Problem**: Required secret is missing
 
 **Solution**:
+
 1. Check your `.env` file has the required secret
 2. Run health check: `node config/health-check.js`
 3. Verify secret name matches `.env.example`
@@ -338,6 +343,7 @@ if (health.status === 'healthy') {
 **Problem**: Secret not added to GitHub environment
 
 **Solution**:
+
 1. Go to: https://github.com/sano1233/istani/settings/environments/automated-development
 2. Add the missing secret
 3. Re-run the workflow
@@ -347,6 +353,7 @@ if (health.status === 'healthy') {
 **Problem**: API key doesn't match expected format
 
 **Solution**:
+
 1. Verify you copied the key correctly (no spaces, complete string)
 2. Check the key hasn't expired
 3. Regenerate the key from the provider's console
@@ -356,6 +363,7 @@ if (health.status === 'healthy') {
 **Problem**: `Cannot find module '../config'`
 
 **Solution**:
+
 1. Ensure you're running from the project root
 2. Verify `config/` directory exists
 3. Check Node.js can resolve the path

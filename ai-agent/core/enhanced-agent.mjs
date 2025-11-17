@@ -21,7 +21,7 @@ class EnhancedIstaniAgent extends IstaniAIAgent {
       openaiApiKey: config.openaiApiKey || process.env.OPENAI_API_KEY,
       copilotEnabled: config.copilotEnabled !== false,
       codexEnabled: config.codexEnabled !== false,
-      autoFixEnabled: config.autoFixEnabled !== false
+      autoFixEnabled: config.autoFixEnabled !== false,
     });
 
     this.enhancedStats = {
@@ -30,7 +30,7 @@ class EnhancedIstaniAgent extends IstaniAIAgent {
       modelsUsed: 0,
       consensusReached: 0,
       errorsAutoResolved: 0,
-      codeSuggestionsGenerated: 0
+      codeSuggestionsGenerated: 0,
     };
   }
 
@@ -97,9 +97,8 @@ class EnhancedIstaniAgent extends IstaniAIAgent {
         errorResolution,
         buildResult,
         testResult,
-        modelsUsed: analysis.modelsUsed
+        modelsUsed: analysis.modelsUsed,
       };
-
     } catch (error) {
       this.log(`❌ Error in enhanced processing of PR #${prNumber}: ${error.message}`, 'error');
       await this.handleError(prNumber, error);
@@ -123,7 +122,7 @@ class EnhancedIstaniAgent extends IstaniAIAgent {
           owner: this.config.owner,
           repo: this.config.repo,
           path: file.filename,
-          ref: pr.head.sha
+          ref: pr.head.sha,
         });
 
         const content = Buffer.from(data.content, 'base64').toString('utf-8');
@@ -133,26 +132,25 @@ class EnhancedIstaniAgent extends IstaniAIAgent {
           filename: file.filename,
           language: this.detectLanguage(file.filename),
           description: `File: ${file.filename} in PR #${pr.number}`,
-          patch: file.patch
+          patch: file.patch,
         });
 
         filesAnalysis.push({
           file: file.filename,
-          ...multiReview
+          ...multiReview,
         });
-
       } catch (error) {
         this.log(`Failed to analyze ${file.filename}: ${error.message}`, 'warn');
       }
     }
 
     this.enhancedStats.modelsUsed += filesAnalysis.reduce((sum, f) => sum + f.modelsUsed, 0);
-    this.enhancedStats.consensusReached += filesAnalysis.filter(f => f.consensus.approved).length;
+    this.enhancedStats.consensusReached += filesAnalysis.filter((f) => f.consensus.approved).length;
 
     return {
       filesAnalysis,
       modelsUsed: filesAnalysis[0]?.modelsUsed || 0,
-      overallConsensus: this.calculateOverallConsensus(filesAnalysis)
+      overallConsensus: this.calculateOverallConsensus(filesAnalysis),
     };
   }
 
@@ -162,8 +160,8 @@ class EnhancedIstaniAgent extends IstaniAIAgent {
   async enhancedCodeReview(pr, analysis) {
     this.log(`📝 Enhanced code review with multi-model consensus`, 'info');
 
-    const allIssues = analysis.filesAnalysis.flatMap(f => f.consensus.allIssues);
-    const allSuggestions = analysis.filesAnalysis.flatMap(f => f.consensus.allSuggestions);
+    const allIssues = analysis.filesAnalysis.flatMap((f) => f.consensus.allIssues);
+    const allSuggestions = analysis.filesAnalysis.flatMap((f) => f.consensus.allSuggestions);
     const approved = analysis.overallConsensus.approved;
 
     const reviewText = this.formatEnhancedReview({
@@ -171,7 +169,7 @@ class EnhancedIstaniAgent extends IstaniAIAgent {
       modelsUsed: analysis.modelsUsed,
       consensus: analysis.overallConsensus,
       issues: allIssues,
-      suggestions: allSuggestions
+      suggestions: allSuggestions,
     });
 
     this.stats.codeReviewsCompleted++;
@@ -183,7 +181,7 @@ class EnhancedIstaniAgent extends IstaniAIAgent {
       modelsUsed: analysis.modelsUsed,
       issues: allIssues,
       suggestions: allSuggestions,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
   }
 
@@ -204,40 +202,37 @@ class EnhancedIstaniAgent extends IstaniAIAgent {
           owner: this.config.owner,
           repo: this.config.repo,
           path: file.filename,
-          ref: pr.head.sha
+          ref: pr.head.sha,
         });
 
         const content = Buffer.from(data.content, 'base64').toString('utf-8');
 
         // Detect and fix errors
-        const result = await this.multiModelAI.detectAndFixErrors(
-          content,
-          file.filename,
-          { prNumber: pr.number }
-        );
+        const result = await this.multiModelAI.detectAndFixErrors(content, file.filename, {
+          prNumber: pr.number,
+        });
 
         if (result.fixed || result.suggestedFixes?.length > 0) {
           fixes.push({
             file: file.filename,
-            ...result
+            ...result,
           });
 
           totalErrors += result.originalErrors || result.errors?.length || 0;
         }
-
       } catch (error) {
         this.log(`Error resolution failed for ${file.filename}: ${error.message}`, 'warn');
       }
     }
 
-    this.enhancedStats.errorsAutoResolved += fixes.filter(f => f.fixed).length;
+    this.enhancedStats.errorsAutoResolved += fixes.filter((f) => f.fixed).length;
     this.enhancedStats.autoFixesApplied += fixes.length;
 
     return {
       fixesAvailable: fixes.length > 0,
       fixes,
       totalErrors,
-      fixedErrors: fixes.filter(f => f.fixed).length
+      fixedErrors: fixes.filter((f) => f.fixed).length,
     };
   }
 
@@ -256,7 +251,7 @@ class EnhancedIstaniAgent extends IstaniAIAgent {
           owner: this.config.owner,
           repo: this.config.repo,
           path: fix.file,
-          ref: pr.head.ref
+          ref: pr.head.ref,
         });
 
         // Update file with fixed code
@@ -267,11 +262,10 @@ class EnhancedIstaniAgent extends IstaniAIAgent {
           message: `🤖 Auto-fix: Resolved ${fix.originalErrors} error(s) in ${fix.file}`,
           content: Buffer.from(fix.fixedCode).toString('base64'),
           sha: fileData.sha,
-          branch: pr.head.ref
+          branch: pr.head.ref,
         });
 
         this.log(`✅ Applied fixes to ${fix.file}`, 'success');
-
       } catch (error) {
         this.log(`Failed to apply fixes to ${fix.file}: ${error.message}`, 'error');
       }
@@ -291,7 +285,7 @@ class EnhancedIstaniAgent extends IstaniAIAgent {
       owner: this.config.owner,
       repo: this.config.repo,
       issue_number: pr.number,
-      body: comment
+      body: comment,
     });
 
     // Submit review
@@ -300,7 +294,7 @@ class EnhancedIstaniAgent extends IstaniAIAgent {
       repo: this.config.repo,
       pull_number: pr.number,
       event: review.approved ? 'APPROVE' : 'COMMENT',
-      body: review.text
+      body: review.text,
     });
   }
 
@@ -308,22 +302,23 @@ class EnhancedIstaniAgent extends IstaniAIAgent {
    * Post auto-fix comment
    */
   async postAutoFixComment(pr, errorResolution) {
-    const comment = `## 🤖 Automatic Error Resolution\n\n` +
+    const comment =
+      `## 🤖 Automatic Error Resolution\n\n` +
       `I've automatically detected and fixed errors in this PR:\n\n` +
       `- **Total errors found**: ${errorResolution.totalErrors}\n` +
       `- **Errors fixed**: ${errorResolution.fixedErrors}\n` +
       `- **Files updated**: ${errorResolution.fixes.length}\n\n` +
       `### Fixed Files:\n\n` +
-      errorResolution.fixes.map(fix =>
-        `- ✅ **${fix.file}**: Fixed ${fix.originalErrors} error(s)`
-      ).join('\n') +
+      errorResolution.fixes
+        .map((fix) => `- ✅ **${fix.file}**: Fixed ${fix.originalErrors} error(s)`)
+        .join('\n') +
       `\n\n*Fixes applied by ISTANI Enhanced AI Agent using Claude, Copilot, and Codex*`;
 
     await this.github.issues.createComment({
       owner: this.config.owner,
       repo: this.config.repo,
       issue_number: pr.number,
-      body: comment
+      body: comment,
     });
   }
 
@@ -334,22 +329,33 @@ class EnhancedIstaniAgent extends IstaniAIAgent {
     const emoji = review.approved ? '✅' : '⚠️';
     const status = review.approved ? 'APPROVED' : 'CHANGES REQUESTED';
 
-    return `## ${emoji} Enhanced Multi-Model AI Review - ${status}\n\n` +
+    return (
+      `## ${emoji} Enhanced Multi-Model AI Review - ${status}\n\n` +
       `**Models Used**: ${review.modelsUsed} (Claude, ${this.multiModelAI.config.copilotEnabled ? 'Copilot, ' : ''}${this.multiModelAI.config.codexEnabled ? 'Codex' : ''})\n` +
       `**Confidence**: ${(review.confidence * 100).toFixed(1)}%\n` +
       `**Timestamp**: ${review.timestamp}\n\n` +
       `---\n\n` +
-      (errorResolution.fixesAvailable ?
-        `### 🔧 Error Detection\n\n` +
-        `- Found ${errorResolution.totalErrors} error(s)\n` +
-        `- Auto-fixed ${errorResolution.fixedErrors} error(s)\n\n` : '') +
+      (errorResolution.fixesAvailable
+        ? `### 🔧 Error Detection\n\n` +
+          `- Found ${errorResolution.totalErrors} error(s)\n` +
+          `- Auto-fixed ${errorResolution.fixedErrors} error(s)\n\n`
+        : '') +
       `### 📊 Review Summary\n\n${review.text}\n\n` +
-      (review.issues.length > 0 ?
-        `### ⚠️ Issues Found\n\n${review.issues.slice(0, 10).map(i => `- ${i}`).join('\n')}\n\n` : '') +
-      (review.suggestions.length > 0 ?
-        `### 💡 Suggestions\n\n${review.suggestions.slice(0, 10).map(s => `- ${s}`).join('\n')}\n\n` : '') +
+      (review.issues.length > 0
+        ? `### ⚠️ Issues Found\n\n${review.issues
+            .slice(0, 10)
+            .map((i) => `- ${i}`)
+            .join('\n')}\n\n`
+        : '') +
+      (review.suggestions.length > 0
+        ? `### 💡 Suggestions\n\n${review.suggestions
+            .slice(0, 10)
+            .map((s) => `- ${s}`)
+            .join('\n')}\n\n`
+        : '') +
       `---\n\n` +
-      `*Enhanced review by ISTANI AI Agent - Powered by Claude AI, GitHub Copilot & Codex*`;
+      `*Enhanced review by ISTANI AI Agent - Powered by Claude AI, GitHub Copilot & Codex*`
+    );
   }
 
   /**
@@ -369,18 +375,34 @@ class EnhancedIstaniAgent extends IstaniAIAgent {
 ### Code Quality Assessment
 The code has been reviewed by multiple AI models (Claude AI, GitHub Copilot, and Codex) for comprehensive analysis.
 
-${data.issues.length > 0 ? `### Issues Identified (${data.issues.length})
-${data.issues.slice(0, 15).map((issue, i) => `${i + 1}. ${issue}`).join('\n')}
-` : '### ✅ No Critical Issues Found'}
+${
+  data.issues.length > 0
+    ? `### Issues Identified (${data.issues.length})
+${data.issues
+  .slice(0, 15)
+  .map((issue, i) => `${i + 1}. ${issue}`)
+  .join('\n')}
+`
+    : '### ✅ No Critical Issues Found'
+}
 
-${data.suggestions.length > 0 ? `### Improvement Suggestions (${data.suggestions.length})
-${data.suggestions.slice(0, 15).map((suggestion, i) => `${i + 1}. ${suggestion}`).join('\n')}
-` : ''}
+${
+  data.suggestions.length > 0
+    ? `### Improvement Suggestions (${data.suggestions.length})
+${data.suggestions
+  .slice(0, 15)
+  .map((suggestion, i) => `${i + 1}. ${suggestion}`)
+  .join('\n')}
+`
+    : ''
+}
 
 ## Verdict
-${data.consensus.approved ?
-      '✅ **APPROVED** - All AI models agree this code meets quality standards.' :
-      '⚠️ **CHANGES REQUESTED** - Please address the issues identified above.'}
+${
+  data.consensus.approved
+    ? '✅ **APPROVED** - All AI models agree this code meets quality standards.'
+    : '⚠️ **CHANGES REQUESTED** - Please address the issues identified above.'
+}
 `;
   }
 
@@ -392,14 +414,14 @@ ${data.consensus.approved ?
       return { approved: false, confidence: 0 };
     }
 
-    const approvals = filesAnalysis.filter(f => f.consensus.approved).length;
+    const approvals = filesAnalysis.filter((f) => f.consensus.approved).length;
     const confidence = approvals / filesAnalysis.length;
 
     return {
       approved: confidence >= 0.7, // Require 70% approval
       confidence,
       totalFiles: filesAnalysis.length,
-      approvedFiles: approvals
+      approvedFiles: approvals,
     };
   }
 
@@ -436,7 +458,7 @@ ${data.consensus.approved ?
       '.swift': 'swift',
       '.kt': 'kotlin',
       '.mjs': 'javascript',
-      '.cjs': 'javascript'
+      '.cjs': 'javascript',
     };
     return langMap[ext] || 'plaintext';
   }
@@ -448,7 +470,7 @@ ${data.consensus.approved ?
     return {
       ...this.getStats(),
       ...this.enhancedStats,
-      multiModelAI: this.multiModelAI.getStats()
+      multiModelAI: this.multiModelAI.getStats(),
     };
   }
 }

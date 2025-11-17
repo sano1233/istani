@@ -1,27 +1,27 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import Image from 'next/image'
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
-import { Button } from './ui/button'
+import { useState } from 'react';
+import Image from 'next/image';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Button } from './ui/button';
 
 interface ProgressPhoto {
-  id: string
-  photo_url: string
-  photo_type: string
-  weight_kg: number
-  body_fat_percentage: number
-  taken_at: string
-  notes: string
+  id: string;
+  photo_url: string;
+  photo_type: string;
+  weight_kg: number;
+  body_fat_percentage: number;
+  taken_at: string;
+  notes: string;
 }
 
 interface ProgressPhotosProps {
-  photos: ProgressPhoto[]
-  userId: string
+  photos: ProgressPhoto[];
+  userId: string;
 }
 
 export function ProgressPhotos({ photos, userId }: ProgressPhotosProps) {
-  const [selectedPhoto, setSelectedPhoto] = useState<ProgressPhoto | null>(null)
+  const [selectedPhoto, setSelectedPhoto] = useState<ProgressPhoto | null>(null);
 
   return (
     <Card className="mb-8">
@@ -37,9 +37,7 @@ export function ProgressPhotos({ photos, userId }: ProgressPhotosProps) {
       <CardContent>
         {photos.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-white/40">
-            <span className="material-symbols-outlined text-6xl mb-4 opacity-40">
-              photo_camera
-            </span>
+            <span className="material-symbols-outlined text-6xl mb-4 opacity-40">photo_camera</span>
             <p className="text-lg mb-2">No progress photos yet</p>
             <p className="text-sm mb-4">Document your journey with progress photos</p>
             <Button size="sm">Upload First Photo</Button>
@@ -155,5 +153,5 @@ export function ProgressPhotos({ photos, userId }: ProgressPhotosProps) {
         )}
       </CardContent>
     </Card>
-  )
+  );
 }

@@ -26,6 +26,7 @@ This isn't your typical fitness app. This is based on Alex Hormozi's philosophy:
 ### What You Get (100% FREE):
 
 ✅ **Complete 7-Day System Reset Program**
+
 - Nervous system reset (Day 1)
 - Joint strength activation (Day 2)
 - Breathing & core priming (Day 3)
@@ -35,6 +36,7 @@ This isn't your typical fitness app. This is based on Alex Hormozi's philosophy:
 - Full body circuit (Day 7)
 
 ✅ **Real Working Tools**
+
 - Built-in exercise timers
 - Progress tracking that saves
 - Streak counter & statistics
@@ -43,6 +45,7 @@ This isn't your typical fitness app. This is based on Alex Hormozi's philosophy:
 - Export/import your progress
 
 ✅ **Zero Friction**
+
 - No account required
 - No credit card
 - No email signup
@@ -73,6 +76,7 @@ That's the model.
 ### What Donations Enable:
 
 Your support directly funds:
+
 - ✅ More free programs
 - ✅ Video demonstrations
 - ✅ Mobile app development
@@ -116,6 +120,7 @@ Every exercise has links to peer-reviewed research. No pseudoscience. No magic p
 ### 3. **Built for Real People**
 
 Not for athletes. Not for gym rats. For people who:
+
 - Feel stuck
 - Can't get started
 - Lost their way
@@ -177,12 +182,14 @@ Get reminders for your workouts (opt-in, not annoying).
 **Long answer:**
 
 Most fitness products:
+
 1. Promise transformation
 2. Charge upfront
 3. Under-deliver
 4. Move on to next customer
 
 **We flip it:**
+
 1. Give the transformation FREE
 2. Let results speak
 3. Accept support from those who value it
@@ -211,12 +218,14 @@ Tell someone who needs it. Share on social media. Be the friend who actually hel
 **Buy Me a Coffee:** https://buymeacoffee.com/istanifitn
 
 Donate what feels right:
+
 - $3 - Coffee ☕
 - $10 - Lunch 🍔
 - $25 - Month of support 💪
 - $100+ - Major support 🚀
 
 **Every dollar goes to:**
+
 - Building more free programs
 - Adding video guides
 - Mobile app development
@@ -286,6 +295,7 @@ Click the button at the top to deploy to Vercel or Netlify. It's free!
 ### Contributing
 
 We welcome contributions! Whether it's:
+
 - Code improvements
 - Bug fixes
 - New features
@@ -305,12 +315,14 @@ MIT License - Use it, modify it, share it, build on it. Just keep it free for th
 ## 🙏 Credits
 
 ### Built With:
+
 - Science-backed exercise protocols
 - Alex Hormozi's "Give Value First" philosophy
 - Real feedback from real people
 - Open-source tools (all free)
 
 ### Inspired By:
+
 People who were stuck and needed a system that actually works.
 
 ---

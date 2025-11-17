@@ -22,9 +22,7 @@ const program = new Command();
 // Load package.json for version
 let version = '1.0.0';
 try {
-  const packageJson = JSON.parse(
-    await readFile(join(__dirname, '../../package.json'), 'utf-8')
-  );
+  const packageJson = JSON.parse(await readFile(join(__dirname, '../../package.json'), 'utf-8'));
   version = packageJson.version || version;
 } catch (error) {
   // Ignore
@@ -41,7 +39,7 @@ program
 function initAgent() {
   return new IstaniAIAgent({
     owner: process.env.GITHUB_OWNER || 'sano1233',
-    repo: process.env.GITHUB_REPO || 'istani'
+    repo: process.env.GITHUB_REPO || 'istani',
   });
 }
 
@@ -71,7 +69,6 @@ program
         console.log('\n' + chalk.bold('Review:'));
         console.log(result.review.text);
       }
-
     } catch (error) {
       spinner.fail(chalk.red(`Failed to process PR #${prNumber}`));
       console.error(chalk.red('Error:'), error.message);
@@ -99,10 +96,10 @@ program
       // Display results table
       const table = new Table({
         head: ['PR #', 'Status', 'Duration', 'Approved', 'Build', 'Tests'],
-        style: { head: ['cyan'] }
+        style: { head: ['cyan'] },
       });
 
-      results.forEach(result => {
+      results.forEach((result) => {
         if (result.success) {
           table.push([
             result.prNumber,
@@ -110,22 +107,14 @@ program
             result.duration + 's',
             result.review.approved ? '✅' : '❌',
             result.buildResult.success ? '✅' : '❌',
-            result.testResult.success ? '✅' : '❌'
+            result.testResult.success ? '✅' : '❌',
           ]);
         } else {
-          table.push([
-            result.prNumber,
-            '❌ Failed',
-            '-',
-            '-',
-            '-',
-            '-'
-          ]);
+          table.push([result.prNumber, '❌ Failed', '-', '-', '-', '-']);
         }
       });
 
       console.log('\n' + table.toString());
-
     } catch (error) {
       spinner.fail(chalk.red('Failed to process PRs'));
       console.error(chalk.red('Error:'), error.message);
@@ -147,7 +136,7 @@ program
       console.log(chalk.bold.cyan('\n📊 ISTANI AI Agent Statistics\n'));
 
       const table = new Table({
-        style: { head: ['cyan'] }
+        style: { head: ['cyan'] },
       });
 
       table.push(
@@ -159,11 +148,10 @@ program
         ['Security Issues Found', chalk.yellow(stats.securityIssuesFound)],
         ['Code Reviews Completed', stats.codeReviewsCompleted],
         ['Uptime', Math.floor(stats.uptime) + 's'],
-        ['Timestamp', stats.timestamp]
+        ['Timestamp', stats.timestamp],
       );
 
       console.log(table.toString() + '\n');
-
     } catch (error) {
       console.error(chalk.red('Error:'), error.message);
       process.exit(1);
@@ -198,7 +186,6 @@ program
 
       console.log('\n' + chalk.bold('Review:'));
       console.log(review.text);
-
     } catch (error) {
       spinner.fail(chalk.red(`Failed to review PR #${prNumber}`));
       console.error(chalk.red('Error:'), error.message);
@@ -228,26 +215,22 @@ program
 
         const table = new Table({
           head: ['Severity', 'File', 'Issue'],
-          style: { head: ['cyan'] }
+          style: { head: ['cyan'] },
         });
 
-        result.issues.forEach(issue => {
-          const severityColor = {
-            HIGH: chalk.red,
-            MEDIUM: chalk.yellow,
-            LOW: chalk.blue
-          }[issue.severity] || chalk.white;
+        result.issues.forEach((issue) => {
+          const severityColor =
+            {
+              HIGH: chalk.red,
+              MEDIUM: chalk.yellow,
+              LOW: chalk.blue,
+            }[issue.severity] || chalk.white;
 
-          table.push([
-            severityColor(issue.severity),
-            issue.file,
-            issue.issue
-          ]);
+          table.push([severityColor(issue.severity), issue.file, issue.issue]);
         });
 
         console.log('\n' + table.toString());
       }
-
     } catch (error) {
       spinner.fail(chalk.red(`Security scan failed`));
       console.error(chalk.red('Error:'), error.message);
@@ -275,7 +258,6 @@ program
       await agent.deployToProduction(mockPR);
 
       spinner.succeed(chalk.green('Deployment successful'));
-
     } catch (error) {
       spinner.fail(chalk.red('Deployment failed'));
       console.error(chalk.red('Error:'), error.message);
@@ -293,17 +275,17 @@ program
     console.log(chalk.bold.cyan('\n🔧 Agent Configuration\n'));
 
     const config = {
-      'ANTHROPIC_API_KEY': process.env.ANTHROPIC_API_KEY ? '✅ Set' : '❌ Not set',
-      'GITHUB_TOKEN': process.env.GITHUB_TOKEN ? '✅ Set' : '❌ Not set',
-      'GITHUB_OWNER': process.env.GITHUB_OWNER || 'sano1233 (default)',
-      'GITHUB_REPO': process.env.GITHUB_REPO || 'istani (default)',
-      'VERCEL_TOKEN': process.env.VERCEL_TOKEN ? '✅ Set' : '❌ Not set',
-      'NETLIFY_TOKEN': process.env.NETLIFY_TOKEN ? '✅ Set' : '❌ Not set',
-      'GITHUB_WEBHOOK_SECRET': process.env.GITHUB_WEBHOOK_SECRET ? '✅ Set' : '❌ Not set'
+      ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY ? '✅ Set' : '❌ Not set',
+      GITHUB_TOKEN: process.env.GITHUB_TOKEN ? '✅ Set' : '❌ Not set',
+      GITHUB_OWNER: process.env.GITHUB_OWNER || 'sano1233 (default)',
+      GITHUB_REPO: process.env.GITHUB_REPO || 'istani (default)',
+      VERCEL_TOKEN: process.env.VERCEL_TOKEN ? '✅ Set' : '❌ Not set',
+      NETLIFY_TOKEN: process.env.NETLIFY_TOKEN ? '✅ Set' : '❌ Not set',
+      GITHUB_WEBHOOK_SECRET: process.env.GITHUB_WEBHOOK_SECRET ? '✅ Set' : '❌ Not set',
     };
 
     const table = new Table({
-      style: { head: ['cyan'] }
+      style: { head: ['cyan'] },
     });
 
     Object.entries(config).forEach(([key, value]) => {

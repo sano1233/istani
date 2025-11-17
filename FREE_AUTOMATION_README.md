@@ -9,6 +9,7 @@ This repository uses **completely free and open-source tools** for automated cod
 ## ✨ What You Get (100% FREE)
 
 ### 🤖 Automated Code Review
+
 - ✅ **Danger.js** - Automated PR checks and feedback
 - ✅ **ESLint** - JavaScript/TypeScript linting with auto-fix
 - ✅ **Prettier** - Automatic code formatting
@@ -16,17 +17,20 @@ This repository uses **completely free and open-source tools** for automated cod
 - ✅ **CodeQL** - GitHub's advanced security scanner
 
 ### 🔧 Auto-Fix Capabilities
+
 - Automatically fixes linting errors
 - Auto-formats code with Prettier
 - Commits fixes directly to PR branches
 - No manual intervention needed
 
 ### 🔀 Auto-Merge
+
 - Automatically merges PRs when all checks pass
 - Configurable merge conditions
 - Safe and secure
 
 ### 🔒 Security Scanning
+
 - CodeQL security analysis (FREE from GitHub)
 - Dependency vulnerability scanning
 - Secret detection
@@ -53,14 +57,15 @@ That's it! No API keys, no configuration, nothing!
 
 Comment these commands on any PR:
 
-| Command | What It Does |
-|---------|--------------|
-| `/fix` | Auto-fix linting and formatting |
-| `/format` | Run Prettier formatting |
-| `/review` | Trigger manual review |
-| `/merge` | Check if PR can auto-merge |
+| Command   | What It Does                    |
+| --------- | ------------------------------- |
+| `/fix`    | Auto-fix linting and formatting |
+| `/format` | Run Prettier formatting         |
+| `/review` | Trigger manual review           |
+| `/merge`  | Check if PR can auto-merge      |
 
 **Example:**
+
 ```
 /fix
 ```
@@ -72,30 +77,35 @@ The bot will respond and fix your code!
 ## 🛠️ Free Tools Used
 
 ### 1. **Super-Linter** 🔍
+
 - **Cost:** FREE forever
 - **What:** Lints 20+ languages
 - **Runs:** On every PR
 - **Auto-fixes:** Yes
 
 ### 2. **CodeQL** 🔒
+
 - **Cost:** FREE (by GitHub)
 - **What:** Advanced security scanning
 - **Runs:** On every PR
 - **Finds:** Vulnerabilities, bugs, security issues
 
 ### 3. **ESLint** 🔧
+
 - **Cost:** FREE and open-source
 - **What:** JavaScript/TypeScript linting
 - **Runs:** On every PR
 - **Auto-fixes:** Yes, commits fixes automatically
 
 ### 4. **Prettier** 💅
+
 - **Cost:** FREE and open-source
 - **What:** Code formatting
 - **Runs:** After ESLint
 - **Auto-fixes:** Yes, commits formatted code
 
 ### 5. **Danger.js** 📝
+
 - **Cost:** FREE and open-source
 - **What:** Automated code review comments
 - **Runs:** On every PR
@@ -107,6 +117,7 @@ The bot will respond and fix your code!
   - Best practices
 
 ### 6. **Dependency Review** 🔍
+
 - **Cost:** FREE (by GitHub)
 - **What:** Scans for vulnerable dependencies
 - **Runs:** On every PR
@@ -173,15 +184,17 @@ You can customize these if you want!
 ### Auto-Fix Examples
 
 **Before:**
+
 ```javascript
-function getData( ) {
-  var data=fetchData( )
-  console.log( data )
-  return data
+function getData() {
+  var data = fetchData();
+  console.log(data);
+  return data;
 }
 ```
 
 **After (automatic):**
+
 ```javascript
 function getData() {
   const data = fetchData();
@@ -202,6 +215,7 @@ The bot automatically comments on PRs:
 ### Security Scanning
 
 Automatically detects:
+
 - SQL injection vulnerabilities
 - XSS vulnerabilities
 - Hardcoded secrets
@@ -212,13 +226,13 @@ Automatically detects:
 
 ## 💰 Cost Comparison
 
-| Feature | This Setup | Paid AI Services |
-|---------|------------|------------------|
-| Code Review | **FREE** | $20-100/month |
-| Auto-Fix | **FREE** | $20-100/month |
-| Security Scan | **FREE** | $0-500/month |
-| Auto-Merge | **FREE** | Included |
-| **Total** | **$0/month** | **$40-700/month** |
+| Feature       | This Setup   | Paid AI Services  |
+| ------------- | ------------ | ----------------- |
+| Code Review   | **FREE**     | $20-100/month     |
+| Auto-Fix      | **FREE**     | $20-100/month     |
+| Security Scan | **FREE**     | $0-500/month      |
+| Auto-Merge    | **FREE**     | Included          |
+| **Total**     | **$0/month** | **$40-700/month** |
 
 **You save: $500-8,400/year!**
 
@@ -260,21 +274,27 @@ In `.github/workflows/free-automated-review-merge.yml`, remove the `auto-merge` 
 ## 🤔 FAQ
 
 ### Q: Is this really free?
+
 **A:** Yes! 100% free. All tools are open-source and GitHub Actions is free for public repos (2,000 minutes/month free for private repos).
 
 ### Q: Do I need API keys?
+
 **A:** No! Zero API keys needed. Everything works out of the box.
 
 ### Q: Will this work for private repos?
+
 **A:** Yes! GitHub Actions gives you 2,000 free minutes/month for private repos. That's plenty.
 
 ### Q: Can I customize the review rules?
+
 **A:** Yes! Edit the config files (`.eslintrc.json`, `.prettierrc.json`, etc.)
 
 ### Q: How do I disable a specific check?
+
 **A:** Remove the job from `.github/workflows/free-automated-review-merge.yml`
 
 ### Q: What languages are supported?
+
 **A:** Super-Linter supports 20+ languages including JavaScript, TypeScript, Python, Java, Go, Ruby, PHP, and more!
 
 ---
