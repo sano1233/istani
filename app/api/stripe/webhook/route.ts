@@ -8,7 +8,7 @@ export async function POST(req: Request) {
   const headersList = await headers()
   const signature = headersList.get('stripe-signature')!
 
-  let event: any
+  let event: Stripe.Event
 
   try {
     event = stripe.webhooks.constructEvent(
@@ -16,9 +16,10 @@ export async function POST(req: Request) {
       signature,
       process.env.STRIPE_WEBHOOK_SECRET!
     )
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const errorMessage = err instanceof Error ? err.message : 'Unknown error'
     return NextResponse.json(
-      { error: `Webhook Error: ${err.message}` },
+      { error: `Webhook Error: ${errorMessage}` },
       { status: 400 }
     )
   }

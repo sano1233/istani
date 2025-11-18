@@ -13,6 +13,9 @@ const config: Config = {
         primary: '#0df259',
         'background-light': '#f5f8f6',
         'background-dark': '#102216',
+        border: '#1e3a25',
+        background: '#102216',
+        foreground: '#ffffff',
       },
       fontFamily: {
         display: ['Space Grotesk', 'sans-serif'],
