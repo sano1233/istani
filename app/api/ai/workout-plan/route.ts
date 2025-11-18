@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 
-export const runtime = 'edge';
+// Note: Using Node.js runtime because Supabase requires cookies() from next/headers
+// which is not available in Edge Runtime
 export const maxDuration = 60;
 
 interface WorkoutPlanRequest {

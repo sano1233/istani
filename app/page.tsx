@@ -5,11 +5,24 @@ import { neon } from '@neondatabase/serverless';
 export default function HomePage() {
   async function create(formData: FormData) {
     'use server';
-    // Connect to the Neon database
-    const sql = neon(`${process.env.DATABASE_URL}`);
-    const comment = formData.get('comment');
-    // Insert the comment from the form into the Postgres database
-    await sql`INSERT INTO comments (comment) VALUES (${comment})`;
+    try {
+      const databaseUrl = process.env.DATABASE_URL;
+      if (!databaseUrl) {
+        console.error('DATABASE_URL is not configured');
+        return;
+      }
+      // Connect to the Neon database
+      const sql = neon(databaseUrl);
+      const comment = formData.get('comment');
+      if (!comment) {
+        return;
+      }
+      // Insert the comment from the form into the Postgres database
+      await sql`INSERT INTO comments (comment) VALUES (${comment})`;
+    } catch (error) {
+      console.error('Error inserting comment:', error);
+      // Fail silently in production to avoid exposing errors
+    }
   }
   return (
     <div className="min-h-screen">
