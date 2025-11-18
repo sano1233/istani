@@ -109,7 +109,13 @@ class Logger {
     });
   }
 
-  apiResponse(method: string, path: string, status: number, duration?: number, context?: LogContext) {
+  apiResponse(
+    method: string,
+    path: string,
+    status: number,
+    duration?: number,
+    context?: LogContext,
+  ) {
     this.info(`API Response: ${method} ${path} - ${status}`, {
       ...context,
       method,

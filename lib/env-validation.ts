@@ -148,16 +148,16 @@ export function checkEnvironment() {
   };
 
   const required = {
-    'NEXT_PUBLIC_SUPABASE_URL': process.env.NEXT_PUBLIC_SUPABASE_URL,
-    'NEXT_PUBLIC_SUPABASE_ANON_KEY': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
   };
 
   const optional = {
-    'SUPABASE_SERVICE_ROLE_KEY': process.env.SUPABASE_SERVICE_ROLE_KEY,
-    'STRIPE_SECRET_KEY': process.env.STRIPE_SECRET_KEY,
-    'STRIPE_WEBHOOK_SECRET': process.env.STRIPE_WEBHOOK_SECRET,
-    'OPENAI_API_KEY': process.env.OPENAI_API_KEY,
-    'CRON_SECRET': process.env.CRON_SECRET,
+    SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
+    STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+    STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
+    OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+    CRON_SECRET: process.env.CRON_SECRET,
   };
 
   // Check required variables
@@ -208,9 +208,10 @@ export function logEnvironmentStatus(includeValues = false) {
       const value = process.env[key];
       if (value) {
         // Mask sensitive values
-        const masked = key.includes('KEY') || key.includes('SECRET')
-          ? `${value.substring(0, 4)}...${value.substring(value.length - 4)}`
-          : value;
+        const masked =
+          key.includes('KEY') || key.includes('SECRET')
+            ? `${value.substring(0, 4)}...${value.substring(value.length - 4)}`
+            : value;
         console.log(`  ${key}: ${masked}`);
       }
     }
