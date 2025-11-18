@@ -15,9 +15,7 @@ export async function updateSession(request: NextRequest) {
   if (!supabaseUrl || !supabaseAnonKey) {
     if (!hasLoggedMissingEnv) {
       hasLoggedMissingEnv = true;
-      console.warn(
-        'Supabase environment variables are missing; skipping middleware session sync.',
-      );
+      console.warn('Supabase environment variables are missing; skipping middleware session sync.');
     }
     return response;
   }
