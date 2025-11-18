@@ -1,0 +1,370 @@
+{
+  "dashboard": {
+    "title": "ISTANI Production Dashboard",
+    "tags": ["istani", "production", "monitoring"],
+    "timezone": "browser",
+    "schemaVersion": 38,
+    "version": 1,
+    "refresh": "30s",
+    "panels": [
+      {
+        "id": 1,
+        "title": "System Health",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "up{job=\"istani-api\"}",
+            "legendFormat": "API Status"
+          }
+        ],
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 0,
+          "y": 0
+        },
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "justifyMode": "center",
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": ["lastNotNull"],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "value_and_name"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "mappings": [
+              {
+                "options": {
+                  "0": {
+                    "color": "red",
+                    "text": "DOWN"
+                  },
+                  "1": {
+                    "color": "green",
+                    "text": "UP"
+                  }
+                },
+                "type": "value"
+              }
+            ],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red",
+                  "value": null
+                },
+                {
+                  "color": "green",
+                  "value": 1
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 2,
+        "title": "API Response Time (p95)",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))",
+            "legendFormat": "{{method}} {{route}}"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 6,
+          "y": 0
+        },
+        "yaxes": [
+          {
+            "format": "s",
+            "label": "Response Time"
+          },
+          {
+            "format": "short"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Request Rate (req/min)",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "sum(rate(http_requests_total[1m])) * 60",
+            "legendFormat": "Total Requests"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 6,
+          "x": 18,
+          "y": 0
+        }
+      },
+      {
+        "id": 4,
+        "title": "Error Rate (%)",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "sum(rate(http_requests_total{status=~\"5..\"}[5m])) / sum(rate(http_requests_total[5m])) * 100",
+            "legendFormat": "5xx Errors"
+          },
+          {
+            "expr": "sum(rate(http_requests_total{status=~\"4..\"}[5m])) / sum(rate(http_requests_total[5m])) * 100",
+            "legendFormat": "4xx Errors"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 8
+        },
+        "yaxes": [
+          {
+            "format": "percent",
+            "label": "Error Rate"
+          }
+        ],
+        "alert": {
+          "conditions": [
+            {
+              "evaluator": {
+                "params": [1],
+                "type": "gt"
+              },
+              "operator": {
+                "type": "and"
+              },
+              "query": {
+                "params": ["A", "5m", "now"]
+              },
+              "reducer": {
+                "params": [],
+                "type": "avg"
+              },
+              "type": "query"
+            }
+          ],
+          "executionErrorState": "alerting",
+          "frequency": "1m",
+          "handler": 1,
+          "name": "High Error Rate",
+          "noDataState": "no_data",
+          "notifications": []
+        }
+      },
+      {
+        "id": 5,
+        "title": "Database Query Performance",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(postgres_query_duration_seconds_sum[5m]) / rate(postgres_query_duration_seconds_count[5m])",
+            "legendFormat": "Avg Query Time"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 8
+        }
+      },
+      {
+        "id": 6,
+        "title": "Active Users (Last 24h)",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "count(count by (user_id) (http_requests_total{user_id!=\"\"}))",
+            "legendFormat": "Active Users"
+          }
+        ],
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 0,
+          "y": 16
+        }
+      },
+      {
+        "id": 7,
+        "title": "Workout Logs Created (Today)",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "sum(increase(workout_logs_created_total[24h]))",
+            "legendFormat": "Workouts"
+          }
+        ],
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 6,
+          "y": 16
+        }
+      },
+      {
+        "id": 8,
+        "title": "Meals Tracked (Today)",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "sum(increase(meals_created_total[24h]))",
+            "legendFormat": "Meals"
+          }
+        ],
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 12,
+          "y": 16
+        }
+      },
+      {
+        "id": 9,
+        "title": "Revenue (Today)",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "sum(increase(stripe_payments_total[24h]))",
+            "legendFormat": "Revenue"
+          }
+        ],
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 18,
+          "y": 16
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "currencyUSD"
+          }
+        }
+      },
+      {
+        "id": 10,
+        "title": "OpenAI API Calls",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "sum by (model) (rate(openai_requests_total[5m]))",
+            "legendFormat": "{{model}}"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 20
+        }
+      },
+      {
+        "id": 11,
+        "title": "OpenAI Token Usage",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "sum(rate(openai_tokens_total[5m]))",
+            "legendFormat": "Tokens/sec"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 20
+        }
+      },
+      {
+        "id": 12,
+        "title": "Estimated Monthly Costs",
+        "type": "table",
+        "targets": [
+          {
+            "expr": "sum by (service) (monthly_cost_estimate)",
+            "format": "table"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 28
+        }
+      },
+      {
+        "id": 13,
+        "title": "Cache Hit Rate",
+        "type": "gauge",
+        "targets": [
+          {
+            "expr": "sum(rate(cache_hits_total[5m])) / (sum(rate(cache_hits_total[5m])) + sum(rate(cache_misses_total[5m]))) * 100",
+            "legendFormat": "Cache Hit %"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 6,
+          "x": 0,
+          "y": 36
+        },
+        "fieldConfig": {
+          "defaults": {
+            "max": 100,
+            "min": 0,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red",
+                  "value": null
+                },
+                {
+                  "color": "yellow",
+                  "value": 50
+                },
+                {
+                  "color": "green",
+                  "value": 80
+                }
+              ]
+            },
+            "unit": "percent"
+          }
+        }
+      },
+      {
+        "id": 14,
+        "title": "Top API Endpoints (by req/min)",
+        "type": "table",
+        "targets": [
+          {
+            "expr": "topk(10, sum by (route, method) (rate(http_requests_total[5m])) * 60)",
+            "format": "table"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 18,
+          "x": 6,
+          "y": 36
+        }
+      }
+    ]
+  },
+  "overwrite": true
+}
