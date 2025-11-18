@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
       }
 
       default:
-        // Unhandled event type
+      // Unhandled event type
     }
 
     return NextResponse.json({ received: true });

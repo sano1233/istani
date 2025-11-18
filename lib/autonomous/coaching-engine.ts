@@ -11,7 +11,6 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY || 'placeholder-key',
 );
 
-
 /**
  * Generate morning motivation message
  */
