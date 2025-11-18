@@ -14,10 +14,7 @@ export function createClient() {
       );
     }
     // Return a dummy client for build time
-    return createBrowserClient(
-      'https://placeholder.supabase.co',
-      'placeholder-anon-key',
-    );
+    return createBrowserClient('https://placeholder.supabase.co', 'placeholder-anon-key');
   }
 
   return createBrowserClient(url, key);

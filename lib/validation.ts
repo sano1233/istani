@@ -189,9 +189,7 @@ export function validateJson(value: string, fieldName = 'JSON'): any {
 /**
  * Create a validator function
  */
-export function createValidator<T>(
-  validationFn: (data: unknown) => T,
-): (data: unknown) => T {
+export function createValidator<T>(validationFn: (data: unknown) => T): (data: unknown) => T {
   return (data: unknown): T => {
     try {
       return validationFn(data);
@@ -218,8 +216,8 @@ export function validatePagination(
   limit?: string | number,
   maxLimit = 100,
 ): PaginationParams {
-  const pageNum = typeof page === 'string' ? parseInt(page, 10) : (page || 1);
-  const limitNum = typeof limit === 'string' ? parseInt(limit, 10) : (limit || 20);
+  const pageNum = typeof page === 'string' ? parseInt(page, 10) : page || 1;
+  const limitNum = typeof limit === 'string' ? parseInt(limit, 10) : limit || 20;
 
   if (isNaN(pageNum) || pageNum < 1) {
     throw new ValidationError('Page must be a positive integer');
@@ -286,10 +284,7 @@ export interface FileValidationOptions {
   allowedExtensions?: string[];
 }
 
-export function validateFile(
-  file: File,
-  options: FileValidationOptions = {},
-): void {
+export function validateFile(file: File, options: FileValidationOptions = {}): void {
   const { maxSize = 5 * 1024 * 1024, allowedTypes, allowedExtensions } = options;
 
   if (file.size > maxSize) {
@@ -303,9 +298,7 @@ export function validateFile(
   if (allowedExtensions) {
     const extension = file.name.split('.').pop()?.toLowerCase();
     if (!extension || !allowedExtensions.includes(extension)) {
-      throw new ValidationError(
-        `File extension must be one of: ${allowedExtensions.join(', ')}`,
-      );
+      throw new ValidationError(`File extension must be one of: ${allowedExtensions.join(', ')}`);
     }
   }
 }
