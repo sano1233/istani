@@ -20,10 +20,17 @@ export default function ProductDetailPage() {
 
   useEffect(() => {
     async function fetchProduct() {
+      const slug = params.slug;
+      if (!slug || typeof slug !== 'string') {
+        router.push('/products');
+        setLoading(false);
+        return;
+      }
+
       const { data, error } = await supabase
         .from('products')
         .select('*')
-        .eq('slug', params.slug)
+        .eq('slug', slug)
         .single();
 
       if (error || !data) {
