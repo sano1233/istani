@@ -30,7 +30,8 @@ export function calculateTDEE(bmr: number, activityLevel: string): number {
 
 export function calculateMacros(
   calories: number,
-  goal: string
+  goal: string,
+  _weightKg?: number,
 ): { protein: number; carbs: number; fats: number } {
   let proteinPercent = 0.3
   let carbsPercent = 0.4

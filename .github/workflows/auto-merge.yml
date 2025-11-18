@@ -1,0 +1,122 @@
+name: Auto Merge PR
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  pull_request_review:
+    types: [submitted]
+  check_suite:
+    types: [completed]
+
+jobs:
+  auto-merge:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      checks: read
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        continue-on-error: true
+        run: npm test || echo "No tests configured"
+
+      - name: Run linting
+        run: npm run lint || exit 1
+
+      - name: Build project
+        run: npm run build || exit 1
+
+      - name: Check PR status
+        id: check-pr
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number
+            });
+            
+            const { data: reviews } = await github.rest.pulls.listReviews({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number
+            });
+            
+            const { data: checks } = await github.rest.checks.listForRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: pr.head.sha
+            });
+            
+            const allChecksPassed = checks.check_runs.every(check => 
+              check.status === 'completed' && check.conclusion === 'success'
+            );
+            
+            const hasApproval = reviews.some(review => 
+              review.state === 'APPROVED'
+            );
+            
+            const isMergeable = pr.mergeable && !pr.draft && 
+                                allChecksPassed && 
+                                (hasApproval || pr.auto_merge);
+            
+            core.setOutput('mergeable', isMergeable);
+            core.setOutput('title', pr.title);
+            core.setOutput('number', pr.number);
+
+      - name: Auto-merge PR
+        if: steps.check-pr.outputs.mergeable == 'true'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const prNumber = context.issue.number;
+            
+            // Try to merge
+            try {
+              await github.rest.pulls.merge({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: prNumber,
+                merge_method: 'squash',
+                commit_title: `Merge PR #${prNumber}: ${{ steps.check-pr.outputs.title }}`
+              });
+              
+              console.log(`✅ Successfully merged PR #${prNumber}`);
+            } catch (error) {
+              console.log(`⚠️ Could not auto-merge: ${error.message}`);
+              // Enable auto-merge if available
+              try {
+                await github.rest.pulls.enableAutoMerge({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: prNumber,
+                  merge_method: 'squash'
+                });
+                console.log(`✅ Enabled auto-merge for PR #${prNumber}`);
+              } catch (autoMergeError) {
+                console.log(`⚠️ Could not enable auto-merge: ${autoMergeError.message}`);
+              }
+            }
+
+      - name: Handle conflicts
+        if: steps.check-pr.outputs.mergeable == 'false'
+        continue-on-error: true
+        run: |
+          echo "Checking for conflicts..."
+          node ai-brain/pr-handler.js ${{ steps.check-pr.outputs.number }} || true

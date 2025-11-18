@@ -1,0 +1,47 @@
+{
+  "development": {
+    "hotReload": {
+      "enabled": true,
+      "fastRefresh": true,
+      "pollInterval": 1000
+    },
+    "watch": {
+      "patterns": [
+        "app/**/*",
+        "components/**/*",
+        "lib/**/*",
+        "*.{ts,tsx,js,jsx}"
+      ],
+      "ignore": [
+        "node_modules/**",
+        ".next/**",
+        "out/**",
+        "dist/**",
+        "*.log"
+      ]
+    },
+    "performance": {
+      "turboMode": true,
+      "incrementalTypeChecking": true,
+      "parallelBuilds": true,
+      "cacheEnabled": true
+    },
+    "ports": {
+      "nextjs": 3000,
+      "postgres": 5432,
+      "n8n": 5678
+    }
+  },
+  "build": {
+    "optimization": {
+      "swcMinify": true,
+      "compress": true,
+      "treeShaking": true
+    },
+    "cache": {
+      "enabled": true,
+      "strategy": "filesystem"
+    }
+  }
+}
+

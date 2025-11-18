@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "Enterprise grade automated PR system",
   "main": "pr-handler.js",
+  "scripts": {
+    "fix-prs": "node fix-failed-prs.js",
+    "handle-pr": "node pr-handler.js"
+  },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.32.1",
     "@google/generative-ai": "^0.21.0"

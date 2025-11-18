@@ -1,35 +1,37 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import Link from 'next/link'
-import { createClient } from '@/lib/supabase/client'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { useRouter } from 'next/navigation'
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { createClient } from '@/lib/supabase/client';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
+
+export const dynamic = 'force-dynamic';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-  const router = useRouter()
-  const supabase = createClient()
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const router = useRouter();
+  const supabase = createClient();
 
   async function handleLogin(e: React.FormEvent) {
-    e.preventDefault()
-    setLoading(true)
-    setError('')
+    e.preventDefault();
+    setLoading(true);
+    setError('');
 
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
-    })
+    });
 
     if (error) {
-      setError(error.message)
-      setLoading(false)
+      setError(error.message);
+      setLoading(false);
     } else {
-      router.push('/dashboard')
+      router.push('/dashboard');
     }
   }
 
@@ -39,10 +41,10 @@ export default function LoginPage() {
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
       },
-    })
+    });
 
     if (error) {
-      setError(error.message)
+      setError(error.message);
     }
   }
 
@@ -91,11 +93,7 @@ export default function LoginPage() {
             <div className="flex-1 h-px bg-white/10" />
           </div>
 
-          <Button
-            onClick={handleGoogleLogin}
-            variant="outline"
-            className="w-full gap-3"
-          >
+          <Button onClick={handleGoogleLogin} variant="outline" className="w-full gap-3">
             <span className="material-symbols-outlined">mail</span>
             Continue with Google
           </Button>
@@ -111,5 +109,5 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

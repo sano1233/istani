@@ -1,0 +1,30 @@
+name: N8N Webhook Integration
+
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    types: [opened, closed, synchronize]
+  issues:
+    types: [opened, closed]
+  issue_comment:
+    types: [created]
+
+jobs:
+  trigger-n8n:
+    name: Trigger N8N Workflow
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send webhook to N8N
+        run: |
+          curl -X POST "${{ secrets.N8N_WEBHOOK_URL }}" \
+            -H "Content-Type: application/json" \
+            -H "X-GitHub-Event: ${{ github.event_name }}" \
+            -d '{
+              "event": "${{ github.event_name }}",
+              "repository": "${{ github.repository }}",
+              "ref": "${{ github.ref }}",
+              "sha": "${{ github.sha }}",
+              "actor": "${{ github.actor }}",
+              "payload": ${{ toJson(github.event) }}
+            }' || echo "N8N webhook failed"

@@ -1,53 +1,53 @@
-import { headers } from 'next/headers'
-import { NextResponse } from 'next/server'
-import { stripe } from '@/lib/stripe'
-import { createClient } from '@supabase/supabase-js'
+import { headers } from 'next/headers';
+import { NextResponse } from 'next/server';
+import { getStripe } from '@/lib/stripe';
+import { createClient } from '@supabase/supabase-js';
 
 export async function POST(req: Request) {
-  const body = await req.text()
-  const headersList = await headers()
-  const signature = headersList.get('stripe-signature')!
+  const body = await req.text();
+  const headersList = await headers();
+  const signature = headersList.get('stripe-signature')!;
 
-  let event: any
+  let event: { type: string; data: { object: unknown } };
 
   try {
-    event = stripe.webhooks.constructEvent(
-      body,
-      signature,
-      process.env.STRIPE_WEBHOOK_SECRET!
-    )
-  } catch (err: any) {
-    return NextResponse.json(
-      { error: `Webhook Error: ${err.message}` },
-      { status: 400 }
-    )
+    const stripe = getStripe();
+    event = stripe.webhooks.constructEvent(body, signature, process.env.STRIPE_WEBHOOK_SECRET!) as { type: string; data: { object: unknown } };
+  } catch (err: unknown) {
+    const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+    return NextResponse.json({ error: `Webhook Error: ${errorMessage}` }, { status: 400 });
   }
 
   const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  )
+    process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co',
+    process.env.SUPABASE_SERVICE_ROLE_KEY || 'placeholder-key',
+  );
 
   switch (event.type) {
-    case 'checkout.session.completed':
-      const session = event.data.object
+    case 'checkout.session.completed': {
+      const session = event.data.object as { payment_intent?: string };
 
       // Update order status
-      await supabase
-        .from('orders')
-        .update({ payment_status: 'paid', status: 'processing' })
-        .eq('stripe_payment_intent_id', session.payment_intent)
+      if (session.payment_intent) {
+        await supabase
+          .from('orders')
+          .update({ payment_status: 'paid', status: 'processing' })
+          .eq('stripe_payment_intent_id', session.payment_intent);
+      }
 
-      break
+      break;
+    }
 
-    case 'payment_intent.succeeded':
+    case 'payment_intent.succeeded': {
       // Handle successful payment
-      break
+      break;
+    }
 
-    case 'payment_intent.payment_failed':
+    case 'payment_intent.payment_failed': {
       // Handle failed payment
-      break
+      break;
+    }
   }
 
-  return NextResponse.json({ received: true })
+  return NextResponse.json({ received: true });
 }

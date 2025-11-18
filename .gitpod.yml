@@ -1,0 +1,44 @@
+image: gitpod/workspace-node:20
+
+ports:
+  - port: 3000
+    onOpen: open-browser
+    visibility: public
+    name: Next.js Dev Server
+  - port: 5432
+    visibility: private
+    name: PostgreSQL
+  - port: 5678
+    visibility: private
+    name: n8n
+
+tasks:
+  - name: Install Dependencies
+    init: npm install
+    command: echo "Dependencies installed"
+  
+  - name: Next.js Dev Server
+    command: npm run dev:turbo
+    openMode: split-right
+
+  - name: TypeScript Watch
+    command: npm run typecheck:watch
+    openMode: split-bottom
+
+vscode:
+  extensions:
+    - dbaeumer.vscode-eslint
+    - esbenp.prettier-vscode
+    - bradlc.vscode-tailwindcss
+    - ms-vscode.vscode-typescript-next
+
+github:
+  prebuilds:
+    master: true
+    branches: true
+    pullRequests: true
+    pullRequestsFromForks: false
+    addCheck: true
+    addComment: false
+    addBadge: true
+

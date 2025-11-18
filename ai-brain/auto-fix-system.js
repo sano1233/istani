@@ -106,17 +106,53 @@ function printScanReport() {
   }
 }
 
+async function autoFix() {
+  console.log('\n🔧 Starting auto-fix process...\n');
+  
+  // Use enhanced auto-fix if available
+  try {
+    const EnhancedAutoFix = require('./enhanced-auto-fix');
+    const autoFix = new EnhancedAutoFix();
+    await autoFix.scanAndFix();
+  } catch (e) {
+    console.log('Using basic auto-fix...');
+    printScanReport();
+  }
+}
+
+function fixTypescript() {
+  console.log('\n📝 Fixing TypeScript errors...\n');
+  try {
+    execSync('npx tsc --noEmit 2>&1 | head -20', { 
+      cwd: projectRoot, 
+      encoding: 'utf8',
+      stdio: 'inherit'
+    });
+  } catch (error) {
+    // Errors are expected, they're what we're trying to fix
+  }
+}
+
 function main() {
   const [, , command] = process.argv;
   if (!command || command === 'help' || command === '--help') {
     console.log('Usage: node ai-brain/auto-fix-system.js <command>');
-    console.log('Commands:\n  scan   Inspect the repository for common issues.');
+    console.log('Commands:');
+    console.log('  scan        Inspect the repository for common issues.');
+    console.log('  fix         Automatically fix detected issues.');
+    console.log('  typescript  Check TypeScript errors.');
     process.exit(0);
   }
 
   switch (command) {
     case 'scan':
       printScanReport();
+      break;
+    case 'fix':
+      autoFix();
+      break;
+    case 'typescript':
+      fixTypescript();
       break;
     default:
       console.error(`Unknown command: ${command}`);

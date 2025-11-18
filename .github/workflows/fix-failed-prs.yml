@@ -1,0 +1,46 @@
+name: Auto-Fix Failed PRs
+
+on:
+  schedule:
+    # Run every 6 hours
+    - cron: '0 */6 * * *'
+  workflow_dispatch: # Allow manual triggering
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  fix-failed-prs:
+    runs-on: ubuntu-latest
+    environment: unified-software-automated-developer-and-deployer
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install dependencies
+        run: |
+          cd ai-brain
+          npm install
+      
+      - name: Configure Git
+        run: |
+          git config --global user.name "AI Brain Bot"
+          git config --global user.email "ai-brain@istani.org"
+      
+      - name: Fix and Merge Failed PRs
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          QWEN_API_KEY: ${{ secrets.QWEN_API_KEY }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd ai-brain
+          node fix-failed-prs.js

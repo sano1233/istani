@@ -1,25 +1,27 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import Link from 'next/link'
-import { createClient } from '@/lib/supabase/client'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { useRouter } from 'next/navigation'
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { createClient } from '@/lib/supabase/client';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
+
+export const dynamic = 'force-dynamic';
 
 export default function RegisterPage() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [fullName, setFullName] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-  const router = useRouter()
-  const supabase = createClient()
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const router = useRouter();
+  const supabase = createClient();
 
   async function handleRegister(e: React.FormEvent) {
-    e.preventDefault()
-    setLoading(true)
-    setError('')
+    e.preventDefault();
+    setLoading(true);
+    setError('');
 
     const { error } = await supabase.auth.signUp({
       email,
@@ -29,13 +31,13 @@ export default function RegisterPage() {
           full_name: fullName,
         },
       },
-    })
+    });
 
     if (error) {
-      setError(error.message)
-      setLoading(false)
+      setError(error.message);
+      setLoading(false);
     } else {
-      router.push('/dashboard')
+      router.push('/dashboard');
     }
   }
 
@@ -45,10 +47,10 @@ export default function RegisterPage() {
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
       },
-    })
+    });
 
     if (error) {
-      setError(error.message)
+      setError(error.message);
     }
   }
 
@@ -106,11 +108,7 @@ export default function RegisterPage() {
             <div className="flex-1 h-px bg-white/10" />
           </div>
 
-          <Button
-            onClick={handleGoogleSignup}
-            variant="outline"
-            className="w-full gap-3"
-          >
+          <Button onClick={handleGoogleSignup} variant="outline" className="w-full gap-3">
             <span className="material-symbols-outlined">mail</span>
             Continue with Google
           </Button>
@@ -126,5 +124,5 @@ export default function RegisterPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

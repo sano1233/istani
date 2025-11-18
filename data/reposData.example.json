@@ -1,0 +1,171 @@
+{
+  "generatedAt": "2025-11-17T08:37:00.000Z",
+  "totalRepositories": 2,
+  "successfulAggregations": 2,
+  "failedAggregations": 0,
+  "repositories": [
+    {
+      "repository": "sano1233/istani",
+      "metadata": {
+        "name": "istani",
+        "fullName": "sano1233/istani",
+        "description": "ISTANI - Intelligent fitness platform with AI-powered workout planning",
+        "url": "https://github.com/sano1233/istani",
+        "homepage": "https://istani.vercel.app",
+        "language": "TypeScript",
+        "stars": 15,
+        "forks": 3,
+        "watchers": 15,
+        "openIssues": 5,
+        "defaultBranch": "main",
+        "createdAt": "2024-01-15T00:00:00Z",
+        "updatedAt": "2025-11-17T08:00:00Z",
+        "pushedAt": "2025-11-17T07:30:00Z",
+        "size": 12456,
+        "visibility": "public",
+        "topics": ["fitness", "nextjs", "typescript", "ai", "supabase"]
+      },
+      "recentCommits": [
+        {
+          "sha": "362c87b1234567890abcdef",
+          "message": "Add comprehensive full-stack architecture plan for ISTANI fitness platform",
+          "author": {
+            "name": "Developer",
+            "email": "dev@example.com",
+            "date": "2025-11-17T07:30:00Z"
+          },
+          "committer": {
+            "name": "Developer",
+            "date": "2025-11-17T07:30:00Z"
+          },
+          "url": "https://github.com/sano1233/istani/commit/362c87b"
+        },
+        {
+          "sha": "f6b0e611234567890abcdef",
+          "message": "Fix all remaining build errors: lazy initialization for Stripe and Supabase clients",
+          "author": {
+            "name": "Developer",
+            "email": "dev@example.com",
+            "date": "2025-11-16T22:15:00Z"
+          },
+          "committer": {
+            "name": "Developer",
+            "date": "2025-11-16T22:15:00Z"
+          },
+          "url": "https://github.com/sano1233/istani/commit/f6b0e61"
+        },
+        {
+          "sha": "553c5ac1234567890abcdef",
+          "message": "Fix all build errors: CSS, TypeScript, dependencies, and initialization issues",
+          "author": {
+            "name": "Developer",
+            "email": "dev@example.com",
+            "date": "2025-11-16T20:45:00Z"
+          },
+          "committer": {
+            "name": "Developer",
+            "date": "2025-11-16T20:45:00Z"
+          },
+          "url": "https://github.com/sano1233/istani/commit/553c5ac"
+        }
+      ],
+      "openIssues": [
+        {
+          "number": 123,
+          "title": "Add user profile customization",
+          "body": "Users should be able to customize their profile with avatar, bio, and preferences...",
+          "state": "open",
+          "author": "contributor1",
+          "labels": ["enhancement", "good first issue"],
+          "createdAt": "2025-11-15T10:00:00Z",
+          "updatedAt": "2025-11-16T14:30:00Z",
+          "comments": 3,
+          "url": "https://github.com/sano1233/istani/issues/123",
+          "isPullRequest": false
+        },
+        {
+          "number": 122,
+          "title": "Fix mobile responsive layout on workout page",
+          "body": "The workout page doesn't display correctly on mobile devices. The buttons are too small and overlap...",
+          "state": "open",
+          "author": "contributor2",
+          "labels": ["bug", "ui"],
+          "createdAt": "2025-11-14T16:20:00Z",
+          "updatedAt": "2025-11-15T09:45:00Z",
+          "comments": 1,
+          "url": "https://github.com/sano1233/istani/issues/122",
+          "isPullRequest": false
+        }
+      ],
+      "aggregatedAt": "2025-11-17T08:37:00.000Z"
+    },
+    {
+      "repository": "sano1233/n8n",
+      "metadata": {
+        "name": "n8n",
+        "fullName": "sano1233/n8n",
+        "description": "Free and source-available fair-code licensed workflow automation tool",
+        "url": "https://github.com/sano1233/n8n",
+        "homepage": "https://n8n.io",
+        "language": "TypeScript",
+        "stars": 42000,
+        "forks": 5200,
+        "watchers": 42000,
+        "openIssues": 850,
+        "defaultBranch": "master",
+        "createdAt": "2019-06-22T00:00:00Z",
+        "updatedAt": "2025-11-17T07:50:00Z",
+        "pushedAt": "2025-11-17T07:45:00Z",
+        "size": 245678,
+        "visibility": "public",
+        "topics": ["automation", "workflow", "nodejs", "typescript", "low-code"]
+      },
+      "recentCommits": [
+        {
+          "sha": "abc1234567890abcdef",
+          "message": "feat(core): Add support for custom credential types",
+          "author": {
+            "name": "N8N Contributor",
+            "email": "contributor@n8n.io",
+            "date": "2025-11-17T07:45:00Z"
+          },
+          "committer": {
+            "name": "N8N Contributor",
+            "date": "2025-11-17T07:45:00Z"
+          },
+          "url": "https://github.com/sano1233/n8n/commit/abc1234"
+        },
+        {
+          "sha": "def5678901234abcdef",
+          "message": "fix(editor): Resolve connection rendering issue in workflow canvas",
+          "author": {
+            "name": "N8N Contributor",
+            "email": "contributor@n8n.io",
+            "date": "2025-11-17T06:30:00Z"
+          },
+          "committer": {
+            "name": "N8N Contributor",
+            "date": "2025-11-17T06:30:00Z"
+          },
+          "url": "https://github.com/sano1233/n8n/commit/def5678"
+        }
+      ],
+      "openIssues": [
+        {
+          "number": 8542,
+          "title": "Add Slack Block Kit support",
+          "body": "The current Slack node doesn't support Block Kit messages. This would allow for richer message formatting...",
+          "state": "open",
+          "author": "community-user",
+          "labels": ["enhancement", "node-enhancement"],
+          "createdAt": "2025-11-16T12:00:00Z",
+          "updatedAt": "2025-11-17T08:00:00Z",
+          "comments": 7,
+          "url": "https://github.com/sano1233/n8n/issues/8542",
+          "isPullRequest": false
+        }
+      ],
+      "aggregatedAt": "2025-11-17T08:37:00.000Z"
+    }
+  ]
+}

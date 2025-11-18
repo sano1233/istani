@@ -1,0 +1,68 @@
+name: Sync From Other Repositories
+
+on:
+  repository_dispatch:
+    types: [sync-request]
+  workflow_dispatch:
+    inputs:
+      source_repo:
+        description: 'Source repository (owner/repo)'
+        required: true
+      source_branch:
+        description: 'Source branch'
+        required: false
+        default: 'main'
+
+jobs:
+  sync-from-repo:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    
+    steps:
+      - name: Checkout target repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Git
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "actions@github.com"
+
+      - name: Fetch from source repository
+        env:
+          SOURCE_REPO: ${{ github.event.client_payload.source_repo || github.event.inputs.source_repo }}
+          SOURCE_BRANCH: ${{ github.event.client_payload.source_branch || github.event.inputs.source_branch || 'main' }}
+        run: |
+          echo "Syncing from $SOURCE_REPO:$SOURCE_BRANCH"
+          
+          # Add source as remote
+          git remote add source https://github.com/$SOURCE_REPO.git || true
+          git remote set-url source https://${{ secrets.GITHUB_TOKEN }}@github.com/$SOURCE_REPO.git
+          
+          # Fetch from source
+          git fetch source $SOURCE_BRANCH:$SOURCE_BRANCH || git fetch source main:main || true
+          
+          # Merge or create PR
+          CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+          git checkout -b sync-from-$SOURCE_REPO-$(date +%s) || true
+          
+          # Try to merge
+          git merge $SOURCE_BRANCH --no-edit || git merge main --no-edit || true
+          
+          # If merge successful, push to main
+          if git diff --quiet HEAD origin/$CURRENT_BRANCH; then
+            echo "No changes to sync"
+          else
+            git checkout $CURRENT_BRANCH
+            git merge sync-from-$SOURCE_REPO-* --no-ff -m "🔄 Sync from $SOURCE_REPO" || true
+            git push origin $CURRENT_BRANCH || true
+          fi
+
+      - name: Create sync status
+        run: |
+          echo "## 🔄 Repository Sync Status" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Synced from ${{ github.event.client_payload.source_repo || github.event.inputs.source_repo }}" >> $GITHUB_STEP_SUMMARY

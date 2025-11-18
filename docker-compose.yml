@@ -1,0 +1,164 @@
+version: '3.8'
+
+services:
+  # Next.js App - Production Ready
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runner
+    image: istani-fitness:latest
+    container_name: istani-fitness-app
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_TELEMETRY_DISABLED=1
+      # Add your environment variables here or use .env file
+      # - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+      # - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+    env_file:
+      - .env.production
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/api/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - istani-network
+    # Security: Run as non-root user (handled in Dockerfile)
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/tmp
+
+  # Development version
+  app-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      target: dev
+    image: istani-fitness:dev
+    container_name: istani-fitness-dev
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - WATCHPACK_POLLING=true
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    env_file:
+      - .env.local
+    command: npm run dev
+    networks:
+      - istani-network
+    profiles:
+      - dev
+
+  # ElevenLabs Agent
+  elevenlabs-agent:
+    build:
+      context: ./elevenlabs-agent
+      dockerfile: Dockerfile
+    image: istani-elevenlabs-agent:latest
+    container_name: istani-elevenlabs-agent
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./elevenlabs-agent:/app
+      - /app/node_modules
+    env_file:
+      - .env.local
+    networks:
+      - istani-network
+    restart: unless-stopped
+    profiles:
+      - dev
+
+  # Fitness Agents
+  fitness-agents:
+    build:
+      context: ./agents
+      dockerfile: Dockerfile
+    image: istani-fitness-agents:latest
+    container_name: istani-fitness-agents
+    ports:
+      - "3002:3002"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./agents:/app
+      - /app/node_modules
+    env_file:
+      - .env.local
+    networks:
+      - istani-network
+    restart: unless-stopped
+    profiles:
+      - dev
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: istani-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-changeme}
+    restart: unless-stopped
+    networks:
+      - istani-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  # PostgreSQL (if needed for local development)
+  postgres:
+    image: postgres:16-alpine
+    container_name: istani-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-changeme}
+      - POSTGRES_DB=${POSTGRES_DB:-istani_fitness}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - istani-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    profiles:
+      - dev
+      - local
+
+networks:
+  istani-network:
+    driver: bridge
+    name: istani-network
+
+volumes:
+  redis_data:
+    name: istani-redis-data
+  postgres_data:
+    name: istani-postgres-data
+

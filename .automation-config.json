@@ -1,0 +1,19 @@
+{
+  "repositories": [
+    "sano1233/istani"
+  ],
+  "autoSync": true,
+  "autoMerge": true,
+  "autoDeploy": true,
+  "autoFix": true,
+  "n8n": {
+    "enabled": false,
+    "webhookUrl": ""
+  },
+  "hyperswitch": {
+    "enabled": false,
+    "apiUrl": "https://api.hyperswitch.io"
+  },
+  "syncSchedule": "*/15 * * * *",
+  "mergeStrategy": "squash"
+}

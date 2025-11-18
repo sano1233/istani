@@ -1,0 +1,57 @@
+# Cursor AI Rules for Istani Fitness
+
+## Development Workflow
+- Always use TypeScript for type safety
+- Prefer functional components with hooks
+- Use Tailwind CSS for styling
+- Follow Next.js 15 App Router conventions
+
+## Code Quality
+- Use ESLint and Prettier for formatting
+- Write self-documenting code with clear variable names
+- Add JSDoc comments for complex functions
+- Keep components small and focused
+
+## Performance
+- Use React.memo for expensive components
+- Implement proper loading states
+- Optimize images with Next.js Image component
+- Use dynamic imports for code splitting
+
+## Real-Time Development
+- Enable Fast Refresh for instant updates
+- Use Turbo mode for faster builds
+- Leverage incremental TypeScript compilation
+- Monitor bundle size with analyzer
+
+## Testing
+- Write unit tests for utilities
+- Test components in isolation
+- Use integration tests for critical flows
+
+## Git Workflow
+- Write clear commit messages
+- Create feature branches
+- Use conventional commits format
+
+## Cursor Worktrees
+- Use worktrees for parallel branch development
+- Each worktree runs its own dev server
+- Worktrees share the same .git directory
+- Use `npm run worktree:create` to set up new worktrees
+- Use `npm run worktree:list` to see active worktrees
+- Use `npm run worktree:neon` to set up Neon Comments integration worktree
+
+## Neon Comments Integration
+- Branch: `claude/setup-neon-comments-01EvegQGSSGcFAdMDxQEZAwe`
+- Worktree: `../worktrees/setup-neon-comments`
+- Uses Neon Database for serverless comments
+- Integrates with Supabase Auth for user management
+- See `docs/NEON-COMMENTS-SETUP.md` for details
+
+## Full Stack App Build
+- Branch: `claude/build-full-stack-app-01Xa6az4dVo5t3yAPGkThswC`
+- Worktree: `../worktrees/build-full-stack-app`
+- Use `npm run worktree:fullstack` to set up
+- Complete full-stack application build
+
