@@ -133,36 +133,6 @@ export function AchievementToast({ userId }: { userId: string }) {
           </div>
         </div>
       ))}
-
-      <style jsx>{`
-        @keyframes slide-in-right {
-          from {
-            transform: translateX(400px);
-            opacity: 0;
-          }
-          to {
-            transform: translateX(0);
-            opacity: 1;
-          }
-        }
-
-        @keyframes shrink-width {
-          from {
-            width: 100%;
-          }
-          to {
-            width: 0%;
-          }
-        }
-
-        .animate-slide-in-right {
-          animation: slide-in-right 0.5s ease-out;
-        }
-
-        .animate-shrink-width {
-          animation: shrink-width 10s linear forwards;
-        }
-      `}</style>
     </div>
   );
 }

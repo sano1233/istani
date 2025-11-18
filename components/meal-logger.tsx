@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, FormEvent } from 'react';
 import { createClient } from '@/lib/supabase/client';
 
 interface Meal {
@@ -24,7 +24,7 @@ export function MealLogger({ userId, todayMeals }: { userId: string; todayMeals:
 
   const supabase = createClient();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setSuccess(false);
@@ -87,7 +87,7 @@ export function MealLogger({ userId, todayMeals }: { userId: string; todayMeals:
       {todayMeals.length > 0 && (
         <div className="mb-6 p-4 bg-blue-50 rounded-lg">
           <div className="text-sm font-medium text-gray-700 mb-2">
-            Today's Meals ({todayMeals.length}):
+            Today&apos;s Meals ({todayMeals.length}):
           </div>
           <div className="space-y-1">
             {todayMeals.map((meal) => (
@@ -218,7 +218,7 @@ export function MealLogger({ userId, todayMeals }: { userId: string; todayMeals:
                 Math.round(Number(protein) * 4 + Number(carbs) * 4 + Number(fats) * 9) -
                   Number(calories),
               ) > 20 && (
-                <span className="text-yellow-600 ml-2">⚠️ Doesn't match total calories</span>
+                <span className="text-yellow-600 ml-2">⚠️ Doesn&apos;t match total calories</span>
               )}
           </div>
         )}

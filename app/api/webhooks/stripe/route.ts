@@ -62,7 +62,6 @@ export async function POST(request: NextRequest) {
         // Create order items
         for (const item of lineItems.data) {
           // Extract product details from price data
-          const productName = item.description || '';
           const unitAmount = item.price?.unit_amount || 0;
 
           // Note: In production, you'd want to match products by ID stored in metadata
@@ -74,12 +73,14 @@ export async function POST(request: NextRequest) {
           } as any);
         }
 
+        // eslint-disable-next-line no-console
         console.log('Order created successfully:', orderId);
         break;
       }
 
       case 'payment_intent.succeeded': {
         const paymentIntent = event.data.object;
+        // eslint-disable-next-line no-console
         console.log('Payment succeeded:', paymentIntent.id);
 
         // Update order status to completed
@@ -93,6 +94,7 @@ export async function POST(request: NextRequest) {
 
       case 'payment_intent.payment_failed': {
         const paymentIntent = event.data.object;
+        // eslint-disable-next-line no-console
         console.log('Payment failed:', paymentIntent.id);
 
         // Update order status to cancelled
@@ -105,6 +107,7 @@ export async function POST(request: NextRequest) {
       }
 
       default:
+        // eslint-disable-next-line no-console
         console.log(`Unhandled event type: ${event.type}`);
     }
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, createElement } from 'react';
 
 export function VoiceAssistant() {
   useEffect(() => {
@@ -18,22 +18,8 @@ export function VoiceAssistant() {
     };
   }, []);
 
-  return (
-    <elevenlabs-convai
-      agent-id={process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID || 'your_agent_id_here'}
-    />
-  );
-}
-
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      'elevenlabs-convai': React.DetailedHTMLProps<
-        React.HTMLAttributes<HTMLElement> & {
-          'agent-id': string;
-        },
-        HTMLElement
-      >;
-    }
-  }
+  // Use createElement to avoid TypeScript errors with custom elements
+  return createElement('elevenlabs-convai', {
+    'agent-id': process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID || 'your_agent_id_here',
+  });
 }

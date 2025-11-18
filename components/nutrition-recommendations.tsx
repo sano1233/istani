@@ -23,7 +23,7 @@ const MEAL_EMOJIS: Record<string, string> = {
 
 export function NutritionRecommendations({
   recommendations,
-  userId,
+  userId: _userId,
 }: {
   recommendations: NutritionRecommendation[];
   userId: string;
