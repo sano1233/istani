@@ -20,7 +20,7 @@ interface ProgressPhotosProps {
   userId: string;
 }
 
-export function ProgressPhotos({ photos, userId }: ProgressPhotosProps) {
+export function ProgressPhotos({ photos, userId: _userId }: ProgressPhotosProps) {
   const [selectedPhoto, setSelectedPhoto] = useState<ProgressPhoto | null>(null);
 
   return (

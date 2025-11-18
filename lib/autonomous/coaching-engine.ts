@@ -11,15 +11,6 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY || 'placeholder-key',
 );
 
-interface UserData {
-  id: string;
-  full_name: string;
-  fitness_goals: string[];
-  primary_goal: string;
-  target_weight_kg: number;
-  current_weight_kg: number;
-}
-
 /**
  * Generate morning motivation message
  */
