@@ -1,337 +1,423 @@
-<<<<<<< HEAD
+# Deployment Guide - ISTANI Fitness Platform
 
-# Istani Fitness - Deployment Summary
+Complete guide for deploying the ISTANI fitness platform to Vercel with all integrations.
 
-## ✅ Platform Status: READY FOR PRODUCTION
+## Pre-Deployment Checklist
 
-### Latest Commits Deployed
+- [ ] Supabase project created
+- [ ] Stripe account set up
+- [ ] OpenAI API key obtained
+- [ ] All required API keys collected
+- [ ] Domain configured (optional)
 
-- `f9834e6` - Complete autonomous fitness platform
-- `a12e498` - Comprehensive fitness platform core
-- `33a78b5` - **CRITICAL FIX**: Disable framework detection in Vercel
-- `b59ae78` - Configure Vercel for static site deployment
-- `7682d50` - Unified secrets management system
+## Step 1: Supabase Setup
 
-### Vercel Configuration Fixed
+### 1.1 Create Supabase Project
 
-The deployment error has been **auto-resolved**:
+1. Go to [supabase.com](https://supabase.com)
+2. Click "New Project"
+3. Choose organization and set project name
+4. Select region closest to your users
+5. Set a strong database password
+6. Wait for project provisioning (~2 minutes)
 
-**Problem**: Vercel was detecting Next.js framework
-**Solution**: Set `framework: null` in `vercel.json`
+### 1.2 Deploy Database Schema
 
-```json
-{
-  "framework": null,
-  "buildCommand": null,
-  "devCommand": null,
-  "installCommand": null,
-  "outputDirectory": "site"
-}
-```
+**Option A: Using Supabase Dashboard**
 
-This forces Vercel to serve static files from `site/` directory.
-
-### Deployment Branch
-
-- **Branch**: `claude/unified-secrets-management-011CV17a5bNKHR8M2UQQL3p8`
-- **Latest Commit**: `f9834e6`
-- **Auto-Deploy**: Enabled (Vercel watches this branch)
-
-### What's Deployed
-
-#### Core Platform
-
-1. **Fitness Homepage** (`/fitness.html`) - Lead generation & feature showcase
-2. **Dashboard** (`/dashboard.html`) - Progress tracking with charts
-3. **Workout Tracker** (`/workouts.html`) - 400+ exercises
-4. **Nutrition Tracker** (`/nutrition.html`) - Macro & calorie tracking
-5. **Coaching Page** (`/coaching.html`) - $297-$1,997 tiers
-6. **Progress Tracker** (`/progress.html`) - Body measurements & analytics
-
-#### Backend & Infrastructure
-
-- **Supabase Database**: `kxsmgrlpojdsgvjdodda.supabase.co`
-  - Schema file ready: `supabase/schema.sql`
-  - 15+ tables for users, workouts, nutrition, coaching, donations
-- **Vercel Project**: `prj_ur3BFtr8xMgHXDDy8bzpfuweXpq4`
-- **Unified Secrets**: GitHub environment `automated-development`
-
-### Revenue Streams Active
-
-1. **Coaching Sales**
-   - Onboarding: $297 (90-minute session)
-   - Monthly Elite: $1,997/month (most popular)
-   - Weekly Check-in: $497/session
-
-2. **Donations**
-   - Buy Me a Coffee: [@istanifitn](https://buymeacoffee.com/istanifitn)
-
-3. **Email Lead Generation**
-   - Automatic capture with interest targeting
-   - Builds list for future products
-
-### Contact Information
-
-- **Email**: istani.store@proton.me
-- **Donations**: https://buymeacoffee.com/istanifitn
-
-### Next Deployment Steps
-
-Vercel will automatically deploy when it detects the latest commit. To force a redeploy:
-
-1. **Via Vercel Dashboard**:
-   - Go to: https://vercel.com/[your-account]/istani
-   - Click "Deployments" tab
-   - Click "Redeploy" on latest deployment
-
-2. **Via Git** (trigger new deployment):
-   ```bash
-   git commit --allow-empty -m "chore: trigger Vercel redeploy"
-   git push origin claude/unified-secrets-management-011CV17a5bNKHR8M2UQQL3p8
-   ```
-
-### Database Setup Required
-
-Deploy the database schema to Supabase:
-
-1. Open Supabase SQL Editor:
-   https://supabase.com/dashboard/project/kxsmgrlpojdsgvjdodda/sql
-
+1. Open SQL Editor in Supabase Dashboard
 2. Copy contents of `supabase/schema.sql`
+3. Paste and run the SQL script
+4. Verify tables are created in Table Editor
 
-3. Execute the SQL
+**Option B: Using Supabase CLI**
 
-This creates all tables for the autonomous fitness platform.
+```bash
+# Install Supabase CLI
+npm install -g supabase
 
-### Environment Secrets
+# Link to your project
+supabase link --project-ref your-project-ref
 
-Add these to GitHub environment `automated-development`:
+# Push schema
+supabase db push
+```
+
+### 1.3 Configure Authentication
+
+1. Go to Authentication → Providers
+2. Enable **Email** provider
+3. Enable **Google** OAuth (optional):
+   - Add Google OAuth client ID and secret
+   - Configure authorized redirect URIs:
+     - `http://localhost:3000/auth/callback` (development)
+     - `https://your-domain.vercel.app/auth/callback` (production)
+
+### 1.4 Get API Keys
+
+1. Go to Project Settings → API
+2. Copy the following:
+   - **Project URL** (`NEXT_PUBLIC_SUPABASE_URL`)
+   - **Anon/Public Key** (`NEXT_PUBLIC_SUPABASE_ANON_KEY`)
+   - **Service Role Key** (`SUPABASE_SERVICE_ROLE_KEY`) - Keep secret!
+
+## Step 2: Stripe Setup
+
+### 2.1 Create Stripe Account
+
+1. Go to [stripe.com](https://stripe.com)
+2. Create account or login
+3. Complete business verification (for live mode)
+
+### 2.2 Get API Keys
+
+1. Go to Developers → API Keys
+2. Copy:
+   - **Publishable Key** (`NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`)
+   - **Secret Key** (`STRIPE_SECRET_KEY`)
+
+### 2.3 Configure Products (Optional)
+
+1. Go to Products catalog
+2. Add your fitness products/supplements
+3. Set prices and descriptions
+
+_Note: You'll configure webhooks after Vercel deployment_
+
+## Step 3: Get Additional API Keys
+
+### 3.1 OpenAI API Key
+
+1. Go to [platform.openai.com](https://platform.openai.com)
+2. Sign up or login
+3. Go to API Keys
+4. Create new secret key
+5. Copy `OPENAI_API_KEY`
+
+### 3.2 USDA FoodData Central
+
+1. Go to [USDA FDC](https://fdc.nal.usda.gov/api-guide.html)
+2. Sign up for API key
+3. Copy `USDA_API_KEY`
+
+### 3.3 Pexels (Image API)
+
+1. Go to [pexels.com/api](https://www.pexels.com/api/)
+2. Create account and generate API key
+3. Copy `PEXELS_API_KEY`
+
+### 3.4 GitHub Token (for repository aggregator)
+
+1. Go to GitHub → Settings → Developer settings → Personal access tokens
+2. Generate new token (classic)
+3. Select scopes: `repo`, `read:org`
+4. Copy `GITHUB_TOKEN`
+
+### 3.5 Generate Secrets
+
+```bash
+# Generate random secrets for:
+# CRON_SECRET
+openssl rand -base64 32
+
+# ADMIN_REFRESH_TOKEN
+openssl rand -base64 32
+```
+
+## Step 4: Deploy to Vercel
+
+### 4.1 Import Project
+
+1. Go to [vercel.com](https://vercel.com)
+2. Click "Add New" → "Project"
+3. Import your Git repository
+4. Vercel auto-detects Next.js configuration
+
+### 4.2 Configure Environment Variables
+
+Add all environment variables in Vercel project settings:
+
+**Supabase**
 
 ```
-SUPABASE_URL=https://kxsmgrlpojdsgvjdodda.supabase.co
-SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+NEXT_PUBLIC_SUPABASE_URL=https://xxxxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-SUPABASE_PROJECT_ID=kxsmgrlpojdsgvjdodda
-VERCEL_PROJECT_ID=prj_ur3BFtr8xMgHXDDy8bzpfuweXpq4
 ```
 
-### Platform Features Checklist
-
-✅ Unified secrets management
-✅ Static site configuration (fixed Vercel errors)
-✅ Email lead generation
-✅ Workout tracking (400+ exercises)
-✅ Nutrition tracking (1M+ foods)
-✅ Coaching bookings ($297-$1,997)
-✅ Progress analytics with Chart.js
-✅ AI-powered recommendations
-✅ Buy Me a Coffee donations
-✅ Supabase database schema
-✅ 24/7 autonomous operation
-✅ Better UX than MyFitnessPal
-
-### Auto-Fix Summary
-
-**Issue**: Vercel trying to build as Next.js app
-**Fix Applied**: Set `framework: null` in vercel.json
-**Status**: ✅ Resolved - Static site deployment configured
-**Result**: Vercel will serve files from `site/` directory
-
----
-
-**Platform Status**: Production Ready
-**Auto-Deploy**: Enabled
-**Human Intervention**: Not Required
-**Revenue Generation**: Active
-
-# Last Updated: 2025-11-11
-
-# Istani Fitness Deployment Guide
-
-## Successful Build Summary
-
-The Istani Fitness platform has been successfully built and pushed to GitHub:
-
-Repository: https://github.com/sano1233/istani
-Branch: claude/build-fitness-website-011CUahECKz4YZiJrCAfV9z6
-Commit: c6d1a77
-
-## What Was Built
-
-### Complete Fitness Platform
-
-1. iOS-Styled Responsive Website
-   - Modern dark theme design system
-   - Smooth animations and transitions
-   - Mobile-first responsive layout
-
-2. Science-Backed Content
-   - 4 comprehensive training programs
-   - Evidence-based nutrition guidance
-   - Recovery and mobility protocols
-   - Research citations included
-
-3. AI Integrations (15+ Models)
-   - OpenRouter API with multiple models
-   - ElevenLabs voice AI agent
-   - Supabase database backend
-   - Secure API server with Express
-
-4. Security Features
-   - All secrets in environment variables
-   - Prompt injection detection
-   - Output sanitization
-   - Comprehensive audit logging
-
-## Vercel Deployment Instructions
-
-### Option 1: Deploy via Vercel Dashboard (Recommended)
-
-1. Go to https://vercel.com/dashboard
-2. Click "Add New Project"
-3. Import from GitHub: sano1233/istani
-4. Select branch: claude/build-fitness-website-011CUahECKz4YZiJrCAfV9z6
-5. Configure Environment Variables:
+**Stripe**
 
 ```
-QWEN_CODER_32B_API_KEY=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
-MISTRAL_SMALL_API_KEY=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
-ELEVENLABS_API_KEY=sk_d96a108a36576a4f4ff8d1cffbd2a2494bd1ccf0f9ee472c
-SUPABASE_PROJECT_URL=https://kxsmgrlpojdsgvjdodda.supabase.co
-SUPABASE_ANON_PUBLIC=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt4c21ncmxwb2pkc2d2amRvZGRhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAwNjQ2MjEsImV4cCI6MjA3NTY0MDYyMX0.AUiGtq9JrkFWwzm4cN6XE3ldOXUv7tSuKm0O5Oo74sw
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_...
+STRIPE_SECRET_KEY=sk_live_...
+STRIPE_WEBHOOK_SECRET=(will be added after webhook setup)
 ```
 
-6. Click "Deploy"
+**AI & APIs**
 
-### Option 2: Deploy via Vercel CLI
+```
+OPENAI_API_KEY=sk-...
+USDA_API_KEY=...
+PEXELS_API_KEY=...
+UNSPLASH_ACCESS_KEY=(optional)
+```
 
-1. Login to Vercel:
+**GitHub**
+
+```
+GITHUB_TOKEN=ghp_...
+```
+
+**App Configuration**
+
+```
+NEXT_PUBLIC_SITE_URL=https://your-domain.vercel.app
+CRON_SECRET=<generated-secret>
+ADMIN_REFRESH_TOKEN=<generated-secret>
+```
+
+### 4.3 Deploy
+
+1. Click "Deploy"
+2. Wait for build to complete (~2-3 minutes)
+3. Copy your deployment URL
+
+## Step 5: Configure Stripe Webhooks
+
+### 5.1 Add Webhook Endpoint
+
+1. Go to Stripe Dashboard → Developers → Webhooks
+2. Click "Add endpoint"
+3. Enter URL: `https://your-domain.vercel.app/api/stripe/webhook`
+4. Select events to listen for:
+   - `checkout.session.completed`
+   - `payment_intent.succeeded`
+   - `payment_intent.payment_failed`
+   - `customer.subscription.created`
+   - `customer.subscription.updated`
+   - `customer.subscription.deleted`
+
+### 5.2 Get Webhook Secret
+
+1. Click on your newly created webhook
+2. Click "Reveal" under "Signing secret"
+3. Copy the webhook secret
+4. Add to Vercel environment variables:
+   ```
+   STRIPE_WEBHOOK_SECRET=whsec_...
+   ```
+5. Redeploy to apply the new environment variable
+
+## Step 6: Configure Supabase Redirects
+
+1. Go to Supabase Dashboard → Authentication → URL Configuration
+2. Add Site URL: `https://your-domain.vercel.app`
+3. Add Redirect URLs:
+   - `https://your-domain.vercel.app/auth/callback`
+   - `http://localhost:3000/auth/callback` (for local dev)
+
+## Step 7: Test Deployment
+
+### 7.1 Basic Functionality
+
+- [ ] Visit homepage loads
+- [ ] Static pages render (login, register)
+- [ ] Images load correctly
+
+### 7.2 Authentication
+
+- [ ] User can register with email
+- [ ] User can login
+- [ ] User can logout
+- [ ] Google OAuth works (if enabled)
+- [ ] Protected routes redirect to login
+
+### 7.3 Database Operations
+
+- [ ] User profile can be updated
+- [ ] Workout can be logged
+- [ ] Meal can be logged
+- [ ] Water intake can be tracked
+- [ ] Progress data displays correctly
+
+### 7.4 AI Features
+
+- [ ] AI meal plan generation works
+- [ ] AI workout recommendations work
+- [ ] Food search returns results
+
+### 7.5 E-Commerce
+
+- [ ] Products display correctly
+- [ ] Cart operations work
+- [ ] Checkout redirects to Stripe
+- [ ] Test payment completes
+- [ ] Webhook receives event
+- [ ] Order appears in database
+
+### 7.6 API Endpoints
+
+Test each API endpoint:
 
 ```bash
-vercel login
+# Health check
+curl https://your-domain.vercel.app/api/health
+
+# Food search
+curl "https://your-domain.vercel.app/api/food/search?query=apple"
+
+# Image search
+curl "https://your-domain.vercel.app/api/images/search?query=fitness"
 ```
 
-2. Deploy to production:
+## Step 8: Configure Custom Domain (Optional)
 
-```bash
-vercel --prod
+### 8.1 Add Domain in Vercel
+
+1. Go to Project Settings → Domains
+2. Add your custom domain
+3. Configure DNS records as shown
+
+### 8.2 Update Environment Variables
+
+```
+NEXT_PUBLIC_SITE_URL=https://your-custom-domain.com
 ```
 
-3. Set environment variables:
+### 8.3 Update Supabase & Stripe
 
-```bash
-vercel env add QWEN_CODER_32B_API_KEY
-vercel env add MISTRAL_SMALL_API_KEY
-vercel env add ELEVENLABS_API_KEY
-vercel env add SUPABASE_PROJECT_URL
-vercel env add SUPABASE_ANON_PUBLIC
-```
+- Update redirect URLs in Supabase
+- Update webhook URL in Stripe
 
-4. Redeploy with environment variables:
+## Step 9: Set Up Monitoring
 
-```bash
-vercel --prod
-```
+### 9.1 Vercel Analytics
 
-### Option 3: GitHub Integration (Automatic)
+1. Enable in Project Settings → Analytics
+2. View real-time metrics and Web Vitals
 
-1. Connect your Vercel account to GitHub
-2. Enable automatic deployments for the repository
-3. Set environment variables in Vercel dashboard
-4. Push to the branch (already done)
-5. Vercel will automatically deploy
+### 9.2 Error Tracking (Recommended)
 
-## Environment Variables Required
+Consider integrating:
 
-The following environment variables must be set in Vercel:
+- **Sentry** - Error tracking and performance monitoring
+- **LogRocket** - Session replay
+- **PostHog** - Product analytics
 
-### AI Models (OpenRouter)
+### 9.3 Uptime Monitoring
 
-- QWEN_CODER_32B_API_KEY
-- MISTRAL_SMALL_API_KEY
-- HERMES_API_KEY (optional)
-- DEEPSEEK_API_KEY (optional)
+Use services like:
 
-### Voice AI
+- **UptimeRobot** - Free uptime monitoring
+- **Pingdom** - Advanced monitoring
 
-- ELEVENLABS_API_KEY
+## Step 10: Production Optimizations
 
-### Database
+### 10.1 Database
 
-- SUPABASE_PROJECT_URL
-- SUPABASE_ANON_PUBLIC
-- SUPABASE_SERVICE_ROLE_SECRET (optional for admin features)
+- [ ] Enable connection pooling in Supabase
+- [ ] Set up database backups
+- [ ] Review RLS policies
+- [ ] Add database indexes for frequent queries
 
-## Post-Deployment Steps
+### 10.2 Performance
 
-1. Test the deployment:
-   - Visit your-domain.vercel.app/fitness.html
-   - Test AI chat functionality
-   - Verify all programs load correctly
+- [ ] Enable Vercel Edge caching
+- [ ] Configure ISR for static pages
+- [ ] Optimize images (already configured)
+- [ ] Review bundle size
 
-2. Configure Custom Domain (Optional):
-   - Add domain in Vercel dashboard
-   - Update DNS records
-   - Enable SSL (automatic)
+### 10.3 Security
 
-3. Set Up Supabase Tables:
-
-```sql
-CREATE TABLE workout_progress (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  user_id TEXT NOT NULL,
-  workout_data JSONB NOT NULL,
-  created_at TIMESTAMP DEFAULT NOW()
-);
-
-CREATE INDEX idx_user_workouts ON workout_progress(user_id, created_at DESC);
-```
-
-4. Monitor Performance:
-   - Check Vercel Analytics
-   - Monitor API usage on OpenRouter
-   - Review Supabase database metrics
+- [ ] Review environment variable exposure
+- [ ] Enable CORS properly
+- [ ] Set up rate limiting
+- [ ] Review authentication flows
+- [ ] Enable HTTPS only
 
 ## Troubleshooting
 
-### API Keys Not Working
+### Build Fails
 
-- Verify environment variables are set correctly
-- Check OpenRouter account balance
-- Ensure API keys have correct permissions
-
-### Database Connection Issues
-
-- Verify Supabase URL and keys
-- Check Supabase project is active
-- Review connection logs in Vercel
-
-### Build Failures
-
-- Check Node.js version (>=18.0.0)
-- Verify all dependencies installed
-- Review build logs in Vercel dashboard
-
-## Local Testing
-
-Before deploying, test locally:
+**Issue:** TypeScript errors
 
 ```bash
-npm install
-npm start
+# Run locally to debug
+npm run typecheck
 ```
 
-Visit http://localhost:3000/fitness.html
+**Issue:** Missing environment variables
+
+- Verify all required env vars are set in Vercel
+- Check for typos in variable names
+
+### Runtime Errors
+
+**Issue:** Supabase connection fails
+
+- Verify URL and keys are correct
+- Check if project is paused (free tier)
+- Review CORS settings
+
+**Issue:** Stripe webhook not receiving events
+
+- Verify webhook URL is correct
+- Check webhook signing secret
+- Review Stripe logs in dashboard
+
+**Issue:** Images not loading
+
+- Verify API keys for Pexels/Unsplash
+- Check Image optimization configuration
+- Review CSP headers
+
+### Performance Issues
+
+**Issue:** Slow API responses
+
+- Check Supabase query performance
+- Review database indexes
+- Consider caching strategies
+
+**Issue:** Large bundle size
+
+- Run `npm run build` and review bundle analysis
+- Consider code splitting
+- Lazy load components
+
+## Maintenance
+
+### Regular Tasks
+
+- [ ] Monitor error rates in Vercel
+- [ ] Review Supabase usage and costs
+- [ ] Check Stripe transaction logs
+- [ ] Update dependencies monthly
+- [ ] Review and rotate API keys quarterly
+- [ ] Backup database regularly
+
+### Scaling Considerations
+
+As your app grows:
+
+- Upgrade Supabase tier for more connections
+- Consider adding Redis for caching
+- Enable CDN for static assets
+- Review database query performance
+- Consider serverless function optimization
 
 ## Support
 
 For deployment issues:
 
-- Vercel Documentation: https://vercel.com/docs
-- GitHub Issues: https://github.com/sano1233/istani/issues
+- Check Vercel deployment logs
+- Review Supabase logs
+- Check Stripe webhook logs
+- Open GitHub issue with error details
 
----
+## Additional Resources
 
-The platform is ready for deployment. Choose your preferred deployment method above and follow the steps to go live.
-
-> > > > > > > origin/main
+- [Next.js Deployment Documentation](https://nextjs.org/docs/deployment)
+- [Vercel Documentation](https://vercel.com/docs)
+- [Supabase Documentation](https://supabase.com/docs)
+- [Stripe Integration Guide](https://stripe.com/docs/payments/checkout)
