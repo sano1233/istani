@@ -7,10 +7,9 @@ export const runtime = 'edge';
 export async function middleware(request: NextRequest) {
   try {
     return await updateSession(request);
-  } catch (error) {
-    // Log and return a fallback response if middleware fails
-    console.error('Middleware error:', error);
-    // Return next response to continue the request
+  } catch (_error) {
+    // Return a fallback response if middleware fails
+    // Silently handle errors to prevent middleware from crashing
     return NextResponse.next({
       request,
     });

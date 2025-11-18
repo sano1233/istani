@@ -7,7 +7,6 @@ export async function updateSession(request: NextRequest) {
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   if (!supabaseUrl || !supabaseAnonKey) {
-    console.error('Missing Supabase environment variables');
     // Return next response without auth if env vars are missing
     return NextResponse.next({
       request,
@@ -52,9 +51,9 @@ export async function updateSession(request: NextRequest) {
 
     // Verify/refresh the session
     await supabase.auth.getUser();
-  } catch (error) {
-    // Log error but don't crash the middleware
-    console.error('Error in updateSession middleware:', error);
+  } catch (_error) {
+    // Silently handle errors - middleware should not crash
+    // In production, consider integrating with error tracking service
   }
 
   return response;
