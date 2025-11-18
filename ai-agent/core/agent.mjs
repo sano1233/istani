@@ -17,6 +17,7 @@ import { createAppAuth } from '@octokit/auth-app';
 import { readFile } from 'fs/promises';
 import { execSync } from 'child_process';
 import crypto from 'crypto';
+import PreMergeChecks from './pre-merge-checks.mjs';
 
 class IstaniAIAgent {
   constructor(config = {}) {
@@ -40,6 +41,7 @@ class IstaniAIAgent {
     this.initializeClients();
     this.taskQueue = [];
     this.isProcessing = false;
+    this.preMergeChecks = null; // Will be initialized when needed
     this.stats = {
       prsProcessed: 0,
       buildsSucceeded: 0,
@@ -48,6 +50,7 @@ class IstaniAIAgent {
       deploymentsFailed: 0,
       securityIssuesFound: 0,
       codeReviewsCompleted: 0,
+      preMergeChecksRun: 0,
     };
   }
 
@@ -95,11 +98,14 @@ class IstaniAIAgent {
       // 3. Analyze PR changes
       const analysis = await this.analyzePRChanges(pr);
 
+      // 3.5. Run pre-merge checks
+      const preMergeResults = await this.runPreMergeChecks(pr, { analysis });
+
       // 4. Perform code review with Claude
       const review = await this.performCodeReview(pr, analysis);
 
-      // 5. Post review comments
-      await this.postReviewComments(pr, review);
+      // 5. Post review comments (including pre-merge checks)
+      await this.postReviewComments(pr, review, preMergeResults);
 
       // 6. Run automated builds
       const buildResult = await this.runBuild(pr);
@@ -107,16 +113,21 @@ class IstaniAIAgent {
       // 7. Run tests
       const testResult = await this.runTests(pr);
 
-      // 8. Deploy if all checks pass
-      if (buildResult.success && testResult.success && review.approved) {
+      // 8. Check if pre-merge checks block merge
+      const checksBlockMerge = preMergeResults && this.preMergeChecks?.shouldBlockMerge(preMergeResults);
+
+      // 9. Deploy if all checks pass
+      if (buildResult.success && testResult.success && review.approved && !checksBlockMerge) {
         if (this.config.autoDeploy) {
           await this.deployToProduction(pr);
         }
 
-        // 9. Auto-merge if configured
-        if (this.config.autoMerge && review.approved) {
+        // 10. Auto-merge if configured
+        if (this.config.autoMerge && review.approved && !checksBlockMerge) {
           await this.mergePullRequest(pr);
         }
+      } else if (checksBlockMerge) {
+        this.log(`🚫 PR #${prNumber} blocked by pre-merge checks`, 'warn');
       }
 
       this.stats.prsProcessed++;
@@ -130,6 +141,7 @@ class IstaniAIAgent {
         review,
         buildResult,
         testResult,
+        preMergeResults,
       };
     } catch (error) {
       this.log(`❌ Error processing PR #${prNumber}: ${error.message}`, 'error');
@@ -416,8 +428,14 @@ class IstaniAIAgent {
   /**
    * Post review comments to PR
    */
-  async postReviewComments(pr, review) {
-    const comment = this.formatReviewComment(review);
+  async postReviewComments(pr, review, preMergeResults = null) {
+    let comment = this.formatReviewComment(review);
+
+    // Add pre-merge checks results if available
+    if (preMergeResults && this.preMergeChecks) {
+      const checksComment = '\n\n---\n\n' + this.preMergeChecks.formatResults(preMergeResults);
+      comment += checksComment;
+    }
 
     await this.github.issues.createComment({
       owner: this.config.owner,
@@ -426,12 +444,18 @@ class IstaniAIAgent {
       body: comment,
     });
 
+    // Determine review event based on pre-merge checks
+    let reviewEvent = review.approved ? 'APPROVE' : 'COMMENT';
+    if (preMergeResults && this.preMergeChecks?.shouldBlockMerge(preMergeResults)) {
+      reviewEvent = 'REQUEST_CHANGES';
+    }
+
     // Submit review
     await this.github.pulls.createReview({
       owner: this.config.owner,
       repo: this.config.repo,
       pull_number: pr.number,
-      event: review.approved ? 'APPROVE' : 'COMMENT',
+      event: reviewEvent,
       body: review.text,
     });
   }
@@ -672,6 +696,104 @@ Start your response with APPROVE or REQUEST_CHANGES, followed by your detailed r
    */
   sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  /**
+   * Run pre-merge checks
+   */
+  async runPreMergeChecks(pr, context = {}) {
+    this.log(`🔍 Running pre-merge checks`, 'info');
+
+    try {
+      // Initialize pre-merge checks if not already done
+      if (!this.preMergeChecks) {
+        this.preMergeChecks = await PreMergeChecks.loadFromYAML();
+      }
+
+      // Prepare context for checks
+      const checkContext = {
+        ...context,
+        aiClient: this.claude,
+        aiModel: this.config.model,
+        aiAnalysis: context.analysis,
+      };
+
+      // Run all checks
+      const results = await this.preMergeChecks.runAllChecks(pr, checkContext);
+      
+      this.stats.preMergeChecksRun++;
+      this.log(`✅ Pre-merge checks completed: ${results.passed.length} passed, ${results.failed.length} failed`, 'info');
+
+      return results;
+    } catch (error) {
+      this.log(`⚠️ Error running pre-merge checks: ${error.message}`, 'warn');
+      return {
+        failed: [],
+        passed: [],
+        inconclusive: [{
+          name: 'Pre-Merge Checks',
+          status: 'inconclusive',
+          mode: 'warning',
+          explanation: `Error running checks: ${error.message}`,
+          resolution: 'Review manually',
+        }],
+        ignored: [],
+      };
+    }
+  }
+
+  /**
+   * Evaluate a custom pre-merge check
+   */
+  async evaluateCustomCheck(checkName, instructions, prNumber, mode = 'warning') {
+    this.log(`🔍 Evaluating custom check: ${checkName}`, 'info');
+
+    try {
+      const pr = await this.fetchPRDetails(prNumber);
+      const analysis = await this.analyzePRChanges(pr);
+
+      if (!this.preMergeChecks) {
+        this.preMergeChecks = await PreMergeChecks.loadFromYAML();
+      }
+
+      const customCheck = {
+        name: checkName,
+        instructions,
+        mode,
+      };
+
+      const checkContext = {
+        analysis,
+        aiClient: this.claude,
+        aiModel: this.config.model,
+        mode,
+      };
+
+      const result = await this.preMergeChecks.runCustomCheck(customCheck, pr, checkContext);
+      return result;
+    } catch (error) {
+      throw new Error(`Failed to evaluate custom check: ${error.message}`);
+    }
+  }
+
+  /**
+   * Ignore failed pre-merge checks for a PR
+   */
+  async ignorePreMergeChecks(prNumber) {
+    this.log(`⚠️ Ignoring failed pre-merge checks for PR #${prNumber}`, 'warn');
+
+    const comment = `## ⚠️ Pre-Merge Checks Ignored\n\n` +
+      `Failed checks have been manually ignored for this PR.\n\n` +
+      `**Note**: This override applies only to this PR. Future PRs will still enforce checks as configured.`;
+
+    await this.github.issues.createComment({
+      owner: this.config.owner,
+      repo: this.config.repo,
+      issue_number: prNumber,
+      body: comment,
+    });
+
+    return { success: true, message: 'Failed checks ignored' };
   }
 
   /**
