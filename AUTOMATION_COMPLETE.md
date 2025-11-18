@@ -11,6 +11,7 @@
 **File**: `.github/workflows/auto-deploy-full.yml`
 
 **What it does**:
+
 1. ✅ Auto-merges any `claude/*` branch to `main`
 2. ✅ Auto-deploys to Vercel production
 3. ✅ Auto-triggers all automation workflows
@@ -28,6 +29,7 @@
 Go to: https://github.com/sano1233/istani/settings/secrets/actions
 
 **Secret 1: VERCEL_TOKEN**
+
 ```bash
 # Get from: https://vercel.com/account/tokens
 # 1. Click "Create Token"
@@ -35,21 +37,26 @@ Go to: https://github.com/sano1233/istani/settings/secrets/actions
 # 3. Scope: Full Access
 # 4. Copy the token
 ```
+
 Add to GitHub as: `VERCEL_TOKEN`
 
 **Secret 2: VERCEL_ORG_ID**
+
 ```bash
 # Get from: https://vercel.com/<your-username>/istani/settings
 # Look for: "Project ID" section
 # Copy: Team ID or Personal Account ID
 ```
+
 Add to GitHub as: `VERCEL_ORG_ID`
 
 **Secret 3: VERCEL_PROJECT_ID**
+
 ```bash
 # Same page as above
 # Copy: Project ID
 ```
+
 Add to GitHub as: `VERCEL_PROJECT_ID`
 
 ---
@@ -84,7 +91,7 @@ git push origin main
 
 ## 🎉 What Happens Automatically
 
-### When You Push to Main or Claude/* Branch:
+### When You Push to Main or Claude/\* Branch:
 
 ```mermaid
 graph TD
@@ -112,12 +119,13 @@ graph TD
 ### ✅ Committed Locally (29 commits)
 
 Latest commits:
+
 1. `05cb460` - feat: Add fully automated deployment system
 2. `733c327` - docs: Add complete push, deploy, and merge action plan
 3. `3bdc5e7` - docs: Add comprehensive git push instructions
 4. `cea319a` - docs: Add comprehensive final summary
 5. `b36d099` - chore: Add .env.example and package-lock.json
-... and 24 more
+   ... and 24 more
 
 ### ⏳ Waiting For
 
@@ -134,30 +142,36 @@ Once you push, GitHub Actions automatically handles everything else!
 ## 🔥 Systems Ready to Deploy
 
 ### 1. 🧠 Quantum Fork Intelligence System
+
 - **File**: `.github/workflows/quantum-fork-orchestrator.yml`
 - **Auto-triggers**: Every 6 hours + after deployment
 - **Purpose**: Orchestrate ALL forked repos as one network
 
 ### 2. 📱 iOS n8n Integration
+
 - **Files**: 4 workflows (ios-shortcuts, ios-health-data, ios-notifications, ios-app-sync)
 - **Auto-triggers**: After deployment
 - **Purpose**: Complete iOS fitness app automation
 
 ### 3. 🤖 15+ GitHub Actions Workflows
+
 - **Auto-triggers**: On push, PR, schedule
 - **Purpose**: CI/CD, security, quality, automation
 
 ### 4. 📚 20+ Documentation Files (211KB+)
+
 - Complete guides for all systems
 - Testing examples
 - Troubleshooting guides
 
 ### 5. 🔐 HMAC-SHA256 Security
+
 - All webhooks secured
 - Secret scanning active
 - CodeQL analysis running
 
 ### 6. 🆓 100% FREE Tools
+
 - Zero API costs
 - Zero vendor lock-in
 - All open-source
@@ -177,8 +191,9 @@ git push origin main
 Visit: https://github.com/sano1233/istani/actions
 
 You'll see:
+
 - ✅ "🚀 Auto Deploy Full Stack" running
-- ✅ Merge to main (if from claude/* branch)
+- ✅ Merge to main (if from claude/\* branch)
 - ✅ Deploy to Vercel
 - ✅ Trigger automation
 - ✅ Cleanup branches
@@ -188,6 +203,7 @@ You'll see:
 Visit: https://vercel.com/dashboard
 
 You'll see:
+
 - ✅ "istani" deploying
 - ✅ Building...
 - ✅ Deployed!
@@ -198,6 +214,7 @@ You'll see:
 Visit: https://istani.vercel.app
 
 You'll see:
+
 - ✅ ISTANI Fitness landing page
 - ✅ About page
 - ✅ Contact page
@@ -210,6 +227,7 @@ You'll see:
 Visit: https://github.com/sano1233/istani/actions
 
 You'll see additional workflows running:
+
 - ✅ Quantum Fork Discovery
 - ✅ iOS CI/CD
 - ✅ Mass Branch Cleanup
@@ -291,6 +309,7 @@ All these files are ready to deploy:
 ## 🎉 Benefits Summary
 
 ### Before (Manual)
+
 1. ❌ Manual git push
 2. ❌ Manual git merge
 3. ❌ Manual vercel deploy
@@ -300,6 +319,7 @@ All these files are ready to deploy:
 7. ❌ **Error-prone**: Human mistakes possible
 
 ### After (Automated)
+
 1. ✅ Auto push (via GitHub Actions)
 2. ✅ Auto merge
 3. ✅ Auto deploy
@@ -330,6 +350,7 @@ git push origin main
 ### Then Relax! ☕
 
 Everything else happens automatically. Check:
+
 - GitHub Actions: https://github.com/sano1233/istani/actions
 - Vercel Dashboard: https://vercel.com/dashboard
 
@@ -371,7 +392,7 @@ Test the automation without pushing code.
 After you complete the setup and push:
 
 - [ ] ✅ GitHub Actions workflow runs successfully
-- [ ] ✅ Merge to main completes (if from claude/* branch)
+- [ ] ✅ Merge to main completes (if from claude/\* branch)
 - [ ] ✅ Vercel deployment succeeds
 - [ ] ✅ Site is live and accessible
 - [ ] ✅ Quantum workflows triggered

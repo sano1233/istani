@@ -10,23 +10,23 @@ This branch contains an open source, privacy-first static site with a WordPress-
 ## Structure
 
 site/
-  index.html
-  about.html
-  contact.html
-  blog/
-    index.html
-  css/
-    pico.min.css
-    theme.css
-  js/
-    main.js
-  images/
-    logo.svg
-    hero.svg
-    placeholders/
-      post-1.svg
-      post-2.svg
-      post-3.svg
+index.html
+about.html
+contact.html
+blog/
+index.html
+css/
+pico.min.css
+theme.css
+js/
+main.js
+images/
+logo.svg
+hero.svg
+placeholders/
+post-1.svg
+post-2.svg
+post-3.svg
 
 ## Local development
 

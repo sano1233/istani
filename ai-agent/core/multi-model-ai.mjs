@@ -72,11 +72,13 @@ class MultiModelAI {
   async multiModelCodeReview(code, context = {}) {
     this.log('🤖 Running multi-model code review', 'info');
 
-    const reviews = await Promise.allSettled([
-      this.config.claudeEnabled ? this.claudeCodeReview(code, context) : null,
-      this.config.copilotEnabled ? this.copilotCodeReview(code, context) : null,
-      this.config.codexEnabled ? this.codexCodeReview(code, context) : null
-    ].filter(Boolean));
+    const reviews = await Promise.allSettled(
+      [
+        this.config.claudeEnabled ? this.claudeCodeReview(code, context) : null,
+        this.config.copilotEnabled ? this.copilotCodeReview(code, context) : null,
+        this.config.codexEnabled ? this.codexCodeReview(code, context) : null
+      ].filter(Boolean)
+    );
 
     // Aggregate results
     const successfulReviews = reviews
@@ -112,10 +114,12 @@ class MultiModelAI {
     const response = await this.claude.messages.create({
       model: 'claude-sonnet-4-5-20250929',
       max_tokens: 8000,
-      messages: [{
-        role: 'user',
-        content: prompt
-      }]
+      messages: [
+        {
+          role: 'user',
+          content: prompt
+        }
+      ]
     });
 
     const review = response.content[0].text;
@@ -145,33 +149,40 @@ class MultiModelAI {
 
       // GitHub Copilot integration via GitHub API
       // Note: This uses the Copilot for Business API
-      const response = await this.github.request('POST /copilot/chat/completions', {
-        messages: [{
-          role: 'user',
-          content: prompt
-        }],
-        model: 'gpt-4',
-        temperature: 0.3
-      }).catch(async (error) => {
-        // Fallback to regular OpenAI if Copilot API not available
-        if (this.openai) {
-          return await this.openai.chat.completions.create({
-            model: 'gpt-4',
-            messages: [{
-              role: 'system',
-              content: 'You are GitHub Copilot, an expert code reviewer.'
-            }, {
+      const response = await this.github
+        .request('POST /copilot/chat/completions', {
+          messages: [
+            {
               role: 'user',
               content: prompt
-            }],
-            temperature: 0.3
-          });
-        }
-        throw error;
-      });
+            }
+          ],
+          model: 'gpt-4',
+          temperature: 0.3
+        })
+        .catch(async error => {
+          // Fallback to regular OpenAI if Copilot API not available
+          if (this.openai) {
+            return await this.openai.chat.completions.create({
+              model: 'gpt-4',
+              messages: [
+                {
+                  role: 'system',
+                  content: 'You are GitHub Copilot, an expert code reviewer.'
+                },
+                {
+                  role: 'user',
+                  content: prompt
+                }
+              ],
+              temperature: 0.3
+            });
+          }
+          throw error;
+        });
 
-      const review = response.data?.choices?.[0]?.message?.content ||
-                     response.choices?.[0]?.message?.content;
+      const review =
+        response.data?.choices?.[0]?.message?.content || response.choices?.[0]?.message?.content;
 
       return {
         model: 'github-copilot',
@@ -201,13 +212,16 @@ class MultiModelAI {
 
       const response = await this.openai.chat.completions.create({
         model: 'gpt-4-turbo-preview',
-        messages: [{
-          role: 'system',
-          content: 'You are Codex, an expert code analysis and review system.'
-        }, {
-          role: 'user',
-          content: prompt
-        }],
+        messages: [
+          {
+            role: 'system',
+            content: 'You are Codex, an expert code analysis and review system.'
+          },
+          {
+            role: 'user',
+            content: prompt
+          }
+        ],
         temperature: 0.2
       });
 
@@ -316,7 +330,6 @@ class MultiModelAI {
           // Parse checkstyle output
         }
       }
-
     } catch (error) {
       this.log(`Static analysis error: ${error.message}`, 'warn');
     }
@@ -330,7 +343,8 @@ class MultiModelAI {
   async generateFixes(code, errors, context) {
     const fixes = [];
 
-    for (const error of errors.slice(0, 10)) { // Limit to 10 errors
+    for (const error of errors.slice(0, 10)) {
+      // Limit to 10 errors
       const fixPrompt = `
 Fix this error in the code:
 
@@ -517,7 +531,7 @@ Provide specific, actionable code improvement suggestions.
     }
 
     return {
-      approved: approvals >= (reviews.length / 2),
+      approved: approvals >= reviews.length / 2,
       confidence: approvals / reviews.length,
       commonIssues,
       commonSuggestions,
@@ -640,9 +654,7 @@ Provide detailed analysis of:
     if (arrays.length === 0) return [];
 
     return arrays[0].filter(item =>
-      arrays.every(arr =>
-        arr.some(i => this.similarity(i, item) > 0.7)
-      )
+      arrays.every(arr => arr.some(i => this.similarity(i, item) > 0.7))
     );
   }
 
@@ -669,7 +681,9 @@ Provide detailed analysis of:
 
     if (len1 === 0 || len2 === 0) return 0;
 
-    const matrix = Array(len1 + 1).fill(null).map(() => Array(len2 + 1).fill(0));
+    const matrix = Array(len1 + 1)
+      .fill(null)
+      .map(() => Array(len2 + 1).fill(0));
 
     for (let i = 0; i <= len1; i++) matrix[i][0] = i;
     for (let j = 0; j <= len2; j++) matrix[0][j] = j;
@@ -686,14 +700,12 @@ Provide detailed analysis of:
     }
 
     const maxLen = Math.max(len1, len2);
-    return 1 - (matrix[len1][len2] / maxLen);
+    return 1 - matrix[len1][len2] / maxLen;
   }
 
   rankSuggestions(suggestions) {
     // Rank by frequency and similarity
-    return suggestions
-      .sort((a, b) => b.priority - a.priority)
-      .slice(0, 20);
+    return suggestions.sort((a, b) => b.priority - a.priority).slice(0, 20);
   }
 
   getStats() {
@@ -705,12 +717,13 @@ Provide detailed analysis of:
 
   log(message, level = 'info') {
     const timestamp = new Date().toISOString();
-    const emoji = {
-      info: 'ℹ️',
-      warn: '⚠️',
-      error: '❌',
-      success: '✅'
-    }[level] || 'ℹ️';
+    const emoji =
+      {
+        info: 'ℹ️',
+        warn: '⚠️',
+        error: '❌',
+        success: '✅'
+      }[level] || 'ℹ️';
 
     console.log(`[${timestamp}] ${emoji} ${message}`);
   }

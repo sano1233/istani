@@ -23,10 +23,12 @@
 ## 🎓 Why Is This Important?
 
 When you push code to GitHub:
+
 - ✅ **Public repos** = Anyone in the world can see your code
 - ⚠️ **Private repos** = Still visible to collaborators
 
 If you commit an API key:
+
 - 🤖 Bots scan GitHub 24/7 looking for keys
 - 💸 Someone can use your key and cost you $$$$
 - 🔓 They might access your private data
@@ -37,6 +39,7 @@ If you commit an API key:
 ## ✅ What Files ARE Safe to Commit?
 
 **Safe to commit:**
+
 - ✅ Your code (.js, .jsx, .html, .css files)
 - ✅ README.md and documentation
 - ✅ package.json (but NOT if it has secrets)
@@ -44,10 +47,11 @@ If you commit an API key:
 - ✅ Public images and assets
 
 **Example safe file:**
+
 ```javascript
 // ✅ SAFE - No secrets here
 function calculateTotal(price, tax) {
-  return price + (price * tax);
+  return price + price * tax;
 }
 ```
 
@@ -56,6 +60,7 @@ function calculateTotal(price, tax) {
 ## ❌ What Files Should NEVER Be Committed?
 
 ### .env Files
+
 ```bash
 # ❌ NEVER commit .env files!
 # This file should be in .gitignore
@@ -66,15 +71,17 @@ DATABASE_URL=postgres://user:password@host/db  # ❌ SECRET!
 ```
 
 ### Configuration Files with Secrets
+
 ```javascript
 // ❌ NEVER do this!
 const config = {
   apiKey: 'sk-ant-api03-xxxxxxxxxxxxx', // ❌ HARDCODED SECRET!
-  password: 'mypassword123'              // ❌ HARDCODED SECRET!
+  password: 'mypassword123' // ❌ HARDCODED SECRET!
 };
 ```
 
 ### Private Keys
+
 ```
 ❌ id_rsa
 ❌ private.key
@@ -89,6 +96,7 @@ const config = {
 ### Method 1: Use .env Files (LOCALLY ONLY)
 
 **Step 1:** Create a `.env` file (locally)
+
 ```bash
 # .env file (this stays on YOUR computer only)
 ANTHROPIC_API_KEY=sk-ant-api03-xxxxxxxxxxxxx
@@ -96,6 +104,7 @@ NETLIFY_TOKEN=xxxxxxxxxxxxxxxx
 ```
 
 **Step 2:** Add `.env` to `.gitignore`
+
 ```bash
 # .gitignore
 .env
@@ -103,6 +112,7 @@ NETLIFY_TOKEN=xxxxxxxxxxxxxxxx
 ```
 
 **Step 3:** Use environment variables in your code
+
 ```javascript
 // ✅ SAFE - Uses environment variable
 const apiKey = process.env.ANTHROPIC_API_KEY;
@@ -274,10 +284,10 @@ Before pushing code to GitHub, check:
 // config.js
 module.exports = {
   anthropic: {
-    apiKey: 'sk-ant-api03-xxxxxxxxxxxxx'  // ❌ EXPOSED!
+    apiKey: 'sk-ant-api03-xxxxxxxxxxxxx' // ❌ EXPOSED!
   },
   netlify: {
-    token: 'xxxxxxxxxxxxxxxx'  // ❌ EXPOSED!
+    token: 'xxxxxxxxxxxxxxxx' // ❌ EXPOSED!
   }
 };
 ```
@@ -288,10 +298,10 @@ module.exports = {
 // config.js
 module.exports = {
   anthropic: {
-    apiKey: process.env.ANTHROPIC_API_KEY  // ✅ SAFE!
+    apiKey: process.env.ANTHROPIC_API_KEY // ✅ SAFE!
   },
   netlify: {
-    token: process.env.NETLIFY_TOKEN  // ✅ SAFE!
+    token: process.env.NETLIFY_TOKEN // ✅ SAFE!
   }
 };
 ```
@@ -394,6 +404,7 @@ git diff
 ### Tip 3: Use GitHub Desktop
 
 If command-line is confusing, use GitHub Desktop:
+
 - Visual interface
 - See exactly what files you're committing
 - Easier to catch mistakes

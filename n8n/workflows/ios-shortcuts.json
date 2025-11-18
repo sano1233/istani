@@ -73,15 +73,15 @@
   ],
   "connections": {
     "iOS Shortcuts Webhook": {
-      "main": [ [ { "node": "Verify & Process", "type": "main", "index": 0 } ] ]
+      "main": [[{ "node": "Verify & Process", "type": "main", "index": 0 }]]
     },
     "Verify & Process": {
-      "main": [ [ { "node": "Route by Action", "type": "main", "index": 0 } ] ]
+      "main": [[{ "node": "Route by Action", "type": "main", "index": 0 }]]
     },
     "Route by Action": {
       "main": [
-        [ { "node": "Log Workout", "type": "main", "index": 0 } ],
-        [ { "node": "Generic Action", "type": "main", "index": 0 } ]
+        [{ "node": "Log Workout", "type": "main", "index": 0 }],
+        [{ "node": "Generic Action", "type": "main", "index": 0 }]
       ]
     }
   },

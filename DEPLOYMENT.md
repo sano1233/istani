@@ -64,6 +64,7 @@ npm install -g netlify-cli
 ### 1. Generate API Keys
 
 #### Anthropic API Key
+
 1. Visit https://console.anthropic.com/
 2. Sign up or log in
 3. Navigate to API Keys
@@ -71,6 +72,7 @@ npm install -g netlify-cli
 5. Copy and save securely
 
 #### GitHub Personal Access Token
+
 1. Visit https://github.com/settings/tokens
 2. Click "Generate new token (classic)"
 3. Select scopes:
@@ -81,12 +83,14 @@ npm install -g netlify-cli
 4. Generate and copy token
 
 #### Vercel Token
+
 1. Visit https://vercel.com/account/tokens
 2. Create new token
 3. Name: "ISTANI AI Agent"
 4. Copy token
 
 #### Netlify Token
+
 1. Visit https://app.netlify.com/user/applications#personal-access-tokens
 2. Create new access token
 3. Description: "ISTANI AI Agent"
@@ -133,6 +137,7 @@ GITHUB_WEBHOOK_SECRET=<generate-with-openssl-rand-hex-32>
 #### Automatic Deployment
 
 1. **Connect Repository**
+
    ```bash
    # Install Vercel CLI
    npm install -g vercel
@@ -171,6 +176,7 @@ vercel --prod --token=$VERCEL_TOKEN
 #### Automatic Deployment
 
 1. **Connect Repository**
+
    ```bash
    # Install Netlify CLI
    npm install -g netlify-cli
@@ -386,17 +392,20 @@ npx serve .
 ### Logs
 
 #### Docker
+
 ```bash
 docker-compose logs -f ai-agent
 ```
 
 #### PM2
+
 ```bash
 pm2 logs istani-agent
 pm2 monit
 ```
 
 #### GitHub Actions
+
 - Visit: https://github.com/sano1233/istani/actions
 
 ### Metrics to Monitor
@@ -500,12 +509,14 @@ pm2 restart istani-agent
 #### 1. Webhook Not Receiving Events
 
 **Check:**
+
 - Webhook URL is correct and accessible
 - Secret matches `GITHUB_WEBHOOK_SECRET`
 - Server is running and port is open
 - Firewall allows incoming connections
 
 **Debug:**
+
 ```bash
 # Check webhook server logs
 docker-compose logs -f ai-agent
@@ -519,11 +530,13 @@ curl -X POST https://agent.istani.org/webhook \
 #### 2. Claude API Errors
 
 **Symptoms:**
+
 - "Invalid API key"
 - "Rate limit exceeded"
 - "Insufficient credits"
 
 **Solutions:**
+
 - Verify `ANTHROPIC_API_KEY` is correct
 - Check API credits at https://console.anthropic.com/
 - Implement rate limiting
@@ -532,12 +545,14 @@ curl -X POST https://agent.istani.org/webhook \
 #### 3. Build Failures
 
 **Check:**
+
 - Dependencies installed correctly
 - Node version >= 18
 - Build script exists in package.json
 - Sufficient disk space
 
 **Debug:**
+
 ```bash
 # Manual build test
 npm ci
@@ -550,11 +565,13 @@ docker-compose logs ai-agent | grep -i error
 #### 4. Deployment Failures
 
 **Vercel:**
+
 - Check token validity
 - Verify project exists
 - Check build logs
 
 **Netlify:**
+
 - Verify site ID
 - Check auth token
 - Review deploy logs
@@ -562,6 +579,7 @@ docker-compose logs ai-agent | grep -i error
 #### 5. Permission Errors
 
 **GitHub Token:**
+
 - Regenerate token with correct scopes
 - Verify token hasn't expired
 - Check organization permissions

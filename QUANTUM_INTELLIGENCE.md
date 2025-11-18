@@ -7,6 +7,7 @@
 ## 🎯 Vision
 
 Transform all your forked GitHub repositories into a **superintelligent quantum system** where:
+
 - All forks work as ONE coordinated network
 - Changes propagate across the quantum field
 - Automated orchestration at quantum scale
@@ -128,7 +129,7 @@ Syncs all forks with upstream in parallel:
 strategy:
   matrix:
     fork: ${{ fromJson(needs.discover-forks.outputs.fork_list) }}
-  max-parallel: 5  # 5 forks sync simultaneously
+  max-parallel: 5 # 5 forks sync simultaneously
 ```
 
 ### Quantum PR Creation
@@ -146,6 +147,7 @@ This creates a "Quantum Intelligence Upgrade" PR in each fork.
 ### n8n Quantum Coordination
 
 n8n receives quantum sync data and:
+
 - Categorizes forks by language
 - Identifies coordination opportunities
 - Suggests quantum optimizations
@@ -168,7 +170,7 @@ Auto-generated `.quantum/fork-registry.json`:
       "language": "TypeScript",
       "parent": "n8n-io/n8n",
       "url": "https://github.com/sano1233/n8n"
-    },
+    }
     // ... more forks
   ],
   "quantum_config": {
@@ -293,6 +295,7 @@ strategy:
 ### 2. Intelligent Categorization
 
 Auto-categorizes by:
+
 - Language (JavaScript, Python, TypeScript, etc.)
 - Framework (React, Next.js, Django, etc.)
 - Purpose (automation, web, data science, etc.)
@@ -300,6 +303,7 @@ Auto-categorizes by:
 ### 3. Cross-Repo Dependencies
 
 Quantum system understands relationships:
+
 - Parent → Fork connections
 - Language similarities
 - Topic overlaps
@@ -308,6 +312,7 @@ Quantum system understands relationships:
 ### 4. Self-Optimization
 
 System learns and optimizes:
+
 - Best sync times
 - Coordination patterns
 - PR success rates
@@ -339,7 +344,7 @@ Work on multiple fork states simultaneously:
 strategy:
   matrix:
     fork: ${{ all_forks }}
-  max-parallel: 10  # Quantum parallel processing
+  max-parallel: 10 # Quantum parallel processing
 ```
 
 ### Quantum Tunneling
