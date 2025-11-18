@@ -92,6 +92,10 @@ export class GoogleFitIntegration {
   }
 
   async authorize(): Promise<string> {
+    if (typeof window === 'undefined') {
+      throw new Error('authorize() can only be called in browser environment');
+    }
+
     // OAuth 2.0 flow for Google Fit
     const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?${new URLSearchParams({
       client_id: this.clientId,
@@ -167,6 +171,10 @@ export class FitbitIntegration {
   }
 
   async authorize(): Promise<string> {
+    if (typeof window === 'undefined') {
+      throw new Error('authorize() can only be called in browser environment');
+    }
+
     const authUrl = `https://www.fitbit.com/oauth2/authorize?${new URLSearchParams({
       client_id: this.clientId,
       response_type: 'token',
