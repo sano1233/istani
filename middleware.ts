@@ -1,14 +1,25 @@
-import { updateSession } from '@/lib/supabase/middleware';
 import { NextResponse, type NextRequest } from 'next/server';
 
 export async function middleware(request: NextRequest) {
   try {
+    // Import dynamically to avoid Edge Runtime issues
+    const { updateSession } = await import('@/lib/supabase/middleware');
     return await updateSession(request);
   } catch (error) {
-    // Log and return a fallback response if middleware fails
-    console.error('Middleware error:', error);
-    // Return next response to continue the request
-    return NextResponse.next();
+    // Emergency fallback - log error but always allow request through
+    console.error('[MIDDLEWARE ERROR]', {
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+      url: request.url,
+      timestamp: new Date().toISOString(),
+    });
+
+    // Always return a valid response to prevent 500 errors
+    return NextResponse.next({
+      request: {
+        headers: request.headers,
+      },
+    });
   }
 }
 
