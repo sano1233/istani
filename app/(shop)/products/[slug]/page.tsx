@@ -27,11 +27,7 @@ export default function ProductDetailPage() {
         return;
       }
 
-      const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .eq('slug', slug)
-        .single();
+      const { data, error } = await supabase.from('products').select('*').eq('slug', slug).single();
 
       if (error || !data) {
         router.push('/products');
