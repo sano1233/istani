@@ -2,16 +2,23 @@ import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
 export async function updateSession(request: NextRequest) {
-  let response = NextResponse.next({
-    request: {
-      headers: request.headers,
-    },
-  });
+  try {
+    let response = NextResponse.next({
+      request: {
+        headers: request.headers,
+      },
+    });
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
+    // Check if Supabase environment variables are set
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+    if (!supabaseUrl || !supabaseAnonKey) {
+      // If Supabase is not configured, just pass through
+      return response;
+    }
+
+    const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
       cookies: {
         get(name: string) {
           return request.cookies.get(name)?.value;
@@ -51,10 +58,19 @@ export async function updateSession(request: NextRequest) {
           });
         },
       },
-    },
-  );
+    });
 
-  await supabase.auth.getUser();
+    // Update session - this will refresh the auth token if needed
+    await supabase.auth.getUser();
 
-  return response;
+    return response;
+  } catch (error) {
+    // If there's an error, just pass through to avoid breaking the app
+    console.error('Middleware error:', error);
+    return NextResponse.next({
+      request: {
+        headers: request.headers,
+      },
+    });
+  }
 }
