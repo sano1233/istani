@@ -10,17 +10,17 @@ export default function HomePage() {
       console.error('DATABASE_URL is not configured');
       return;
     }
-    
+
     try {
       // Connect to the Neon database
       const sql = neon(`${process.env.DATABASE_URL}`);
       const comment = formData.get('comment');
-      
+
       if (!comment || typeof comment !== 'string') {
         console.error('Invalid comment');
         return;
       }
-      
+
       // Insert the comment from the form into the Postgres database
       await sql`INSERT INTO comments (comment) VALUES (${comment})`;
     } catch (error) {
