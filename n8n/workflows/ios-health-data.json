@@ -117,17 +117,17 @@
   ],
   "connections": {
     "iOS Health Webhook": {
-      "main": [ [ { "node": "Verify & Parse Health Data", "type": "main", "index": 0 } ] ]
+      "main": [[{ "node": "Verify & Parse Health Data", "type": "main", "index": 0 }]]
     },
     "Verify & Parse Health Data": {
-      "main": [ [ { "node": "Route by Data Type", "type": "main", "index": 0 } ] ]
+      "main": [[{ "node": "Route by Data Type", "type": "main", "index": 0 }]]
     },
     "Route by Data Type": {
       "main": [
-        [ { "node": "Process Workout", "type": "main", "index": 0 } ],
-        [ { "node": "Process Steps", "type": "main", "index": 0 } ],
-        [ { "node": "Process Heart Rate", "type": "main", "index": 0 } ],
-        [ { "node": "Process Sleep", "type": "main", "index": 0 } ]
+        [{ "node": "Process Workout", "type": "main", "index": 0 }],
+        [{ "node": "Process Steps", "type": "main", "index": 0 }],
+        [{ "node": "Process Heart Rate", "type": "main", "index": 0 }],
+        [{ "node": "Process Sleep", "type": "main", "index": 0 }]
       ]
     }
   },

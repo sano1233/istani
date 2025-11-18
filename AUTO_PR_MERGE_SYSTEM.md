@@ -9,40 +9,47 @@
 ## ✅ What This System Does
 
 ### 1. 📝 Auto-Creates Pull Request
+
 - Detects push to any branch (except main)
 - Creates PR automatically with full description
 - Adds labels: `automated`, `auto-merge`, `claude-code`
 - Links to commit and branch info
 
 ### 2. 🔍 Auto-Detects Errors
+
 - Scans JavaScript/TypeScript files with ESLint
 - Validates all JSON files (workflows, configs, etc.)
 - Checks YAML syntax
 - Counts and reports all errors
 
 ### 3. 🔧 Auto-Fixes Errors
+
 - Applies ESLint auto-fixes
 - Formats code with Prettier
 - Commits fixes automatically
 - Pushes to PR branch
 
 ### 4. 🧪 Auto-Runs Tests
+
 - Executes npm test (if configured)
 - Reports test results
 - Non-blocking (continues even if tests fail)
 
 ### 5. 🔐 Auto-Security Scan
+
 - Runs npm audit for vulnerabilities
 - Scans for exposed secrets/tokens
 - Reports findings (non-blocking)
 
 ### 6. 🔀 Auto-Merges PR
+
 - Waits for all checks to complete
 - Merges using squash method
 - Deletes source branch
 - Triggers deployment
 
 ### 7. 📊 Auto-Generates Summary
+
 - Execution report
 - Error count and fixes
 - Merge status
@@ -79,24 +86,31 @@ graph TD
 The workflow runs automatically when you:
 
 ### 1. Push to main
+
 ```bash
 git push origin main
 ```
+
 **Result**: Immediate deployment (no PR needed)
 
-### 2. Push to claude/* branch
+### 2. Push to claude/\* branch
+
 ```bash
 git push origin claude/feature-name
 ```
+
 **Result**: Creates PR → Fixes errors → Auto-merges → Deploys
 
-### 3. Push to feature/* branch
+### 3. Push to feature/\* branch
+
 ```bash
 git push origin feature/new-feature
 ```
+
 **Result**: Creates PR → Fixes errors → Auto-merges → Deploys
 
 ### 4. Manual trigger
+
 Go to: https://github.com/sano1233/istani/actions/workflows/auto-pr-resolve-merge.yml
 
 Click: "Run workflow"
@@ -106,6 +120,7 @@ Click: "Run workflow"
 ## 🔧 What Gets Auto-Fixed
 
 ### ESLint Fixes
+
 - Missing semicolons
 - Unused variables
 - Incorrect indentation
@@ -114,6 +129,7 @@ Click: "Run workflow"
 - And 100+ other rules
 
 ### Prettier Fixes
+
 - Code formatting
 - Line length
 - Indentation (tabs vs spaces)
@@ -124,15 +140,17 @@ Click: "Run workflow"
 ### Example Auto-Fix
 
 **Before** (with errors):
+
 ```javascript
-const foo="bar"
-let x =    5;
-if(x>3){
-console.log("test")
+const foo = 'bar';
+let x = 5;
+if (x > 3) {
+  console.log('test');
 }
 ```
 
 **After** (auto-fixed):
+
 ```javascript
 const foo = 'bar';
 const x = 5;
@@ -146,6 +164,7 @@ if (x > 3) {
 ## 📊 Error Detection
 
 ### JavaScript/TypeScript Errors
+
 ```bash
 # Detected automatically:
 - Syntax errors
@@ -156,6 +175,7 @@ if (x > 3) {
 ```
 
 ### JSON Errors
+
 ```bash
 # Detected automatically:
 - Invalid JSON syntax
@@ -165,6 +185,7 @@ if (x > 3) {
 ```
 
 ### YAML Errors
+
 ```bash
 # Detected automatically:
 - Invalid YAML syntax
@@ -289,6 +310,7 @@ gh pr checks <pr-number>
 Go to: https://github.com/sano1233/istani/actions
 
 You'll see:
+
 - ✅ Workflow execution status
 - ✅ Error detection results
 - ✅ Auto-fix commits
@@ -337,11 +359,13 @@ This PR will automatically merge when all checks pass.
 ### Issue: "PR not auto-merging"
 
 **Possible causes**:
+
 1. Merge conflicts exist
 2. Errors couldn't be auto-fixed
 3. Required checks not passing
 
 **Solution**:
+
 ```bash
 # Check PR status
 gh pr view <pr-number>
@@ -361,10 +385,12 @@ git push
 ### Issue: "Errors not getting fixed"
 
 **Possible causes**:
+
 1. Errors require manual intervention
 2. ESLint/Prettier not configured
 
 **Solution**:
+
 ```bash
 # Check the auto-fix commit
 gh pr view <pr-number>
@@ -379,10 +405,12 @@ git push
 ### Issue: "Workflow not triggering"
 
 **Possible causes**:
+
 1. Pushed to wrong branch
 2. GitHub Actions disabled
 
 **Solution**:
+
 ```bash
 # Check branch
 git branch --show-current
@@ -404,10 +432,10 @@ Edit `.github/workflows/auto-pr-resolve-merge.yml`:
 
 ```yaml
 # Change merge method
-merge_method: 'squash'  # or 'merge', 'rebase'
+merge_method: 'squash' # or 'merge', 'rebase'
 
 # Change target branch
-base: 'main'  # or 'develop', 'staging'
+base: 'main' # or 'develop', 'staging'
 
 # Add required checks
 # (workflow automatically adapts)
@@ -456,17 +484,20 @@ This workflow integrates with:
 ### DO:
 
 ✅ **Push to feature branches**
+
 ```bash
 git checkout -b feature/new-feature
 git push origin feature/new-feature
 ```
 
 ✅ **Use descriptive commit messages**
+
 ```bash
 git commit -m "feat: Add user authentication"
 ```
 
 ✅ **Let automation handle errors**
+
 ```bash
 # Push even with minor errors
 # Workflow will auto-fix them
@@ -476,17 +507,20 @@ git push
 ### DON'T:
 
 ❌ **Force push to main**
+
 ```bash
 git push origin main --force  # Breaks automation
 ```
 
 ❌ **Skip error fixes**
+
 ```bash
 # If errors can't be auto-fixed, fix them
 # Don't let PR sit with errors
 ```
 
 ❌ **Disable auto-merge labels**
+
 ```bash
 # Keep the 'auto-merge' label
 # It triggers automatic merging
@@ -509,6 +543,7 @@ After setup, you should see:
 ## 🎉 Benefits
 
 ### Before (Manual)
+
 1. ❌ Create PR manually
 2. ❌ Run linters locally
 3. ❌ Fix errors manually
@@ -518,6 +553,7 @@ After setup, you should see:
 7. ⏱️ **Time**: 15-30 minutes
 
 ### After (Automated)
+
 1. ✅ Push once
 2. ✅ Everything else automated
 3. ⏱️ **Time**: 3-5 minutes
@@ -553,8 +589,9 @@ The PR title is auto-generated from branch name:
 ### Auto-Delete Branches
 
 After successful merge:
+
 - ✅ Source branch deleted automatically
-- ✅ Only feature/* and claude/* branches
+- ✅ Only feature/_ and claude/_ branches
 - ✅ Main branch never deleted
 
 ---

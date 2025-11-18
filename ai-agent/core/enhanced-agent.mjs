@@ -99,7 +99,6 @@ class EnhancedIstaniAgent extends IstaniAIAgent {
         testResult,
         modelsUsed: analysis.modelsUsed
       };
-
     } catch (error) {
       this.log(`❌ Error in enhanced processing of PR #${prNumber}: ${error.message}`, 'error');
       await this.handleError(prNumber, error);
@@ -140,7 +139,6 @@ class EnhancedIstaniAgent extends IstaniAIAgent {
           file: file.filename,
           ...multiReview
         });
-
       } catch (error) {
         this.log(`Failed to analyze ${file.filename}: ${error.message}`, 'warn');
       }
@@ -210,11 +208,9 @@ class EnhancedIstaniAgent extends IstaniAIAgent {
         const content = Buffer.from(data.content, 'base64').toString('utf-8');
 
         // Detect and fix errors
-        const result = await this.multiModelAI.detectAndFixErrors(
-          content,
-          file.filename,
-          { prNumber: pr.number }
-        );
+        const result = await this.multiModelAI.detectAndFixErrors(content, file.filename, {
+          prNumber: pr.number
+        });
 
         if (result.fixed || result.suggestedFixes?.length > 0) {
           fixes.push({
@@ -224,7 +220,6 @@ class EnhancedIstaniAgent extends IstaniAIAgent {
 
           totalErrors += result.originalErrors || result.errors?.length || 0;
         }
-
       } catch (error) {
         this.log(`Error resolution failed for ${file.filename}: ${error.message}`, 'warn');
       }
@@ -271,7 +266,6 @@ class EnhancedIstaniAgent extends IstaniAIAgent {
         });
 
         this.log(`✅ Applied fixes to ${fix.file}`, 'success');
-
       } catch (error) {
         this.log(`Failed to apply fixes to ${fix.file}: ${error.message}`, 'error');
       }
@@ -308,15 +302,16 @@ class EnhancedIstaniAgent extends IstaniAIAgent {
    * Post auto-fix comment
    */
   async postAutoFixComment(pr, errorResolution) {
-    const comment = `## 🤖 Automatic Error Resolution\n\n` +
+    const comment =
+      `## 🤖 Automatic Error Resolution\n\n` +
       `I've automatically detected and fixed errors in this PR:\n\n` +
       `- **Total errors found**: ${errorResolution.totalErrors}\n` +
       `- **Errors fixed**: ${errorResolution.fixedErrors}\n` +
       `- **Files updated**: ${errorResolution.fixes.length}\n\n` +
       `### Fixed Files:\n\n` +
-      errorResolution.fixes.map(fix =>
-        `- ✅ **${fix.file}**: Fixed ${fix.originalErrors} error(s)`
-      ).join('\n') +
+      errorResolution.fixes
+        .map(fix => `- ✅ **${fix.file}**: Fixed ${fix.originalErrors} error(s)`)
+        .join('\n') +
       `\n\n*Fixes applied by ISTANI Enhanced AI Agent using Claude, Copilot, and Codex*`;
 
     await this.github.issues.createComment({
@@ -334,22 +329,33 @@ class EnhancedIstaniAgent extends IstaniAIAgent {
     const emoji = review.approved ? '✅' : '⚠️';
     const status = review.approved ? 'APPROVED' : 'CHANGES REQUESTED';
 
-    return `## ${emoji} Enhanced Multi-Model AI Review - ${status}\n\n` +
+    return (
+      `## ${emoji} Enhanced Multi-Model AI Review - ${status}\n\n` +
       `**Models Used**: ${review.modelsUsed} (Claude, ${this.multiModelAI.config.copilotEnabled ? 'Copilot, ' : ''}${this.multiModelAI.config.codexEnabled ? 'Codex' : ''})\n` +
       `**Confidence**: ${(review.confidence * 100).toFixed(1)}%\n` +
       `**Timestamp**: ${review.timestamp}\n\n` +
       `---\n\n` +
-      (errorResolution.fixesAvailable ?
-        `### 🔧 Error Detection\n\n` +
-        `- Found ${errorResolution.totalErrors} error(s)\n` +
-        `- Auto-fixed ${errorResolution.fixedErrors} error(s)\n\n` : '') +
+      (errorResolution.fixesAvailable
+        ? `### 🔧 Error Detection\n\n` +
+          `- Found ${errorResolution.totalErrors} error(s)\n` +
+          `- Auto-fixed ${errorResolution.fixedErrors} error(s)\n\n`
+        : '') +
       `### 📊 Review Summary\n\n${review.text}\n\n` +
-      (review.issues.length > 0 ?
-        `### ⚠️ Issues Found\n\n${review.issues.slice(0, 10).map(i => `- ${i}`).join('\n')}\n\n` : '') +
-      (review.suggestions.length > 0 ?
-        `### 💡 Suggestions\n\n${review.suggestions.slice(0, 10).map(s => `- ${s}`).join('\n')}\n\n` : '') +
+      (review.issues.length > 0
+        ? `### ⚠️ Issues Found\n\n${review.issues
+            .slice(0, 10)
+            .map(i => `- ${i}`)
+            .join('\n')}\n\n`
+        : '') +
+      (review.suggestions.length > 0
+        ? `### 💡 Suggestions\n\n${review.suggestions
+            .slice(0, 10)
+            .map(s => `- ${s}`)
+            .join('\n')}\n\n`
+        : '') +
       `---\n\n` +
-      `*Enhanced review by ISTANI AI Agent - Powered by Claude AI, GitHub Copilot & Codex*`;
+      `*Enhanced review by ISTANI AI Agent - Powered by Claude AI, GitHub Copilot & Codex*`
+    );
   }
 
   /**
@@ -369,18 +375,34 @@ class EnhancedIstaniAgent extends IstaniAIAgent {
 ### Code Quality Assessment
 The code has been reviewed by multiple AI models (Claude AI, GitHub Copilot, and Codex) for comprehensive analysis.
 
-${data.issues.length > 0 ? `### Issues Identified (${data.issues.length})
-${data.issues.slice(0, 15).map((issue, i) => `${i + 1}. ${issue}`).join('\n')}
-` : '### ✅ No Critical Issues Found'}
+${
+  data.issues.length > 0
+    ? `### Issues Identified (${data.issues.length})
+${data.issues
+  .slice(0, 15)
+  .map((issue, i) => `${i + 1}. ${issue}`)
+  .join('\n')}
+`
+    : '### ✅ No Critical Issues Found'
+}
 
-${data.suggestions.length > 0 ? `### Improvement Suggestions (${data.suggestions.length})
-${data.suggestions.slice(0, 15).map((suggestion, i) => `${i + 1}. ${suggestion}`).join('\n')}
-` : ''}
+${
+  data.suggestions.length > 0
+    ? `### Improvement Suggestions (${data.suggestions.length})
+${data.suggestions
+  .slice(0, 15)
+  .map((suggestion, i) => `${i + 1}. ${suggestion}`)
+  .join('\n')}
+`
+    : ''
+}
 
 ## Verdict
-${data.consensus.approved ?
-      '✅ **APPROVED** - All AI models agree this code meets quality standards.' :
-      '⚠️ **CHANGES REQUESTED** - Please address the issues identified above.'}
+${
+  data.consensus.approved
+    ? '✅ **APPROVED** - All AI models agree this code meets quality standards.'
+    : '⚠️ **CHANGES REQUESTED** - Please address the issues identified above.'
+}
 `;
   }
 

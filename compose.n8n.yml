@@ -31,7 +31,7 @@ services:
       N8N_ISTANI_SHARED_SECRET: change-me
       N8N_SECURE_COOKIE: false
     ports:
-      - "5678:5678"
+      - '5678:5678'
     volumes:
       - n8n_data:/home/node/.n8n
       - ./n8n:/data

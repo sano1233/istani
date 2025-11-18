@@ -9,24 +9,28 @@ No manual git push, no manual vercel deploy, no manual merges - everything happe
 ## ✅ What's Automated
 
 ### 1. Auto-Merge to Main ✅
+
 - Push to any `claude/*` branch
 - Automatically merges to `main`
 - Deletes source branch after merge
 - **Zero manual steps**
 
 ### 2. Auto-Deploy to Vercel ✅
+
 - Detects push to `main`
 - Deploys to Vercel production automatically
 - Verifies deployment is live
 - **Zero manual steps**
 
 ### 3. Auto-Trigger Automation ✅
+
 - Starts Quantum Fork Discovery
 - Triggers iOS CI/CD
 - Runs all automation workflows
 - **Zero manual steps**
 
 ### 4. Auto-Cleanup Branches ✅
+
 - Cleans up 108+ stale branches
 - Parallel processing
 - Smart merge strategy
@@ -43,6 +47,7 @@ Go to: https://github.com/sano1233/istani/settings/secrets/actions
 Click "New repository secret" and add these 3 secrets:
 
 #### 1. VERCEL_TOKEN
+
 ```bash
 # Get from: https://vercel.com/account/tokens
 # Click: "Create Token"
@@ -52,10 +57,12 @@ Click "New repository secret" and add these 3 secrets:
 ```
 
 **Add to GitHub**:
+
 - Name: `VERCEL_TOKEN`
 - Value: `<your-vercel-token>`
 
 #### 2. VERCEL_ORG_ID
+
 ```bash
 # Get from Vercel project settings
 # Go to: https://vercel.com/sano1233/istani/settings
@@ -64,16 +71,19 @@ Click "New repository secret" and add these 3 secrets:
 ```
 
 **Add to GitHub**:
+
 - Name: `VERCEL_ORG_ID`
 - Value: `<your-org-id>`
 
 #### 3. VERCEL_PROJECT_ID
+
 ```bash
 # Same page as above
 # Copy: "Project ID"
 ```
 
 **Add to GitHub**:
+
 - Name: `VERCEL_PROJECT_ID`
 - Value: `<your-project-id>`
 
@@ -118,12 +128,14 @@ graph LR
 ```
 
 **Triggers**:
+
 - Push to `main` branch
 - Push to any `claude/*` branch
 - Manual workflow dispatch
 
 **Jobs**:
-1. **auto-merge-to-main** - Merges claude/* branch to main automatically
+
+1. **auto-merge-to-main** - Merges claude/\* branch to main automatically
 2. **deploy-vercel** - Deploys to Vercel production
 3. **trigger-automation** - Starts Quantum + iOS workflows
 4. **cleanup-branches** - Cleans up stale branches
@@ -200,6 +212,7 @@ vercel ls --limit 1
 Go to: https://github.com/sano1233/istani/actions
 
 You'll see:
+
 - ✅ Auto-merge status
 - ✅ Deployment status
 - ✅ Deployment URL
@@ -248,6 +261,7 @@ After each deployment, GitHub Actions generates a summary showing:
 **Solution**: The workflow will skip auto-merge if conflicts exist
 
 1. Manually resolve conflicts:
+
    ```bash
    git checkout main
    git pull origin main
@@ -294,7 +308,7 @@ Fix and push again - workflow will auto-retry.
 
 After setup, every push should result in:
 
-- [ ] ✅ Auto-merge to main (if from claude/* branch)
+- [ ] ✅ Auto-merge to main (if from claude/\* branch)
 - [ ] ✅ Vercel deployment succeeds
 - [ ] ✅ Site is live and accessible
 - [ ] ✅ Automation workflows triggered
@@ -308,6 +322,7 @@ After setup, every push should result in:
 ## 📚 What Gets Deployed
 
 ### Systems
+
 - 🧠 Quantum Fork Intelligence System
 - 📱 iOS n8n Integration (4 workflows)
 - 🤖 15 GitHub Actions workflows
@@ -315,6 +330,7 @@ After setup, every push should result in:
 - 🆓 100% FREE tools
 
 ### Files
+
 - 20+ documentation files (211KB+)
 - Static site (`site/` directory)
 - All automation workflows
@@ -326,6 +342,7 @@ After setup, every push should result in:
 ## 🎉 Benefits
 
 ### Before (Manual)
+
 1. ❌ Manual git push
 2. ❌ Manual vercel deploy
 3. ❌ Manual workflow triggers
@@ -333,6 +350,7 @@ After setup, every push should result in:
 5. ⏱️ **Time**: 10-15 minutes per deployment
 
 ### After (Automated)
+
 1. ✅ Auto git push (via GitHub Actions)
 2. ✅ Auto vercel deploy
 3. ✅ Auto workflow triggers
@@ -366,6 +384,7 @@ git push origin main
 ### 3. Let It Run!
 
 From now on, every push automatically:
+
 - Merges to main
 - Deploys to Vercel
 - Triggers automation
