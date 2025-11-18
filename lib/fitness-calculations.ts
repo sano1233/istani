@@ -40,7 +40,7 @@ export function calculateCalorieTarget(tdee: number, goal: string): number {
 export function calculateMacros(
   calories: number,
   goal: string,
-  weightKg?: number,
+  _weightKg?: number,
 ): { protein: number; carbs: number; fats: number } {
   let proteinPercent = 0.3;
   let carbsPercent = 0.4;

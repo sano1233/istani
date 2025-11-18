@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { createClient } from '@/lib/supabase/client';
@@ -133,7 +133,7 @@ export function WaterTracker({
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle>Today's Water Intake</CardTitle>
+          <CardTitle>Today&apos;s Water Intake</CardTitle>
           <div className="flex items-center gap-2">
             <span className="text-sm text-white/60">Daily Goal:</span>
             <select
@@ -233,7 +233,7 @@ export function WaterTracker({
         {loggedTimes.length > 0 && (
           <div className="border-t border-white/10 pt-6">
             <h4 className="text-sm font-semibold text-white mb-3">
-              Today's Log ({loggedTimes.length})
+              Today&apos;s Log ({loggedTimes.length})
             </h4>
             <div className="flex flex-wrap gap-2">
               {loggedTimes

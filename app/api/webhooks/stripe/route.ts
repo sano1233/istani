@@ -62,7 +62,6 @@ export async function POST(request: NextRequest) {
         // Create order items
         for (const item of lineItems.data) {
           // Extract product details from price data
-          const productName = item.description || '';
           const unitAmount = item.price?.unit_amount || 0;
 
           // Note: In production, you'd want to match products by ID stored in metadata
@@ -74,13 +73,13 @@ export async function POST(request: NextRequest) {
           } as any);
         }
 
-        console.log('Order created successfully:', orderId);
+        // Order created successfully
         break;
       }
 
       case 'payment_intent.succeeded': {
         const paymentIntent = event.data.object;
-        console.log('Payment succeeded:', paymentIntent.id);
+        // Payment succeeded
 
         // Update order status to completed
         const supabaseAdmin = getSupabaseAdmin();
@@ -93,7 +92,7 @@ export async function POST(request: NextRequest) {
 
       case 'payment_intent.payment_failed': {
         const paymentIntent = event.data.object;
-        console.log('Payment failed:', paymentIntent.id);
+        // Payment failed
 
         // Update order status to cancelled
         const supabaseAdmin = getSupabaseAdmin();
@@ -105,7 +104,7 @@ export async function POST(request: NextRequest) {
       }
 
       default:
-        console.log(`Unhandled event type: ${event.type}`);
+        // Unhandled event type
     }
 
     return NextResponse.json({ received: true });

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 export function VoiceAssistant() {
   useEffect(() => {
@@ -26,7 +26,9 @@ export function VoiceAssistant() {
 }
 
 declare global {
+  // eslint-disable-next-line no-unused-vars
   namespace JSX {
+    // eslint-disable-next-line no-unused-vars
     interface IntrinsicElements {
       'elevenlabs-convai': React.DetailedHTMLProps<
         React.HTMLAttributes<HTMLElement> & {

@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { CartItem, Product } from '@/types';
 
+/* eslint-disable no-unused-vars */
 interface CartStore {
   items: CartItem[];
   addItem: (product: Product, quantity?: number) => void;
@@ -11,6 +12,9 @@ interface CartStore {
   getTotalItems: () => number;
   getTotalPrice: () => number;
 }
+/* eslint-enable no-unused-vars */
+
+// Note: Function parameters are intentionally unused in some cases for API consistency
 
 export const useCartStore = create<CartStore>()(
   persist(

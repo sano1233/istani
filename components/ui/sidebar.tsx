@@ -9,7 +9,7 @@ interface SidebarProps {
   userAvatar?: string;
 }
 
-export function Sidebar({ userName, userAvatar }: SidebarProps) {
+export function Sidebar({ userName, userAvatar: _userAvatar }: SidebarProps) {
   const pathname = usePathname();
 
   const links = [
