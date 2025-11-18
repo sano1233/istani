@@ -6,12 +6,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import {
-  purgeCache,
-  purgeEverything,
-  purgeFiles,
-  purgeTags,
-} from '@/lib/cloudflare';
+import { purgeCache, purgeEverything, purgeFiles, purgeTags } from '@/lib/cloudflare';
 
 export const runtime = 'edge';
 
@@ -58,10 +53,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if Cloudflare is configured
-    if (
-      !process.env.CLOUDFLARE_API_TOKEN ||
-      !process.env.CLOUDFLARE_ZONE_ID
-    ) {
+    if (!process.env.CLOUDFLARE_API_TOKEN || !process.env.CLOUDFLARE_ZONE_ID) {
       return NextResponse.json(
         {
           success: false,

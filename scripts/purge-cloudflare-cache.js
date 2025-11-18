@@ -63,7 +63,7 @@ async function cloudflareRequest(endpoint, options = {}) {
   const response = await fetch(`${CLOUDFLARE_API_BASE}${endpoint}`, {
     ...options,
     headers: {
-      'Authorization': `Bearer ${apiToken}`,
+      Authorization: `Bearer ${apiToken}`,
       'Content-Type': 'application/json',
       ...options.headers,
     },

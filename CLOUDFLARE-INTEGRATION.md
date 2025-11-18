@@ -5,6 +5,7 @@ Complete guide for automated Cloudflare CDN integration with ISTANI deployment p
 ## 🎯 Overview
 
 This integration provides:
+
 - ✅ **Automated cache purging** on deployment
 - ✅ **Manual cache control** via API endpoints
 - ✅ **GitHub Actions workflow** for CI/CD integration
@@ -39,6 +40,7 @@ This integration provides:
 ### Step 2: Set Environment Variables
 
 **For Vercel:**
+
 ```bash
 # Add these in Vercel Dashboard → Settings → Environment Variables
 CLOUDFLARE_API_TOKEN=your_token_here
@@ -47,6 +49,7 @@ CLOUDFLARE_ACCOUNT_ID=your_account_id_here
 ```
 
 **For Local Development:**
+
 ```bash
 # Add to .env.local
 CLOUDFLARE_API_TOKEN=VTpUgPTAV18upz5VecWeqYEnObZOOPi9fd5ELFl-
@@ -81,11 +84,13 @@ node scripts/purge-cloudflare-cache.js
 ### 1. Automated Deployment (GitHub Actions)
 
 The cache is **automatically purged** when:
+
 - Code is pushed to `main` branch
 - A Vercel deployment succeeds
 - Manually triggered via workflow
 
 **Manual Trigger:**
+
 1. Go to **Actions** tab in GitHub
 2. Select **"Cloudflare Cache Management"**
 3. Click **"Run workflow"**
@@ -139,6 +144,7 @@ curl -X POST https://istani.org/api/cloudflare/purge \
 ```
 
 **Get API Documentation:**
+
 ```bash
 curl https://istani.org/api/cloudflare/purge
 ```
@@ -159,10 +165,7 @@ import {
 await purgeCache();
 
 // Purge specific files
-await purgeFiles([
-  'https://istani.org/',
-  'https://istani.org/products',
-]);
+await purgeFiles(['https://istani.org/', 'https://istani.org/products']);
 
 // Purge by cache tags (Enterprise feature)
 await purgeTags(['products', 'homepage']);
@@ -183,18 +186,23 @@ console.log('Status:', zone.status);
 ## 📁 Files Created
 
 ### Library
+
 - **`lib/cloudflare.ts`** - TypeScript integration library
 
 ### Scripts
+
 - **`scripts/purge-cloudflare-cache.js`** - CLI cache purging tool
 
 ### API Endpoints
+
 - **`app/api/cloudflare/purge/route.ts`** - REST API for cache management
 
 ### Workflows
+
 - **`.github/workflows/cloudflare-deploy.yml`** - Automated deployment workflow
 
 ### Configuration
+
 - **`.env.example`** - Environment variable examples
 - **`.env.production.template`** - Production configuration template
 
@@ -214,6 +222,7 @@ console.log('Status:', zone.status);
 **Error:** "Access denied" or "Invalid token"
 
 **Solutions:**
+
 1. Verify token has correct permissions
 2. Check token hasn't expired
 3. Ensure token is for the correct account
@@ -224,6 +233,7 @@ console.log('Status:', zone.status);
 **Error:** "Zone not found" or "Invalid zone ID"
 
 **Solutions:**
+
 1. Verify domain is added to Cloudflare
 2. Check Zone ID from Cloudflare dashboard
 3. Ensure domain is active (not pending)
@@ -233,6 +243,7 @@ console.log('Status:', zone.status);
 **Error:** Cache purge succeeds but changes don't appear
 
 **Solutions:**
+
 1. Wait 5-10 seconds for propagation
 2. Check if browser is caching (hard refresh: Ctrl+Shift+R)
 3. Verify correct files are being purged
@@ -244,6 +255,7 @@ console.log('Status:', zone.status);
 **Error:** "Unauthorized"
 
 **Solutions:**
+
 1. Check `ADMIN_REFRESH_TOKEN` is set
 2. Verify Authorization header format: `Bearer TOKEN`
 3. Ensure token matches exactly
@@ -254,6 +266,7 @@ console.log('Status:', zone.status);
 **Error:** Workflow errors during execution
 
 **Solutions:**
+
 1. Verify all GitHub secrets are set
 2. Check secret names match exactly
 3. Review workflow logs for specific errors
@@ -311,12 +324,14 @@ node scripts/purge-cloudflare-cache.js --verify
 ### When to Purge Cache
 
 **Always Purge:**
+
 - After deploying new features
 - After fixing critical bugs
 - After content updates
 - After design changes
 
 **Don't Purge Too Often:**
+
 - Not during active development (use dev mode)
 - Not for minor changes
 - Not for backend-only changes
@@ -324,6 +339,7 @@ node scripts/purge-cloudflare-cache.js --verify
 ### Cache Strategy
 
 **Aggressive Caching:**
+
 ```
 Static assets (/_next/static/*): 1 month
 Images: 1 week
@@ -333,6 +349,7 @@ API responses: Do not cache
 
 **Development Mode:**
 When actively developing, enable Development Mode in Cloudflare:
+
 ```typescript
 import { setDevelopmentMode } from '@/lib/cloudflare';
 

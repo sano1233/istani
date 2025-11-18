@@ -51,7 +51,7 @@ async function cloudflareRequest<T = unknown>(
   const response = await fetch(`${CLOUDFLARE_API_BASE}${endpoint}`, {
     ...options,
     headers: {
-      'Authorization': `Bearer ${apiToken}`,
+      Authorization: `Bearer ${apiToken}`,
       'Content-Type': 'application/json',
       ...options.headers,
     },
@@ -60,8 +60,7 @@ async function cloudflareRequest<T = unknown>(
   const data = (await response.json()) as CloudflareResponse;
 
   if (!data.success) {
-    const errorMessage =
-      data.errors?.[0]?.message || 'Unknown Cloudflare API error';
+    const errorMessage = data.errors?.[0]?.message || 'Unknown Cloudflare API error';
     throw new Error(`Cloudflare API Error: ${errorMessage}`);
   }
 
@@ -73,9 +72,7 @@ async function cloudflareRequest<T = unknown>(
  * @param options - Cache purge options
  * @returns Purge result
  */
-export async function purgeCache(
-  options: PurgeCacheOptions = {},
-): Promise<{ purge_id?: string }> {
+export async function purgeCache(options: PurgeCacheOptions = {}): Promise<{ purge_id?: string }> {
   const { zoneId } = getCloudflareConfig();
 
   // Default to purging the main site
@@ -168,9 +165,7 @@ export async function getZoneAnalytics(since = 60): Promise<{
   const { zoneId } = getCloudflareConfig();
   const sinceTimestamp = Math.floor(Date.now() / 1000) - since * 60;
 
-  return cloudflareRequest(
-    `/zones/${zoneId}/analytics/dashboard?since=${sinceTimestamp}`,
-  );
+  return cloudflareRequest(`/zones/${zoneId}/analytics/dashboard?since=${sinceTimestamp}`);
 }
 
 /**
@@ -199,10 +194,7 @@ export async function purgeDeploymentCache(): Promise<void> {
     ];
 
     // Purge Next.js static assets
-    const staticAssetPrefixes = [
-      `${siteUrl}/_next/static/`,
-      `${siteUrl}/_next/image/`,
-    ];
+    const staticAssetPrefixes = [`${siteUrl}/_next/static/`, `${siteUrl}/_next/image/`];
 
     await purgeFiles(pagesToPurge);
     console.log('✅ Cloudflare cache purged successfully');
@@ -227,7 +219,5 @@ export async function setDevelopmentMode(enabled: boolean): Promise<void> {
     body: JSON.stringify({ value: enabled ? 'on' : 'off' }),
   });
 
-  console.log(
-    `✅ Development mode ${enabled ? 'enabled' : 'disabled'} for 3 hours`,
-  );
+  console.log(`✅ Development mode ${enabled ? 'enabled' : 'disabled'} for 3 hours`);
 }
