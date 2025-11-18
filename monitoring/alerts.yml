@@ -1,0 +1,211 @@
+# Prometheus Alert Rules for ISTANI
+
+groups:
+  - name: istani_api_alerts
+    interval: 30s
+    rules:
+      # High error rate alert
+      - alert: HighErrorRate
+        expr: |
+          (sum(rate(http_requests_total{status=~"5.."}[5m])) / sum(rate(http_requests_total[5m]))) * 100 > 5
+        for: 5m
+        labels:
+          severity: critical
+          service: api
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is {{ $value | humanizePercentage }} (threshold: 5%)"
+
+      # API is down
+      - alert: APIDown
+        expr: up{job="istani-api"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          service: api
+        annotations:
+          summary: "API is down"
+          description: "ISTANI API has been down for more than 2 minutes"
+
+      # Slow API responses
+      - alert: SlowAPIResponse
+        expr: |
+          histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 1
+        for: 10m
+        labels:
+          severity: warning
+          service: api
+        annotations:
+          summary: "API response time is slow"
+          description: "95th percentile response time is {{ $value | humanizeDuration }} (threshold: 1s)"
+
+      # High request rate (potential DDoS)
+      - alert: HighRequestRate
+        expr: |
+          sum(rate(http_requests_total[1m])) * 60 > 10000
+        for: 5m
+        labels:
+          severity: warning
+          service: api
+        annotations:
+          summary: "Unusually high request rate"
+          description: "Request rate is {{ $value | humanize }} req/min (threshold: 10000)"
+
+  - name: database_alerts
+    interval: 30s
+    rules:
+      # Slow database queries
+      - alert: SlowDatabaseQueries
+        expr: |
+          rate(postgres_query_duration_seconds_sum[5m]) / rate(postgres_query_duration_seconds_count[5m]) > 0.5
+        for: 10m
+        labels:
+          severity: warning
+          service: database
+        annotations:
+          summary: "Database queries are slow"
+          description: "Average query time is {{ $value | humanizeDuration }} (threshold: 500ms)"
+
+      # High database connection count
+      - alert: HighDatabaseConnections
+        expr: postgres_connections > 80
+        for: 5m
+        labels:
+          severity: warning
+          service: database
+        annotations:
+          summary: "High database connection count"
+          description: "Database has {{ $value }} connections (threshold: 80)"
+
+  - name: ai_agent_alerts
+    interval: 30s
+    rules:
+      # AI Agent is down
+      - alert: AIAgentDown
+        expr: up{job="ai-agent"} == 0
+        for: 5m
+        labels:
+          severity: warning
+          service: ai-agent
+        annotations:
+          summary: "AI Agent is down"
+          description: "AI Agent has been down for more than 5 minutes"
+
+  - name: cost_alerts
+    interval: 1h
+    rules:
+      # OpenAI cost exceeding budget
+      - alert: OpenAICostExceeded
+        expr: |
+          sum(increase(openai_cost_usd[1d])) > 1
+        for: 1h
+        labels:
+          severity: warning
+          service: openai
+        annotations:
+          summary: "OpenAI daily cost exceeded"
+          description: "OpenAI cost is ${{ $value | humanize }} today (budget: $1/day)"
+
+      # High token usage
+      - alert: HighTokenUsage
+        expr: |
+          sum(rate(openai_tokens_total[1h])) * 3600 > 100000
+        for: 1h
+        labels:
+          severity: info
+          service: openai
+        annotations:
+          summary: "High OpenAI token usage"
+          description: "Token usage is {{ $value | humanize }} tokens/hour"
+
+  - name: business_alerts
+    interval: 5m
+    rules:
+      # No new users in 24 hours
+      - alert: NoNewUsers
+        expr: |
+          increase(user_registrations_total[24h]) == 0
+        for: 1h
+        labels:
+          severity: info
+          service: business
+        annotations:
+          summary: "No new user registrations"
+          description: "No new users have registered in the last 24 hours"
+
+      # Payment failures
+      - alert: HighPaymentFailureRate
+        expr: |
+          (sum(rate(stripe_payments_total{status="failed"}[1h])) / sum(rate(stripe_payments_total[1h]))) * 100 > 10
+        for: 30m
+        labels:
+          severity: warning
+          service: payments
+        annotations:
+          summary: "High payment failure rate"
+          description: "Payment failure rate is {{ $value | humanizePercentage }} (threshold: 10%)"
+
+  - name: resource_alerts
+    interval: 1m
+    rules:
+      # High memory usage
+      - alert: HighMemoryUsage
+        expr: |
+          (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 90
+        for: 5m
+        labels:
+          severity: warning
+          service: infrastructure
+        annotations:
+          summary: "High memory usage"
+          description: "Memory usage is {{ $value | humanizePercentage }} (threshold: 90%)"
+
+      # High CPU usage
+      - alert: HighCPUUsage
+        expr: |
+          100 - (avg by (instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 10m
+        labels:
+          severity: warning
+          service: infrastructure
+        annotations:
+          summary: "High CPU usage"
+          description: "CPU usage is {{ $value | humanizePercentage }} (threshold: 80%)"
+
+      # Disk space low
+      - alert: DiskSpaceLow
+        expr: |
+          (node_filesystem_avail_bytes / node_filesystem_size_bytes) * 100 < 20
+        for: 5m
+        labels:
+          severity: warning
+          service: infrastructure
+        annotations:
+          summary: "Disk space is low"
+          description: "Only {{ $value | humanizePercentage }} disk space remaining (threshold: 20%)"
+
+  - name: cache_alerts
+    interval: 5m
+    rules:
+      # Low cache hit rate
+      - alert: LowCacheHitRate
+        expr: |
+          (sum(rate(cache_hits_total[5m])) / (sum(rate(cache_hits_total[5m])) + sum(rate(cache_misses_total[5m])))) * 100 < 70
+        for: 30m
+        labels:
+          severity: info
+          service: cache
+        annotations:
+          summary: "Low cache hit rate"
+          description: "Cache hit rate is {{ $value | humanizePercentage }} (threshold: 70%)"
+
+      # Redis down
+      - alert: RedisDown
+        expr: up{job="redis"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          service: redis
+        annotations:
+          summary: "Redis is down"
+          description: "Redis has been down for more than 2 minutes"
