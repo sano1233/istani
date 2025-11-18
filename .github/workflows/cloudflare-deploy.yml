@@ -1,0 +1,133 @@
+name: Cloudflare Cache Management
+
+on:
+  # Trigger on successful Vercel deployments
+  deployment_status:
+
+  # Allow manual trigger
+  workflow_dispatch:
+    inputs:
+      purge_all:
+        description: 'Purge all cache (dangerous!)'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
+
+  # Trigger on push to main branch
+  push:
+    branches:
+      - main
+    paths:
+      - 'app/**'
+      - 'components/**'
+      - 'lib/**'
+      - 'public/**'
+      - 'styles/**'
+
+jobs:
+  purge-cache:
+    name: Purge Cloudflare Cache
+    runs-on: ubuntu-latest
+
+    # Only run on successful deployments or manual trigger
+    if: |
+      (github.event_name == 'deployment_status' && github.event.deployment_status.state == 'success') ||
+      github.event_name == 'workflow_dispatch' ||
+      github.event_name == 'push'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --production
+
+      - name: Verify Cloudflare Configuration
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
+        run: |
+          node scripts/purge-cloudflare-cache.js --verify
+
+      - name: Purge Cache (Selective)
+        if: github.event.inputs.purge_all != 'true'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
+        run: |
+          node scripts/purge-cloudflare-cache.js
+
+      - name: Purge All Cache
+        if: github.event.inputs.purge_all == 'true'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
+        run: |
+          node scripts/purge-cloudflare-cache.js --all
+
+      - name: Notify Success
+        if: success()
+        run: |
+          echo "✅ Cloudflare cache purged successfully!"
+          echo "Changes will propagate globally within seconds."
+
+      - name: Notify Failure
+        if: failure()
+        run: |
+          echo "❌ Failed to purge Cloudflare cache"
+          echo "Please check the logs above for details"
+          exit 1
+
+  # Optional: Create a deployment comment with cache status
+  comment-deployment:
+    name: Comment on Deployment
+    runs-on: ubuntu-latest
+    needs: purge-cache
+    if: github.event_name == 'deployment_status' && github.event.deployment_status.state == 'success'
+
+    steps:
+      - name: Find PR
+        id: find-pr
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prs = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              head: `${context.repo.owner}:${context.ref.replace('refs/heads/', '')}`
+            });
+
+            if (prs.data.length > 0) {
+              return prs.data[0].number;
+            }
+            return null;
+
+      - name: Comment on PR
+        if: steps.find-pr.outputs.result != 'null'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = ${{ steps.find-pr.outputs.result }};
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              body: `## 🚀 Deployment Successful!\n\n✅ **Cloudflare Cache Purged**\n\nYour changes are now live and the CDN cache has been cleared.\n\n🌍 Site: ${process.env.NEXT_PUBLIC_SITE_URL || 'https://istani.org'}\n\n*Cache propagation may take a few seconds.*`
+            });
