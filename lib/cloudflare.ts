@@ -1,9 +1,9 @@
 /**
  * Cloudflare API Integration
- * 
+ *
  * Provides functions to interact with Cloudflare API for cache management
  * and zone configuration.
- * 
+ *
  * Required environment variables:
  * - CLOUDFLARE_API_TOKEN: API token with Zone:Read, Zone:Edit, Cache Purge permissions
  * - CLOUDFLARE_ZONE_ID: Zone ID for istani.org (found in Cloudflare dashboard)
@@ -49,11 +49,10 @@ export async function verifyCloudflareToken(): Promise<boolean> {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
-      }
+      },
     );
 
-    const data: CloudflareResponse<{ id: string; status: string }> =
-      await response.json();
+    const data: CloudflareResponse<{ id: string; status: string }> = await response.json();
 
     if (data.success && data.result.status === 'active') {
       return true;
@@ -69,12 +68,12 @@ export async function verifyCloudflareToken(): Promise<boolean> {
 
 /**
  * Purge Cloudflare cache
- * 
+ *
  * @param options - Purge options (files, tags, hosts, or purgeEverything)
  * @returns Promise with purge result
  */
 export async function purgeCache(
-  options: PurgeCacheOptions = {}
+  options: PurgeCacheOptions = {},
 ): Promise<CloudflareResponse<{ id: string }>> {
   const token = process.env.CLOUDFLARE_API_TOKEN;
   const zoneId = process.env.CLOUDFLARE_ZONE_ID;
@@ -95,7 +94,7 @@ export async function purgeCache(
 
   if (!hasFiles && !hasTags && !hasHosts && !hasPurgeEverything) {
     throw new Error(
-      'At least one purge option must be specified (files, tags, hosts, or purgeEverything)'
+      'At least one purge option must be specified (files, tags, hosts, or purgeEverything)',
     );
   }
 
@@ -124,15 +123,13 @@ export async function purgeCache(
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(body),
-      }
+      },
     );
 
     const data: CloudflareResponse<{ id: string }> = await response.json();
 
     if (!data.success) {
-      throw new Error(
-        `Cloudflare API error: ${data.errors.map((e) => e.message).join(', ')}`
-      );
+      throw new Error(`Cloudflare API error: ${data.errors.map((e) => e.message).join(', ')}`);
     }
 
     return data;
@@ -146,7 +143,7 @@ export async function purgeCache(
 
 /**
  * Purge cache for specific files/URLs
- * 
+ *
  * @param files - Array of file URLs to purge
  * @returns Promise with purge result
  */
@@ -156,7 +153,7 @@ export async function purgeFiles(files: string[]): Promise<CloudflareResponse<{ 
 
 /**
  * Purge entire cache for the zone
- * 
+ *
  * @returns Promise with purge result
  */
 export async function purgeEverything(): Promise<CloudflareResponse<{ id: string }>> {
@@ -165,7 +162,7 @@ export async function purgeEverything(): Promise<CloudflareResponse<{ id: string
 
 /**
  * Purge cache by tags
- * 
+ *
  * @param tags - Array of cache tags to purge
  * @returns Promise with purge result
  */
@@ -189,23 +186,18 @@ export async function getZoneInfo(): Promise<CloudflareResponse<any>> {
   }
 
   try {
-    const response = await fetch(
-      `https://api.cloudflare.com/client/v4/zones/${zoneId}`,
-      {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      }
-    );
+    const response = await fetch(`https://api.cloudflare.com/client/v4/zones/${zoneId}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
 
     const data = await response.json();
 
     if (!data.success) {
-      throw new Error(
-        `Cloudflare API error: ${data.errors.map((e: any) => e.message).join(', ')}`
-      );
+      throw new Error(`Cloudflare API error: ${data.errors.map((e: any) => e.message).join(', ')}`);
     }
 
     return data;

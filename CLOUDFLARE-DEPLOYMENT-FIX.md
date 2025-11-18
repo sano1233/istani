@@ -7,6 +7,7 @@ Cloudflare API token has been verified and integrated into the deployment config
 ## Token Verification
 
 ✅ **Token Status**: Valid and Active
+
 - Token: `VTpUgPTAV18upz5VecWeqYEnObZOOPi9fd5ELFl-`
 - Account ID: `8a96ac34caf00be04c7fa407efcefa85`
 - Verification: Successfully tested via Cloudflare API
@@ -14,6 +15,7 @@ Cloudflare API token has been verified and integrated into the deployment config
 ## Changes Made
 
 ### 1. Created Cloudflare Integration Library
+
 - **File**: `lib/cloudflare.ts`
 - **Features**:
   - Token verification
@@ -22,6 +24,7 @@ Cloudflare API token has been verified and integrated into the deployment config
   - Comprehensive error handling
 
 ### 2. Updated Environment Configuration
+
 - **`.env.example`**: Added Cloudflare environment variables template
 - **`DEPLOYMENT.env`**: Added verified Cloudflare token and account ID
 - **Variables Added**:
@@ -30,6 +33,7 @@ Cloudflare API token has been verified and integrated into the deployment config
   - `CLOUDFLARE_ACCOUNT_ID`
 
 ### 3. Created API Route for Cache Management
+
 - **File**: `app/api/cloudflare/purge/route.ts`
 - **Endpoints**:
   - `POST /api/cloudflare/purge` - Purge cache with options
@@ -39,6 +43,7 @@ Cloudflare API token has been verified and integrated into the deployment config
 ## Next Steps
 
 ### 1. Get Zone ID
+
 1. Go to [Cloudflare Dashboard](https://dash.cloudflare.com)
 2. Select `istani.org` domain
 3. Go to **Overview** page
@@ -49,6 +54,7 @@ Cloudflare API token has been verified and integrated into the deployment config
    ```
 
 ### 2. Set Environment Variables in Vercel
+
 1. Go to: https://vercel.com/sano1233/istani-fitness/settings/environment-variables
 2. Add the following variables:
    - `CLOUDFLARE_API_TOKEN=VTpUgPTAV18upz5VecWeqYEnObZOOPi9fd5ELFl-`
@@ -91,10 +97,7 @@ curl -X POST "https://istani.org/api/cloudflare/purge" \
 import { purgeCache, purgeFiles, purgeEverything } from '@/lib/cloudflare';
 
 // Purge specific files after deployment
-await purgeFiles([
-  'https://istani.org/',
-  'https://istani.org/_next/static/chunks/main.js',
-]);
+await purgeFiles(['https://istani.org/', 'https://istani.org/_next/static/chunks/main.js']);
 
 // Purge everything (use sparingly)
 await purgeEverything();
@@ -115,23 +118,27 @@ await purgeCache({
 ## Token Permissions
 
 The token should have the following permissions:
+
 - ✅ Zone: Read, Edit
-- ✅ DNS: Read, Edit  
+- ✅ DNS: Read, Edit
 - ✅ Cache Purge: Purge
 
 ## Troubleshooting
 
 ### Token Verification Failed
+
 - Check that `CLOUDFLARE_API_TOKEN` is set correctly
 - Verify token hasn't been revoked in Cloudflare dashboard
 - Ensure token has correct permissions
 
 ### Zone ID Not Found
+
 - Get Zone ID from Cloudflare dashboard (Overview page)
 - Ensure domain is added to Cloudflare account
 - Verify Zone ID matches the correct domain
 
 ### Cache Purge Fails
+
 - Verify Zone ID is correct
 - Check token has "Cache Purge" permission
 - Ensure files/URLs are valid and belong to the zone

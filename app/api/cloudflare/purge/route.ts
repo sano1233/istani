@@ -1,11 +1,11 @@
 /**
  * Cloudflare Cache Purge API Route
- * 
+ *
  * POST /api/cloudflare/purge
- * 
+ *
  * Purges Cloudflare cache for the zone.
  * Requires authentication via ADMIN_REFRESH_TOKEN or similar.
- * 
+ *
  * Body (optional):
  * {
  *   "files": ["https://istani.org/page1", "https://istani.org/page2"],
@@ -24,17 +24,11 @@ export async function POST(request: NextRequest) {
     const adminToken = process.env.ADMIN_REFRESH_TOKEN;
 
     if (!adminToken) {
-      return NextResponse.json(
-        { error: 'Admin token not configured' },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: 'Admin token not configured' }, { status: 500 });
     }
 
     if (!authHeader || authHeader !== `Bearer ${adminToken}`) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // Verify Cloudflare token is valid
@@ -69,7 +63,7 @@ export async function POST(request: NextRequest) {
         error: 'Failed to purge cache',
         message: error instanceof Error ? error.message : 'Unknown error',
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -82,17 +76,11 @@ export async function GET(request: NextRequest) {
     const adminToken = process.env.ADMIN_REFRESH_TOKEN;
 
     if (!adminToken) {
-      return NextResponse.json(
-        { error: 'Admin token not configured' },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: 'Admin token not configured' }, { status: 500 });
     }
 
     if (!authHeader || authHeader !== `Bearer ${adminToken}`) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // Verify Cloudflare token
@@ -119,7 +107,7 @@ export async function GET(request: NextRequest) {
         error: 'Failed to check configuration',
         message: error instanceof Error ? error.message : 'Unknown error',
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
