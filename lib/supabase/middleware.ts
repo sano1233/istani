@@ -1,6 +1,12 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
+/**
+ * Updates the Supabase session and synchronizes authentication cookies between the incoming request and the outgoing response.
+ *
+ * If required Supabase environment variables are missing, or if an error occurs while refreshing the session, the middleware logs the issue and returns a response without performing auth updates.
+ *
+ * @returns A NextResponse that may include updated authentication cookies synchronized from the Supabase server-side client to the outgoing response.
 export async function updateSession(request: NextRequest) {
   // Validate environment variables
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
