@@ -11,7 +11,10 @@
     "aggregate": "node scripts/aggregateRepos.js",
     "review": "bash scripts/coderabbit-review.sh",
     "review:plain": "export PATH=\"$HOME/.local/bin:$PATH\" && coderabbit --plain -t uncommitted",
-    "review:prompt": "export PATH=\"$HOME/.local/bin:$PATH\" && coderabbit --prompt-only -t uncommitted"
+    "review:prompt": "export PATH=\"$HOME/.local/bin:$PATH\" && coderabbit --prompt-only -t uncommitted",
+    "cloudflare:verify": "node scripts/purge-cloudflare-cache.js --verify",
+    "cloudflare:purge": "node scripts/purge-cloudflare-cache.js",
+    "cloudflare:purge-all": "node scripts/purge-cloudflare-cache.js --all"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",
