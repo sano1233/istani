@@ -3,6 +3,9 @@ import { redirect } from 'next/navigation';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
+// Force dynamic rendering for authenticated pages
+export const dynamic = 'force-dynamic';
+
 export default async function WorkoutsPage() {
   const supabase = await createClient();
 

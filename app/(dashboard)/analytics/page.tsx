@@ -11,6 +11,9 @@ import {
   getNutritionTimeSeries,
 } from '@/lib/analytics';
 
+// Force dynamic rendering for authenticated pages
+export const dynamic = 'force-dynamic';
+
 export default async function AnalyticsPage() {
   const supabase = await createClient();
 

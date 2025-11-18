@@ -65,6 +65,11 @@ export function createApiHandler<T = any>(
     const url = new URL(request.url);
     const path = url.pathname;
     const method = request.method;
+    
+    // Declare variables before try block so they're accessible in catch
+    let userId: string | undefined;
+    let user: any;
+    let isAdmin = false;
 
     try {
       // Log incoming request
@@ -82,9 +87,6 @@ export function createApiHandler<T = any>(
       }
 
       // Authentication check
-      let userId: string | undefined;
-      let user: any;
-      let isAdmin = false;
 
       if (requireAuth || requireAdmin) {
         try {
