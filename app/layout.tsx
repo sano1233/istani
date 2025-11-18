@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   description: 'Evidence based fitness.',
 };
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
