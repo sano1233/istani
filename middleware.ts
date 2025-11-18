@@ -1,6 +1,14 @@
 import { updateSession } from '@/lib/supabase/middleware';
 import { NextResponse, type NextRequest } from 'next/server';
 
+/**
+ * Updates session state for the incoming Next.js request and continues the request pipeline.
+ *
+ * If session update fails, the error is logged and a pass-through response is returned to allow the request to proceed.
+ *
+ * @param request - The incoming Next.js request to associate with the session update
+ * @returns A NextResponse representing the updated session handling result, or a pass-through `NextResponse` that continues the request pipeline on failure
+ */
 export async function middleware(request: NextRequest) {
   try {
     return await updateSession(request);
