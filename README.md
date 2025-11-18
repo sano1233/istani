@@ -5,6 +5,7 @@ A comprehensive full-stack fitness tracking and e-commerce platform built with N
 ## Features
 
 ### Fitness Tracking
+
 - **Workout Logging** - Track exercises, duration, calories burned
 - **Nutrition Tracking** - Log meals, track macros (protein, carbs, fat), calorie counting
 - **Water Intake** - Daily water consumption tracking with visual progress
@@ -12,6 +13,7 @@ A comprehensive full-stack fitness tracking and e-commerce platform built with N
 - **Progress Analytics** - View historical data, charts, and achievement streaks
 
 ### AI-Powered Features
+
 - **AI Meal Planning** - Generate personalized meal plans using OpenAI GPT-4
 - **AI Workout Recommendations** - Get customized workout suggestions
 - **Autonomous Coaching** - Automated coaching messages and motivation
@@ -19,6 +21,7 @@ A comprehensive full-stack fitness tracking and e-commerce platform built with N
 - **Barcode Scanner** - Nutrition lookup by barcode (stub ready for implementation)
 
 ### E-Commerce
+
 - **Product Catalog** - Browse fitness products and supplements
 - **Shopping Cart** - Zustand-powered cart with persistent state
 - **Stripe Checkout** - Secure payment processing
@@ -26,6 +29,7 @@ A comprehensive full-stack fitness tracking and e-commerce platform built with N
 - **Coaching Sessions** - Purchase one-on-one coaching
 
 ### User Management
+
 - **Supabase Authentication** - Email/password and Google OAuth
 - **User Profiles** - Customizable fitness goals and preferences
 - **Secure Sessions** - JWT-based authentication with Row-Level Security
@@ -33,6 +37,7 @@ A comprehensive full-stack fitness tracking and e-commerce platform built with N
 ## Tech Stack
 
 ### Frontend
+
 - **Next.js 15.1.2** - React framework with App Router
 - **React 18.3.1** - UI library
 - **TypeScript 5** - Type-safe development
@@ -42,6 +47,7 @@ A comprehensive full-stack fitness tracking and e-commerce platform built with N
 - **Zod 3.23** - Schema validation
 
 ### Backend
+
 - **Supabase** - PostgreSQL database, authentication, storage, real-time subscriptions
 - **Stripe** - Payment processing and checkout
 - **OpenAI GPT-4** - AI meal and workout recommendations
@@ -49,6 +55,7 @@ A comprehensive full-stack fitness tracking and e-commerce platform built with N
 - **Open Food Facts** - Barcode scanning and food data
 
 ### DevOps
+
 - **Vercel** - Deployment platform
 - **GitHub Actions** - CI/CD with 21+ automation workflows
 - **ESLint & Prettier** - Code quality tools
@@ -56,6 +63,7 @@ A comprehensive full-stack fitness tracking and e-commerce platform built with N
 ## Getting Started
 
 ### Prerequisites
+
 - Node.js 18+ and npm
 - Supabase account
 - Stripe account (for payments)
@@ -64,12 +72,14 @@ A comprehensive full-stack fitness tracking and e-commerce platform built with N
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd istani
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm ci
    ```
@@ -77,11 +87,13 @@ A comprehensive full-stack fitness tracking and e-commerce platform built with N
 3. **Set up environment variables**
 
    Copy `.env.example` to `.env.local`:
+
    ```bash
    cp .env.example .env.local
    ```
 
    Fill in the required values:
+
    ```env
    # Supabase
    NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
@@ -110,17 +122,20 @@ A comprehensive full-stack fitness tracking and e-commerce platform built with N
 4. **Set up Supabase database**
 
    Run the SQL schema in your Supabase project:
+
    ```bash
    # In Supabase SQL Editor, run:
    # supabase/schema.sql
    ```
 
    Or use Supabase CLI:
+
    ```bash
    supabase db push
    ```
 
 5. **Run development server**
+
    ```bash
    npm run dev
    ```
@@ -143,26 +158,32 @@ See `supabase/schema.sql` for complete schema definition.
 ## API Routes
 
 ### Authentication
+
 - `POST /api/auth` - User authentication
 
 ### AI Features
+
 - `POST /api/ai/meal` - Generate AI meal plans
 - `POST /api/ai/workout` - Generate AI workout plans
 
 ### Food & Nutrition
+
 - `GET /api/food/search` - Search USDA and Open Food Facts
 - `GET /api/food/barcode` - Barcode lookup
 
 ### E-Commerce
+
 - `POST /api/checkout` - Create Stripe checkout session
 - `GET /api/products` - Fetch product catalog
 - `POST /api/stripe/webhook` - Handle Stripe webhooks
 
 ### Images
+
 - `GET /api/images/search` - Search Pexels/Unsplash
 - `POST /api/images/refresh` - Refresh image cache
 
 ### Cron Jobs
+
 - `POST /api/cron/daily-coaching` - Daily coaching messages
 
 ## Scripts
@@ -202,25 +223,30 @@ vercel --prod
 Set these in your Vercel project settings:
 
 **Supabase:**
+
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`
 
 **Stripe:**
+
 - `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
 - `STRIPE_SECRET_KEY`
 - `STRIPE_WEBHOOK_SECRET`
 
 **AI & APIs:**
+
 - `OPENAI_API_KEY`
 - `USDA_API_KEY`
 - `PEXELS_API_KEY`
 - `UNSPLASH_ACCESS_KEY` (optional)
 
 **GitHub:**
+
 - `GITHUB_TOKEN`
 
 **App:**
+
 - `NEXT_PUBLIC_SITE_URL` (your production URL)
 - `CRON_SECRET`
 - `ADMIN_REFRESH_TOKEN`
@@ -285,6 +311,7 @@ istani/
 ## GitHub Actions
 
 The project includes 21+ automated workflows:
+
 - CI checks (linting, type checking, builds)
 - Security scanning (CodeQL)
 - Auto-fix and merge

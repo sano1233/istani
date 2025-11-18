@@ -82,7 +82,7 @@ supabase db push
 2. Add your fitness products/supplements
 3. Set prices and descriptions
 
-*Note: You'll configure webhooks after Vercel deployment*
+_Note: You'll configure webhooks after Vercel deployment_
 
 ## Step 3: Get Additional API Keys
 
@@ -138,6 +138,7 @@ openssl rand -base64 32
 Add all environment variables in Vercel project settings:
 
 **Supabase**
+
 ```
 NEXT_PUBLIC_SUPABASE_URL=https://xxxxx.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -145,6 +146,7 @@ SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
 **Stripe**
+
 ```
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_...
 STRIPE_SECRET_KEY=sk_live_...
@@ -152,6 +154,7 @@ STRIPE_WEBHOOK_SECRET=(will be added after webhook setup)
 ```
 
 **AI & APIs**
+
 ```
 OPENAI_API_KEY=sk-...
 USDA_API_KEY=...
@@ -160,11 +163,13 @@ UNSPLASH_ACCESS_KEY=(optional)
 ```
 
 **GitHub**
+
 ```
 GITHUB_TOKEN=ghp_...
 ```
 
 **App Configuration**
+
 ```
 NEXT_PUBLIC_SITE_URL=https://your-domain.vercel.app
 CRON_SECRET=<generated-secret>
@@ -294,6 +299,7 @@ NEXT_PUBLIC_SITE_URL=https://your-custom-domain.com
 ### 9.2 Error Tracking (Recommended)
 
 Consider integrating:
+
 - **Sentry** - Error tracking and performance monitoring
 - **LogRocket** - Session replay
 - **PostHog** - Product analytics
@@ -301,6 +307,7 @@ Consider integrating:
 ### 9.3 Uptime Monitoring
 
 Use services like:
+
 - **UptimeRobot** - Free uptime monitoring
 - **Pingdom** - Advanced monitoring
 
@@ -333,28 +340,33 @@ Use services like:
 ### Build Fails
 
 **Issue:** TypeScript errors
+
 ```bash
 # Run locally to debug
 npm run typecheck
 ```
 
 **Issue:** Missing environment variables
+
 - Verify all required env vars are set in Vercel
 - Check for typos in variable names
 
 ### Runtime Errors
 
 **Issue:** Supabase connection fails
+
 - Verify URL and keys are correct
 - Check if project is paused (free tier)
 - Review CORS settings
 
 **Issue:** Stripe webhook not receiving events
+
 - Verify webhook URL is correct
 - Check webhook signing secret
 - Review Stripe logs in dashboard
 
 **Issue:** Images not loading
+
 - Verify API keys for Pexels/Unsplash
 - Check Image optimization configuration
 - Review CSP headers
@@ -362,11 +374,13 @@ npm run typecheck
 ### Performance Issues
 
 **Issue:** Slow API responses
+
 - Check Supabase query performance
 - Review database indexes
 - Consider caching strategies
 
 **Issue:** Large bundle size
+
 - Run `npm run build` and review bundle analysis
 - Consider code splitting
 - Lazy load components
@@ -385,6 +399,7 @@ npm run typecheck
 ### Scaling Considerations
 
 As your app grows:
+
 - Upgrade Supabase tier for more connections
 - Consider adding Redis for caching
 - Enable CDN for static assets
@@ -394,6 +409,7 @@ As your app grows:
 ## Support
 
 For deployment issues:
+
 - Check Vercel deployment logs
 - Review Supabase logs
 - Check Stripe webhook logs
