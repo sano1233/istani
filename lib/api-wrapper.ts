@@ -39,10 +39,7 @@ export interface ApiContext {
   isAdmin?: boolean;
 }
 
-export type ApiHandler<T = any> = (
-  context: ApiContext,
-  data?: any,
-) => Promise<NextResponse<T>>;
+export type ApiHandler<T = any> = (context: ApiContext, data?: any) => Promise<NextResponse<T>>;
 
 /**
  * Creates a wrapped API handler with built-in features
@@ -123,10 +120,7 @@ export function createApiHandler<T = any>(
           }
         } catch (error: any) {
           logger.error('Authentication error', error, { path, method });
-          return NextResponse.json(
-            { error: 'Authentication failed' },
-            { status: 401 },
-          );
+          return NextResponse.json({ error: 'Authentication failed' }, { status: 401 });
         }
       }
 
@@ -158,10 +152,7 @@ export function createApiHandler<T = any>(
           }
         } catch (error: any) {
           logger.warn('Failed to parse request body', { path, method, error: error.message });
-          return NextResponse.json(
-            { error: 'Invalid JSON in request body' },
-            { status: 400 },
-          );
+          return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
         }
       }
 
