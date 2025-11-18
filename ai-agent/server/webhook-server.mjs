@@ -208,14 +208,18 @@ async function handleIssueCommentEvent(payload) {
     }
 
     // Command: @coderabbitai evaluate custom pre-merge check
-    const evaluateCheckMatch = body.match(/@coderabbitai\s+evaluate\s+custom\s+pre-merge\s+check\s+--name\s+([^\s]+)\s+--instructions\s+"([^"]+)"(?:\s+--mode\s+(\w+))?/i);
+    const evaluateCheckMatch = body.match(
+      /@coderabbitai\s+evaluate\s+custom\s+pre-merge\s+check\s+--name\s+([^\s]+)\s+--instructions\s+"([^"]+)"(?:\s+--mode\s+(\w+))?/i,
+    );
     if (evaluateCheckMatch && issue.pull_request) {
       const [, checkName, instructions, mode = 'warning'] = evaluateCheckMatch;
       console.log(`🔍 Evaluating custom check "${checkName}" for PR #${issue.number}`);
       const prNumber = issue.number;
-      agent.evaluateCustomCheck(checkName, instructions, prNumber, mode)
+      agent
+        .evaluateCustomCheck(checkName, instructions, prNumber, mode)
         .then((result) => {
-          const resultComment = `## Custom Check Evaluation: ${checkName}\n\n` +
+          const resultComment =
+            `## Custom Check Evaluation: ${checkName}\n\n` +
             `**Status**: ${result.status === 'passed' ? '✅ Passed' : result.status === 'failed' ? '❌ Failed' : '❓ Inconclusive'}\n\n` +
             `**Explanation**: ${result.explanation}\n\n` +
             (result.resolution ? `**Resolution**: ${result.resolution}\n\n` : '') +

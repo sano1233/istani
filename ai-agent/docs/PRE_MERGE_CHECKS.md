@@ -19,13 +19,15 @@ The Pre-Merge Checks system enforces quality gates and organization-specific req
 Verifies that code has adequate documentation coverage.
 
 **Configuration:**
+
 ```yaml
 docstrings:
-  mode: "warning"  # off | warning | error
-  threshold: 80    # Percentage threshold (default: 80)
+  mode: 'warning' # off | warning | error
+  threshold: 80 # Percentage threshold (default: 80)
 ```
 
 **What it checks:**
+
 - Counts function/class definitions in changed files
 - Counts docstrings (JSDoc, Python docstrings, etc.)
 - Calculates coverage percentage
@@ -36,13 +38,15 @@ docstrings:
 Validates that PR titles follow specified requirements.
 
 **Configuration:**
+
 ```yaml
 title:
-  mode: "warning"
-  requirements: "Start with an imperative verb; keep under 50 characters."
+  mode: 'warning'
+  requirements: 'Start with an imperative verb; keep under 50 characters.'
 ```
 
 **What it checks:**
+
 - Title is not empty
 - Title length (configurable)
 - Imperative verb format (if specified)
@@ -53,12 +57,14 @@ title:
 Ensures PR descriptions meet quality standards.
 
 **Configuration:**
+
 ```yaml
 description:
-  mode: "error"
+  mode: 'error'
 ```
 
 **What it checks:**
+
 - Description is not empty
 - Minimum length (50 characters recommended)
 - Template compliance (basic check)
@@ -68,12 +74,14 @@ description:
 Verifies that PRs properly address linked issues.
 
 **Configuration:**
+
 ```yaml
 issue_assessment:
-  mode: "warning"
+  mode: 'warning'
 ```
 
 **What it checks:**
+
 - Linked issues are mentioned in description
 - PR scope matches linked issues (AI-based)
 - No out-of-scope changes
@@ -86,9 +94,9 @@ Define custom validation logic using natural language instructions. Custom check
 
 ```yaml
 custom_checks:
-  - name: "Undocumented Breaking Changes"
-    mode: "warning"
-    instructions: "Pass/fail criteria: All breaking changes to public APIs, CLI flags, environment variables, configuration keys, database schemas, or HTTP/GraphQL endpoints must be documented in the Breaking Change section of the PR description and in CHANGELOG.md. Exclude purely internal or private changes."
+  - name: 'Undocumented Breaking Changes'
+    mode: 'warning'
+    instructions: 'Pass/fail criteria: All breaking changes to public APIs, CLI flags, environment variables, configuration keys, database schemas, or HTTP/GraphQL endpoints must be documented in the Breaking Change section of the PR description and in CHANGELOG.md. Exclude purely internal or private changes.'
 ```
 
 ### Best Practices for Custom Checks
@@ -108,19 +116,19 @@ Create a `.coderabbit.yaml` file in your repository root:
 reviews:
   pre_merge_checks:
     docstrings:
-      mode: "error"
+      mode: 'error'
       threshold: 85
     title:
-      mode: "warning"
-      requirements: "Start with an imperative verb; keep under 50 characters."
+      mode: 'warning'
+      requirements: 'Start with an imperative verb; keep under 50 characters.'
     description:
-      mode: "error"
+      mode: 'error'
     issue_assessment:
-      mode: "warning"
+      mode: 'warning'
     custom_checks:
-      - name: "Security Review Required"
-        mode: "error"
-        instructions: "If this PR touches authentication, authorization, encryption, or data handling code, it must include a security review comment from a security team member."
+      - name: 'Security Review Required'
+        mode: 'error'
+        instructions: 'If this PR touches authentication, authorization, encryption, or data handling code, it must include a security review comment from a security team member.'
 ```
 
 ### Enforcement Modes
@@ -134,6 +142,7 @@ reviews:
 ### Automatic Execution
 
 Pre-merge checks run automatically when:
+
 - A PR is opened
 - A PR is updated (new commits)
 - A PR is reopened
@@ -162,12 +171,15 @@ istani-agent ignore-checks <prNumber>
 
 ```markdown
 # Run all checks
+
 @coderabbitai run pre-merge checks
 
 # Ignore failed checks
+
 @coderabbitai ignore pre-merge checks
 
 # Evaluate custom check
+
 @coderabbitai evaluate custom pre-merge check --name "Check Name" --instructions "Your instructions here" --mode warning
 ```
 
@@ -191,20 +203,21 @@ Check results appear in PR comments with the following format:
 
 ### Failed Checks Table
 
-| Objective | Status | Explanation | Resolution |
-|-----------|--------|-------------|------------|
-| Docstring Coverage | ❌ Error | Coverage: 65% (threshold: 80%) | Add docstrings to 3 more function(s) |
-| PR Title | ⚠️ Warning | Title should start with imperative verb | Update title to: Start with an imperative verb |
+| Objective          | Status     | Explanation                             | Resolution                                     |
+| ------------------ | ---------- | --------------------------------------- | ---------------------------------------------- |
+| Docstring Coverage | ❌ Error   | Coverage: 65% (threshold: 80%)          | Add docstrings to 3 more function(s)           |
+| PR Title           | ⚠️ Warning | Title should start with imperative verb | Update title to: Start with an imperative verb |
 
 ### Passed Checks (Collapsible)
 
 <details>
 <summary>✅ Passed Checks (2)</summary>
 
-| Objective | Status | Explanation |
-|-----------|--------|-------------|
-| PR Description | ✅ Passed | Description meets requirements |
+| Objective        | Status    | Explanation                                  |
+| ---------------- | --------- | -------------------------------------------- |
+| PR Description   | ✅ Passed | Description meets requirements               |
 | Issue Assessment | ✅ Passed | All 2 linked issue(s) are properly addressed |
+
 </details>
 
 ## Blocking Merges
@@ -276,6 +289,7 @@ See `.coderabbit.yaml` in the repository root for a complete example configurati
 ## Support
 
 For issues or questions:
+
 - Check logs: `npm run dev` (development mode)
 - Review configuration: `istani-agent config`
 - Test checks: `istani-agent pre-merge-checks <prNumber>`

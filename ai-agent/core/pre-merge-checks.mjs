@@ -1,7 +1,7 @@
 /**
  * Pre-Merge Checks System
  * Enforces quality gates and organization's custom requirements before PR merges
- * 
+ *
  * Features:
  * - Built-in checks (Docstring Coverage, PR Title, PR Description, Issue Assessment)
  * - Custom checks with natural language instructions
@@ -45,7 +45,7 @@ export class PreMergeChecks {
    */
   static async loadFromYAML(repoPath = process.cwd()) {
     const yamlPath = join(repoPath, '.coderabbit.yaml');
-    
+
     if (!existsSync(yamlPath)) {
       return new PreMergeChecks();
     }
@@ -71,7 +71,7 @@ export class PreMergeChecks {
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i].trim();
-      
+
       if (!line || line.startsWith('#')) continue;
 
       // Parse reviews.pre_merge_checks section
@@ -85,7 +85,7 @@ export class PreMergeChecks {
         if (line.match(/^\w+:/)) {
           const checkName = line.replace(':', '').trim();
           currentCheck = checkName;
-          
+
           if (!config[currentCheck]) {
             config[currentCheck] = {};
           }
@@ -106,7 +106,10 @@ export class PreMergeChecks {
         }
 
         if (line.startsWith('requirements:') && currentCheck) {
-          const requirements = line.split('requirements:')[1].trim().replace(/^['"]|['"]$/g, '');
+          const requirements = line
+            .split('requirements:')[1]
+            .trim()
+            .replace(/^['"]|['"]$/g, '');
           config[currentCheck].requirements = requirements;
           continue;
         }
@@ -122,20 +125,31 @@ export class PreMergeChecks {
           continue;
         }
 
-        if (line.startsWith('instructions:') && Array.isArray(config.custom_checks) && config.custom_checks.length > 0) {
+        if (
+          line.startsWith('instructions:') &&
+          Array.isArray(config.custom_checks) &&
+          config.custom_checks.length > 0
+        ) {
           // Multi-line instructions support
-          let instructions = line.split('instructions:')[1].trim().replace(/^['"]|['"]$/g, '');
-          
+          let instructions = line
+            .split('instructions:')[1]
+            .trim()
+            .replace(/^['"]|['"]$/g, '');
+
           // Check if instructions continue on next lines
           let j = i + 1;
-          while (j < lines.length && !lines[j].trim().match(/^[-\w]+:/) && !lines[j].trim().startsWith('-')) {
+          while (
+            j < lines.length &&
+            !lines[j].trim().match(/^[-\w]+:/) &&
+            !lines[j].trim().startsWith('-')
+          ) {
             const nextLine = lines[j].trim();
             if (nextLine && !nextLine.startsWith('#')) {
               instructions += ' ' + nextLine.replace(/^['"]|['"]$/g, '');
             }
             j++;
           }
-          
+
           config.custom_checks[config.custom_checks.length - 1].instructions = instructions.trim();
           i = j - 1;
           continue;
@@ -215,7 +229,7 @@ export class PreMergeChecks {
     try {
       // Analyze files for docstring coverage
       const filesWithCode = pr.files.filter(
-        (f) => f.filename.match(/\.(js|ts|jsx|tsx|py|java|go|rs)$/) && f.status !== 'removed'
+        (f) => f.filename.match(/\.(js|ts|jsx|tsx|py|java|go|rs)$/) && f.status !== 'removed',
       );
 
       if (filesWithCode.length === 0) {
@@ -234,9 +248,13 @@ export class PreMergeChecks {
       for (const file of filesWithCode) {
         if (file.patch) {
           // Count function definitions and docstrings
-          const functionMatches = file.patch.match(/(?:function|const\s+\w+\s*=\s*(?:async\s+)?\(|class\s+\w+|def\s+\w+)/g) || [];
-          const docstringMatches = file.patch.match(/(?:\/\*\*[\s\S]*?\*\/|\/\/\/[\s\S]*?$|""".*?"""|'''.*?''')/g) || [];
-          
+          const functionMatches =
+            file.patch.match(
+              /(?:function|const\s+\w+\s*=\s*(?:async\s+)?\(|class\s+\w+|def\s+\w+)/g,
+            ) || [];
+          const docstringMatches =
+            file.patch.match(/(?:\/\*\*[\s\S]*?\*\/|\/\/\/[\s\S]*?$|""".*?"""|'''.*?''')/g) || [];
+
           totalFunctions += functionMatches.length;
           documentedFunctions += docstringMatches.length;
         }
@@ -250,7 +268,9 @@ export class PreMergeChecks {
         status: passed ? 'passed' : 'failed',
         mode,
         explanation: `Docstring coverage: ${coverage.toFixed(1)}% (threshold: ${threshold}%)`,
-        resolution: passed ? null : `Add docstrings to ${Math.ceil((threshold - coverage) / 100 * totalFunctions)} more function(s)`,
+        resolution: passed
+          ? null
+          : `Add docstrings to ${Math.ceil(((threshold - coverage) / 100) * totalFunctions)} more function(s)`,
         metadata: {
           coverage: coverage.toFixed(1),
           threshold,
@@ -283,7 +303,7 @@ export class PreMergeChecks {
 
       // Basic validation
       const issues = [];
-      
+
       if (titleLength === 0) {
         issues.push('Title is empty');
       }
@@ -294,7 +314,8 @@ export class PreMergeChecks {
 
       // Check if title matches requirements
       if (requirements.includes('imperative verb')) {
-        const imperativePattern = /^(add|fix|update|remove|refactor|implement|create|delete|improve|change|modify|bump|bump|chore|docs|feat|perf|style|test|ci|build|revert)/i;
+        const imperativePattern =
+          /^(add|fix|update|remove|refactor|implement|create|delete|improve|change|modify|bump|bump|chore|docs|feat|perf|style|test|ci|build|revert)/i;
         if (!imperativePattern.test(title)) {
           issues.push('Title should start with an imperative verb (e.g., "Add", "Fix", "Update")');
         }
@@ -320,8 +341,8 @@ export class PreMergeChecks {
         name: 'Pull Request Title',
         status: passed ? 'passed' : 'failed',
         mode,
-        explanation: passed 
-          ? `Title "${title}" meets requirements` 
+        explanation: passed
+          ? `Title "${title}" meets requirements`
           : `Title validation failed: ${issues.join('; ')}`,
         resolution: passed ? null : `Update title to: ${requirements}`,
         metadata: {
@@ -364,8 +385,8 @@ export class PreMergeChecks {
 
       // Check for template compliance (basic check)
       // This would ideally check against a configured template
-      const hasTemplateSections = 
-        description.includes('##') || 
+      const hasTemplateSections =
+        description.includes('##') ||
         description.includes('###') ||
         description.includes('- [ ]') ||
         description.includes('*');
@@ -410,8 +431,9 @@ export class PreMergeChecks {
 
     try {
       // Extract linked issues from PR body
-      const issueMatches = (pr.body || '').match(/(?:closes?|fixes?|resolves?|relates?)\s+#\d+/gi) || [];
-      const linkedIssues = issueMatches.map(m => m.match(/#\d+/)[0]);
+      const issueMatches =
+        (pr.body || '').match(/(?:closes?|fixes?|resolves?|relates?)\s+#\d+/gi) || [];
+      const linkedIssues = issueMatches.map((m) => m.match(/#\d+/)[0]);
 
       if (linkedIssues.length === 0) {
         return {
@@ -425,7 +447,7 @@ export class PreMergeChecks {
 
       // Basic validation: check if PR description mentions the issues
       const issues = [];
-      
+
       for (const issueRef of linkedIssues) {
         if (!pr.body.includes(issueRef)) {
           issues.push(`Issue ${issueRef} is linked but not mentioned in description`);
@@ -449,7 +471,9 @@ export class PreMergeChecks {
         explanation: passed
           ? `All ${linkedIssues.length} linked issue(s) are properly addressed`
           : `Issue assessment failed: ${issues.join('; ')}`,
-        resolution: passed ? null : 'Ensure PR addresses all linked issues without out-of-scope changes',
+        resolution: passed
+          ? null
+          : 'Ensure PR addresses all linked issues without out-of-scope changes',
         metadata: {
           linkedIssues,
           issues,
@@ -549,7 +573,7 @@ Respond in JSON format:
       });
 
       const responseText = response.content[0].text;
-      
+
       // Try to parse JSON from response
       const jsonMatch = responseText.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
@@ -564,9 +588,10 @@ Respond in JSON format:
       }
 
       // Fallback: parse text response
-      const passed = responseText.toLowerCase().includes('passed') || 
-                     responseText.toLowerCase().includes('pass');
-      
+      const passed =
+        responseText.toLowerCase().includes('passed') ||
+        responseText.toLowerCase().includes('pass');
+
       return {
         name: checkName,
         status: passed ? 'passed' : 'failed',
@@ -626,7 +651,8 @@ Respond in JSON format:
 
     // Passed checks (collapsible)
     if (results.passed.length > 0) {
-      output += '<details>\n<summary>✅ Passed Checks (' + results.passed.length + ')</summary>\n\n';
+      output +=
+        '<details>\n<summary>✅ Passed Checks (' + results.passed.length + ')</summary>\n\n';
       output += '| Objective | Status | Explanation |\n';
       output += '|-----------|--------|-------------|\n';
 
@@ -656,12 +682,12 @@ Respond in JSON format:
 
     // Summary
     const totalChecks = results.failed.length + results.passed.length + results.inconclusive.length;
-    const errorCount = results.failed.filter(c => c.mode === 'error').length;
-    const warningCount = results.failed.filter(c => c.mode === 'warning').length;
+    const errorCount = results.failed.filter((c) => c.mode === 'error').length;
+    const warningCount = results.failed.filter((c) => c.mode === 'warning').length;
 
     output += '---\n\n';
     output += `**Summary**: ${results.passed.length}/${totalChecks} checks passed`;
-    
+
     if (errorCount > 0) {
       output += `, ${errorCount} error(s)`;
     }
@@ -683,7 +709,7 @@ Respond in JSON format:
    * Check if PR should be blocked
    */
   shouldBlockMerge(results) {
-    return results.failed.some(check => check.mode === 'error');
+    return results.failed.some((check) => check.mode === 'error');
   }
 }
 

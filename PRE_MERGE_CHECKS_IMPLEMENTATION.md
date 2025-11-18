@@ -81,6 +81,7 @@ Successfully implemented the Agentic Pre-Merge Checks feature as described in th
 ### ✅ Manual Commands
 
 **CLI:**
+
 ```bash
 istani-agent pre-merge-checks <prNumber>
 istani-agent evaluate-check <prNumber> --name "..." --instructions "..." --mode warning
@@ -88,6 +89,7 @@ istani-agent ignore-checks <prNumber>
 ```
 
 **PR Comments:**
+
 ```
 @coderabbitai run pre-merge checks
 @coderabbitai ignore pre-merge checks
@@ -95,6 +97,7 @@ istani-agent ignore-checks <prNumber>
 ```
 
 **API:**
+
 ```
 POST /pre-merge-checks/:prNumber
 POST /pre-merge-checks/:prNumber/evaluate
@@ -104,6 +107,7 @@ POST /pre-merge-checks/:prNumber/ignore
 ## Results Format
 
 Results are displayed in PR comments with:
+
 - Failed checks table (errors and warnings prominently displayed)
 - Passed checks (collapsible section)
 - Inconclusive checks (if any)
@@ -117,29 +121,31 @@ Configuration is loaded from `.coderabbit.yaml` in the repository root. Example:
 reviews:
   pre_merge_checks:
     docstrings:
-      mode: "warning"
+      mode: 'warning'
       threshold: 80
     title:
-      mode: "warning"
-      requirements: "Start with an imperative verb; keep under 50 characters."
+      mode: 'warning'
+      requirements: 'Start with an imperative verb; keep under 50 characters.'
     description:
-      mode: "error"
+      mode: 'error'
     issue_assessment:
-      mode: "warning"
+      mode: 'warning'
     custom_checks:
-      - name: "Undocumented Breaking Changes"
-        mode: "warning"
-        instructions: "All breaking changes must be documented..."
+      - name: 'Undocumented Breaking Changes'
+        mode: 'warning'
+        instructions: 'All breaking changes must be documented...'
 ```
 
 ## Files Created/Modified
 
 ### New Files
+
 - `ai-agent/core/pre-merge-checks.mjs` - Core checks system
 - `ai-agent/docs/PRE_MERGE_CHECKS.md` - Documentation
 - `.coderabbit.yaml` - Example configuration
 
 ### Modified Files
+
 - `ai-agent/core/agent.mjs` - Integrated checks into workflow
 - `ai-agent/cli/index.mjs` - Added CLI commands
 - `ai-agent/server/webhook-server.mjs` - Added endpoints and bot commands
@@ -150,11 +156,13 @@ reviews:
 To test the implementation:
 
 1. **Run checks on a PR:**
+
    ```bash
    istani-agent pre-merge-checks <prNumber>
    ```
 
 2. **Test custom check:**
+
    ```bash
    istani-agent evaluate-check <prNumber> \
      --name "Test Check" \
@@ -163,6 +171,7 @@ To test the implementation:
    ```
 
 3. **Test via API:**
+
    ```bash
    curl -X POST http://localhost:3001/pre-merge-checks/123
    ```

@@ -114,7 +114,8 @@ class IstaniAIAgent {
       const testResult = await this.runTests(pr);
 
       // 8. Check if pre-merge checks block merge
-      const checksBlockMerge = preMergeResults && this.preMergeChecks?.shouldBlockMerge(preMergeResults);
+      const checksBlockMerge =
+        preMergeResults && this.preMergeChecks?.shouldBlockMerge(preMergeResults);
 
       // 9. Deploy if all checks pass
       if (buildResult.success && testResult.success && review.approved && !checksBlockMerge) {
@@ -720,9 +721,12 @@ Start your response with APPROVE or REQUEST_CHANGES, followed by your detailed r
 
       // Run all checks
       const results = await this.preMergeChecks.runAllChecks(pr, checkContext);
-      
+
       this.stats.preMergeChecksRun++;
-      this.log(`✅ Pre-merge checks completed: ${results.passed.length} passed, ${results.failed.length} failed`, 'info');
+      this.log(
+        `✅ Pre-merge checks completed: ${results.passed.length} passed, ${results.failed.length} failed`,
+        'info',
+      );
 
       return results;
     } catch (error) {
@@ -730,13 +734,15 @@ Start your response with APPROVE or REQUEST_CHANGES, followed by your detailed r
       return {
         failed: [],
         passed: [],
-        inconclusive: [{
-          name: 'Pre-Merge Checks',
-          status: 'inconclusive',
-          mode: 'warning',
-          explanation: `Error running checks: ${error.message}`,
-          resolution: 'Review manually',
-        }],
+        inconclusive: [
+          {
+            name: 'Pre-Merge Checks',
+            status: 'inconclusive',
+            mode: 'warning',
+            explanation: `Error running checks: ${error.message}`,
+            resolution: 'Review manually',
+          },
+        ],
         ignored: [],
       };
     }
@@ -782,7 +788,8 @@ Start your response with APPROVE or REQUEST_CHANGES, followed by your detailed r
   async ignorePreMergeChecks(prNumber) {
     this.log(`⚠️ Ignoring failed pre-merge checks for PR #${prNumber}`, 'warn');
 
-    const comment = `## ⚠️ Pre-Merge Checks Ignored\n\n` +
+    const comment =
+      `## ⚠️ Pre-Merge Checks Ignored\n\n` +
       `Failed checks have been manually ignored for this PR.\n\n` +
       `**Note**: This override applies only to this PR. Future PRs will still enforce checks as configured.`;
 

@@ -294,13 +294,9 @@ program
         });
 
         results.failed.forEach((check) => {
-          const status = check.mode === 'error' ? chalk.red('❌ Error') : chalk.yellow('⚠️ Warning');
-          table.push([
-            check.name,
-            status,
-            check.explanation || '',
-            check.resolution || 'N/A',
-          ]);
+          const status =
+            check.mode === 'error' ? chalk.red('❌ Error') : chalk.yellow('⚠️ Warning');
+          table.push([check.name, status, check.explanation || '', check.resolution || 'N/A']);
         });
 
         console.log(table.toString());
@@ -322,7 +318,7 @@ program
 
       // Summary
       const total = results.failed.length + results.passed.length + results.inconclusive.length;
-      const errorCount = results.failed.filter(c => c.mode === 'error').length;
+      const errorCount = results.failed.filter((c) => c.mode === 'error').length;
       const blocked = errorCount > 0;
 
       console.log('\n' + chalk.bold('Summary:'));
@@ -362,17 +358,20 @@ program
         options.name,
         options.instructions,
         parseInt(prNumber),
-        options.mode
+        options.mode,
       );
 
       spinner.succeed(chalk.green('Custom check evaluation completed'));
 
       console.log('\n' + chalk.bold('Result:'));
       console.log(chalk.cyan('Name:'), result.name);
-      console.log(chalk.cyan('Status:'), 
-        result.status === 'passed' ? chalk.green('✅ Passed') :
-        result.status === 'failed' ? chalk.red('❌ Failed') :
-        chalk.yellow('❓ Inconclusive')
+      console.log(
+        chalk.cyan('Status:'),
+        result.status === 'passed'
+          ? chalk.green('✅ Passed')
+          : result.status === 'failed'
+            ? chalk.red('❌ Failed')
+            : chalk.yellow('❓ Inconclusive'),
       );
       console.log(chalk.cyan('Mode:'), result.mode);
       console.log(chalk.cyan('Explanation:'), result.explanation || 'N/A');
