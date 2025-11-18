@@ -1,6 +1,10 @@
 # ISTANI Monorepo
 
-Unified monorepo containing all ISTANI projects and tools.
+> ✅ **Ready to Merge!** All code completed and pushed to branch `claude/monorepo-merge-workflow-01ASPQMcF3b9oq9zhDaDj1d9`
+>
+> **📖 See [READY_TO_MERGE.md](./READY_TO_MERGE.md) for merge instructions**
+
+Unified monorepo containing all ISTANI projects and tools, featuring a complete **ISTANI Fitness Enterprise** web application.
 
 ## Structure
 
@@ -9,6 +13,23 @@ This repository uses a monorepo structure with all packages located in the `pack
 ### Packages
 
 The following 23 packages are included in this monorepo, with 4 large repositories referenced externally:
+
+#### ⭐ Featured: ISTANI Fitness Enterprise Application
+
+**NEW!** Complete fitness platform with workout tracking, meal planning, and progress analytics.
+
+- **Location:** `packages/istani-fitness-app/`
+- **Tech Stack:** Next.js 15, React 19, TypeScript, Supabase, Drizzle ORM, Stripe
+- **Features:**
+  - 🏋️ Workout tracking with 25+ exercises
+  - 🍎 Meal planning and nutrition tracking
+  - 📊 Progress analytics with charts
+  - 💪 Pre-built workout plans (beginner to advanced)
+  - 📱 Responsive mobile design with dark mode
+  - 🔒 Row Level Security on all database tables
+- **Documentation:** See `packages/istani-fitness-app/README.md`
+- **Deployment:** See `packages/istani-fitness-app/DEPLOYMENT.md`
+- **Status:** ✅ Production-ready
 
 #### Core Projects
 - **istani-legacy** - Original ISTANI website and AI brain
