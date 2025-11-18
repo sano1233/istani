@@ -166,7 +166,10 @@ export async function dbUpdate<T = any>(
     logger.dbQuery('update', table, { id, hasData: !!data });
 
     const supabase = await createClient();
-    const query = supabase.from(table).update(data as any).eq('id', id);
+    const query = supabase
+      .from(table)
+      .update(data as any)
+      .eq('id', id);
 
     const result = returnData ? await query.select().single() : await query;
 
