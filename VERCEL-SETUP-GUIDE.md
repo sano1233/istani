@@ -26,6 +26,7 @@ vercel link
 ```
 
 When prompted:
+
 - **Set up and deploy**: Yes
 - **Which scope**: Select your Vercel account/team
 - **Link to existing project**: No (or Yes if already created)
@@ -108,6 +109,7 @@ vercel --prod
 ```
 
 This will:
+
 - Build your application
 - Deploy to Vercel's global edge network
 - Provide you with a production URL
@@ -127,10 +129,11 @@ This will:
    - Click "Add"
 
 3. **Configure DNS**
-   
+
    Vercel will provide you with DNS records. Add these to your domain registrar or Cloudflare:
 
    **A Record:**
+
    ```
    Type: A
    Name: @
@@ -139,6 +142,7 @@ This will:
    ```
 
    **CNAME Record (for www):**
+
    ```
    Type: CNAME
    Name: www
@@ -158,20 +162,22 @@ If you want to use Cloudflare as your DNS provider:
    - Review DNS records
 
 2. **Update Nameservers at Your Registrar**
-   
+
    Cloudflare will provide you with nameservers like:
+
    ```
    ns1.cloudflare.com
    ns2.cloudflare.com
    ```
-   
+
    Update these at your domain registrar (e.g., GoDaddy, Namecheap, etc.)
 
 3. **Configure DNS Records in Cloudflare**
-   
+
    Add these DNS records in Cloudflare dashboard:
 
    **A Record:**
+
    ```
    Type: A
    Name: @
@@ -181,6 +187,7 @@ If you want to use Cloudflare as your DNS provider:
    ```
 
    **CNAME Record:**
+
    ```
    Type: CNAME
    Name: www
@@ -206,14 +213,15 @@ If you want to use Cloudflare as your DNS provider:
    - Browser Cache TTL: 4 hours
 
    **Page Rules (up to 3 free):**
+
    ```
    1. https://istani.org/api/*
       - Cache Level: Bypass
-   
+
    2. https://istani.org/_next/static/*
       - Cache Level: Cache Everything
       - Edge Cache TTL: 1 month
-   
+
    3. https://istani.org/*
       - Always Use HTTPS
    ```
@@ -270,11 +278,13 @@ openssl s_client -connect istani.org:443 -servername istani.org
 ### 4. Performance Check
 
 Run Lighthouse audit:
+
 ```bash
 npx lighthouse https://istani.org --view
 ```
 
 Target scores:
+
 - Performance: 90+
 - Accessibility: 90+
 - Best Practices: 90+
@@ -285,11 +295,13 @@ Target scores:
 ### Build Fails on Vercel
 
 **Check:**
+
 1. Environment variables are set correctly
 2. TypeScript has no errors: `npm run typecheck`
 3. Build succeeds locally: `npm run build`
 
 **Common Issues:**
+
 - Missing environment variables → Add them in Vercel dashboard
 - TypeScript errors → Fix locally, test build, then deploy
 - Dependency issues → Clear cache: `vercel --force`
@@ -297,11 +309,13 @@ Target scores:
 ### Domain Not Working
 
 **DNS Propagation:**
+
 - Can take 24-48 hours
 - Check status: https://dnschecker.org/?domain=istani.org
 - Use: `dig istani.org` or `nslookup istani.org`
 
 **Common Issues:**
+
 - Wrong DNS records → Double-check A record and CNAME
 - Nameservers not updated → Verify at registrar
 - SSL not working → Wait for certificate provisioning (5-10 mins)
@@ -309,11 +323,13 @@ Target scores:
 ### 502 Bad Gateway
 
 **Causes:**
+
 1. Serverless function timeout (max 10s on free, 30s on Pro)
 2. Memory limit exceeded
 3. Environment variables missing
 
 **Solutions:**
+
 - Upgrade to Vercel Pro for longer timeouts
 - Optimize slow functions
 - Check function logs in Vercel dashboard
@@ -321,6 +337,7 @@ Target scores:
 ### Environment Variables Not Working
 
 **Check:**
+
 1. Variables are added to "Production" environment
 2. Variable names match exactly (case-sensitive)
 3. No quotes around values (Vercel adds them automatically)
@@ -331,6 +348,7 @@ Target scores:
 ### Vercel Analytics
 
 Enable in dashboard:
+
 - Go to Project → Analytics
 - View real-time traffic, performance, Core Web Vitals
 
@@ -358,7 +376,7 @@ export async function GET() {
     status: 'ok',
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV,
-    version: '1.0.0'
+    version: '1.0.0',
   });
 }
 ```
@@ -376,6 +394,7 @@ export async function GET() {
 ## 💰 Cost Estimate
 
 ### Vercel Pro
+
 - **Cost:** $20/month
 - **Includes:**
   - Unlimited domains
@@ -385,6 +404,7 @@ export async function GET() {
   - 100 GB-hours function execution
 
 ### Cloudflare Free
+
 - **Cost:** $0/month
 - **Includes:**
   - Unlimited bandwidth
