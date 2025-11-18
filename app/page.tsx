@@ -1,7 +1,16 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { neon } from '@neondatabase/serverless';
 
 export default function HomePage() {
+  async function create(formData: FormData) {
+    'use server';
+    // Connect to the Neon database
+    const sql = neon(`${process.env.DATABASE_URL}`);
+    const comment = formData.get('comment');
+    // Insert the comment from the form into the Postgres database
+    await sql`INSERT INTO comments (comment) VALUES (${comment})`;
+  }
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -74,6 +83,28 @@ export default function HomePage() {
           <Link href="/register">
             <Button size="lg">Get Started Today</Button>
           </Link>
+        </div>
+      </section>
+
+      {/* Comments Section */}
+      <section className="px-4 py-20">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="mb-6 text-3xl font-bold text-white text-center">Leave a Comment</h2>
+          <form action={create} className="flex flex-col gap-4">
+            <input
+              type="text"
+              placeholder="write a comment"
+              name="comment"
+              className="px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-primary"
+              required
+            />
+            <button
+              type="submit"
+              className="px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition-colors"
+            >
+              Submit
+            </button>
+          </form>
         </div>
       </section>
     </div>
