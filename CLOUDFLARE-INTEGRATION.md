@@ -5,6 +5,7 @@ This document explains how to use the Cloudflare integration for cache managemen
 ## ✅ Token Verification
 
 Your Cloudflare API token has been verified and is **active**:
+
 - **Token ID**: `cf546ae4539814801697d12fdc591a2b`
 - **Status**: `active`
 - **Account ID**: `8a96ac34caf00be04c7fa407efcefa85`
@@ -25,18 +26,21 @@ CLOUDFLARE_PURGE_SECRET=your_random_secret_here  # Generate with: openssl rand -
 ### Getting Your Zone ID
 
 **Option 1: Cloudflare Dashboard**
+
 1. Go to https://dash.cloudflare.com
 2. Select your domain (istani.org)
 3. Scroll to the right sidebar
 4. Copy the **Zone ID**
 
 **Option 2: API (if no IP restrictions)**
+
 ```bash
 export CLOUDFLARE_API_TOKEN=VTpUgPTAV18upz5VecWeqYEnObZOOPi9fd5ELFl-
 ./scripts/cloudflare-setup.sh
 ```
 
 **Option 3: Manual API Call**
+
 ```bash
 curl -X GET "https://api.cloudflare.com/client/v4/zones" \
   -H "Authorization: Bearer VTpUgPTAV18upz5VecWeqYEnObZOOPi9fd5ELFl-" \
@@ -55,6 +59,7 @@ curl -X GET "https://istani.org/api/cloudflare/verify" \
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -76,6 +81,7 @@ curl -X GET "https://istani.org/api/cloudflare/verify" \
 Purge specific files or entire cache:
 
 **Purge specific files:**
+
 ```bash
 curl -X POST "https://istani.org/api/cloudflare/purge" \
   -H "CLOUDFLARE_PURGE_SECRET: your-secret-here" \
@@ -89,6 +95,7 @@ curl -X POST "https://istani.org/api/cloudflare/purge" \
 ```
 
 **Purge everything:**
+
 ```bash
 curl -X POST "https://istani.org/api/cloudflare/purge" \
   -H "CLOUDFLARE_PURGE_SECRET: your-secret-here" \
@@ -99,6 +106,7 @@ curl -X POST "https://istani.org/api/cloudflare/purge" \
 ```
 
 **Purge by tags:**
+
 ```bash
 curl -X POST "https://istani.org/api/cloudflare/purge" \
   -H "CLOUDFLARE_PURGE_SECRET: your-secret-here" \
@@ -116,10 +124,7 @@ curl -X POST "https://istani.org/api/cloudflare/purge" \
 import { purgeCache, purgeFiles, purgeEverything } from '@/lib/cloudflare';
 
 // Purge specific files
-await purgeFiles([
-  'https://istani.org/',
-  'https://istani.org/products',
-]);
+await purgeFiles(['https://istani.org/', 'https://istani.org/products']);
 
 // Purge everything
 await purgeEverything();
@@ -176,6 +181,7 @@ The purge endpoints are protected by `CLOUDFLARE_PURGE_SECRET`. Always:
 ### Token IP Restrictions
 
 If you see `"Cannot use the access token from location"`:
+
 - Your token has IP restrictions (this is normal for security)
 - Use the Cloudflare dashboard to get the Zone ID manually
 - The token will still work from your Vercel deployment

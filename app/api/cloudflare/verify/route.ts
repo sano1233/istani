@@ -4,7 +4,7 @@ import { verifyToken, getZoneInfo } from '@/lib/cloudflare';
 /**
  * GET /api/cloudflare/verify
  * Verify Cloudflare API token and get zone information
- * 
+ *
  * Requires CLOUDFLARE_PURGE_SECRET header for security
  */
 export async function GET(request: NextRequest) {
@@ -16,15 +16,12 @@ export async function GET(request: NextRequest) {
     if (!expectedSecret) {
       return NextResponse.json(
         { error: 'Cloudflare purge secret not configured' },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
     if (secret !== expectedSecret) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // Verify token
@@ -36,7 +33,7 @@ export async function GET(request: NextRequest) {
           error: 'Token verification failed',
           details: tokenResult.errors,
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -76,7 +73,7 @@ export async function GET(request: NextRequest) {
         error: 'Failed to verify Cloudflare configuration',
         message: error.message,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

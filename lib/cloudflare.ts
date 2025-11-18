@@ -23,14 +23,14 @@ interface PurgeCacheOptions {
  * @returns Cloudflare API response
  */
 export async function purgeCache(
-  options: PurgeCacheOptions = {}
+  options: PurgeCacheOptions = {},
 ): Promise<CloudflareResponse<{ id: string }>> {
   const zoneId = process.env.CLOUDFLARE_ZONE_ID;
   const apiToken = process.env.CLOUDFLARE_API_TOKEN;
 
   if (!zoneId || !apiToken) {
     throw new Error(
-      'Cloudflare credentials not configured. Set CLOUDFLARE_ZONE_ID and CLOUDFLARE_API_TOKEN environment variables.'
+      'Cloudflare credentials not configured. Set CLOUDFLARE_ZONE_ID and CLOUDFLARE_API_TOKEN environment variables.',
     );
   }
 
@@ -62,9 +62,7 @@ export async function purgeCache(
 
   if (!response.ok) {
     const error = await response.json();
-    throw new Error(
-      `Cloudflare API error: ${error.errors?.[0]?.message || response.statusText}`
-    );
+    throw new Error(`Cloudflare API error: ${error.errors?.[0]?.message || response.statusText}`);
   }
 
   return response.json();
@@ -94,7 +92,7 @@ export async function getZoneInfo(): Promise<CloudflareResponse<any>> {
 
   if (!zoneId || !apiToken) {
     throw new Error(
-      'Cloudflare credentials not configured. Set CLOUDFLARE_ZONE_ID and CLOUDFLARE_API_TOKEN environment variables.'
+      'Cloudflare credentials not configured. Set CLOUDFLARE_ZONE_ID and CLOUDFLARE_API_TOKEN environment variables.',
     );
   }
 
@@ -110,9 +108,7 @@ export async function getZoneInfo(): Promise<CloudflareResponse<any>> {
 
   if (!response.ok) {
     const error = await response.json();
-    throw new Error(
-      `Cloudflare API error: ${error.errors?.[0]?.message || response.statusText}`
-    );
+    throw new Error(`Cloudflare API error: ${error.errors?.[0]?.message || response.statusText}`);
   }
 
   return response.json();
@@ -141,9 +137,7 @@ export async function verifyToken(): Promise<CloudflareResponse<{ id: string; st
 
   if (!response.ok) {
     const error = await response.json();
-    throw new Error(
-      `Cloudflare API error: ${error.errors?.[0]?.message || response.statusText}`
-    );
+    throw new Error(`Cloudflare API error: ${error.errors?.[0]?.message || response.statusText}`);
   }
 
   return response.json();

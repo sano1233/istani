@@ -7,6 +7,7 @@ Successfully integrated Cloudflare API for cache management and CDN operations. 
 ## Token Verification
 
 ✅ **Token Status**: Active and verified
+
 - **Token ID**: `cf546ae4539814801697d12fdc591a2b`
 - **Account ID**: `8a96ac34caf00be04c7fa407efcefa85`
 - **Token**: `VTpUgPTAV18upz5VecWeqYEnObZOOPi9fd5ELFl-`
@@ -14,6 +15,7 @@ Successfully integrated Cloudflare API for cache management and CDN operations. 
 ## Files Created
 
 ### 1. Core Library
+
 - **`lib/cloudflare.ts`** - Cloudflare API integration library
   - `purgeCache()` - Purge cache with flexible options
   - `purgeFiles()` - Purge specific files
@@ -22,6 +24,7 @@ Successfully integrated Cloudflare API for cache management and CDN operations. 
   - `verifyToken()` - Verify API token
 
 ### 2. API Routes
+
 - **`app/api/cloudflare/purge/route.ts`** - Cache purge endpoint
   - POST endpoint for purging cache
   - Supports files, tags, hosts, or everything
@@ -32,12 +35,14 @@ Successfully integrated Cloudflare API for cache management and CDN operations. 
   - Returns token status and zone information
 
 ### 3. Helper Scripts
+
 - **`scripts/cloudflare-setup.sh`** - Setup helper script
   - Verifies API token
   - Fetches available zones
   - Helps find Zone ID
 
 ### 4. Documentation
+
 - **`CLOUDFLARE-INTEGRATION.md`** - Complete integration guide
   - API usage examples
   - Configuration instructions
@@ -46,6 +51,7 @@ Successfully integrated Cloudflare API for cache management and CDN operations. 
 ## Files Updated
 
 ### 1. Environment Configuration
+
 - **`DEPLOYMENT.env`** - Added Cloudflare configuration section
   - `CLOUDFLARE_API_TOKEN` (configured)
   - `CLOUDFLARE_ACCOUNT_ID` (configured)
@@ -55,6 +61,7 @@ Successfully integrated Cloudflare API for cache management and CDN operations. 
 - **`.env.example`** - Added Cloudflare variables template
 
 ### 2. Deployment Script
+
 - **`deploy-production.sh`** - Added Cloudflare verification
   - `verify_cloudflare()` function
   - Integrated into deployment flow
@@ -65,16 +72,18 @@ Successfully integrated Cloudflare API for cache management and CDN operations. 
 ### Required Configuration
 
 1. **Get Zone ID**
+
    ```bash
    # Option 1: Use helper script
    export CLOUDFLARE_API_TOKEN=VTpUgPTAV18upz5VecWeqYEnObZOOPi9fd5ELFl-
    ./scripts/cloudflare-setup.sh
-   
+
    # Option 2: Get from dashboard
    # https://dash.cloudflare.com -> Select domain -> Overview -> Zone ID
    ```
 
 2. **Generate Purge Secret**
+
    ```bash
    openssl rand -hex 32
    ```
@@ -90,6 +99,7 @@ Successfully integrated Cloudflare API for cache management and CDN operations. 
 ### Testing
 
 1. **Verify Configuration**
+
    ```bash
    curl -X GET "https://istani.org/api/cloudflare/verify" \
      -H "CLOUDFLARE_PURGE_SECRET: your-secret-here"
@@ -122,17 +132,17 @@ Successfully integrated Cloudflare API for cache management and CDN operations. 
 
 ## Integration Status
 
-| Component | Status |
-|-----------|--------|
-| Token Verification | ✅ Complete |
-| Core Library | ✅ Complete |
-| API Routes | ✅ Complete |
-| Environment Config | ✅ Complete |
-| Deployment Script | ✅ Complete |
-| Documentation | ✅ Complete |
-| Zone ID Configuration | ⏳ Pending |
-| Purge Secret Generation | ⏳ Pending |
-| Vercel Environment Setup | ⏳ Pending |
+| Component                | Status      |
+| ------------------------ | ----------- |
+| Token Verification       | ✅ Complete |
+| Core Library             | ✅ Complete |
+| API Routes               | ✅ Complete |
+| Environment Config       | ✅ Complete |
+| Deployment Script        | ✅ Complete |
+| Documentation            | ✅ Complete |
+| Zone ID Configuration    | ⏳ Pending  |
+| Purge Secret Generation  | ⏳ Pending  |
+| Vercel Environment Setup | ⏳ Pending  |
 
 ## Resources
 

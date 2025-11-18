@@ -4,13 +4,13 @@ import { purgeCache, purgeFiles, purgeEverything } from '@/lib/cloudflare';
 /**
  * POST /api/cloudflare/purge
  * Purge Cloudflare cache
- * 
+ *
  * Body options:
  * - { files: string[] } - Purge specific files
  * - { purgeEverything: true } - Purge entire cache
  * - { tags: string[] } - Purge by cache tags
  * - { hosts: string[] } - Purge by hostnames
- * 
+ *
  * Requires CLOUDFLARE_PURGE_SECRET header for security
  */
 export async function POST(request: NextRequest) {
@@ -22,15 +22,12 @@ export async function POST(request: NextRequest) {
     if (!expectedSecret) {
       return NextResponse.json(
         { error: 'Cloudflare purge secret not configured' },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
     if (secret !== expectedSecret) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const body = await request.json();
@@ -51,7 +48,7 @@ export async function POST(request: NextRequest) {
           error: 'Failed to purge cache',
           details: result.errors,
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -67,7 +64,7 @@ export async function POST(request: NextRequest) {
         error: 'Failed to purge cache',
         message: error.message,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
