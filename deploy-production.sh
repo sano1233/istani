@@ -226,6 +226,38 @@ setup_monitoring() {
     print_success "Monitoring setup instructions displayed"
 }
 
+# Verify Cloudflare configuration
+verify_cloudflare() {
+    print_status "Verifying Cloudflare configuration..."
+
+    if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+        print_warning "CLOUDFLARE_API_TOKEN not set. Skipping verification."
+        return 0
+    fi
+
+    # Test token
+    local response=$(curl -s -X GET \
+        "https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID:-8a96ac34caf00be04c7fa407efcefa85}/tokens/verify" \
+        -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+        -H "Content-Type: application/json")
+
+    if echo "$response" | grep -q '"success":true'; then
+        print_success "Cloudflare API token is valid"
+    else
+        print_warning "Cloudflare API token verification failed"
+        echo "Response: $response"
+    fi
+
+    if [ -z "$CLOUDFLARE_ZONE_ID" ] || [ "$CLOUDFLARE_ZONE_ID" = "your_zone_id_here" ]; then
+        print_warning "CLOUDFLARE_ZONE_ID not configured"
+        echo "Get Zone ID from: https://dash.cloudflare.com -> Select domain -> Overview"
+    else
+        print_success "Cloudflare Zone ID is configured"
+    fi
+
+    print_success "Cloudflare verification completed"
+}
+
 # Run deployment health checks
 health_checks() {
     print_status "Running health checks..."
@@ -288,6 +320,9 @@ post_deployment_checklist() {
     echo "[ ] Set all environment variables in Vercel"
     echo "[ ] Deploy AI agent to Railway"
     echo "[ ] Configure Cloudflare DNS"
+    echo "[ ] Set CLOUDFLARE_ZONE_ID in Vercel environment variables"
+    echo "[ ] Set CLOUDFLARE_PURGE_SECRET in Vercel environment variables"
+    echo "[ ] Test Cloudflare cache purge: POST /api/cloudflare/purge"
     echo "[ ] Set up Stripe webhooks"
     echo "[ ] Enable Sentry error tracking"
     echo "[ ] Configure UptimeRobot monitoring"
@@ -330,6 +365,7 @@ main() {
     setup_stripe_webhooks
     setup_sentry
     setup_monitoring
+    verify_cloudflare
 
     health_checks
 
