@@ -76,12 +76,9 @@ const config = {
     mistralDevStrall: createProvider('MISTRAL_AI_DEV_STRALL_API_KEY', {
       model: 'mistral-small-latest',
     }),
-    cognitiveComputationsDolphin: createProvider(
-      'COGNITIVE_COMPUTATIONS_DOLPHIN_MISTRAL_API_KEY',
-      {
-        model: 'dolphin-mistral',
-      },
-    ),
+    cognitiveComputationsDolphin: createProvider('COGNITIVE_COMPUTATIONS_DOLPHIN_MISTRAL_API_KEY', {
+      model: 'dolphin-mistral',
+    }),
     glm45: createProvider('GLM_4_5_API_KEY', {
       model: 'glm-4-0520',
     }),

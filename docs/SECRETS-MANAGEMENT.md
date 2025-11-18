@@ -48,33 +48,33 @@ node config/health-check.js
 
 ### AI Services (Core + Agentic)
 
-| Service                                     | Environment Variable                             | Required | Get Key From                                   |
-| ------------------------------------------- | ------------------------------------------------ | -------- | ---------------------------------------------- |
-| **Google Gemini**                           | `GEMINI_API_KEY`                                 | No       | https://makersuite.google.com/app/apikey       |
-| **Anthropic Claude**                        | `ANTHROPIC_API_KEY`                              | No       | https://console.anthropic.com/                 |
-| **OpenAI GPT**                              | `OPENAI_API_KEY`                                 | No       | https://platform.openai.com/api-keys           |
-| **Alibaba Qwen Max**                        | `QWEN_API_KEY`                                   | No       | https://dashscope.console.aliyun.com/          |
-| **Qwen 3 Coder**                            | `QWEN3_CODER_API_KEY`                            | No       | https://dashscope.console.aliyun.com/          |
-| **Qwen 2.5 Coder 32K**                      | `QWEN_2_5_CODER_32_INSTRUCT_API_KEY`             | No       | https://dashscope.console.aliyun.com/          |
-| **DeepSeek**                                | `DEEPSEEK_API_KEY`                               | No       | https://platform.deepseek.com/                 |
-| **TNG Tech DeepSeek (Enterprise)**          | `TNG_TECH_DEEP_SEEK_API_KEY`                     | No       | https://www.deepseek.com/enterprise            |
-| **Mistral Production**                      | `MISTRAL_AI_API_KEY`                             | No       | https://console.mistral.ai/                    |
-| **Mistral Dev / Strall**                    | `MISTRAL_AI_DEV_STRALL_API_KEY`                  | No       | https://console.mistral.ai/                    |
-| **Cognitive Computations Dolphin (Mistral)**| `COGNITIVE_COMPUTATIONS_DOLPHIN_MISTRAL_API_KEY` | No       | https://cognitivecomputations.ai/              |
-| **GLM 4.5**                                 | `GLM_4_5_API_KEY`                                | No       | https://open.bigmodel.cn/                      |
-| **Grok (xAI)**                              | `GROK_X_API_KEY`                                 | No       | https://x.ai/                                  |
-| **X Platform Realtime / Streaming**         | `X_API_KEY`                                      | No       | https://developer.x.com/                       |
-| **ElevenLabs Voice**                        | `ELEVEN_LABS_API_KEY`                            | No       | https://elevenlabs.io/                         |
-| **Hermes Llama (Nous Research)**            | `HERMES_LLAMA_API_KEY`                           | No       | https://nousresearch.com/hermes                |
-| **Agentica Unified Agent**                  | `AGENTICA_API_KEY`                               | No       | https://agentica.ai/                           |
-| **Agentica Deep Coder**                     | `AGENTICA_DEEP_CODER_API_KEY`                    | No       | https://agentica.ai/                           |
-| **CodeRabbit PR Reviewer**                  | `CODE_RABBIT_API_KEY`                            | No       | https://coderabbit.ai/                         |
-| **Kimi / Moonshot**                         | `KIMI_DEV_MOONSHOT_API_KEY`                      | No       | https://platform.moonshot.cn/                  |
-| **Microsoft AI Coder / Copilot Coder**      | `MICROSOFT_AI_CODER_API_KEY`                     | No       | https://aka.ms/copilot-coder                   |
-| **MiniMax**                                 | `MINIMAX_API_KEY`                                | No       | https://www.minimaxi.com/                      |
-| **NVIDIA Nemotron / NeMo**                  | `NVIDIA_NEMATRON_NANO_API_KEY`                   | No       | https://build.nvidia.com/                      |
-| **Cohere**                                  | `COHERE_API_KEY`                                 | No       | https://dashboard.cohere.com/                  |
-| **Hugging Face**                            | `HUGGINGFACE_API_KEY`                            | No       | https://huggingface.co/settings/tokens         |
+| Service                                      | Environment Variable                             | Required | Get Key From                             |
+| -------------------------------------------- | ------------------------------------------------ | -------- | ---------------------------------------- |
+| **Google Gemini**                            | `GEMINI_API_KEY`                                 | No       | https://makersuite.google.com/app/apikey |
+| **Anthropic Claude**                         | `ANTHROPIC_API_KEY`                              | No       | https://console.anthropic.com/           |
+| **OpenAI GPT**                               | `OPENAI_API_KEY`                                 | No       | https://platform.openai.com/api-keys     |
+| **Alibaba Qwen Max**                         | `QWEN_API_KEY`                                   | No       | https://dashscope.console.aliyun.com/    |
+| **Qwen 3 Coder**                             | `QWEN3_CODER_API_KEY`                            | No       | https://dashscope.console.aliyun.com/    |
+| **Qwen 2.5 Coder 32K**                       | `QWEN_2_5_CODER_32_INSTRUCT_API_KEY`             | No       | https://dashscope.console.aliyun.com/    |
+| **DeepSeek**                                 | `DEEPSEEK_API_KEY`                               | No       | https://platform.deepseek.com/           |
+| **TNG Tech DeepSeek (Enterprise)**           | `TNG_TECH_DEEP_SEEK_API_KEY`                     | No       | https://www.deepseek.com/enterprise      |
+| **Mistral Production**                       | `MISTRAL_AI_API_KEY`                             | No       | https://console.mistral.ai/              |
+| **Mistral Dev / Strall**                     | `MISTRAL_AI_DEV_STRALL_API_KEY`                  | No       | https://console.mistral.ai/              |
+| **Cognitive Computations Dolphin (Mistral)** | `COGNITIVE_COMPUTATIONS_DOLPHIN_MISTRAL_API_KEY` | No       | https://cognitivecomputations.ai/        |
+| **GLM 4.5**                                  | `GLM_4_5_API_KEY`                                | No       | https://open.bigmodel.cn/                |
+| **Grok (xAI)**                               | `GROK_X_API_KEY`                                 | No       | https://x.ai/                            |
+| **X Platform Realtime / Streaming**          | `X_API_KEY`                                      | No       | https://developer.x.com/                 |
+| **ElevenLabs Voice**                         | `ELEVEN_LABS_API_KEY`                            | No       | https://elevenlabs.io/                   |
+| **Hermes Llama (Nous Research)**             | `HERMES_LLAMA_API_KEY`                           | No       | https://nousresearch.com/hermes          |
+| **Agentica Unified Agent**                   | `AGENTICA_API_KEY`                               | No       | https://agentica.ai/                     |
+| **Agentica Deep Coder**                      | `AGENTICA_DEEP_CODER_API_KEY`                    | No       | https://agentica.ai/                     |
+| **CodeRabbit PR Reviewer**                   | `CODE_RABBIT_API_KEY`                            | No       | https://coderabbit.ai/                   |
+| **Kimi / Moonshot**                          | `KIMI_DEV_MOONSHOT_API_KEY`                      | No       | https://platform.moonshot.cn/            |
+| **Microsoft AI Coder / Copilot Coder**       | `MICROSOFT_AI_CODER_API_KEY`                     | No       | https://aka.ms/copilot-coder             |
+| **MiniMax**                                  | `MINIMAX_API_KEY`                                | No       | https://www.minimaxi.com/                |
+| **NVIDIA Nemotron / NeMo**                   | `NVIDIA_NEMATRON_NANO_API_KEY`                   | No       | https://build.nvidia.com/                |
+| **Cohere**                                   | `COHERE_API_KEY`                                 | No       | https://dashboard.cohere.com/            |
+| **Hugging Face**                             | `HUGGINGFACE_API_KEY`                            | No       | https://huggingface.co/settings/tokens   |
 
 ### Deployment Services
 
@@ -85,9 +85,9 @@ node config/health-check.js
 
 ### GitHub
 
-| Variable         | Required | Description                                                                 |
-| ---------------- | -------- | --------------------------------------------------------------------------- |
-| `GITHUB_TOKEN`   | No\*     | Primary GitHub PAT or Actions token used for CLI operations                 |
+| Variable         | Required | Description                                                                  |
+| ---------------- | -------- | ---------------------------------------------------------------------------- |
+| `GITHUB_TOKEN`   | No\*     | Primary GitHub PAT or Actions token used for CLI operations                  |
 | `GITHUB_API_KEY` | No       | Alias that mirrors `GITHUB_TOKEN` for Cursor/Vercel environments and scripts |
 
 \*Automatically provided in GitHub Actions (exposed to jobs as `GITHUB_TOKEN` and `GH_TOKEN`)
