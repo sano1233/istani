@@ -13,30 +13,54 @@ jobs:
   analyze:
     runs-on: ubuntu-latest
     environment: unified-software-automated-developer-and-deployer
+    env:
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY || '' }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY || '' }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY || '' }}
+      QWEN_API_KEY: ${{ secrets.QWEN_API_KEY || '' }}
+      QWEN3_CODER_API_KEY: ${{ secrets.QWEN3_CODER_API_KEY || '' }}
+      QWEN_2_5_CODER_32_INSTRUCT_API_KEY: ${{ secrets.QWEN_2_5_CODER_32_INSTRUCT_API_KEY || '' }}
+      DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY || '' }}
+      TNG_TECH_DEEP_SEEK_API_KEY: ${{ secrets.TNG_TECH_DEEP_SEEK_API_KEY || '' }}
+      MISTRAL_AI_API_KEY: ${{ secrets.MISTRAL_AI_API_KEY || '' }}
+      MISTRAL_AI_DEV_STRALL_API_KEY: ${{ secrets.MISTRAL_AI_DEV_STRALL_API_KEY || '' }}
+      COGNITIVE_COMPUTATIONS_DOLPHIN_MISTRAL_API_KEY: ${{ secrets.COGNITIVE_COMPUTATIONS_DOLPHIN_MISTRAL_API_KEY || '' }}
+      GLM_4_5_API_KEY: ${{ secrets.GLM_4_5_API_KEY || '' }}
+      GROK_X_API_KEY: ${{ secrets.GROK_X_API_KEY || '' }}
+      X_API_KEY: ${{ secrets.X_API_KEY || '' }}
+      ELEVEN_LABS_API_KEY: ${{ secrets.ELEVEN_LABS_API_KEY || '' }}
+      HERMES_LLAMA_API_KEY: ${{ secrets.HERMES_LLAMA_API_KEY || '' }}
+      AGENTICA_API_KEY: ${{ secrets.AGENTICA_API_KEY || '' }}
+      AGENTICA_DEEP_CODER_API_KEY: ${{ secrets.AGENTICA_DEEP_CODER_API_KEY || '' }}
+      CODE_RABBIT_API_KEY: ${{ secrets.CODE_RABBIT_API_KEY || '' }}
+      KIMI_DEV_MOONSHOT_API_KEY: ${{ secrets.KIMI_DEV_MOONSHOT_API_KEY || '' }}
+      MICROSOFT_AI_CODER_API_KEY: ${{ secrets.MICROSOFT_AI_CODER_API_KEY || '' }}
+      MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY || '' }}
+      NVIDIA_NEMATRON_NANO_API_KEY: ${{ secrets.NVIDIA_NEMATRON_NANO_API_KEY || '' }}
+      COHERE_API_KEY: ${{ secrets.COHERE_API_KEY || '' }}
+      HUGGINGFACE_API_KEY: ${{ secrets.HUGGINGFACE_API_KEY || '' }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN || secrets.GITHUB_API_KEY || '' }}
+      GITHUB_API_KEY: ${{ secrets.GITHUB_TOKEN || secrets.GITHUB_API_KEY || '' }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN || secrets.GITHUB_API_KEY || '' }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      
+
       - name: Install dependencies
         run: |
           cd ai-brain && npm install
           npm install -g gh
-      
+
       - name: Configure Git
         run: |
           git config --global user.name "AI Brain Bot"
           git config --global user.email "ai-brain@istani.org"
-      
+
       - name: Run AI Brain Analysis
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          ANTHROPIC_API_KEY: ${{ secrets.CLAUDE }}
-          QWEN_API_KEY: ${{ secrets.QWEN_API_KEY }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node ai-brain/pr-handler.js ${{ github.event.pull_request.number }}

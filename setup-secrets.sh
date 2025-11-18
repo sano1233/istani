@@ -9,6 +9,32 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 EXAMPLE_FILE="$REPO_ROOT/.env.example"
 LOCAL_FILE="$REPO_ROOT/.env.local"
 REQUIRED_VARS=("GEMINI_API_KEY" "ANTHROPIC_API_KEY" "QWEN_API_KEY")
+OPTIONAL_VARS=(
+  "OPENAI_API_KEY"
+  "QWEN3_CODER_API_KEY"
+  "QWEN_2_5_CODER_32_INSTRUCT_API_KEY"
+  "DEEPSEEK_API_KEY"
+  "TNG_TECH_DEEP_SEEK_API_KEY"
+  "MISTRAL_AI_API_KEY"
+  "MISTRAL_AI_DEV_STRALL_API_KEY"
+  "COGNITIVE_COMPUTATIONS_DOLPHIN_MISTRAL_API_KEY"
+  "GLM_4_5_API_KEY"
+  "GROK_X_API_KEY"
+  "X_API_KEY"
+  "ELEVEN_LABS_API_KEY"
+  "HERMES_LLAMA_API_KEY"
+  "AGENTICA_API_KEY"
+  "AGENTICA_DEEP_CODER_API_KEY"
+  "CODE_RABBIT_API_KEY"
+  "KIMI_DEV_MOONSHOT_API_KEY"
+  "MICROSOFT_AI_CODER_API_KEY"
+  "MINIMAX_API_KEY"
+  "NVIDIA_NEMATRON_NANO_API_KEY"
+  "COHERE_API_KEY"
+  "HUGGINGFACE_API_KEY"
+  "GITHUB_TOKEN"
+)
+ALL_VARS=("${REQUIRED_VARS[@]}" "${OPTIONAL_VARS[@]}")
 
 if ! command -v python3 >/dev/null 2>&1; then
   echo "[setup-secrets] python3 is required to parse .env files." >&2
@@ -35,7 +61,7 @@ if [[ ! -f "$LOCAL_FILE" ]]; then
   cp "$EXAMPLE_FILE" "$LOCAL_FILE"
 fi
 
-mapfile -t ENV_REPORT < <(python3 - "$LOCAL_FILE" "${REQUIRED_VARS[@]}" <<'PY'
+mapfile -t ENV_REPORT < <(python3 - "$LOCAL_FILE" "${ALL_VARS[@]}" <<'PY'
 import os
 import sys
 from pathlib import Path
@@ -71,10 +97,25 @@ for key in required:
 PY
 )
 
-MISSING=()
+declare -A STATUS_EXPORTED
+declare -A STATUS_CONFIGURED
+declare -A STATUS_PREVIEW
 
 for entry in "${ENV_REPORT[@]}"; do
   IFS='|' read -r key exported configured preview <<<"$entry"
+  STATUS_EXPORTED["$key"]=$exported
+  STATUS_CONFIGURED["$key"]=$configured
+  STATUS_PREVIEW["$key"]=$preview
+done
+
+MISSING=()
+OPTIONAL_MISSING=()
+
+print_status() {
+  local key=$1
+  local exported=${STATUS_EXPORTED["$key"]}
+  local configured=${STATUS_CONFIGURED["$key"]}
+  local preview=${STATUS_PREVIEW["$key"]}
 
   if [[ "$exported" == "1" ]]; then
     echo "[setup-secrets] $key is exported in the current shell."
@@ -86,13 +127,31 @@ for entry in "${ENV_REPORT[@]}"; do
     fi
   else
     echo "[setup-secrets] Missing secret: $key"
+  fi
+}
+
+for key in "${REQUIRED_VARS[@]}"; do
+  print_status "$key"
+  if [[ "${STATUS_EXPORTED["$key"]}" != "1" && "${STATUS_CONFIGURED["$key"]}" != "1" ]]; then
     MISSING+=("$key")
   fi
 done
 
+for key in "${OPTIONAL_VARS[@]}"; do
+  print_status "$key"
+  if [[ "${STATUS_EXPORTED["$key"]}" != "1" && "${STATUS_CONFIGURED["$key"]}" != "1" ]]; then
+    OPTIONAL_MISSING+=("$key")
+  fi
+done
+
 if ((${#MISSING[@]} > 0)); then
+  echo "[setup-secrets] Missing required secrets: ${MISSING[*]}"
   echo "[setup-secrets] Update $LOCAL_FILE with the missing values or export them in your shell."
   exit 1
+fi
+
+if ((${#OPTIONAL_MISSING[@]} > 0)); then
+  echo "[setup-secrets] Optional secrets still missing (${#OPTIONAL_MISSING[@]}): ${OPTIONAL_MISSING[*]}"
 fi
 
 echo "[setup-secrets] All required secrets are configured."

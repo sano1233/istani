@@ -18,16 +18,16 @@ require('dotenv').config();
  * Secret definitions with validation rules
  */
 const SECRET_DEFINITIONS = {
-  // AI Services
+  // AI Services (Core)
   GEMINI_API_KEY: {
     required: false,
-    env: ['GEMINI_API_KEY'],
+    env: ['GEMINI_API_KEY', 'gemini_api_key'],
     description: 'Google Gemini AI API key for code analysis and generation',
     validateFormat: (val) => val && val.length > 20,
   },
   ANTHROPIC_API_KEY: {
     required: false,
-    env: ['ANTHROPIC_API_KEY'],
+    env: ['ANTHROPIC_API_KEY', 'claude_api_key'],
     description: 'Anthropic Claude API key for code analysis',
     validateFormat: (val) => val && val.startsWith('sk-ant-'),
   },
@@ -39,11 +39,131 @@ const SECRET_DEFINITIONS = {
   },
   QWEN_API_KEY: {
     required: false,
-    env: ['QWEN_API_KEY', 'QWEN'],
+    env: ['QWEN_API_KEY', 'QWEN', 'Qwen_api_key', 'qwen_api_key'],
     description: 'Alibaba Qwen AI API key',
     validateFormat: (val) => val && val.length > 20,
   },
-
+  QWEN3_CODER_API_KEY: {
+    required: false,
+    env: ['QWEN3_CODER_API_KEY', 'QWEN3_API_KEY', 'Qwen3_coder_api_key'],
+    description: 'Qwen 3 Coder API key',
+    validateFormat: (val) => val && val.length > 20,
+  },
+  QWEN_2_5_CODER_32_INSTRUCT_API_KEY: {
+    required: false,
+    env: [
+      'QWEN_2_5_CODER_32_INSTRUCT_API_KEY',
+      'QWEN_2_5_CODER_API_KEY',
+      'qwen_2.5_coder_32_instruct_api_key',
+    ],
+    description: 'Qwen 2.5 Coder 32K Instruct API key',
+    validateFormat: (val) => val && val.length > 20,
+  },
+  DEEPSEEK_API_KEY: {
+    required: false,
+    env: ['DEEPSEEK_API_KEY', 'deep_seek_api_key'],
+    description: 'DeepSeek AI API key',
+    validateFormat: (val) => val && val.length > 20,
+  },
+  TNG_TECH_DEEP_SEEK_API_KEY: {
+    required: false,
+    env: ['TNG_TECH_DEEP_SEEK_API_KEY', 'tng_tech_deep_seek_api_key'],
+    description: 'TNG Tech DeepSeek enterprise API key',
+    validateFormat: (val) => val && val.length > 20,
+  },
+  MISTRAL_AI_API_KEY: {
+    required: false,
+    env: ['MISTRAL_AI_API_KEY', 'mistral_ai_api_key'],
+    description: 'Mistral AI production API key',
+    validateFormat: (val) => val && val.length > 20,
+  },
+  MISTRAL_AI_DEV_STRALL_API_KEY: {
+    required: false,
+    env: ['MISTRAL_AI_DEV_STRALL_API_KEY', 'mistral_ai_dev_strall_api_key'],
+    description: 'Mistral AI developer (Strall) API key',
+    validateFormat: (val) => val && val.length > 20,
+  },
+  COGNITIVE_COMPUTATIONS_DOLPHIN_MISTRAL_API_KEY: {
+    required: false,
+    env: [
+      'COGNITIVE_COMPUTATIONS_DOLPHIN_MISTRAL_API_KEY',
+      'cognitive_computations_dolphin_mistral_api_key',
+    ],
+    description: 'Cognitive Computations Dolphin (Mistral) API key',
+    validateFormat: (val) => val && val.length > 20,
+  },
+  GLM_4_5_API_KEY: {
+    required: false,
+    env: ['GLM_4_5_API_KEY', 'GLM_4.5_API_KEY', 'Glm_4.5_api_key'],
+    description: 'GLM 4.5 large language model API key',
+    validateFormat: (val) => val && val.length > 20,
+  },
+  GROK_X_API_KEY: {
+    required: false,
+    env: ['GROK_X_API_KEY', 'grok_x_api_key'],
+    description: 'xAI Grok API key',
+    validateFormat: (val) => val && val.length > 20,
+  },
+  X_API_KEY: {
+    required: false,
+    env: ['X_API_KEY', 'X_api_key', 'TWITTER_API_KEY'],
+    description: 'X Platform API key for real-time signals',
+    validateFormat: (val) => val && val.length > 15,
+  },
+  ELEVEN_LABS_API_KEY: {
+    required: false,
+    env: ['ELEVEN_LABS_API_KEY', 'ELEVENLABS_API_KEY', 'eleven_labs_api_key'],
+    description: 'ElevenLabs voice synthesis API key',
+    validateFormat: (val) => val && val.length > 20,
+  },
+  HERMES_LLAMA_API_KEY: {
+    required: false,
+    env: ['HERMES_LLAMA_API_KEY', 'hermes_llama_api_key'],
+    description: 'Hermes Llama API key',
+    validateFormat: (val) => val && val.length > 20,
+  },
+  AGENTICA_API_KEY: {
+    required: false,
+    env: ['AGENTICA_API_KEY', 'Agentica_api_key', 'agentica_api_key'],
+    description: 'Agentica unified automation API key',
+    validateFormat: (val) => val && val.length > 20,
+  },
+  AGENTICA_DEEP_CODER_API_KEY: {
+    required: false,
+    env: ['AGENTICA_DEEP_CODER_API_KEY', 'agentica_deep_coder_api_key'],
+    description: 'Agentica DeepCoder specialized API key',
+    validateFormat: (val) => val && val.length > 20,
+  },
+  CODE_RABBIT_API_KEY: {
+    required: false,
+    env: ['CODE_RABBIT_API_KEY', 'code_rabbit_api'],
+    description: 'CodeRabbit AI reviewer API key',
+    validateFormat: (val) => val && val.length > 20,
+  },
+  MICROSOFT_AI_CODER_API_KEY: {
+    required: false,
+    env: ['MICROSOFT_AI_CODER_API_KEY', 'microsoft_ai_coder_api_key'],
+    description: 'Microsoft AI Coder API key',
+    validateFormat: (val) => val && val.length > 20,
+  },
+  MINIMAX_API_KEY: {
+    required: false,
+    env: ['MINIMAX_API_KEY', 'Minimax_api_key'],
+    description: 'MiniMax AI API key',
+    validateFormat: (val) => val && val.length > 20,
+  },
+  NVIDIA_NEMATRON_NANO_API_KEY: {
+    required: false,
+    env: ['NVIDIA_NEMATRON_NANO_API_KEY', 'Nvidia_nematron_nano_api_key'],
+    description: 'NVIDIA NeMo / Nemotron Nano API key',
+    validateFormat: (val) => val && val.length > 20,
+  },
+  KIMI_DEV_MOONSHOT_API_KEY: {
+    required: false,
+    env: ['KIMI_DEV_MOONSHOT_API_KEY', 'kimi_dev_moonshot_api_key'],
+    description: 'Kimi / Moonshot AI developer API key',
+    validateFormat: (val) => val && val.length > 20,
+  },
   // Deployment & Infrastructure
   VERCEL_TOKEN: {
     required: false,
@@ -87,18 +207,17 @@ const SECRET_DEFINITIONS = {
   // GitHub
   GITHUB_TOKEN: {
     required: false,
-    env: ['GITHUB_TOKEN', 'GH_TOKEN'],
+    env: ['GITHUB_TOKEN', 'GITHUB_API_KEY', 'github_api_key', 'GH_TOKEN'],
     description: 'GitHub personal access token or Actions token',
-    validateFormat: (val) => val && (val.startsWith('ghp_') || val.startsWith('ghs_')),
+    validateFormat: (val) =>
+      val &&
+      (val.startsWith('ghp_') ||
+        val.startsWith('ghs_') ||
+        val.startsWith('github_pat_') ||
+        val.length > 30),
   },
 
-  // Additional AI Services (unlimited API helpers)
-  DEEPSEEK_API_KEY: {
-    required: false,
-    env: ['DEEPSEEK_API_KEY'],
-    description: 'DeepSeek AI API key',
-    validateFormat: (val) => val && val.length > 20,
-  },
+  // Additional AI Services (legacy helpers)
   COHERE_API_KEY: {
     required: false,
     env: ['COHERE_API_KEY'],
@@ -120,6 +239,10 @@ function loadSecret(secretDef) {
   for (const envName of secretDef.env) {
     const value = process.env[envName];
     if (value) {
+      const canonical = secretDef.env[0];
+      if (canonical && envName !== canonical && !process.env[canonical]) {
+        process.env[canonical] = value;
+      }
       return value;
     }
   }
@@ -241,63 +364,21 @@ function hasSecret(key) {
 /**
  * Export secrets and utility functions
  */
-module.exports = {
-  // Get all secrets
+const exported = {
   getSecrets,
-
-  // Get specific secret
   getSecret,
-
-  // Check if secret exists
   hasSecret,
-
-  // Health check
   getSecretsHealth,
-
-  // Secret definitions for documentation
   SECRET_DEFINITIONS,
-
-  // Individual secret getters (convenience)
-  get GEMINI_API_KEY() {
-    return getSecret('GEMINI_API_KEY');
-  },
-  get ANTHROPIC_API_KEY() {
-    return getSecret('ANTHROPIC_API_KEY');
-  },
-  get OPENAI_API_KEY() {
-    return getSecret('OPENAI_API_KEY');
-  },
-  get QWEN_API_KEY() {
-    return getSecret('QWEN_API_KEY');
-  },
-  get VERCEL_TOKEN() {
-    return getSecret('VERCEL_TOKEN');
-  },
-  get VERCEL_ORG_ID() {
-    return getSecret('VERCEL_ORG_ID');
-  },
-  get VERCEL_PROJECT_ID() {
-    return getSecret('VERCEL_PROJECT_ID');
-  },
-  get SUPABASE_URL() {
-    return getSecret('SUPABASE_URL');
-  },
-  get SUPABASE_ANON_KEY() {
-    return getSecret('SUPABASE_ANON_KEY');
-  },
-  get SUPABASE_SERVICE_ROLE_KEY() {
-    return getSecret('SUPABASE_SERVICE_ROLE_KEY');
-  },
-  get GITHUB_TOKEN() {
-    return getSecret('GITHUB_TOKEN');
-  },
-  get DEEPSEEK_API_KEY() {
-    return getSecret('DEEPSEEK_API_KEY');
-  },
-  get COHERE_API_KEY() {
-    return getSecret('COHERE_API_KEY');
-  },
-  get HUGGINGFACE_API_KEY() {
-    return getSecret('HUGGINGFACE_API_KEY');
-  },
 };
+
+for (const secretKey of Object.keys(SECRET_DEFINITIONS)) {
+  Object.defineProperty(exported, secretKey, {
+    enumerable: true,
+    get() {
+      return getSecret(secretKey);
+    },
+  });
+}
+
+module.exports = exported;
