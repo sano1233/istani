@@ -11,16 +11,16 @@ export default function HomePage() {
       console.error('DATABASE_URL is not configured');
       throw new Error('Database connection is not configured. Please contact support.');
     }
-    
+
     try {
       // Connect to the Neon database
       const sql = neon(databaseUrl);
       const comment = formData.get('comment');
-      
+
       if (!comment || typeof comment !== 'string') {
         throw new Error('Comment is required');
       }
-      
+
       // Insert the comment from the form into the Postgres database
       await sql`INSERT INTO comments (comment) VALUES (${comment})`;
     } catch (error) {
