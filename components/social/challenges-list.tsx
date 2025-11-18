@@ -49,7 +49,7 @@ export function ChallengesList() {
         `
           *,
           participants:challenge_participants(count)
-        `
+        `,
       );
 
       // Filter based on status
@@ -76,7 +76,7 @@ export function ChallengesList() {
           participationData?.map((p) => [
             p.challenge_id,
             { current_progress: p.current_progress, status: p.status },
-          ])
+          ]),
         );
 
         setChallenges(
@@ -84,7 +84,7 @@ export function ChallengesList() {
             ...c,
             participants_count: c.participants?.[0]?.count || 0,
             user_participation: participationMap.get(c.id),
-          }))
+          })),
         );
       }
     } catch (error) {

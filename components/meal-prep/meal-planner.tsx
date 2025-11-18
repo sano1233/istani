@@ -112,7 +112,7 @@ export function MealPlanner() {
           `
           *,
           recipe:recipe_id (*)
-        `
+        `,
         )
         .eq('meal_plan_id', activePlan.id)
         .eq('meal_date', dateStr)
@@ -123,7 +123,7 @@ export function MealPlanner() {
           data.map((pm: any) => ({
             ...pm,
             recipe: pm.recipe,
-          }))
+          })),
         );
       }
 
@@ -353,9 +353,7 @@ export function MealPlanner() {
                 {plannedMeal && plannedMeal.recipe ? (
                   <div>
                     <p className="text-white font-semibold mb-2">{plannedMeal.recipe.name}</p>
-                    <p className="text-white/60 text-sm mb-3">
-                      {plannedMeal.recipe.description}
-                    </p>
+                    <p className="text-white/60 text-sm mb-3">{plannedMeal.recipe.description}</p>
 
                     <div className="grid grid-cols-4 gap-2">
                       <div className="text-center">
@@ -366,7 +364,10 @@ export function MealPlanner() {
                       </div>
                       <div className="text-center">
                         <p className="text-white font-semibold">
-                          {Math.round(plannedMeal.recipe.protein_per_serving * plannedMeal.servings)}g
+                          {Math.round(
+                            plannedMeal.recipe.protein_per_serving * plannedMeal.servings,
+                          )}
+                          g
                         </p>
                         <p className="text-white/60 text-xs">protein</p>
                       </div>
@@ -428,9 +429,7 @@ export function MealPlanner() {
                       />
                     )}
                     <h4 className="text-white font-semibold mb-1">{recipe.name}</h4>
-                    <p className="text-white/60 text-sm mb-2 line-clamp-2">
-                      {recipe.description}
-                    </p>
+                    <p className="text-white/60 text-sm mb-2 line-clamp-2">{recipe.description}</p>
                     <div className="flex items-center gap-4 text-xs text-white/60">
                       <span>{recipe.calories_per_serving} cal</span>
                       <span>{recipe.prep_time_minutes + recipe.cook_time_minutes} min</span>

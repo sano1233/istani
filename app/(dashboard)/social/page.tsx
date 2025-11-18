@@ -55,9 +55,7 @@ export default async function SocialPage() {
               </div>
               <div>
                 <p className="text-white/60 text-sm">Level</p>
-                <p className="text-2xl font-bold text-white">
-                  {userPoints?.current_level || 1}
-                </p>
+                <p className="text-2xl font-bold text-white">{userPoints?.current_level || 1}</p>
               </div>
             </div>
           </Card>

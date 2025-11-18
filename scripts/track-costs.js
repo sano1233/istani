@@ -125,7 +125,7 @@ async function calculateCosts() {
   // Calculate total
   costs.total = Object.values(costs.services).reduce(
     (sum, service) => sum + (service.estimated || 0),
-    0
+    0,
   );
 
   costs.percentOfBudget = (costs.total / BUDGET.total) * 100;
@@ -171,13 +171,13 @@ function printReport() {
     const status = actual <= budgeted ? '✓' : '⚠';
 
     console.log(
-      `${status} ${service.padEnd(15)} $${actual.toFixed(2).padStart(6)} / $${budgeted.toFixed(2).padStart(6)} | ${data.note}`
+      `${status} ${service.padEnd(15)} $${actual.toFixed(2).padStart(6)} / $${budgeted.toFixed(2).padStart(6)} | ${data.note}`,
     );
   });
 
   console.log('─'.repeat(60));
   console.log(
-    `TOTAL:              $${costs.total.toFixed(2).padStart(6)} / $${BUDGET.total.toFixed(2).padStart(6)} (${costs.percentOfBudget.toFixed(1)}%)`
+    `TOTAL:              $${costs.total.toFixed(2).padStart(6)} / $${BUDGET.total.toFixed(2).padStart(6)} (${costs.percentOfBudget.toFixed(1)}%)`,
   );
   console.log('─'.repeat(60));
 
@@ -256,9 +256,7 @@ function generateMonthlySummary() {
   console.log(`Average daily cost: $${avgDaily.toFixed(2)}`);
   console.log(`Projected monthly cost: $${projectedMonthly.toFixed(2)}`);
   console.log(`Budget: $${BUDGET.total}`);
-  console.log(
-    `Projection vs Budget: ${((projectedMonthly / BUDGET.total) * 100).toFixed(1)}%`
-  );
+  console.log(`Projection vs Budget: ${((projectedMonthly / BUDGET.total) * 100).toFixed(1)}%`);
   console.log('─'.repeat(60));
   console.log('\n');
 }

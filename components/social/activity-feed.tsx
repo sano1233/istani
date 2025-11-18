@@ -54,7 +54,7 @@ export function ActivityFeed({ userId, limit = 20 }: ActivityFeedProps) {
             full_name,
             avatar_url
           )
-        `
+        `,
         )
         .eq('visibility', 'public')
         .order('created_at', { ascending: false })
@@ -82,7 +82,7 @@ export function ActivityFeed({ userId, limit = 20 }: ActivityFeedProps) {
             ...a,
             user: a.users,
             user_has_liked: likedIds.has(a.id),
-          }))
+          })),
         );
       }
     } catch (error) {
@@ -116,8 +116,8 @@ export function ActivityFeed({ userId, limit = 20 }: ActivityFeedProps) {
                   likes_count: Math.max(0, a.likes_count - 1),
                   user_has_liked: false,
                 }
-              : a
-          )
+              : a,
+          ),
         );
       } else {
         // Like
@@ -135,8 +135,8 @@ export function ActivityFeed({ userId, limit = 20 }: ActivityFeedProps) {
                   likes_count: a.likes_count + 1,
                   user_has_liked: true,
                 }
-              : a
-          )
+              : a,
+          ),
         );
       }
     } catch (error) {
@@ -255,8 +255,12 @@ export function ActivityFeed({ userId, limit = 20 }: ActivityFeedProps) {
               {/* User Info */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
-                  <p className="text-white font-semibold">{activity.user.full_name || 'Anonymous'}</p>
-                  <span className={`material-symbols-outlined text-sm ${getActivityColor(activity.activity_type)}`}>
+                  <p className="text-white font-semibold">
+                    {activity.user.full_name || 'Anonymous'}
+                  </p>
+                  <span
+                    className={`material-symbols-outlined text-sm ${getActivityColor(activity.activity_type)}`}
+                  >
                     {getActivityIcon(activity.activity_type)}
                   </span>
                 </div>
@@ -274,9 +278,7 @@ export function ActivityFeed({ userId, limit = 20 }: ActivityFeedProps) {
                 <div className="mt-3 grid grid-cols-3 gap-3">
                   {Object.entries(activity.activity_data).map(([key, value]) => (
                     <div key={key} className="bg-white/5 rounded-lg p-3">
-                      <p className="text-white/60 text-xs capitalize">
-                        {key.replace(/_/g, ' ')}
-                      </p>
+                      <p className="text-white/60 text-xs capitalize">{key.replace(/_/g, ' ')}</p>
                       <p className="text-white font-semibold">{String(value)}</p>
                     </div>
                   ))}
@@ -289,9 +291,7 @@ export function ActivityFeed({ userId, limit = 20 }: ActivityFeedProps) {
               <button
                 onClick={() => toggleLike(activity.id)}
                 className={`flex items-center gap-2 transition-colors ${
-                  activity.user_has_liked
-                    ? 'text-red-500'
-                    : 'text-white/60 hover:text-red-500'
+                  activity.user_has_liked ? 'text-red-500' : 'text-white/60 hover:text-red-500'
                 }`}
               >
                 <span className="material-symbols-outlined text-xl">

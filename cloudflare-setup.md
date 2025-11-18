@@ -1,4 +1,5 @@
 # Cloudflare Setup Guide for ISTANI
+
 ## Free Tier - Global CDN & Security
 
 ---
@@ -19,15 +20,16 @@ Cloudflare will scan your existing DNS records. Update them as follows:
 
 ### Required DNS Records
 
-| Type | Name | Content | Proxy Status | TTL |
-|------|------|---------|--------------|-----|
-| A | @ | 76.76.21.21 | Proxied (Orange Cloud) | Auto |
-| CNAME | www | cname.vercel-dns.com | Proxied (Orange Cloud) | Auto |
-| CNAME | ai-agent | ai-agent.up.railway.app | Proxied (Orange Cloud) | Auto |
-| CNAME | grafana | grafana.up.railway.app | Proxied (Orange Cloud) | Auto |
-| TXT | @ | v=spf1 include:_spf.google.com ~all | DNS Only | Auto |
+| Type  | Name     | Content                              | Proxy Status           | TTL  |
+| ----- | -------- | ------------------------------------ | ---------------------- | ---- |
+| A     | @        | 76.76.21.21                          | Proxied (Orange Cloud) | Auto |
+| CNAME | www      | cname.vercel-dns.com                 | Proxied (Orange Cloud) | Auto |
+| CNAME | ai-agent | ai-agent.up.railway.app              | Proxied (Orange Cloud) | Auto |
+| CNAME | grafana  | grafana.up.railway.app               | Proxied (Orange Cloud) | Auto |
+| TXT   | @        | v=spf1 include:\_spf.google.com ~all | DNS Only               | Auto |
 
 **Notes:**
+
 - The A record IP (76.76.21.21) is Vercel's anycast IP
 - Replace Railway URLs with your actual Railway app URLs
 - Orange cloud icon = Proxied through Cloudflare (CDN enabled)
@@ -38,6 +40,7 @@ Cloudflare will scan your existing DNS records. Update them as follows:
 ## Step 3: Update Nameservers
 
 1. Cloudflare will provide 2 nameservers (example):
+
    ```
    dana.ns.cloudflare.com
    mark.ns.cloudflare.com
@@ -123,6 +126,7 @@ Cloudflare will scan your existing DNS records. Update them as follows:
 Create the following page rules:
 
 #### Rule 1: Cache Static Assets
+
 ```
 URL: istani.org/_next/static/*
 Settings:
@@ -132,6 +136,7 @@ Settings:
 ```
 
 #### Rule 2: Force HTTPS
+
 ```
 URL: http://istani.org/*
 Settings:
@@ -139,6 +144,7 @@ Settings:
 ```
 
 #### Rule 3: API Rate Limiting Protection
+
 ```
 URL: istani.org/api/*
 Settings:
@@ -153,12 +159,14 @@ Settings:
 ### 7.1 Firewall Rules (Free: 5 rules)
 
 #### Rule 1: Block Bad Bots
+
 ```
 Expression: (cf.threat_score gt 10)
 Action: Challenge (CAPTCHA)
 ```
 
 #### Rule 2: Block Common Exploits
+
 ```
 Expression:
   (http.request.uri.path contains ".env") or
@@ -169,12 +177,14 @@ Action: Block
 ```
 
 #### Rule 3: Rate Limit API
+
 ```
 Expression: (http.request.uri.path contains "/api/" and cf.threat_score gt 5)
 Action: Challenge
 ```
 
 #### Rule 4: Geo-Blocking (if needed)
+
 ```
 Expression: (ip.geoip.country in {"XX" "YY"})
 Action: Block
@@ -296,6 +306,7 @@ export default function RootLayout({ children }) {
 ### 12.1 APO (Automatic Platform Optimization)
 
 **NOT NEEDED for Next.js/Vercel**
+
 - Vercel Edge Network already handles this
 - APO costs $5/month
 - Skip this feature
@@ -303,6 +314,7 @@ export default function RootLayout({ children }) {
 ### 12.2 Argo Smart Routing
 
 **Optional ($5/month + usage)**
+
 - Routes traffic through fastest network path
 - Can reduce latency by 30%
 - **Only enable if needed** (exceeds free budget)
@@ -310,6 +322,7 @@ export default function RootLayout({ children }) {
 ### 12.3 Load Balancing
 
 **Optional (starts at $5/month)**
+
 - Multiple origin servers
 - Health checks
 - Failover
@@ -342,11 +355,13 @@ export default function RootLayout({ children }) {
 If you want to automate Cloudflare configuration:
 
 ### Install CLI:
+
 ```bash
 npm install -g cloudflare-cli
 ```
 
 ### API Token:
+
 1. Go to **My Profile → API Tokens**
 2. Create token with permissions:
    - Zone: Read, Edit
@@ -359,6 +374,7 @@ npm install -g cloudflare-cli
    ```
 
 ### Purge Cache Programmatically:
+
 ```typescript
 // lib/cloudflare.ts
 export async function purgeCache(files?: string[]) {
@@ -367,13 +383,13 @@ export async function purgeCache(files?: string[]) {
     {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${process.env.CLOUDFLARE_API_TOKEN}`,
+        Authorization: `Bearer ${process.env.CLOUDFLARE_API_TOKEN}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         files: files || [process.env.NEXT_PUBLIC_SITE_URL],
       }),
-    }
+    },
   );
   return response.json();
 }

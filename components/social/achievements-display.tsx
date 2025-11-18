@@ -64,7 +64,7 @@ export function AchievementsDisplay({ userId, compact = false }: AchievementsDis
             is_completed,
             completed_at
           )
-        `
+        `,
         )
         .eq('user_achievements.user_id', targetUserId)
         .order('rarity', { ascending: true })
@@ -79,11 +79,11 @@ export function AchievementsDisplay({ userId, compact = false }: AchievementsDis
         // Apply filter
         if (filter === 'completed') {
           filteredAchievements = filteredAchievements.filter(
-            (a) => a.user_achievement?.is_completed
+            (a) => a.user_achievement?.is_completed,
           );
         } else if (filter === 'in-progress') {
           filteredAchievements = filteredAchievements.filter(
-            (a) => a.user_achievement && !a.user_achievement.is_completed
+            (a) => a.user_achievement && !a.user_achievement.is_completed,
           );
         }
 
@@ -91,7 +91,7 @@ export function AchievementsDisplay({ userId, compact = false }: AchievementsDis
 
         // Calculate stats
         const completed = achievementsData.filter(
-          (a: any) => a.user_achievements?.[0]?.is_completed
+          (a: any) => a.user_achievements?.[0]?.is_completed,
         ).length;
         const pointsEarned = achievementsData
           .filter((a: any) => a.user_achievements?.[0]?.is_completed)
@@ -253,18 +253,14 @@ export function AchievementsDisplay({ userId, compact = false }: AchievementsDis
                   } flex items-center justify-center mb-3 relative`}
                 >
                   {achievement.is_secret && !isCompleted ? (
-                    <span className="material-symbols-outlined text-6xl text-white/20">
-                      lock
-                    </span>
+                    <span className="material-symbols-outlined text-6xl text-white/20">lock</span>
                   ) : (
                     <span className="text-6xl">{achievement.badge_icon || '🏆'}</span>
                   )}
 
                   {isCompleted && (
                     <div className="absolute top-2 right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                      <span className="material-symbols-outlined text-white text-sm">
-                        check
-                      </span>
+                      <span className="material-symbols-outlined text-white text-sm">check</span>
                     </div>
                   )}
                 </div>

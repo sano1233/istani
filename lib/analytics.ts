@@ -133,7 +133,10 @@ export async function getWorkoutStats(userId: string, days: number = 30): Promis
 /**
  * Get nutrition statistics
  */
-export async function getNutritionStats(userId: string, days: number = 30): Promise<NutritionStats> {
+export async function getNutritionStats(
+  userId: string,
+  days: number = 30,
+): Promise<NutritionStats> {
   const supabase = await createClient();
 
   const startDate = new Date();
@@ -153,10 +156,18 @@ export async function getNutritionStats(userId: string, days: number = 30): Prom
     .gte('meal_date', startDate.toISOString().split('T')[0]);
 
   // Group by date and calculate daily totals
-  const dailyTotals = new Map<string, { calories: number; protein: number; carbs: number; fat: number }>();
+  const dailyTotals = new Map<
+    string,
+    { calories: number; protein: number; carbs: number; fat: number }
+  >();
 
   mealsData?.forEach((meal) => {
-    const existing = dailyTotals.get(meal.meal_date) || { calories: 0, protein: 0, carbs: 0, fat: 0 };
+    const existing = dailyTotals.get(meal.meal_date) || {
+      calories: 0,
+      protein: 0,
+      carbs: 0,
+      fat: 0,
+    };
     dailyTotals.set(meal.meal_date, {
       calories: existing.calories + (meal.calories || 0),
       protein: existing.protein + (meal.protein_g || 0),
@@ -173,7 +184,7 @@ export async function getNutritionStats(userId: string, days: number = 30): Prom
       carbs: acc.carbs + day.carbs,
       fat: acc.fat + day.fat,
     }),
-    { calories: 0, protein: 0, carbs: 0, fat: 0 }
+    { calories: 0, protein: 0, carbs: 0, fat: 0 },
   );
 
   // Get nutrition goals
@@ -228,17 +239,14 @@ export async function getProgressStats(userId: string): Promise<ProgressStats> {
   const first = measurements[0];
   const latest = measurements[measurements.length - 1];
 
-  const weightChange = latest.weight_kg && first.weight_kg
-    ? latest.weight_kg - first.weight_kg
-    : 0;
+  const weightChange = latest.weight_kg && first.weight_kg ? latest.weight_kg - first.weight_kg : 0;
 
-  const weightChangePercent = first.weight_kg
-    ? (weightChange / first.weight_kg) * 100
-    : 0;
+  const weightChangePercent = first.weight_kg ? (weightChange / first.weight_kg) * 100 : 0;
 
-  const bodyFatChange = latest.body_fat_percentage && first.body_fat_percentage
-    ? latest.body_fat_percentage - first.body_fat_percentage
-    : 0;
+  const bodyFatChange =
+    latest.body_fat_percentage && first.body_fat_percentage
+      ? latest.body_fat_percentage - first.body_fat_percentage
+      : 0;
 
   const photosUploaded = measurements.reduce((count, m) => {
     if (m.photos) {
@@ -260,7 +268,10 @@ export async function getProgressStats(userId: string): Promise<ProgressStats> {
 /**
  * Get workout time series data for charts
  */
-export async function getWorkoutTimeSeries(userId: string, days: number = 30): Promise<TimeSeriesData[]> {
+export async function getWorkoutTimeSeries(
+  userId: string,
+  days: number = 30,
+): Promise<TimeSeriesData[]> {
   const supabase = await createClient();
 
   const startDate = new Date();
@@ -302,7 +313,10 @@ export async function getWorkoutTimeSeries(userId: string, days: number = 30): P
 /**
  * Get nutrition time series data for charts
  */
-export async function getNutritionTimeSeries(userId: string, days: number = 30): Promise<{
+export async function getNutritionTimeSeries(
+  userId: string,
+  days: number = 30,
+): Promise<{
   calories: TimeSeriesData[];
   protein: TimeSeriesData[];
   carbs: TimeSeriesData[];
@@ -321,7 +335,10 @@ export async function getNutritionTimeSeries(userId: string, days: number = 30):
     .order('meal_date', { ascending: true });
 
   // Group by date
-  const dailyData = new Map<string, { calories: number; protein: number; carbs: number; fat: number }>();
+  const dailyData = new Map<
+    string,
+    { calories: number; protein: number; carbs: number; fat: number }
+  >();
 
   meals?.forEach((meal) => {
     const existing = dailyData.get(meal.meal_date) || { calories: 0, protein: 0, carbs: 0, fat: 0 };
@@ -401,7 +418,7 @@ function calculateLongestStreak(dates: string[]): number {
 
   for (let i = 1; i < sortedDates.length; i++) {
     const diffDays = Math.floor(
-      (sortedDates[i].getTime() - prevDate.getTime()) / (1000 * 60 * 60 * 24)
+      (sortedDates[i].getTime() - prevDate.getTime()) / (1000 * 60 * 60 * 24),
     );
 
     if (diffDays === 1) {

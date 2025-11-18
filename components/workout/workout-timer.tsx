@@ -23,7 +23,7 @@ export function WorkoutTimer({ exercises: initialExercises, onComplete }: Workou
       { name: 'Squats', duration: 45, rest: 20, sets: 3 },
       { name: 'Plank', duration: 60, rest: 30, sets: 2 },
       { name: 'Burpees', duration: 30, rest: 20, sets: 3 },
-    ]
+    ],
   );
 
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);

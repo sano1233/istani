@@ -98,10 +98,7 @@ export async function POST(request: NextRequest) {
     });
   } catch (error: any) {
     console.error('Error generating workout plan:', error);
-    return NextResponse.json(
-      { error: error.message || 'Internal server error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });
   }
 }
 
@@ -115,11 +112,15 @@ Equipment Available: ${request.equipment.join(', ')}
 Workout Duration: ${request.duration_minutes} minutes per session
 ${request.preferences ? `Additional Preferences: ${request.preferences}` : ''}
 
-${profile ? `User Profile:
+${
+  profile
+    ? `User Profile:
 - Age: ${profile.age || 'N/A'}
 - Weight: ${profile.weight_kg || 'N/A'} kg
 - Height: ${profile.height_cm || 'N/A'} cm
-- Primary Goal: ${profile.primary_goal || 'N/A'}` : ''}
+- Primary Goal: ${profile.primary_goal || 'N/A'}`
+    : ''
+}
 
 Please provide a workout plan in the following JSON format:
 {

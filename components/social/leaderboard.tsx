@@ -23,11 +23,7 @@ interface LeaderboardProps {
   limit?: number;
 }
 
-export function Leaderboard({
-  type = 'global',
-  metric = 'points',
-  limit = 10,
-}: LeaderboardProps) {
+export function Leaderboard({ type = 'global', metric = 'points', limit = 10 }: LeaderboardProps) {
   const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentUserRank, setCurrentUserRank] = useState<number | null>(null);
@@ -62,7 +58,7 @@ export function Leaderboard({
               full_name,
               avatar_url
             )
-          `
+          `,
           )
           .eq('leaderboard_id', leaderboardData.id)
           .order('rank', { ascending: true })
@@ -73,7 +69,7 @@ export function Leaderboard({
             entriesData.map((e: any) => ({
               ...e,
               user: e.users,
-            }))
+            })),
           );
 
           // Find current user's rank

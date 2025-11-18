@@ -121,9 +121,7 @@ export function LineChart({
       {/* Labels and values */}
       {showLabels && (
         <div className="absolute inset-x-0 top-0 flex justify-between px-4 -mt-6">
-          <div className="text-xs text-white/60">
-            {data[0].label || data[0].date}
-          </div>
+          <div className="text-xs text-white/60">{data[0].label || data[0].date}</div>
           <div className="text-xs text-white/60">
             {data[data.length - 1].label || data[data.length - 1].date}
           </div>

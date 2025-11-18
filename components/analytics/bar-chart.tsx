@@ -13,7 +13,12 @@ interface BarChartProps {
   showValues?: boolean;
 }
 
-export function BarChart({ data, height = 200, horizontal = false, showValues = true }: BarChartProps) {
+export function BarChart({
+  data,
+  height = 200,
+  horizontal = false,
+  showValues = true,
+}: BarChartProps) {
   if (data.length === 0) {
     return (
       <div className="flex items-center justify-center" style={{ height }}>

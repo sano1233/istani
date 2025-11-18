@@ -1,7 +1,9 @@
 # ISTANI Full Stack Deployment Plan
+
 ## Budget: $147 Credit Allocation
 
 ### Executive Summary
+
 Deploy istani.org as a production-ready full-stack fitness platform using $147 in cloud credits across multiple services for maximum performance, reliability, and scalability.
 
 ---
@@ -36,18 +38,18 @@ Deploy istani.org as a production-ready full-stack fitness platform using $147 i
 
 ## 💰 Monthly Budget Breakdown ($147/month)
 
-| Service | Tier | Cost/Month | Purpose |
-|---------|------|------------|---------|
-| **Vercel** | Pro | $20 | Next.js hosting, auto-scaling, analytics |
-| **Supabase** | Pro | $25 | PostgreSQL database, 8GB, 500GB bandwidth |
-| **Railway** | Standard | $30 | AI agent, Redis, Prometheus, Grafana |
-| **OpenAI** | Usage | $30 | GPT-4 for meal/workout generation |
-| **Cloudflare** | Free | $0 | CDN, DDoS protection, SSL |
-| **Sentry** | Developer | $26 | Error tracking, performance monitoring |
-| **Uptime Robot** | Free | $0 | Uptime monitoring (50 monitors) |
-| **Better Stack** | Free | $0 | Log aggregation and alerts |
-| **Reserve** | - | $16 | Overage buffer |
-| **TOTAL** | - | **$147** | Full production stack |
+| Service          | Tier      | Cost/Month | Purpose                                   |
+| ---------------- | --------- | ---------- | ----------------------------------------- |
+| **Vercel**       | Pro       | $20        | Next.js hosting, auto-scaling, analytics  |
+| **Supabase**     | Pro       | $25        | PostgreSQL database, 8GB, 500GB bandwidth |
+| **Railway**      | Standard  | $30        | AI agent, Redis, Prometheus, Grafana      |
+| **OpenAI**       | Usage     | $30        | GPT-4 for meal/workout generation         |
+| **Cloudflare**   | Free      | $0         | CDN, DDoS protection, SSL                 |
+| **Sentry**       | Developer | $26        | Error tracking, performance monitoring    |
+| **Uptime Robot** | Free      | $0         | Uptime monitoring (50 monitors)           |
+| **Better Stack** | Free      | $0         | Log aggregation and alerts                |
+| **Reserve**      | -         | $16        | Overage buffer                            |
+| **TOTAL**        | -         | **$147**   | Full production stack                     |
 
 ---
 
@@ -56,6 +58,7 @@ Deploy istani.org as a production-ready full-stack fitness platform using $147 i
 ### 1.1 Vercel Pro Deployment ($20/month)
 
 **Features:**
+
 - Unlimited bandwidth
 - Advanced analytics
 - Team collaboration
@@ -65,6 +68,7 @@ Deploy istani.org as a production-ready full-stack fitness platform using $147 i
 - DDoS mitigation
 
 **Setup:**
+
 ```bash
 # Install Vercel CLI
 npm i -g vercel
@@ -88,6 +92,7 @@ vercel env add CRON_SECRET
 ```
 
 **Configuration:**
+
 - Enable automatic deployments from main branch
 - Set up preview deployments for PRs
 - Configure custom domain: istani.org
@@ -99,6 +104,7 @@ vercel env add CRON_SECRET
 ### 1.2 Supabase Pro Database ($25/month)
 
 **Features:**
+
 - 8 GB database space
 - 500 GB bandwidth
 - Automatic backups (7 days point-in-time recovery)
@@ -107,6 +113,7 @@ vercel env add CRON_SECRET
 - Daily backups
 
 **Setup:**
+
 1. Upgrade existing Supabase project to Pro tier
 2. Enable Point-in-Time Recovery (PITR)
 3. Configure connection pooling
@@ -115,6 +122,7 @@ vercel env add CRON_SECRET
 6. Configure Row-Level Security (RLS) policies
 
 **Optimizations:**
+
 ```sql
 -- Add indexes for performance
 CREATE INDEX idx_users_email ON users(email);
@@ -131,6 +139,7 @@ ALTER TABLE nutrition_logs SET (autovacuum_vacuum_scale_factor = 0.1);
 ```
 
 **Connection String:**
+
 ```env
 # Use connection pooler for serverless
 DATABASE_URL=postgresql://postgres.xxx:[PASSWORD]@aws-0-us-east-1.pooler.supabase.com:6543/postgres
@@ -141,12 +150,14 @@ DATABASE_URL=postgresql://postgres.xxx:[PASSWORD]@aws-0-us-east-1.pooler.supabas
 ### 1.3 Railway Deployment ($30/month)
 
 **Services to Deploy:**
+
 - AI Agent (Node.js service)
 - Redis (caching)
 - Prometheus (metrics)
 - Grafana (visualization)
 
 **Setup:**
+
 ```bash
 # Install Railway CLI
 npm i -g @railway/cli
@@ -162,6 +173,7 @@ railway up ai-agent/docker-compose.yml
 ```
 
 **railway.json:**
+
 ```json
 {
   "build": {
@@ -178,6 +190,7 @@ railway up ai-agent/docker-compose.yml
 ```
 
 **Environment Variables:**
+
 - ANTHROPIC_API_KEY
 - GITHUB_TOKEN
 - GITHUB_OWNER=sano1233
@@ -192,6 +205,7 @@ railway up ai-agent/docker-compose.yml
 ### 2.1 Cloudflare Setup (Free)
 
 **Features:**
+
 - Global CDN
 - DDoS protection
 - SSL/TLS encryption
@@ -200,6 +214,7 @@ railway up ai-agent/docker-compose.yml
 - Page Rules
 
 **Setup:**
+
 1. Add istani.org to Cloudflare
 2. Update nameservers at domain registrar
 3. Enable "Full (Strict)" SSL mode
@@ -209,6 +224,7 @@ railway up ai-agent/docker-compose.yml
    - Browser cache TTL: 4 hours
 
 **Security Rules:**
+
 ```javascript
 // Block common attacks
 (http.request.uri.path contains "wp-admin") or
@@ -221,6 +237,7 @@ railway up ai-agent/docker-compose.yml
 ### 2.2 Sentry Error Tracking ($26/month)
 
 **Features:**
+
 - 100K errors/month
 - 100K performance units
 - 1GB attachments
@@ -229,6 +246,7 @@ railway up ai-agent/docker-compose.yml
 - Performance monitoring
 
 **Setup:**
+
 ```bash
 npm install --save @sentry/nextjs
 
@@ -237,8 +255,9 @@ npx @sentry/wizard@latest -i nextjs
 ```
 
 **sentry.client.config.ts:**
+
 ```typescript
-import * as Sentry from "@sentry/nextjs";
+import * as Sentry from '@sentry/nextjs';
 
 Sentry.init({
   dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
@@ -259,6 +278,7 @@ Sentry.init({
 ### 2.3 Uptime Monitoring (Free)
 
 **UptimeRobot Setup:**
+
 - Monitor main app: https://istani.org
 - Monitor API health: https://istani.org/api/health
 - Monitor AI agent: https://ai-agent.railway.app/health
@@ -270,12 +290,14 @@ Sentry.init({
 ### 2.4 Better Stack Logging (Free)
 
 **Features:**
+
 - 1GB logs/month
 - 3-day retention
 - Real-time log streaming
 - Alert on errors
 
 **Integration:**
+
 ```javascript
 // lib/logger.ts
 import { BetterStack } from '@logtail/node';
@@ -296,11 +318,13 @@ export const log = {
 ### 3.1 OpenAI API ($30/month budget)
 
 **Usage Allocation:**
+
 - GPT-4 Turbo: Meal planning, workout recommendations
 - GPT-3.5 Turbo: Coaching messages, quick responses
 - Embedding: Similarity search for exercises
 
 **Cost Control:**
+
 ```typescript
 // lib/openai.ts
 import OpenAI from 'openai';
@@ -316,7 +340,9 @@ export const generateCoachingMessage = async (userId: string) => {
   return openai.chat.completions.create({
     model: 'gpt-3.5-turbo',
     max_tokens: 150,
-    messages: [/* ... */],
+    messages: [
+      /* ... */
+    ],
   });
 };
 
@@ -325,12 +351,15 @@ export const generateMealPlan = async (preferences: any) => {
   return openai.chat.completions.create({
     model: 'gpt-4-turbo-preview',
     max_tokens: 2000,
-    messages: [/* ... */],
+    messages: [
+      /* ... */
+    ],
   });
 };
 ```
 
 **Estimated Usage:**
+
 - 100 meal plans/month × $0.03 = $3
 - 500 workout plans/month × $0.02 = $10
 - 2000 coaching messages/month × $0.005 = $10
@@ -342,14 +371,17 @@ export const generateMealPlan = async (preferences: any) => {
 ### 3.2 Free API Integrations
 
 **USDA FoodData Central:**
+
 - Free tier: Unlimited requests
 - Rate limit: 1000 requests/hour
 
 **Pexels API:**
+
 - Free tier: 200 requests/hour
 - Unlimited monthly requests
 
 **Open Food Facts:**
+
 - Free: Unlimited requests
 - Public database
 
@@ -360,17 +392,20 @@ export const generateMealPlan = async (preferences: any) => {
 ### 4.1 Stripe Setup (Transaction Fees Only)
 
 **Products to Sell:**
+
 1. Coaching sessions ($50-200)
 2. Fitness supplements ($20-100)
 3. Premium meal plans ($30/month)
 4. Custom workout programs ($50)
 
 **Fee Structure:**
+
 - 2.9% + $0.30 per transaction
 - No monthly fee
 - Instant payouts to bank
 
 **Webhook Configuration:**
+
 ```typescript
 // app/api/stripe/webhook/route.ts
 import { stripe } from '@/lib/stripe';
@@ -380,11 +415,7 @@ export async function POST(req: Request) {
   const body = await req.text();
   const signature = headers().get('stripe-signature')!;
 
-  const event = stripe.webhooks.constructEvent(
-    body,
-    signature,
-    process.env.STRIPE_WEBHOOK_SECRET!
-  );
+  const event = stripe.webhooks.constructEvent(body, signature, process.env.STRIPE_WEBHOOK_SECRET!);
 
   switch (event.type) {
     case 'checkout.session.completed':
@@ -406,6 +437,7 @@ export async function POST(req: Request) {
 ### 5.1 Vercel Analytics
 
 **Metrics Tracked:**
+
 - Page load times
 - Core Web Vitals (LCP, FID, CLS)
 - User sessions
@@ -415,6 +447,7 @@ export async function POST(req: Request) {
 ### 5.2 Custom Analytics Dashboard
 
 **Grafana Dashboards:**
+
 1. **System Health**
    - API response times
    - Database query performance
@@ -441,6 +474,7 @@ export async function POST(req: Request) {
 ### 6.1 GitHub Actions (Free)
 
 **Workflows:**
+
 1. **Build & Test** (on PR)
 2. **Deploy to Vercel** (on main push)
 3. **Database Migrations** (manual trigger)
@@ -448,6 +482,7 @@ export async function POST(req: Request) {
 5. **Dependency Updates** (Renovate)
 
 **Enhanced Deployment Workflow:**
+
 ```yaml
 name: Deploy to Production
 
@@ -499,6 +534,7 @@ jobs:
 **Primary Domain:** istani.org
 
 **DNS Records (via Cloudflare):**
+
 ```
 Type    Name              Value                      Proxy
 A       @                 76.76.21.21 (Vercel)       Yes
@@ -522,6 +558,7 @@ TXT     @                 "v=spf1 include:_spf..."   -
 ### 8.1 Production Environment Variables
 
 **Vercel (.env.production):**
+
 ```env
 # Supabase
 NEXT_PUBLIC_SUPABASE_URL=https://xxx.supabase.co
@@ -555,6 +592,7 @@ GITHUB_TOKEN=ghp_xxx
 ```
 
 **Railway (AI Agent):**
+
 ```env
 ANTHROPIC_API_KEY=sk-ant-xxx
 GITHUB_TOKEN=ghp_xxx
@@ -571,6 +609,7 @@ PORT=3001
 ## ✅ Phase 9: Pre-Launch Checklist
 
 ### 9.1 Security
+
 - [ ] All environment variables set in production
 - [ ] HTTPS enforced (Cloudflare + Vercel)
 - [ ] Supabase RLS policies enabled
@@ -581,6 +620,7 @@ PORT=3001
 - [ ] XSS protection headers
 
 ### 9.2 Performance
+
 - [ ] Database indexes created
 - [ ] Image optimization enabled
 - [ ] Cloudflare caching configured
@@ -590,6 +630,7 @@ PORT=3001
 - [ ] Core Web Vitals passing
 
 ### 9.3 Monitoring
+
 - [ ] Sentry error tracking active
 - [ ] UptimeRobot monitors configured
 - [ ] Grafana dashboards created
@@ -597,6 +638,7 @@ PORT=3001
 - [ ] Alert notifications set up
 
 ### 9.4 Functionality
+
 - [ ] User registration/login working
 - [ ] Workout logging functional
 - [ ] Nutrition tracking operational
@@ -637,6 +679,7 @@ PORT=3001
 ### 10.2 Post-Launch Monitoring
 
 **First 24 Hours:**
+
 - Monitor Sentry for errors
 - Watch Vercel analytics
 - Check database performance
@@ -644,6 +687,7 @@ PORT=3001
 - Track costs
 
 **First Week:**
+
 - Optimize based on real usage
 - Scale resources if needed
 - Fix any production bugs
@@ -686,6 +730,7 @@ PORT=3001
 **0-1,000 Users:** Current setup ($147/month)
 
 **1,000-10,000 Users:**
+
 - Upgrade Supabase to Team ($599/month)
 - Add read replicas
 - Increase Railway resources ($50/month)
@@ -693,6 +738,7 @@ PORT=3001
 - **Total: ~$796/month**
 
 **10,000-100,000 Users:**
+
 - Vercel Enterprise (custom pricing)
 - Supabase Pro with increased compute
 - Multiple Railway instances
@@ -706,12 +752,14 @@ PORT=3001
 ### KPIs to Track:
 
 **Technical:**
+
 - Uptime: >99.9%
 - API response time: <200ms (p95)
 - Error rate: <0.1%
 - Core Web Vitals: All green
 
 **Business:**
+
 - Daily Active Users (DAU)
 - Monthly Active Users (MAU)
 - Conversion rate (free → paid)
@@ -719,6 +767,7 @@ PORT=3001
 - Customer acquisition cost (CAC)
 
 **User Experience:**
+
 - Time to first workout log
 - Meal planning completion rate
 - Checkout abandonment rate
@@ -729,17 +778,20 @@ PORT=3001
 ## 🔄 Maintenance Schedule
 
 ### Daily:
+
 - Check error rates (Sentry)
 - Review uptime (UptimeRobot)
 - Monitor costs (Vercel, Railway, OpenAI)
 
 ### Weekly:
+
 - Review performance metrics
 - Analyze user behavior
 - Check database growth
 - Update dependencies (Renovate)
 
 ### Monthly:
+
 - Review budget vs. actual costs
 - Optimize queries based on pg_stat_statements
 - Archive old data
@@ -753,21 +805,25 @@ PORT=3001
 ### Vendor Support Contacts:
 
 **Vercel:**
+
 - Pro plan includes email support
 - Response time: 1 business day
 - Status: status.vercel.com
 
 **Supabase:**
+
 - Pro plan includes email support
 - Response time: 1 business day
 - Status: status.supabase.com
 
 **Railway:**
+
 - Community Discord
 - Email support
 - Status: railway.app/status
 
 **Stripe:**
+
 - Email and chat support
 - Phone support for high-volume
 - Status: status.stripe.com
