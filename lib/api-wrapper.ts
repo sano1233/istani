@@ -39,10 +39,7 @@ export interface ApiContext {
   isAdmin?: boolean;
 }
 
-export type ApiHandler<T = any> = (
-  context: ApiContext,
-  data?: any,
-) => Promise<NextResponse<T>>;
+export type ApiHandler<T = any> = (context: ApiContext, data?: any) => Promise<NextResponse<T>>;
 
 /**
  * Creates a wrapped API handler with built-in features
@@ -66,6 +63,11 @@ export function createApiHandler<T = any>(
     const path = url.pathname;
     const method = request.method;
 
+    // Declare variables before try block so they're accessible in catch
+    let userId: string | undefined;
+    let user: any;
+    let isAdmin = false;
+
     try {
       // Log incoming request
       logger.apiRequest(method, path);
@@ -82,9 +84,6 @@ export function createApiHandler<T = any>(
       }
 
       // Authentication check
-      let userId: string | undefined;
-      let user: any;
-      let isAdmin = false;
 
       if (requireAuth || requireAdmin) {
         try {
@@ -123,10 +122,7 @@ export function createApiHandler<T = any>(
           }
         } catch (error: any) {
           logger.error('Authentication error', error, { path, method });
-          return NextResponse.json(
-            { error: 'Authentication failed' },
-            { status: 401 },
-          );
+          return NextResponse.json({ error: 'Authentication failed' }, { status: 401 });
         }
       }
 
@@ -158,10 +154,7 @@ export function createApiHandler<T = any>(
           }
         } catch (error: any) {
           logger.warn('Failed to parse request body', { path, method, error: error.message });
-          return NextResponse.json(
-            { error: 'Invalid JSON in request body' },
-            { status: 400 },
-          );
+          return NextResponse.json({ error: 'Invalid JSON in request body' }, { status: 400 });
         }
       }
 

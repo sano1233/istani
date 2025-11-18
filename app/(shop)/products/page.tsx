@@ -2,6 +2,9 @@ import { createClient } from '@/lib/supabase/server';
 import { ProductCard } from '@/components/product-card';
 import type { Product } from '@/types';
 
+// Force dynamic rendering for pages using Supabase
+export const dynamic = 'force-dynamic';
+
 export default async function ProductsPage() {
   const supabase = await createClient();
 
