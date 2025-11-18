@@ -1,6 +1,9 @@
 import { updateSession } from '@/lib/supabase/middleware';
 import { NextResponse, type NextRequest } from 'next/server';
 
+// Specify Edge runtime explicitly for Vercel
+export const runtime = 'edge';
+
 export async function middleware(request: NextRequest) {
   try {
     return await updateSession(request);
@@ -8,7 +11,9 @@ export async function middleware(request: NextRequest) {
     // Log and return a fallback response if middleware fails
     console.error('Middleware error:', error);
     // Return next response to continue the request
-    return NextResponse.next();
+    return NextResponse.next({
+      request,
+    });
   }
 }
 
