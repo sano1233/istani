@@ -36,10 +36,13 @@ The following secrets must be configured in the unified environment:
 ## Workflows Using This Environment
 
 ### AI Brain PR Handler (`.github/workflows/ai-brain.yml`)
-- Automatically analyzes PRs using multiple AI models
+- Automatically analyzes PRs using multiple AI models (Gemini, Claude, Qwen)
+- Detects code errors (JavaScript syntax, HTML structure, CSS validation)
+- Auto-fixes detected errors using AI
 - Auto-resolves merge conflicts
-- Provides AI-powered reviews
-- Auto-approves and merges PRs when 2+ AI models approve
+- Provides comprehensive AI-powered reviews
+- Auto-approves and merges PRs when 2+ AI models approve and all fixes succeed
+- Posts detailed analysis reports with error detection and fix status
 
 ## Setup Instructions
 
