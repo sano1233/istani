@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { OpenAIAPI } from '@/lib/api-integrations';
+import { unifiedAI } from '@/lib/unified-ai-client';
 import { createClient } from '@/lib/supabase/server';
 
+export const runtime = 'nodejs';
+
 /**
- * Generate AI-powered workout plan
+ * Generate AI-powered workout plan with unified AI client
  * POST /api/ai/workout
  */
-export async function POST(request: NextRequest) {
+export async function POST(req: NextRequest) {
   try {
     // Check authentication
     const supabase = await createClient();
@@ -18,47 +20,59 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const body = await request.json();
-    const { goals, experience, equipment, timeAvailable } = body;
+    const body = await req.json();
+    const { goals, fitnessLevel, equipment, timeAvailable } = body;
 
-    if (!goals || !experience || !equipment || !timeAvailable) {
+    if (!goals || !fitnessLevel) {
       return NextResponse.json(
-        { error: 'Missing required fields: goals, experience, equipment, timeAvailable' },
-        { status: 400 },
+        { error: 'Goals and fitness level are required' },
+        { status: 400 }
       );
     }
 
-    const openai = new OpenAIAPI();
-    const workoutPlan = await openai.generateWorkoutPlan({
-      goals: Array.isArray(goals) ? goals : [goals],
-      experience,
-      equipment: Array.isArray(equipment) ? equipment : [equipment],
-      timeAvailable: parseInt(timeAvailable),
-    });
+    // Generate workout plan using unified AI (multi-provider with fallback)
+    const response = await unifiedAI.generateWorkoutPlan(
+      goals,
+      fitnessLevel,
+      equipment || ['bodyweight']
+    );
 
     // Save to database
     const { error: dbError } = await supabase.from('workout_recommendations').insert({
       user_id: user.id,
-      workout_data: workoutPlan,
+      workout_data: {
+        plan: response.content,
+        goals,
+        fitnessLevel,
+        equipment: equipment || ['bodyweight'],
+        timeAvailable: timeAvailable || null,
+        model: response.model,
+        provider: response.provider,
+      },
       generated_at: new Date().toISOString(),
     });
 
     if (dbError) {
       console.error('Error saving workout plan:', dbError);
+      // Continue anyway - don't fail the request if DB save fails
     }
 
     return NextResponse.json({
       success: true,
-      workoutPlan: workoutPlan.choices?.[0]?.message?.content || workoutPlan,
+      workoutPlan: response.content,
+      model: response.model,
+      provider: response.provider,
       timestamp: new Date().toISOString(),
     });
   } catch (error: any) {
+    console.error('Workout generation error:', error);
     return NextResponse.json(
       {
-        error: error.message,
+        success: false,
+        error: error.message || 'Failed to generate workout plan',
         timestamp: new Date().toISOString(),
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

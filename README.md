@@ -1,328 +1,241 @@
-# ISTANI Fitness Platform
+# FitAI - AI-Driven Fitness SaaS Platform
 
-A comprehensive full-stack fitness tracking and e-commerce platform built with Next.js 15, Supabase, Stripe, and AI-powered features.
+[![Netlify Status](https://api.netlify.com/api/v1/badges/your-badge-id/deploy-status)](https://app.netlify.com/sites/your-site/deploys)
+
+An intelligent fitness platform powered by AI that provides personalized workout plans, nutrition guidance, and real-time progress tracking.
 
 ## Features
 
-### Fitness Tracking
-
-- **Workout Logging** - Track exercises, duration, calories burned
-- **Nutrition Tracking** - Log meals, track macros (protein, carbs, fat), calorie counting
-- **Water Intake** - Daily water consumption tracking with visual progress
-- **Body Measurements** - Track weight, body fat percentage, and progress photos
-- **Progress Analytics** - View historical data, charts, and achievement streaks
-
-### AI-Powered Features
-
-- **AI Meal Planning** - Generate personalized meal plans using OpenAI GPT-4
-- **AI Workout Recommendations** - Get customized workout suggestions
-- **Autonomous Coaching** - Automated coaching messages and motivation
-- **Food Search** - USDA FoodData Central and Open Food Facts integration
-- **Barcode Scanner** - Nutrition lookup by barcode (stub ready for implementation)
-
-### E-Commerce
-
-- **Product Catalog** - Browse fitness products and supplements
-- **Shopping Cart** - Zustand-powered cart with persistent state
-- **Stripe Checkout** - Secure payment processing
-- **Order Management** - Track order history and status
-- **Coaching Sessions** - Purchase one-on-one coaching
-
-### User Management
-
-- **Supabase Authentication** - Email/password and Google OAuth
-- **User Profiles** - Customizable fitness goals and preferences
-- **Secure Sessions** - JWT-based authentication with Row-Level Security
+- **AI-Powered Workout Generation**: Get custom workout plans tailored to your fitness goals and experience level
+- **Smart Nutrition Planning**: Personalized meal plans based on your dietary preferences and goals
+- **Progress Tracking**: Comprehensive analytics to monitor your fitness journey
+- **Subscription Management**: Integrated Stripe payments for premium features
+- **Real-time Updates**: Live progress tracking and instant AI recommendations
+- **Workflow Automation**: n8n integration for automated user onboarding and notifications
 
 ## Tech Stack
 
 ### Frontend
 
-- **Next.js 15.1.2** - React framework with App Router
-- **React 18.3.1** - UI library
-- **TypeScript 5** - Type-safe development
-- **Tailwind CSS 3.4** - Utility-first styling
-- **Zustand 5.0** - Lightweight state management
-- **React Hook Form 7.53** - Form handling
-- **Zod 3.23** - Schema validation
+- **Next.js 14** - React framework with App Router
+- **TypeScript** - Type-safe development
+- **Tailwind CSS** - Utility-first styling
+- **React Hook Form** - Form management
+- **Zod** - Schema validation
+- **Lucide React** - Icon library
 
 ### Backend
 
-- **Supabase** - PostgreSQL database, authentication, storage, real-time subscriptions
-- **Stripe** - Payment processing and checkout
-- **OpenAI GPT-4** - AI meal and workout recommendations
-- **USDA FoodData Central** - Nutrition database
-- **Open Food Facts** - Barcode scanning and food data
+- **Supabase** - Backend-as-a-Service (Auth, Database, Storage)
+- **PostgreSQL** - Relational database
+- **Stripe** - Payment processing
+- **PayPal** - Alternative payment option
 
-### DevOps
+### AI & ML
 
+- **OpenAI GPT** - Workout and nutrition plan generation
+- **Vercel AI SDK** - AI integration framework
+- **Ollama** - Local AI model hosting
+- **Qdrant** - Vector database for RAG
+
+### DevOps & Automation
+
+- **Docker** - Containerization
+- **n8n** - Workflow automation
 - **Vercel** - Deployment platform
-- **GitHub Actions** - CI/CD with 21+ automation workflows
-- **ESLint & Prettier** - Code quality tools
+- **GitHub Actions** - CI/CD
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js 18+ and npm
+- Node.js 20+ and npm
+- Docker and Docker Compose (for local development)
 - Supabase account
 - Stripe account (for payments)
-- OpenAI API key (for AI features)
+- OpenAI API key (or local Ollama setup)
 
 ### Installation
 
 1. **Clone the repository**
 
-   ```bash
-   git clone <repository-url>
-   cd istani
-   ```
+```bash
+git clone https://github.com/sano1233/istani.git
+cd istani
+```
 
 2. **Install dependencies**
 
-   ```bash
-   npm ci
-   ```
+```bash
+npm install
+```
 
 3. **Set up environment variables**
 
-   Copy `.env.example` to `.env.local`:
+Copy `.env.example` to `.env.local` and fill in your credentials:
 
-   ```bash
-   cp .env.example .env.local
-   ```
+```bash
+cp .env.example .env.local
+```
 
-   Fill in the required values:
+Update the following variables:
 
-   ```env
-   # Supabase
-   NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-   SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
-
-   # Stripe
-   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your-publishable-key
-   STRIPE_SECRET_KEY=your-secret-key
-   STRIPE_WEBHOOK_SECRET=your-webhook-secret
-
-   # AI & APIs
-   OPENAI_API_KEY=your-openai-api-key
-   USDA_API_KEY=your-usda-api-key
-   PEXELS_API_KEY=your-pexels-api-key
-
-   # GitHub (for repo aggregator)
-   GITHUB_TOKEN=your-github-token
-
-   # App
-   NEXT_PUBLIC_SITE_URL=http://localhost:3000
-   CRON_SECRET=your-cron-secret
-   ADMIN_REFRESH_TOKEN=your-admin-token
-   ```
+- Supabase credentials (already configured)
+- Stripe API keys
+- OpenAI API key
+- Other service credentials
 
 4. **Set up Supabase database**
 
-   Run the SQL schema in your Supabase project:
-
-   ```bash
-   # In Supabase SQL Editor, run:
-   # supabase/schema.sql
-   ```
-
-   Or use Supabase CLI:
-
-   ```bash
-   supabase db push
-   ```
-
-5. **Run development server**
-
-   ```bash
-   npm run dev
-   ```
-
-   Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-## Database Schema
-
-The application uses 30+ tables including:
-
-- **Users & Profiles** - User accounts, fitness goals, preferences
-- **Workouts** - Workout logs, programs, exercises
-- **Nutrition** - Meals, nutrition goals, recommendations
-- **Health** - Body measurements, water intake, body fat tracking
-- **E-Commerce** - Products, categories, orders, cart items
-- **Coaching** - Sessions, messages, leads
-
-See `supabase/schema.sql` for complete schema definition.
-
-## API Routes
-
-### Authentication
-
-- `POST /api/auth` - User authentication
-
-### AI Features
-
-- `POST /api/ai/meal` - Generate AI meal plans
-- `POST /api/ai/workout` - Generate AI workout plans
-
-### Food & Nutrition
-
-- `GET /api/food/search` - Search USDA and Open Food Facts
-- `GET /api/food/barcode` - Barcode lookup
-
-### E-Commerce
-
-- `POST /api/checkout` - Create Stripe checkout session
-- `GET /api/products` - Fetch product catalog
-- `POST /api/stripe/webhook` - Handle Stripe webhooks
-
-### Images
-
-- `GET /api/images/search` - Search Pexels/Unsplash
-- `POST /api/images/refresh` - Refresh image cache
-
-### Cron Jobs
-
-- `POST /api/cron/daily-coaching` - Daily coaching messages
-
-## Scripts
+Run the migration to create the database schema:
 
 ```bash
-npm run dev          # Start development server
-npm run build        # Create production build
-npm run start        # Start production server
-npm run lint         # Run ESLint
-npm run typecheck    # TypeScript type checking
-npm run aggregate    # Run repository aggregator
+# If using Supabase CLI
+npx supabase db push
+
+# Or manually run the SQL in supabase/migrations/20241114_initial_schema.sql
+# in your Supabase SQL Editor
 ```
 
-## Deployment to Vercel
-
-### Option 1: Deploy via Vercel Dashboard
-
-1. **Import your repository** in Vercel
-2. **Configure environment variables** (copy from `.env.example`)
-3. **Deploy** - Vercel will auto-detect Next.js and build
-
-### Option 2: Deploy via Vercel CLI
+5. **Run the development server**
 
 ```bash
-# Install Vercel CLI
-npm i -g vercel
-
-# Login to Vercel
-vercel login
-
-# Deploy
-vercel --prod
+npm run dev
 ```
 
-### Required Environment Variables in Vercel
+Open http://localhost:3000 in your browser.
 
-Set these in your Vercel project settings:
+## Docker Setup
 
-**Supabase:**
+For a complete local development environment with all services:
 
-- `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- `SUPABASE_SERVICE_ROLE_KEY`
+```bash
+# Build and start all services
+npm run docker:up
 
-**Stripe:**
-
-- `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
-- `STRIPE_SECRET_KEY`
-- `STRIPE_WEBHOOK_SECRET`
-
-**AI & APIs:**
-
-- `OPENAI_API_KEY`
-- `USDA_API_KEY`
-- `PEXELS_API_KEY`
-- `UNSPLASH_ACCESS_KEY` (optional)
-
-**GitHub:**
-
-- `GITHUB_TOKEN`
-
-**App:**
-
-- `NEXT_PUBLIC_SITE_URL` (your production URL)
-- `CRON_SECRET`
-- `ADMIN_REFRESH_TOKEN`
-
-### Post-Deployment Steps
-
-1. **Configure Stripe Webhooks**
-   - Add webhook endpoint: `https://your-domain.vercel.app/api/stripe/webhook`
-   - Select events: `checkout.session.completed`, `payment_intent.succeeded`
-   - Copy webhook secret to `STRIPE_WEBHOOK_SECRET`
-
-2. **Configure Supabase Authentication**
-   - Add production URL to allowed redirect URLs
-   - Enable Google OAuth if needed
-
-3. **Test Core Flows**
-   - User registration and login
-   - Workout and nutrition logging
-   - Cart and checkout
-   - AI features
-
-## Build Status
-
+# Stop all services
+npm run docker:down
 ```
-✓ Build: PASSED
-✓ TypeScript: 0 errors
-✓ Routes: 32 (9 static, 17 dynamic, 15 API)
-✓ Bundle Size: ~102 kB
-✓ Middleware: 81.4 kB
-```
+
+This will start:
+
+- Next.js app (port 3000)
+- n8n workflow automation (port 5678)
+- Ollama AI models (port 11434)
+- Qdrant vector database (port 6333)
+- Redis cache (port 6379)
 
 ## Project Structure
 
 ```
-istani/
-├── app/                      # Next.js App Router
-│   ├── (auth)/              # Authentication pages
-│   ├── (dashboard)/         # Dashboard pages
-│   ├── (shop)/              # E-commerce pages
-│   ├── api/                 # API routes
-│   └── layout.tsx           # Root layout
-├── components/              # React components
-├── lib/                     # Utilities and integrations
-│   ├── supabase/           # Supabase clients
-│   ├── autonomous/         # AI coaching engine
-│   ├── store/              # Zustand stores
-│   └── utils.ts            # Helper functions
-├── types/                   # TypeScript types
-├── supabase/               # Database schema
-├── .github/workflows/      # CI/CD workflows
-└── public/                 # Static assets
+fitness-saas/
+├── app/                    # Next.js app directory
+│   ├── (auth)/            # Authentication pages
+│   ├── (dashboard)/       # Protected dashboard pages
+│   ├── api/               # API routes
+│   │   ├── auth/          # Authentication endpoints
+│   │   ├── workouts/      # Workout management
+│   │   ├── stripe/        # Payment processing
+│   │   └── webhooks/      # Webhook handlers
+│   └── layout.tsx         # Root layout
+├── components/            # React components
+│   ├── ui/               # Reusable UI components
+│   ├── workouts/         # Workout-related components
+│   ├── providers/        # Context providers
+│   └── auth/             # Auth components
+├── lib/                  # Utility libraries
+│   ├── supabase.ts       # Supabase client
+│   ├── stripe.ts         # Stripe utilities
+│   └── utils.ts          # Helper functions
+├── types/                # TypeScript type definitions
+├── supabase/
+│   └── migrations/       # Database migrations
+├── n8n/
+│   └── workflows/        # n8n workflow templates
+├── public/               # Static assets
+├── docker-compose.yml    # Docker services configuration
+├── Dockerfile           # Next.js container
+└── README.md
 ```
+
+## API Routes
+
+### Workouts
+
+- `POST /api/workouts/generate` - Generate AI workout plan
+- `GET /api/workouts` - Get user's workout plans
+- `POST /api/workouts/session` - Log workout session
+
+### Stripe
+
+- `POST /api/stripe/subscribe` - Create checkout session
+- `POST /api/webhooks/stripe` - Handle Stripe webhooks
+
+### Auth
+
+- Handled by Supabase Auth
+
+## Database Schema
+
+### Tables
+
+- **profiles** - User profile information
+- **subscriptions** - Stripe subscription data
+- **workout_plans** - AI-generated workout plans
+- **workout_sessions** - Completed workout logs
+- **nutrition_plans** - Personalized nutrition plans
+
+See `supabase/migrations/20241114_initial_schema.sql` for complete schema.
+
+## Deployment
+
+### Vercel Deployment
+
+1. Push your code to GitHub
+2. Import project in Vercel dashboard
+3. Configure environment variables
+4. Deploy
+
+### Environment Variables for Production
+
+Ensure all environment variables from `.env.example` are set in your deployment platform.
+
+## n8n Workflows
+
+The platform includes automated workflows for:
+
+1. **User Onboarding** - Automatically generate welcome workout and send email
+2. **Progress Notifications** - Weekly progress reports
+3. **Subscription Management** - Handle payment events
+
+Import workflows from `n8n/workflows/` directory into your n8n instance.
 
 ## Contributing
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
 3. Commit your changes (`git commit -m 'Add amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## GitHub Actions
-
-The project includes 21+ automated workflows:
-
-- CI checks (linting, type checking, builds)
-- Security scanning (CodeQL)
-- Auto-fix and merge
-- iOS CI/CD pipeline
-- N8N integration workflows
-- AI-powered PR analysis
-
 ## License
 
-This project is private and proprietary.
+This project is licensed under the MIT License.
 
 ## Support
 
-For issues or questions, please open a GitHub issue or contact the development team.
+For issues and questions:
+
+- Open an issue on GitHub
+- Email: support@fitai.com
+
+## Acknowledgments
+
+- OpenAI for AI capabilities
+- Supabase for backend infrastructure
+- Vercel for hosting
+- The open-source community
+
+---
+
+Built with ❤️ by the FitAI team

@@ -3,7 +3,7 @@ import { apiManager } from '@/lib/api-integrations';
 import { createClient } from '@/lib/supabase/server';
 
 /**
- * Health check endpoint for all API integrations
+ * Health check endpoint for all API integrations and services
  * GET /api/health
  */
 export async function GET() {
@@ -29,6 +29,8 @@ export async function GET() {
 
     return NextResponse.json({
       status: 'ok',
+      service: 'FitAI Platform',
+      version: '1.0.0',
       timestamp: new Date().toISOString(),
       services: {
         supabase: supabaseStatus,
@@ -43,12 +45,16 @@ export async function GET() {
         hasPexelsKey: !!process.env.PEXELS_API_KEY,
         hasUnsplashKey: !!process.env.UNSPLASH_ACCESS_KEY,
         hasOpenAIKey: !!process.env.OPENAI_API_KEY,
+        hasAnthropicKey: !!process.env.ANTHROPIC_API_KEY,
+        hasOpenRouterKey: !!process.env.OPENROUTER_API_KEY,
+        hasElevenLabsKey: !!process.env.ELEVENLABS_API_KEY,
       },
     });
   } catch (error: any) {
     return NextResponse.json(
       {
         status: 'error',
+        service: 'FitAI Platform',
         message: error.message,
         timestamp: new Date().toISOString(),
       },

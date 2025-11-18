@@ -20,11 +20,7 @@ export default function CheckoutPage() {
   }, [items.length, router]);
 
   if (items.length === 0) {
-    return (
-      <div className="min-h-screen p-8 flex items-center justify-center">
-        <p className="text-white">Redirecting to cart...</p>
-      </div>
-    );
+    return null;
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
