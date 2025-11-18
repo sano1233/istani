@@ -7,31 +7,31 @@ This repository uses a unified GitHub environment called `unified-software-autom
 
 ## Required Secrets
 
-The following secrets must be configured in the unified environment:
+All secrets that power the unified agent must live inside the `unified-software-automated-developer-and-deployer` environment. Group them as follows:
 
-### 1. GEMINI_API_KEY
-- **Purpose**: Google Gemini AI API access
-- **Used by**: `ai-brain/gemini-helper.js`
-- **Required for**: AI-powered PR analysis and conflict resolution
-- **How to obtain**: Get from [Google AI Studio](https://makersuite.google.com/app/apikey)
+### Core LLM Providers
+- `GEMINI_API_KEY` – Google Gemini via AI Studio.
+- `ANTHROPIC_API_KEY` – Claude 3.5 access.
+- `OPENAI_API_KEY` – GPT-4.1/GPT-4o.
+- `QWEN_API_KEY`, `QWEN3_CODER_API_KEY`, `QWEN_2_5_CODER_32_INSTRUCT_API_KEY` – DashScope (standard, Qwen3, and 2.5 Coder variants).
+- `DEEPSEEK_API_KEY`, `TNG_TECH_DEEP_SEEK_API_KEY` – DeepSeek public and enterprise tenants.
+- `MISTRAL_AI_API_KEY`, `MISTRAL_AI_DEV_STRALL_API_KEY` – Mistral production and developer (Strall) workspaces.
+- `COGNITIVE_COMPUTATIONS_DOLPHIN_MISTRAL_API_KEY`, `GLM_4_5_API_KEY`, `GROK_X_API_KEY`, `X_API_KEY` – partner LLMs and streaming inputs.
 
-### 2. ANTHROPIC_API_KEY
-- **Purpose**: Anthropic Claude AI API access
-- **Used by**: `ai-brain/claude-helper.js`
-- **Required for**: AI-powered PR review and analysis
-- **How to obtain**: Get from [Anthropic Console](https://console.anthropic.com/)
+### Agentic / Coding / Voice Partners
+- `ELEVEN_LABS_API_KEY`, `HERMES_LLAMA_API_KEY` – Voice and fine-tuned Llama models.
+- `AGENTICA_API_KEY`, `AGENTICA_DEEP_CODER_API_KEY` – Agentica unified automation + deep coder routes.
+- `CODE_RABBIT_API_KEY` – CodeRabbit PR review assistant.
+- `KIMI_DEV_MOONSHOT_API_KEY`, `MICROSOFT_AI_CODER_API_KEY`, `MINIMAX_API_KEY`, `NVIDIA_NEMATRON_NANO_API_KEY` – additional coding copilots.
+- `COHERE_API_KEY`, `HUGGINGFACE_API_KEY` – legacy inference fallbacks.
 
-### 3. QWEN_API_KEY
-- **Purpose**: Alibaba Qwen AI API access
-- **Used by**: `ai-brain/qwen-helper.js`
-- **Required for**: AI-powered PR review and analysis
-- **How to obtain**: Get from [Alibaba Cloud DashScope](https://dashscope.aliyuncs.com/)
+### Deployment & GitHub
+- `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID` – deploy previews and production promotions.
+- `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` – backend storage access.
+- `GITHUB_TOKEN` – main PAT (automatically supplied to workflows but still declared for environment scoping).
+- `GITHUB_API_KEY` – alias exported for Cursor/Vercel compatibility (should mirror `GITHUB_TOKEN`).
 
-### 4. GITHUB_TOKEN
-- **Purpose**: GitHub API access for PR operations
-- **Used by**: GitHub Actions (automatically provided)
-- **Required for**: PR checkout, commenting, approving, and merging
-- **Note**: This is automatically provided by GitHub Actions, but the environment must have appropriate repository permissions
+> 💡 Run `./setup-secrets.sh` locally to see a full checklist of the 30+ keys and confirm your `.env.local` matches the GitHub environment.
 
 ## Workflows Using This Environment
 

@@ -46,17 +46,35 @@ node config/health-check.js
 
 ## 🔧 Supported Services
 
-### AI Services
+### AI Services (Core + Agentic)
 
-| Service              | Environment Variable  | Required | Get Key From                             |
-| -------------------- | --------------------- | -------- | ---------------------------------------- |
-| **Google Gemini**    | `GEMINI_API_KEY`      | No       | https://makersuite.google.com/app/apikey |
-| **Anthropic Claude** | `ANTHROPIC_API_KEY`   | No       | https://console.anthropic.com/           |
-| **OpenAI**           | `OPENAI_API_KEY`      | No       | https://platform.openai.com/api-keys     |
-| **Alibaba Qwen**     | `QWEN_API_KEY`        | No       | https://dashscope.console.aliyun.com/    |
-| **DeepSeek**         | `DEEPSEEK_API_KEY`    | No       | https://platform.deepseek.com/           |
-| **Cohere**           | `COHERE_API_KEY`      | No       | https://dashboard.cohere.com/            |
-| **Hugging Face**     | `HUGGINGFACE_API_KEY` | No       | https://huggingface.co/settings/tokens   |
+| Service                                     | Environment Variable                             | Required | Get Key From                                   |
+| ------------------------------------------- | ------------------------------------------------ | -------- | ---------------------------------------------- |
+| **Google Gemini**                           | `GEMINI_API_KEY`                                 | No       | https://makersuite.google.com/app/apikey       |
+| **Anthropic Claude**                        | `ANTHROPIC_API_KEY`                              | No       | https://console.anthropic.com/                 |
+| **OpenAI GPT**                              | `OPENAI_API_KEY`                                 | No       | https://platform.openai.com/api-keys           |
+| **Alibaba Qwen Max**                        | `QWEN_API_KEY`                                   | No       | https://dashscope.console.aliyun.com/          |
+| **Qwen 3 Coder**                            | `QWEN3_CODER_API_KEY`                            | No       | https://dashscope.console.aliyun.com/          |
+| **Qwen 2.5 Coder 32K**                      | `QWEN_2_5_CODER_32_INSTRUCT_API_KEY`             | No       | https://dashscope.console.aliyun.com/          |
+| **DeepSeek**                                | `DEEPSEEK_API_KEY`                               | No       | https://platform.deepseek.com/                 |
+| **TNG Tech DeepSeek (Enterprise)**          | `TNG_TECH_DEEP_SEEK_API_KEY`                     | No       | https://www.deepseek.com/enterprise            |
+| **Mistral Production**                      | `MISTRAL_AI_API_KEY`                             | No       | https://console.mistral.ai/                    |
+| **Mistral Dev / Strall**                    | `MISTRAL_AI_DEV_STRALL_API_KEY`                  | No       | https://console.mistral.ai/                    |
+| **Cognitive Computations Dolphin (Mistral)**| `COGNITIVE_COMPUTATIONS_DOLPHIN_MISTRAL_API_KEY` | No       | https://cognitivecomputations.ai/              |
+| **GLM 4.5**                                 | `GLM_4_5_API_KEY`                                | No       | https://open.bigmodel.cn/                      |
+| **Grok (xAI)**                              | `GROK_X_API_KEY`                                 | No       | https://x.ai/                                  |
+| **X Platform Realtime / Streaming**         | `X_API_KEY`                                      | No       | https://developer.x.com/                       |
+| **ElevenLabs Voice**                        | `ELEVEN_LABS_API_KEY`                            | No       | https://elevenlabs.io/                         |
+| **Hermes Llama (Nous Research)**            | `HERMES_LLAMA_API_KEY`                           | No       | https://nousresearch.com/hermes                |
+| **Agentica Unified Agent**                  | `AGENTICA_API_KEY`                               | No       | https://agentica.ai/                           |
+| **Agentica Deep Coder**                     | `AGENTICA_DEEP_CODER_API_KEY`                    | No       | https://agentica.ai/                           |
+| **CodeRabbit PR Reviewer**                  | `CODE_RABBIT_API_KEY`                            | No       | https://coderabbit.ai/                         |
+| **Kimi / Moonshot**                         | `KIMI_DEV_MOONSHOT_API_KEY`                      | No       | https://platform.moonshot.cn/                  |
+| **Microsoft AI Coder / Copilot Coder**      | `MICROSOFT_AI_CODER_API_KEY`                     | No       | https://aka.ms/copilot-coder                   |
+| **MiniMax**                                 | `MINIMAX_API_KEY`                                | No       | https://www.minimaxi.com/                      |
+| **NVIDIA Nemotron / NeMo**                  | `NVIDIA_NEMATRON_NANO_API_KEY`                   | No       | https://build.nvidia.com/                      |
+| **Cohere**                                  | `COHERE_API_KEY`                                 | No       | https://dashboard.cohere.com/                  |
+| **Hugging Face**                            | `HUGGINGFACE_API_KEY`                            | No       | https://huggingface.co/settings/tokens         |
 
 ### Deployment Services
 
@@ -67,11 +85,12 @@ node config/health-check.js
 
 ### GitHub
 
-| Variable       | Required | Description                 |
-| -------------- | -------- | --------------------------- |
-| `GITHUB_TOKEN` | No\*     | GitHub PAT or Actions token |
+| Variable         | Required | Description                                                                 |
+| ---------------- | -------- | --------------------------------------------------------------------------- |
+| `GITHUB_TOKEN`   | No\*     | Primary GitHub PAT or Actions token used for CLI operations                 |
+| `GITHUB_API_KEY` | No       | Alias that mirrors `GITHUB_TOKEN` for Cursor/Vercel environments and scripts |
 
-\*Automatically provided in GitHub Actions
+\*Automatically provided in GitHub Actions (exposed to jobs as `GITHUB_TOKEN` and `GH_TOKEN`)
 
 ## 💻 Local Development Setup
 
@@ -86,22 +105,55 @@ cp .env.example .env
 Edit `.env` and add your keys:
 
 ```bash
-# AI Services
+# Core AI Services
 GEMINI_API_KEY=your_gemini_api_key_here
 ANTHROPIC_API_KEY=sk-ant-your_key_here
 OPENAI_API_KEY=sk-your_key_here
 QWEN_API_KEY=your_qwen_key_here
+QWEN3_CODER_API_KEY=your_qwen3_coder_key
+QWEN_2_5_CODER_32_INSTRUCT_API_KEY=your_qwen2_5_coder_key
+DEEPSEEK_API_KEY=your_deepseek_key
+TNG_TECH_DEEP_SEEK_API_KEY=your_tng_deep_seek_key
+MISTRAL_AI_API_KEY=your_mistral_key
+MISTRAL_AI_DEV_STRALL_API_KEY=your_mistral_dev_strall_key
+COGNITIVE_COMPUTATIONS_DOLPHIN_MISTRAL_API_KEY=your_dolphin_key
+GLM_4_5_API_KEY=your_glm_key
+GROK_X_API_KEY=your_grok_x_key
+X_API_KEY=your_x_platform_key
+ELEVEN_LABS_API_KEY=your_eleven_labs_key
+HERMES_LLAMA_API_KEY=your_hermes_llama_key
+
+# Agentic / Coding Partners
+AGENTICA_API_KEY=your_agentica_key
+AGENTICA_DEEP_CODER_API_KEY=your_agentica_deep_coder_key
+CODE_RABBIT_API_KEY=your_code_rabbit_key
+KIMI_DEV_MOONSHOT_API_KEY=your_kimi_key
+MICROSOFT_AI_CODER_API_KEY=your_microsoft_ai_coder_key
+MINIMAX_API_KEY=your_minimax_key
+NVIDIA_NEMATRON_NANO_API_KEY=your_nemotron_key
+COHERE_API_KEY=your_cohere_key
+HUGGINGFACE_API_KEY=your_huggingface_key
 
 # Deployment (if needed)
 VERCEL_TOKEN=your_vercel_token_here
 SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_ANON_KEY=your_supabase_anon_key_here
 
-# GitHub (for local automation)
+# GitHub (for local automation + Cursor)
 GITHUB_TOKEN=ghp_your_github_token_here
+GITHUB_API_KEY=duplicate_or_alias_of_github_token
 ```
 
-### Step 3: Validate Configuration
+### Step 3: Mirror Secrets in Cursor
+
+Cursor stores secrets per-project. To keep local AI runs consistent with GitHub/Vercel:
+
+1. Open the Command Palette in Cursor (`Cmd/Ctrl` + `Shift` + `P`).
+2. Choose **“Cursor: Manage Project Secrets”** (or update `.cursor/secrets` if you commit settings).
+3. Add every variable from the lists above, especially the new agentic keys (`AGENTICA_*`, `CODE_RABBIT_API_KEY`, `X_API_KEY`, etc.).
+4. Restart the Cursor workspace so Node processes (and `config/secrets`) can hydrate the canonical uppercase names.
+
+### Step 4: Validate Configuration
 
 ```bash
 # Run health check
@@ -118,9 +170,9 @@ node config/health-check.js
 #
 # ▸ Secrets Status
 # ────────────────────────────────────────────────────────────────────
-#   Total Secrets: 14
-#   Configured: 4
-#   Missing: 10
+#   Total Secrets: 32
+#   Configured: 6
+#   Missing: 26
 #   ✓ All required secrets are configured
 ```
 
@@ -142,12 +194,32 @@ The GitHub Actions workflow is configured to use the `automated-development` env
 Add all your API keys as environment secrets:
 
 ```yaml
-# AI Services
+# Core LLMs
 GEMINI_API_KEY: [your-key]
 ANTHROPIC_API_KEY: [your-key]
 OPENAI_API_KEY: [your-key]
 QWEN_API_KEY: [your-key]
+QWEN3_CODER_API_KEY: [your-key]
+QWEN_2_5_CODER_32_INSTRUCT_API_KEY: [your-key]
 DEEPSEEK_API_KEY: [your-key]
+TNG_TECH_DEEP_SEEK_API_KEY: [your-key]
+MISTRAL_AI_API_KEY: [your-key]
+MISTRAL_AI_DEV_STRALL_API_KEY: [your-key]
+COGNITIVE_COMPUTATIONS_DOLPHIN_MISTRAL_API_KEY: [your-key]
+GLM_4_5_API_KEY: [your-key]
+GROK_X_API_KEY: [your-key]
+X_API_KEY: [your-key]
+
+# Agentic / Tooling
+ELEVEN_LABS_API_KEY: [your-key]
+HERMES_LLAMA_API_KEY: [your-key]
+AGENTICA_API_KEY: [your-key]
+AGENTICA_DEEP_CODER_API_KEY: [your-key]
+CODE_RABBIT_API_KEY: [your-key]
+KIMI_DEV_MOONSHOT_API_KEY: [your-key]
+MICROSOFT_AI_CODER_API_KEY: [your-key]
+MINIMAX_API_KEY: [your-key]
+NVIDIA_NEMATRON_NANO_API_KEY: [your-key]
 COHERE_API_KEY: [your-key]
 HUGGINGFACE_API_KEY: [your-key]
 
@@ -158,6 +230,10 @@ VERCEL_PROJECT_ID: [your-project-id]
 SUPABASE_URL: [your-url]
 SUPABASE_ANON_KEY: [your-key]
 SUPABASE_SERVICE_ROLE_KEY: [your-key]
+
+# GitHub / Automation
+GITHUB_TOKEN: [your-token]
+GITHUB_API_KEY: [same-as-github-token]
 ```
 
 #### Step 3: Workflow Configuration
@@ -178,6 +254,15 @@ jobs:
       # ... workflow steps with all secrets available
 ```
 
+## 🚢 Vercel & Hosting Environments
+
+Vercel (and any other hosting target) should mirror the exact same variable names:
+
+1. Navigate to **Vercel → Your Project → Settings → Environment Variables**.
+2. Paste each key from `.env.example` (or run `vercel env pull .env.vercel` to sync and review).
+3. Set the values in **Development**, **Preview**, and **Production** scopes so the unified agent behaves the same everywhere.
+4. Re-run `setup-secrets.sh` locally after any change to ensure `.env.local` stays aligned with Vercel/GitHub/Cursor.
+
 ## 📚 Configuration Reference
 
 ### Using Unified Config in Code
@@ -197,8 +282,9 @@ if (config.ai.gemini.enabled) {
 const providers = config.getAIProviders();
 console.log(providers);
 // [
-//   { name: 'gemini', enabled: true, apiKey: '...', model: 'gemini-pro' },
-//   { name: 'anthropic', enabled: true, apiKey: '...', model: 'claude-3-5-sonnet-20241022' }
+//   { name: 'gemini', enabled: true, model: 'gemini-pro' },
+//   { name: 'mistral', enabled: true, model: 'mistral-large-latest' },
+//   { name: 'agentica', enabled: true, model: 'agentica-unity' }
 // ]
 
 // Health check
@@ -223,11 +309,11 @@ if (secrets.hasSecret('OPENAI_API_KEY')) {
 const health = secrets.getSecretsHealth();
 console.log(health);
 // {
-//   total: 14,
-//   configured: 4,
-//   missing: 10,
+//   total: 32,
+//   configured: 6,
+//   missing: 26,
 //   errors: 0,
-//   warnings: 10,
+//   warnings: 26,
 //   healthy: true,
 //   details: { ... }
 // }
