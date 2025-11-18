@@ -10,6 +10,8 @@ import {
   calculateMacros,
 } from '@/lib/fitness-calculations';
 
+export const dynamic = 'force-dynamic';
+
 export default async function NutritionPage() {
   const supabase = await createClient();
 

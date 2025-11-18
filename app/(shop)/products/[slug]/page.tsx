@@ -20,11 +20,14 @@ export default function ProductDetailPage() {
 
   useEffect(() => {
     async function fetchProduct() {
-      const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .eq('slug', params.slug)
-        .single();
+      const slug = params.slug;
+      if (!slug || typeof slug !== 'string') {
+        router.push('/products');
+        setLoading(false);
+        return;
+      }
+
+      const { data, error } = await supabase.from('products').select('*').eq('slug', slug).single();
 
       if (error || !data) {
         router.push('/products');

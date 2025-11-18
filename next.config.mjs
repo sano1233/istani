@@ -13,8 +13,6 @@ const nextConfig = {
   },
   // Enable compression
   compress: true,
-  // Production optimizations
-  swcMinify: true,
   // Strict mode for better error detection
   reactStrictMode: true,
   // Security headers
