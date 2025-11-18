@@ -27,7 +27,7 @@ const DIFFICULTY_COLORS: Record<string, string> = {
 
 export function WorkoutRecommendations({
   recommendations,
-  userId,
+  userId: _userId,
 }: {
   recommendations: WorkoutRecommendation[];
   userId: string;

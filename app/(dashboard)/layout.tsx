@@ -1,3 +1,4 @@
+import React from 'react';
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { Sidebar } from '@/components/ui/sidebar';

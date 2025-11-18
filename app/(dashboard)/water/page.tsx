@@ -74,7 +74,7 @@ export default async function WaterPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-white/60 mb-1">Today's Progress</p>
+                  <p className="text-sm text-white/60 mb-1">Today&apos;s Progress</p>
                   <p className="text-3xl font-bold text-primary">
                     {waterIntake?.glasses_consumed || 0}/
                     {waterIntake?.daily_goal || recommendedGlasses}

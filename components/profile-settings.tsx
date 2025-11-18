@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 
 interface Profile {
