@@ -1,0 +1,37 @@
+# CodeRabbit Configuration
+# Pre-Merge Checks Configuration
+
+reviews:
+  pre_merge_checks:
+    # Built-in Check: Docstring Coverage
+    docstrings:
+      mode: "warning"  # off | warning | error
+      threshold: 80    # Percentage threshold (default: 80)
+
+    # Built-in Check: Pull Request Title
+    title:
+      mode: "warning"
+      requirements: "Start with an imperative verb; keep under 50 characters."
+
+    # Built-in Check: Pull Request Description
+    description:
+      mode: "error"
+
+    # Built-in Check: Issue Assessment
+    issue_assessment:
+      mode: "warning"
+
+    # Custom Checks (up to 5 during Preview)
+    custom_checks:
+      - name: "Undocumented Breaking Changes"
+        mode: "warning"
+        instructions: "Pass/fail criteria: All breaking changes to public APIs, CLI flags, environment variables, configuration keys, database schemas, or HTTP/GraphQL endpoints must be documented in the Breaking Change section of the PR description and in CHANGELOG.md. Exclude purely internal or private changes (e.g., code not exported from package entry points or explicitly marked as internal)."
+
+# Example additional custom checks (commented out - uncomment to enable):
+#      - name: "Security Review Required"
+#        mode: "error"
+#        instructions: "If this PR touches authentication, authorization, encryption, or data handling code, it must include a security review comment from a security team member."
+#
+#      - name: "Migration Script Required"
+#        mode: "warning"
+#        instructions: "If this PR modifies database schema, it must include a migration script and rollback plan in the PR description."

@@ -266,6 +266,148 @@ program
   });
 
 /**
+ * Command: Run pre-merge checks
+ */
+program
+  .command('pre-merge-checks <prNumber>')
+  .alias('checks')
+  .description('Run pre-merge checks on a PR')
+  .action(async (prNumber) => {
+    const spinner = ora(`Running pre-merge checks on PR #${prNumber}`).start();
+
+    try {
+      const agent = initAgent();
+      const pr = await agent.fetchPRDetails(parseInt(prNumber));
+      const analysis = await agent.analyzePRChanges(pr);
+
+      spinner.text = 'Running checks...';
+      const results = await agent.runPreMergeChecks(pr, { analysis });
+
+      spinner.succeed(chalk.green('Pre-merge checks completed'));
+
+      // Display results
+      if (results.failed.length > 0) {
+        console.log('\n' + chalk.bold.red('❌ Failed Checks:'));
+        const table = new Table({
+          head: ['Check', 'Status', 'Explanation', 'Resolution'],
+          style: { head: ['red'] },
+        });
+
+        results.failed.forEach((check) => {
+          const status =
+            check.mode === 'error' ? chalk.red('❌ Error') : chalk.yellow('⚠️ Warning');
+          table.push([check.name, status, check.explanation || '', check.resolution || 'N/A']);
+        });
+
+        console.log(table.toString());
+      }
+
+      if (results.passed.length > 0) {
+        console.log('\n' + chalk.bold.green('✅ Passed Checks:'));
+        results.passed.forEach((check) => {
+          console.log(chalk.green(`  ✓ ${check.name}: ${check.explanation || ''}`));
+        });
+      }
+
+      if (results.inconclusive.length > 0) {
+        console.log('\n' + chalk.bold.yellow('❓ Inconclusive Checks:'));
+        results.inconclusive.forEach((check) => {
+          console.log(chalk.yellow(`  ? ${check.name}: ${check.explanation || ''}`));
+        });
+      }
+
+      // Summary
+      const total = results.failed.length + results.passed.length + results.inconclusive.length;
+      const errorCount = results.failed.filter((c) => c.mode === 'error').length;
+      const blocked = errorCount > 0;
+
+      console.log('\n' + chalk.bold('Summary:'));
+      console.log(`  Total: ${total}`);
+      console.log(`  Passed: ${chalk.green(results.passed.length)}`);
+      console.log(`  Failed: ${chalk.red(results.failed.length)}`);
+      console.log(`  Inconclusive: ${chalk.yellow(results.inconclusive.length)}`);
+
+      if (blocked) {
+        console.log('\n' + chalk.red('⚠️  PR is blocked by error-level checks'));
+        process.exit(1);
+      }
+    } catch (error) {
+      spinner.fail(chalk.red(`Failed to run pre-merge checks`));
+      console.error(chalk.red('Error:'), error.message);
+      process.exit(1);
+    }
+  });
+
+/**
+ * Command: Evaluate custom check
+ */
+program
+  .command('evaluate-check <prNumber>')
+  .description('Evaluate a custom pre-merge check')
+  .requiredOption('-n, --name <name>', 'Check name')
+  .requiredOption('-i, --instructions <instructions>', 'Check instructions')
+  .option('-m, --mode <mode>', 'Enforcement mode (error|warning)', 'warning')
+  .action(async (prNumber, options) => {
+    const spinner = ora(`Evaluating custom check on PR #${prNumber}`).start();
+
+    try {
+      const agent = initAgent();
+      spinner.text = 'Running custom check...';
+
+      const result = await agent.evaluateCustomCheck(
+        options.name,
+        options.instructions,
+        parseInt(prNumber),
+        options.mode,
+      );
+
+      spinner.succeed(chalk.green('Custom check evaluation completed'));
+
+      console.log('\n' + chalk.bold('Result:'));
+      console.log(chalk.cyan('Name:'), result.name);
+      console.log(
+        chalk.cyan('Status:'),
+        result.status === 'passed'
+          ? chalk.green('✅ Passed')
+          : result.status === 'failed'
+            ? chalk.red('❌ Failed')
+            : chalk.yellow('❓ Inconclusive'),
+      );
+      console.log(chalk.cyan('Mode:'), result.mode);
+      console.log(chalk.cyan('Explanation:'), result.explanation || 'N/A');
+      if (result.resolution) {
+        console.log(chalk.cyan('Resolution:'), result.resolution);
+      }
+    } catch (error) {
+      spinner.fail(chalk.red(`Failed to evaluate custom check`));
+      console.error(chalk.red('Error:'), error.message);
+      process.exit(1);
+    }
+  });
+
+/**
+ * Command: Ignore failed checks
+ */
+program
+  .command('ignore-checks <prNumber>')
+  .description('Ignore failed pre-merge checks for a PR')
+  .action(async (prNumber) => {
+    const spinner = ora(`Ignoring failed checks for PR #${prNumber}`).start();
+
+    try {
+      const agent = initAgent();
+      const result = await agent.ignorePreMergeChecks(parseInt(prNumber));
+
+      spinner.succeed(chalk.green(result.message));
+      console.log(chalk.yellow('\n⚠️  Note: This override applies only to this PR.'));
+    } catch (error) {
+      spinner.fail(chalk.red(`Failed to ignore checks`));
+      console.error(chalk.red('Error:'), error.message);
+      process.exit(1);
+    }
+  });
+
+/**
  * Command: Config check
  */
 program

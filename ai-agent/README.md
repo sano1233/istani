@@ -23,6 +23,7 @@
 
 - **🤖 Multi-Model AI System** - Uses Claude AI, GitHub Copilot, and Codex working together
 - **🔍 Intelligent Code Review** - Comprehensive analysis with consensus from multiple AI models
+- **✅ Pre-Merge Checks** - Automated quality gates and custom requirements validation before merges
 - **🔧 Automatic Error Resolution** - Detects and fixes errors automatically
 - **🏗️ Automated Build & Test** - Automatically runs builds and tests on every PR
 - **🔒 Security Scanning** - Detects secrets, vulnerabilities, and security issues
@@ -160,6 +161,8 @@ OPENAI_MODEL=gpt-4-turbo-preview
 
 See [Copilot & Codex Integration Guide](docs/COPILOT_CODEX_INTEGRATION.md) for detailed setup.
 
+See [Pre-Merge Checks Documentation](docs/PRE_MERGE_CHECKS.md) for configuring quality gates.
+
 See [.env.example](ai-agent/.env.example) for all available options.
 
 ### GitHub Actions Workflow
@@ -206,6 +209,20 @@ istani-agent review 123
 # Run security scan
 istani-agent scan 123
 
+# Run pre-merge checks
+istani-agent pre-merge-checks 123
+# or
+istani-agent checks 123
+
+# Evaluate custom pre-merge check
+istani-agent evaluate-check 123 \
+  --name "My Check" \
+  --instructions "Your instructions" \
+  --mode warning
+
+# Ignore failed checks
+istani-agent ignore-checks 123
+
 # Deploy to production
 istani-agent deploy
 
@@ -232,6 +249,9 @@ Users can control the agent by commenting on PRs:
 - `/deploy` - Deploy current PR
 - `/merge` - Merge PR if all checks pass
 - `/stats` - Show agent statistics
+- `@coderabbitai run pre-merge checks` - Run pre-merge checks
+- `@coderabbitai ignore pre-merge checks` - Ignore failed checks
+- `@coderabbitai evaluate custom pre-merge check --name <name> --instructions "<text>" [--mode <error|warning>]` - Test custom check
 
 ---
 
@@ -344,17 +364,21 @@ The agent automatically scans for:
    ↓
 4. AI Analysis with Claude (comprehensive code review)
    ↓
-5. Post Review Comments (feedback and suggestions)
+5. Run Pre-Merge Checks (quality gates and custom requirements)
    ↓
-6. Run Builds (npm run build)
+6. Post Review Comments (feedback, suggestions, and check results)
    ↓
-7. Run Tests (npm test)
+7. Run Builds (npm run build)
    ↓
-8. Deploy Preview (Vercel/Netlify)
+8. Run Tests (npm test)
    ↓
-9. Auto-merge if approved (optional)
+9. Check if Checks Block Merge
    ↓
-10. Deploy to Production (if main branch)
+10. Deploy Preview (Vercel/Netlify) - if not blocked
+   ↓
+11. Auto-merge if approved and not blocked (optional)
+   ↓
+12. Deploy to Production (if main branch)
 ```
 
 ### Architecture

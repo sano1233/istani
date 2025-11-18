@@ -184,6 +184,58 @@ async function handleIssueCommentEvent(payload) {
       console.log(`📊 Stats requested:`, stats);
       // Could post stats as comment
     }
+
+    // Command: @coderabbitai run pre-merge checks
+    if (body.includes('@coderabbitai') && body.includes('run pre-merge checks')) {
+      console.log(`🔍 Pre-merge checks requested for PR #${issue.number}`);
+      if (issue.pull_request) {
+        const prNumber = issue.number;
+        agent.processPullRequest(prNumber).catch((error) => {
+          console.error(`❌ Failed to run pre-merge checks:`, error);
+        });
+      }
+    }
+
+    // Command: @coderabbitai ignore pre-merge checks
+    if (body.includes('@coderabbitai') && body.includes('ignore pre-merge checks')) {
+      console.log(`⚠️ Ignoring pre-merge checks for PR #${issue.number}`);
+      if (issue.pull_request) {
+        const prNumber = issue.number;
+        agent.ignorePreMergeChecks(prNumber).catch((error) => {
+          console.error(`❌ Failed to ignore checks:`, error);
+        });
+      }
+    }
+
+    // Command: @coderabbitai evaluate custom pre-merge check
+    const evaluateCheckMatch = body.match(
+      /@coderabbitai\s+evaluate\s+custom\s+pre-merge\s+check\s+--name\s+([^\s]+)\s+--instructions\s+"([^"]+)"(?:\s+--mode\s+(\w+))?/i,
+    );
+    if (evaluateCheckMatch && issue.pull_request) {
+      const [, checkName, instructions, mode = 'warning'] = evaluateCheckMatch;
+      console.log(`🔍 Evaluating custom check "${checkName}" for PR #${issue.number}`);
+      const prNumber = issue.number;
+      agent
+        .evaluateCustomCheck(checkName, instructions, prNumber, mode)
+        .then((result) => {
+          const resultComment =
+            `## Custom Check Evaluation: ${checkName}\n\n` +
+            `**Status**: ${result.status === 'passed' ? '✅ Passed' : result.status === 'failed' ? '❌ Failed' : '❓ Inconclusive'}\n\n` +
+            `**Explanation**: ${result.explanation}\n\n` +
+            (result.resolution ? `**Resolution**: ${result.resolution}\n\n` : '') +
+            `**Mode**: ${result.mode}`;
+
+          return agent.github.issues.createComment({
+            owner: agent.config.owner,
+            repo: agent.config.repo,
+            issue_number: prNumber,
+            body: resultComment,
+          });
+        })
+        .catch((error) => {
+          console.error(`❌ Failed to evaluate custom check:`, error);
+        });
+    }
   }
 }
 
@@ -255,6 +307,79 @@ app.post('/process-all', async (req, res) => {
 });
 
 /**
+ * Run pre-merge checks on a PR
+ */
+app.post('/pre-merge-checks/:prNumber', async (req, res) => {
+  const prNumber = parseInt(req.params.prNumber);
+
+  if (isNaN(prNumber)) {
+    return res.status(400).json({ error: 'Invalid PR number' });
+  }
+
+  console.log(`🔍 Running pre-merge checks on PR #${prNumber}`);
+
+  try {
+    const pr = await agent.fetchPRDetails(prNumber);
+    const analysis = await agent.analyzePRChanges(pr);
+    const results = await agent.runPreMergeChecks(pr, { analysis });
+
+    res.json({
+      success: true,
+      prNumber,
+      results,
+      blocked: agent.preMergeChecks?.shouldBlockMerge(results) || false,
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * Evaluate custom pre-merge check
+ */
+app.post('/pre-merge-checks/:prNumber/evaluate', async (req, res) => {
+  const prNumber = parseInt(req.params.prNumber);
+  const { name, instructions, mode = 'warning' } = req.body;
+
+  if (isNaN(prNumber)) {
+    return res.status(400).json({ error: 'Invalid PR number' });
+  }
+
+  if (!name || !instructions) {
+    return res.status(400).json({ error: 'Missing name or instructions' });
+  }
+
+  console.log(`🔍 Evaluating custom check "${name}" on PR #${prNumber}`);
+
+  try {
+    const result = await agent.evaluateCustomCheck(name, instructions, prNumber, mode);
+    res.json({ success: true, result });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * Ignore failed pre-merge checks
+ */
+app.post('/pre-merge-checks/:prNumber/ignore', async (req, res) => {
+  const prNumber = parseInt(req.params.prNumber);
+
+  if (isNaN(prNumber)) {
+    return res.status(400).json({ error: 'Invalid PR number' });
+  }
+
+  console.log(`⚠️ Ignoring failed checks for PR #${prNumber}`);
+
+  try {
+    const result = await agent.ignorePreMergeChecks(prNumber);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
  * Start server
  */
 app.listen(PORT, () => {
@@ -267,6 +392,9 @@ app.listen(PORT, () => {
   console.log(`  GET  /stats - Agent statistics`);
   console.log(`  POST /process/:prNumber - Manually process a PR`);
   console.log(`  POST /process-all - Process all open PRs`);
+  console.log(`  POST /pre-merge-checks/:prNumber - Run pre-merge checks`);
+  console.log(`  POST /pre-merge-checks/:prNumber/evaluate - Evaluate custom check`);
+  console.log(`  POST /pre-merge-checks/:prNumber/ignore - Ignore failed checks`);
 });
 
 // Graceful shutdown
