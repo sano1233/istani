@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useCartStore } from '@/lib/store/cart-store';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -13,9 +13,18 @@ export default function CheckoutPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    if (items.length === 0) {
+      router.push('/cart');
+    }
+  }, [items.length, router]);
+
   if (items.length === 0) {
-    router.push('/cart');
-    return null;
+    return (
+      <div className="min-h-screen p-8 flex items-center justify-center">
+        <p className="text-white">Redirecting to cart...</p>
+      </div>
+    );
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
