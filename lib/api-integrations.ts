@@ -259,6 +259,38 @@ export class OpenAIAPI {
     });
     return response.json();
   }
+
+  async analyzeImage(imageData: string, prompt: string) {
+    const response = await fetch(`${this.baseURL}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${this.apiKey}`,
+      },
+      body: JSON.stringify({
+        model: 'gpt-4-vision-preview',
+        messages: [
+          {
+            role: 'user',
+            content: [
+              {
+                type: 'text',
+                text: prompt,
+              },
+              {
+                type: 'image_url',
+                image_url: {
+                  url: imageData.startsWith('data:') ? imageData : `data:image/jpeg;base64,${imageData}`,
+                },
+              },
+            ],
+          },
+        ],
+        max_tokens: 4096,
+      }),
+    });
+    return response.json();
+  }
 }
 
 // Google Gemini API Integration
