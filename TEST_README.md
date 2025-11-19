@@ -5,7 +5,6 @@ This project now includes comprehensive unit tests for the modified files in the
 ## Test Coverage
 
 ### Library Files (`lib/`)
-
 - **validation.ts** - Comprehensive tests for all validation utilities
   - Email, URL, UUID, phone validation
   - String sanitization and HTML escaping
@@ -35,7 +34,6 @@ This project now includes comprehensive unit tests for the modified files in the
   - Error handling
 
 ### Documentation Files
-
 - **CONTRIBUTING.md** - Structure and formatting validation
 - **SECURITY.md** - Security guidelines validation
 - **docs/PERFORMANCE.md** - Performance optimization guidelines validation
@@ -44,13 +42,11 @@ This project now includes comprehensive unit tests for the modified files in the
 ## Running Tests
 
 ### Install Dependencies
-
 ```bash
 npm install
 ```
 
 ### Run Tests
-
 ```bash
 # Run tests in watch mode (development)
 npm test
@@ -71,17 +67,14 @@ npm run test:coverage
 ## Writing New Tests
 
 Tests are located in `__tests__` directories next to the files they test:
-
 - `lib/__tests__/` - Tests for lib files
 - `docs/__tests__/` - Tests for documentation files
 
 ### Test File Naming Convention
-
 - Unit tests: `<filename>.test.ts` or `<filename>.test.tsx`
 - Integration tests: `<filename>.integration.test.ts`
 
 ### Example Test Structure
-
 ```typescript
 import { functionToTest } from '../module';
 
@@ -102,7 +95,6 @@ describe('Module Name', () => {
 ## Coverage Goals
 
 The test suite aims for:
-
 - **80%+ line coverage** for critical business logic
 - **100% coverage** for validation utilities
 - **100% coverage** for error handling paths
@@ -110,7 +102,6 @@ The test suite aims for:
 ## Continuous Integration
 
 Tests run automatically on:
-
 - Pull request creation
 - Push to main branch
 - Pre-commit hooks (if configured)
@@ -118,13 +109,11 @@ Tests run automatically on:
 ## Mocking Strategy
 
 External dependencies are mocked to ensure tests are:
-
 - Fast and reliable
 - Independent of external services
 - Deterministic and reproducible
 
 Mocked dependencies include:
-
 - Supabase client
 - Rate limiter
 - Logger
@@ -143,19 +132,16 @@ Mocked dependencies include:
 ## Troubleshooting
 
 ### Tests failing locally
-
 1. Ensure all dependencies are installed: `npm install`
 2. Clear Jest cache: `npx jest --clearCache`
 3. Check Node version matches `.nvmrc`: `nvm use`
 
 ### Mock issues
-
 - Verify mock paths match actual import paths
 - Ensure mocks are cleared between tests: `jest.clearAllMocks()`
 - Check mock implementation matches expected interface
 
 ### Coverage gaps
-
 - Run `npm run test:coverage` to see detailed coverage report
 - Focus on untested branches and error paths
 - Add tests for edge cases
@@ -163,7 +149,6 @@ Mocked dependencies include:
 ## Contributing
 
 When adding new features:
-
 1. Write tests first (TDD approach)
 2. Ensure tests pass before committing
 3. Update this README if adding new test patterns
