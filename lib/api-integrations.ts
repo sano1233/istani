@@ -635,6 +635,114 @@ export class OpenFoodFactsAPI {
   }
 }
 
+// Perplexity AI - Research & Knowledge Base
+export class PerplexityAPI {
+  private apiKey: string;
+  private baseURL = 'https://api.perplexity.ai';
+
+  constructor(apiKey?: string) {
+    this.apiKey = apiKey || process.env.PERPLEXITY_API_KEY || '';
+  }
+
+  async chat(messages: Array<{ role: string; content: string }>, options?: {
+    model?: string;
+    temperature?: number;
+    maxTokens?: number;
+  }) {
+    const model = options?.model || 'llama-3.1-sonar-small-128k-online';
+
+    const response = await fetch(`${this.baseURL}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${this.apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model,
+        messages,
+        temperature: options?.temperature || 0.2,
+        max_tokens: options?.maxTokens || 2000,
+      }),
+    });
+
+    return response.json();
+  }
+
+  async researchFitnessExercise(exerciseName: string) {
+    const prompt = `Research the exercise "${exerciseName}" and provide:
+1. Proper form and technique
+2. Muscles targeted
+3. Common mistakes to avoid
+4. Safety precautions
+5. Variations for different skill levels
+
+Provide evidence-based information with recent sources.`;
+
+    return this.chat([
+      { role: 'system', content: 'You are a certified fitness expert providing accurate, evidence-based exercise information.' },
+      { role: 'user', content: prompt }
+    ]);
+  }
+
+  async researchNutrition(topic: string) {
+    const prompt = `Provide evidence-based nutrition information about: ${topic}
+
+Include:
+1. Latest scientific research
+2. Health benefits
+3. Recommended intake
+4. Potential risks
+5. Food sources
+
+Use only peer-reviewed sources from 2023-2025.`;
+
+    return this.chat([
+      { role: 'system', content: 'You are a registered dietitian providing evidence-based nutrition guidance.' },
+      { role: 'user', content: prompt }
+    ]);
+  }
+
+  async generateWorkoutResearch(userProfile: {
+    goals: string[];
+    experience: string;
+    equipment: string[];
+  }) {
+    const prompt = `Research-backed workout plan for:
+Goals: ${userProfile.goals.join(', ')}
+Experience: ${userProfile.experience}
+Equipment: ${userProfile.equipment.join(', ')}
+
+Provide:
+1. Exercise selection based on latest exercise science
+2. Sets, reps, and rest periods backed by research
+3. Progressive overload strategy
+4. Recovery recommendations
+5. Scientific references
+
+Use evidence from sports science journals (2023-2025).`;
+
+    return this.chat([
+      { role: 'system', content: 'You are an exercise physiologist creating evidence-based training programs.' },
+      { role: 'user', content: prompt }
+    ], { model: 'llama-3.1-sonar-large-128k-online', maxTokens: 4000 });
+  }
+
+  async healthCheck(): Promise<{ status: string; model?: string }> {
+    try {
+      const response = await this.chat([
+        { role: 'user', content: 'Hello' }
+      ], { maxTokens: 10 });
+
+      return {
+        status: response.choices ? 'ok' : 'error',
+        model: response.model
+      };
+    } catch (error) {
+      return { status: 'error' };
+    }
+  }
+}
+
 // Unified API Manager
 export class APIManager {
   public github: GitHubAPI;
@@ -644,6 +752,7 @@ export class APIManager {
   public gemini: GeminiAPI;
   public claude: ClaudeAPI;
   public qwen: QwenAPI;
+  public perplexity: PerplexityAPI;
   public elevenlabs: ElevenLabsAPI;
   public usda: USDAAPI;
   public openFoodFacts: OpenFoodFactsAPI;
@@ -656,6 +765,7 @@ export class APIManager {
     this.gemini = new GeminiAPI();
     this.claude = new ClaudeAPI();
     this.qwen = new QwenAPI();
+    this.perplexity = new PerplexityAPI();
     this.elevenlabs = new ElevenLabsAPI();
     this.usda = new USDAAPI();
     this.openFoodFacts = new OpenFoodFactsAPI();
@@ -836,6 +946,21 @@ export class APIManager {
       }
     } catch (error: any) {
       results.qwen = { status: 'error', message: error.message };
+    }
+
+    // Check Perplexity
+    try {
+      if (process.env.PERPLEXITY_API_KEY) {
+        const perplexityHealth = await this.perplexity.healthCheck();
+        results.perplexity = {
+          status: perplexityHealth.status === 'ok' ? 'ok' : 'error',
+          message: perplexityHealth.model || undefined,
+        };
+      } else {
+        results.perplexity = { status: 'error', message: 'No API key configured' };
+      }
+    } catch (error: any) {
+      results.perplexity = { status: 'error', message: error.message };
     }
 
     // Check ElevenLabs
