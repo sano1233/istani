@@ -32,12 +32,12 @@ describe('db-helpers', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     // Create a fresh mock for each test
     mockSupabase = {
       from: jest.fn(),
     };
-    
+
     const { createClient } = require('../supabase/server');
     createClient.mockResolvedValue(mockSupabase);
   });
@@ -277,10 +277,7 @@ describe('db-helpers', () => {
 
   describe('dbInsertMany', () => {
     it('should insert multiple records', async () => {
-      const inputData = [
-        { name: 'John' },
-        { name: 'Jane' },
-      ];
+      const inputData = [{ name: 'John' }, { name: 'Jane' }];
       const mockData = [
         { id: '1', name: 'John' },
         { id: '2', name: 'Jane' },

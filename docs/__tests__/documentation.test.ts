@@ -175,8 +175,8 @@ describe('Documentation Files', () => {
       if (existsSync(filePath)) {
         const content = readFileSync(filePath, 'utf-8');
         const lines = content.split('\n');
-        const trailingWhitespace = lines.filter((line, idx) => 
-          line !== line.trimEnd() && idx < lines.length - 1 // Allow trailing on last line
+        const trailingWhitespace = lines.filter(
+          (line, idx) => line !== line.trimEnd() && idx < lines.length - 1, // Allow trailing on last line
         );
         expect(trailingWhitespace.length).toBe(0);
       }

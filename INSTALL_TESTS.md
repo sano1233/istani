@@ -11,6 +11,7 @@ npm install
 ```
 
 This will install all required testing dependencies:
+
 - `jest@^29.7.0` - Testing framework
 - `jest-environment-jsdom@^29.7.0` - DOM environment for Jest
 - `@testing-library/jest-dom@^6.1.5` - Custom DOM matchers

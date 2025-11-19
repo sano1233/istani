@@ -173,13 +173,12 @@ describe('validation utilities', () => {
   describe('sanitizeHtml', () => {
     it('should escape HTML special characters', () => {
       expect(sanitizeHtml('<script>alert("xss")</script>')).toBe(
-        '&lt;script&gt;alert(&quot;xss&quot;)&lt;&#x2F;script&gt;'
+        '&lt;script&gt;alert(&quot;xss&quot;)&lt;&#x2F;script&gt;',
       );
     });
 
     it('should escape all dangerous characters', () => {
-      expect(sanitizeHtml('&<>"\'/'))
-        .toBe('&amp;&lt;&gt;&quot;&#x27;&#x2F;');
+      expect(sanitizeHtml('&<>"\'/')).toBe('&amp;&lt;&gt;&quot;&#x27;&#x2F;');
     });
 
     it('should handle normal text', () => {
@@ -654,11 +653,11 @@ describe('validation utilities', () => {
       const pdfFile = createMockFile('test.pdf', 1024, 'application/pdf');
 
       expect(() =>
-        validateFile(jpgFile, { allowedTypes: ['image/jpeg', 'image/png'] })
+        validateFile(jpgFile, { allowedTypes: ['image/jpeg', 'image/png'] }),
       ).not.toThrow();
-      expect(() =>
-        validateFile(pdfFile, { allowedTypes: ['image/jpeg', 'image/png'] })
-      ).toThrow(ValidationError);
+      expect(() => validateFile(pdfFile, { allowedTypes: ['image/jpeg', 'image/png'] })).toThrow(
+        ValidationError,
+      );
     });
 
     it('should validate allowed file extensions', () => {
@@ -667,14 +666,14 @@ describe('validation utilities', () => {
 
       expect(() => validateFile(jpgFile, { allowedExtensions: ['jpg', 'png'] })).not.toThrow();
       expect(() => validateFile(txtFile, { allowedExtensions: ['jpg', 'png'] })).toThrow(
-        ValidationError
+        ValidationError,
       );
     });
 
     it('should handle files without extensions', () => {
       const file = createMockFile('README', 1024, 'text/plain');
       expect(() => validateFile(file, { allowedExtensions: ['md', 'txt'] })).toThrow(
-        ValidationError
+        ValidationError,
       );
     });
 
