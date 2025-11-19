@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { StatCard } from '@/components/dashboard/stat-card';
 import { EmptyState } from '@/components/dashboard/empty-state';
+import { ProgressChart } from '@/components/charts/progress-chart';
 import { motion } from 'framer-motion';
 
 interface ProgressStats {
@@ -16,6 +17,13 @@ interface ProgressStats {
   bodyFatDirection: 'up' | 'down' | 'neutral';
   daysTracked: number;
   achievements: number;
+}
+
+interface ChartDataPoint {
+  date: string;
+  weight?: number;
+  bodyFat?: number;
+  formattedDate: string;
 }
 
 export default function ProgressPage() {
@@ -29,6 +37,7 @@ export default function ProgressPage() {
     daysTracked: 0,
     achievements: 0,
   });
+  const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -83,6 +92,18 @@ export default function ProgressPage() {
       if (weightChange && weightChange < 0) achievements++; // Weight loss
       if (bodyFatChange && bodyFatChange < 0) achievements++; // Body fat reduction
 
+      // Format data for chart
+      const formattedChartData: ChartDataPoint[] =
+        measurements?.map((m) => ({
+          date: m.measured_at,
+          weight: m.weight_kg,
+          bodyFat: m.body_fat_percentage || undefined,
+          formattedDate: new Date(m.measured_at).toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+          }),
+        })) || [];
+
       setUser(user);
       setStats({
         weightChange,
@@ -92,6 +113,7 @@ export default function ProgressPage() {
         daysTracked,
         achievements,
       });
+      setChartData(formattedChartData);
       setLoading(false);
     };
 
@@ -189,33 +211,37 @@ export default function ProgressPage() {
           />
         </div>
 
-        {/* Progress Chart with Enhanced Empty State */}
+        {/* Progress Chart */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
         >
-          <Card className="mb-8">
-            <h2 className="text-2xl font-bold text-white mb-6">Weight Progress</h2>
-            <div className="h-64 flex items-center justify-center border border-white/10 rounded-lg bg-white/5">
-              <EmptyState
-                icon="insert_chart"
-                title="Start Tracking Your Progress"
-                description="Add your first weight entry to see beautiful progress charts and insights"
-                primaryAction={{
-                  label: 'Add Weight Entry',
-                  onClick: () => {},
-                  icon: 'add',
-                }}
-                secondaryAction={{
-                  label: 'Learn More',
-                  onClick: () => {},
-                  icon: 'info',
-                }}
-                className="border-0 bg-transparent"
-              />
-            </div>
-          </Card>
+          {chartData.length > 0 ? (
+            <ProgressChart data={chartData} className="mb-8" />
+          ) : (
+            <Card className="mb-8">
+              <h2 className="text-2xl font-bold text-white mb-6">Weight Progress</h2>
+              <div className="h-64 flex items-center justify-center border border-white/10 rounded-lg bg-white/5">
+                <EmptyState
+                  icon="insert_chart"
+                  title="Start Tracking Your Progress"
+                  description="Add your first weight entry to see beautiful progress charts and insights"
+                  primaryAction={{
+                    label: 'Add Weight Entry',
+                    onClick: () => {},
+                    icon: 'add',
+                  }}
+                  secondaryAction={{
+                    label: 'Learn More',
+                    onClick: () => {},
+                    icon: 'info',
+                  }}
+                  className="border-0 bg-transparent"
+                />
+              </div>
+            </Card>
+          )}
         </motion.div>
 
         {/* Recent Entries with Enhanced Empty State */}
