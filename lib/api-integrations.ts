@@ -438,6 +438,88 @@ Analyze trends, identify areas for improvement, celebrate wins, and provide acti
   }
 }
 
+// Qwen (Alibaba Cloud) API Integration
+export class QwenAPI {
+  private apiKey: string;
+  private baseURL = 'https://dashscope.aliyuncs.com/api/v1';
+
+  constructor(apiKey?: string) {
+    this.apiKey = apiKey || process.env.QWEN_API_KEY || '';
+  }
+
+  async generateContent(prompt: string, options?: { model?: string; temperature?: number }) {
+    const model = options?.model || 'qwen-turbo';
+    const response = await fetch(`${this.baseURL}/services/aigc/text-generation/generation`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${this.apiKey}`,
+      },
+      body: JSON.stringify({
+        model,
+        input: {
+          messages: [
+            {
+              role: 'user',
+              content: prompt,
+            },
+          ],
+        },
+        parameters: {
+          temperature: options?.temperature || 0.7,
+          top_p: 0.8,
+          max_tokens: 2000,
+        },
+      }),
+    });
+    return response.json();
+  }
+
+  async generateWorkoutPlan(userProfile: {
+    goals: string[];
+    experience: string;
+    equipment: string[];
+    timeAvailable: number;
+  }) {
+    const prompt = `You are an expert fitness coach. Create a personalized workout plan for:
+Goals: ${userProfile.goals.join(', ')}
+Experience: ${userProfile.experience}
+Equipment: ${userProfile.equipment.join(', ')}
+Time: ${userProfile.timeAvailable} minutes per session
+
+Generate a detailed weekly workout plan with exercises, sets, reps, and rest periods.`;
+
+    return this.generateContent(prompt);
+  }
+
+  async generateMealPlan(userProfile: {
+    goals: string[];
+    dietaryRestrictions: string[];
+    calories: number;
+    macros: { protein: number; carbs: number; fats: number };
+  }) {
+    const prompt = `You are a nutritionist. Create a personalized meal plan for:
+Goals: ${userProfile.goals.join(', ')}
+Restrictions: ${userProfile.dietaryRestrictions.join(', ')}
+Calories: ${userProfile.calories}
+Macros: Protein ${userProfile.macros.protein}g, Carbs ${userProfile.macros.carbs}g, Fats ${userProfile.macros.fats}g
+
+Generate a detailed daily meal plan with recipes and nutritional breakdown.`;
+
+    return this.generateContent(prompt);
+  }
+
+  async analyzeProgress(data: { workouts: any[]; nutrition: any[]; measurements: any[] }) {
+    const prompt = `You are a fitness coach analyzing user progress. Provide insights and recommendations based on this data:
+
+${JSON.stringify(data, null, 2)}
+
+Analyze trends, identify improvements, and provide actionable next steps.`;
+
+    return this.generateContent(prompt);
+  }
+}
+
 // ElevenLabs API Integration
 export class ElevenLabsAPI {
   private apiKey: string;
@@ -561,6 +643,7 @@ export class APIManager {
   public openai: OpenAIAPI;
   public gemini: GeminiAPI;
   public claude: ClaudeAPI;
+  public qwen: QwenAPI;
   public elevenlabs: ElevenLabsAPI;
   public usda: USDAAPI;
   public openFoodFacts: OpenFoodFactsAPI;
@@ -572,6 +655,7 @@ export class APIManager {
     this.openai = new OpenAIAPI();
     this.gemini = new GeminiAPI();
     this.claude = new ClaudeAPI();
+    this.qwen = new QwenAPI();
     this.elevenlabs = new ElevenLabsAPI();
     this.usda = new USDAAPI();
     this.openFoodFacts = new OpenFoodFactsAPI();
@@ -585,15 +669,17 @@ export class APIManager {
       equipment: string[];
       timeAvailable: number;
     },
-    preferredProvider?: 'openai' | 'gemini' | 'claude',
+    preferredProvider?: 'openai' | 'gemini' | 'claude' | 'qwen',
   ) {
     const providers = preferredProvider
-      ? [preferredProvider, 'openai', 'gemini', 'claude'].filter((p, i, arr) => arr.indexOf(p) === i)
-      : ['openai', 'gemini', 'claude'];
+      ? [preferredProvider, 'qwen', 'gemini', 'openai', 'claude'].filter((p, i, arr) => arr.indexOf(p) === i)
+      : ['qwen', 'gemini', 'openai', 'claude'];
 
     for (const provider of providers) {
       try {
-        if (provider === 'openai' && process.env.OPENAI_API_KEY) {
+        if (provider === 'qwen' && process.env.QWEN_API_KEY) {
+          return await this.qwen.generateWorkoutPlan(userProfile);
+        } else if (provider === 'openai' && process.env.OPENAI_API_KEY) {
           return await this.openai.generateWorkoutPlan(userProfile);
         } else if (provider === 'gemini' && process.env.GEMINI_API_KEY) {
           return await this.gemini.generateWorkoutPlan(userProfile);
@@ -617,15 +703,17 @@ export class APIManager {
       calories: number;
       macros: { protein: number; carbs: number; fats: number };
     },
-    preferredProvider?: 'openai' | 'gemini' | 'claude',
+    preferredProvider?: 'openai' | 'gemini' | 'claude' | 'qwen',
   ) {
     const providers = preferredProvider
-      ? [preferredProvider, 'openai', 'gemini', 'claude'].filter((p, i, arr) => arr.indexOf(p) === i)
-      : ['openai', 'gemini', 'claude'];
+      ? [preferredProvider, 'qwen', 'gemini', 'openai', 'claude'].filter((p, i, arr) => arr.indexOf(p) === i)
+      : ['qwen', 'gemini', 'openai', 'claude'];
 
     for (const provider of providers) {
       try {
-        if (provider === 'openai' && process.env.OPENAI_API_KEY) {
+        if (provider === 'qwen' && process.env.QWEN_API_KEY) {
+          return await this.qwen.generateMealPlan(userProfile);
+        } else if (provider === 'openai' && process.env.OPENAI_API_KEY) {
           return await this.openai.generateMealPlan(userProfile);
         } else if (provider === 'gemini' && process.env.GEMINI_API_KEY) {
           return await this.gemini.generateMealPlan(userProfile);
@@ -737,6 +825,17 @@ export class APIManager {
       }
     } catch (error: any) {
       results.claude = { status: 'error', message: error.message };
+    }
+
+    // Check Qwen
+    try {
+      if (process.env.QWEN_API_KEY) {
+        results.qwen = { status: 'ok' };
+      } else {
+        results.qwen = { status: 'error', message: 'No API key configured' };
+      }
+    } catch (error: any) {
+      results.qwen = { status: 'error', message: error.message };
     }
 
     // Check ElevenLabs
