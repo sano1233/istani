@@ -114,7 +114,7 @@ describe('createApiHandler', () => {
 
     const handler = createApiHandler(async () => NextResponse.json({ ok: true }));
 
-    const response = await badRequest);
+    const response = await handler(badRequest);
     const data = await response.json();
     expect(response.status).toBe(400);
     expect(data.error).toBe('Invalid JSON in request body');

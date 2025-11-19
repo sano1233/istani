@@ -21,9 +21,7 @@ npm run test:coverage
 ## Test Structure
 
 ### `validation.test.ts`
-
 Comprehensive tests for input validation utilities:
-
 - ValidationError class
 - Email, URL, UUID, and phone validation
 - String sanitization and HTML escaping
@@ -36,9 +34,7 @@ Comprehensive tests for input validation utilities:
 - File upload validation
 
 ### `api-wrapper.test.ts`
-
 Tests for API route wrapper functionality:
-
 - API handler creation and execution
 - Error handling (ValidationError, ApiError, generic errors)
 - HTTP method validation
@@ -49,9 +45,7 @@ Tests for API route wrapper functionality:
 - Custom validation hooks
 
 ### `db-helpers.test.ts`
-
 Tests for database query helpers:
-
 - Generic query with filtering, ordering, and pagination
 - Get record by ID
 - Insert single and multiple records
@@ -63,9 +57,7 @@ Tests for database query helpers:
 - Batch operations with error handling
 
 ### `app/__tests__/page.test.ts`
-
 Tests for server action validation logic:
-
 - DATABASE_URL validation
 - Comment field validation
 - FormData extraction and handling
@@ -86,7 +78,6 @@ This will generate an HTML coverage report in the `coverage/` directory.
 ## Mocking Strategy
 
 The tests use Vitest's mocking capabilities to:
-
 - Mock Supabase client for database operations
 - Mock Next.js server utilities
 - Mock logger for tracking calls

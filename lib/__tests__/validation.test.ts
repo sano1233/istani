@@ -117,16 +117,16 @@ describe('sanitizeString', () => {
 describe('sanitizeHtml', () => {
   it('should escape HTML special characters', () => {
     expect(sanitizeHtml('<script>alert("xss")</script>')).toBe(
-      '&lt;script&gt;alert(&quot;xss&quot;)&lt;&#x2F;script&gt;',
+      '&lt;script&gt;alert(&quot;xss&quot;)&lt;&#x2F;script&gt;'
     );
     expect(sanitizeHtml('Test & <div>content</div>')).toBe(
-      'Test &amp; &lt;div&gt;content&lt;&#x2F;div&gt;',
+      'Test &amp; &lt;div&gt;content&lt;&#x2F;div&gt;'
     );
   });
 
   it('should handle quotes and apostrophes', () => {
     expect(sanitizeHtml('Test "quotes" and \'apostrophes\'')).toBe(
-      'Test &quot;quotes&quot; and &#x27;apostrophes&#x27;',
+      'Test &quot;quotes&quot; and &#x27;apostrophes&#x27;'
     );
   });
 });
@@ -385,7 +385,7 @@ describe('validateFile', () => {
     constructor(
       public name: string,
       public size: number,
-      public type: string,
+      public type: string
     ) {}
   }
 
@@ -401,15 +401,15 @@ describe('validateFile', () => {
 
   it('should enforce allowed MIME types', () => {
     const file = new MockFile('doc.pdf', 1024, 'application/pdf') as unknown as File;
-    expect(() => validateFile(file, { allowedTypes: ['image/jpeg', 'image/png'] })).toThrow(
-      ValidationError,
-    );
+    expect(() =>
+      validateFile(file, { allowedTypes: ['image/jpeg', 'image/png'] })
+    ).toThrow(ValidationError);
   });
 
   it('should enforce allowed extensions', () => {
     const file = new MockFile('doc.pdf', 1024, 'application/pdf') as unknown as File;
     expect(() => validateFile(file, { allowedExtensions: ['jpg', 'png'] })).toThrow(
-      ValidationError,
+      ValidationError
     );
   });
 
@@ -420,7 +420,7 @@ describe('validateFile', () => {
         maxSize: 5 * 1024 * 1024,
         allowedTypes: ['image/jpeg', 'image/png'],
         allowedExtensions: ['jpg', 'png'],
-      }),
+      })
     ).not.toThrow();
   });
 });

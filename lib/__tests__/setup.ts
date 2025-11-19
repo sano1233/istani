@@ -14,13 +14,13 @@ afterEach(() => {
 
 /**
  * Test Setup Configuration
- *
+ * 
  * This file is automatically loaded before all tests run.
  * It sets up:
  * - Mock environment variables for testing
  * - Global test utilities and mocks
  * - Cleanup hooks to reset state between tests
- *
+ * 
  * Modify this file to add global test configuration that applies
  * to all test files.
  */

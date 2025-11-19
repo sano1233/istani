@@ -9,7 +9,12 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
-      exclude: ['node_modules/', 'lib/__tests__/', '**/*.config.*', '**/*.d.ts'],
+      exclude: [
+        'node_modules/',
+        'lib/__tests__/',
+        '**/*.config.*',
+        '**/*.d.ts',
+      ],
     },
   },
   resolve: {
