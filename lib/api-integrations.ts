@@ -210,6 +210,287 @@ export class OpenAIAPI {
     });
     return response.json();
   }
+
+  async generateImage(prompt: string, options?: { size?: string; quality?: string; n?: number }) {
+    const response = await fetch(`${this.baseURL}/images/generations`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${this.apiKey}`,
+      },
+      body: JSON.stringify({
+        model: 'dall-e-3',
+        prompt,
+        size: options?.size || '1024x1024',
+        quality: options?.quality || 'standard',
+        n: options?.n || 1,
+      }),
+    });
+    return response.json();
+  }
+
+  async generateSpeech(text: string, options?: { voice?: string; model?: string }) {
+    const response = await fetch(`${this.baseURL}/audio/speech`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${this.apiKey}`,
+      },
+      body: JSON.stringify({
+        model: options?.model || 'tts-1',
+        voice: options?.voice || 'alloy',
+        input: text,
+      }),
+    });
+    return response;
+  }
+
+  async transcribeAudio(audioFile: File) {
+    const formData = new FormData();
+    formData.append('file', audioFile);
+    formData.append('model', 'whisper-1');
+
+    const response = await fetch(`${this.baseURL}/audio/transcriptions`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${this.apiKey}`,
+      },
+      body: formData,
+    });
+    return response.json();
+  }
+}
+
+// Google Gemini API Integration
+export class GeminiAPI {
+  private apiKey: string;
+  private baseURL = 'https://generativelanguage.googleapis.com/v1beta';
+
+  constructor(apiKey?: string) {
+    this.apiKey = apiKey || process.env.GEMINI_API_KEY || '';
+  }
+
+  async generateContent(prompt: string, options?: { model?: string; temperature?: number }) {
+    const model = options?.model || 'gemini-pro';
+    const response = await fetch(`${this.baseURL}/models/${model}:generateContent?key=${this.apiKey}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contents: [
+          {
+            parts: [
+              {
+                text: prompt,
+              },
+            ],
+          },
+        ],
+        generationConfig: {
+          temperature: options?.temperature || 0.7,
+          maxOutputTokens: 2048,
+        },
+      }),
+    });
+    return response.json();
+  }
+
+  async generateWorkoutPlan(userProfile: {
+    goals: string[];
+    experience: string;
+    equipment: string[];
+    timeAvailable: number;
+  }) {
+    const prompt = `You are an expert fitness coach. Create a personalized workout plan for:
+Goals: ${userProfile.goals.join(', ')}
+Experience: ${userProfile.experience}
+Equipment: ${userProfile.equipment.join(', ')}
+Time: ${userProfile.timeAvailable} minutes per session
+
+Generate a detailed weekly workout plan with specific exercises, sets, reps, and rest periods.`;
+
+    return this.generateContent(prompt);
+  }
+
+  async generateMealPlan(userProfile: {
+    goals: string[];
+    dietaryRestrictions: string[];
+    calories: number;
+    macros: { protein: number; carbs: number; fats: number };
+  }) {
+    const prompt = `You are a nutritionist. Create a personalized meal plan for:
+Goals: ${userProfile.goals.join(', ')}
+Restrictions: ${userProfile.dietaryRestrictions.join(', ')}
+Calories: ${userProfile.calories}
+Macros: Protein ${userProfile.macros.protein}g, Carbs ${userProfile.macros.carbs}g, Fats ${userProfile.macros.fats}g
+
+Generate a detailed daily meal plan with specific meals, portions, and nutritional breakdown.`;
+
+    return this.generateContent(prompt);
+  }
+
+  async analyzeImage(imageData: string, prompt: string) {
+    const response = await fetch(
+      `${this.baseURL}/models/gemini-pro-vision:generateContent?key=${this.apiKey}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                {
+                  text: prompt,
+                },
+                {
+                  inline_data: {
+                    mime_type: 'image/jpeg',
+                    data: imageData,
+                  },
+                },
+              ],
+            },
+          ],
+        }),
+      },
+    );
+    return response.json();
+  }
+}
+
+// Anthropic Claude API Integration
+export class ClaudeAPI {
+  private apiKey: string;
+  private baseURL = 'https://api.anthropic.com/v1';
+
+  constructor(apiKey?: string) {
+    this.apiKey = apiKey || process.env.ANTHROPIC_API_KEY || '';
+  }
+
+  async generateContent(prompt: string, options?: { model?: string; temperature?: number }) {
+    const response = await fetch(`${this.baseURL}/messages`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': this.apiKey,
+        'anthropic-version': '2023-06-01',
+      },
+      body: JSON.stringify({
+        model: options?.model || 'claude-3-5-sonnet-20241022',
+        max_tokens: 4096,
+        temperature: options?.temperature || 0.7,
+        messages: [
+          {
+            role: 'user',
+            content: prompt,
+          },
+        ],
+      }),
+    });
+    return response.json();
+  }
+
+  async generateWorkoutPlan(userProfile: {
+    goals: string[];
+    experience: string;
+    equipment: string[];
+    timeAvailable: number;
+  }) {
+    const prompt = `You are an expert fitness coach. Create a personalized workout plan for:
+Goals: ${userProfile.goals.join(', ')}
+Experience: ${userProfile.experience}
+Equipment: ${userProfile.equipment.join(', ')}
+Time: ${userProfile.timeAvailable} minutes per session
+
+Generate a detailed weekly workout plan with specific exercises, sets, reps, rest periods, and form cues.`;
+
+    return this.generateContent(prompt);
+  }
+
+  async generateMealPlan(userProfile: {
+    goals: string[];
+    dietaryRestrictions: string[];
+    calories: number;
+    macros: { protein: number; carbs: number; fats: number };
+  }) {
+    const prompt = `You are a nutritionist. Create a personalized meal plan for:
+Goals: ${userProfile.goals.join(', ')}
+Restrictions: ${userProfile.dietaryRestrictions.join(', ')}
+Calories: ${userProfile.calories}
+Macros: Protein ${userProfile.macros.protein}g, Carbs ${userProfile.macros.carbs}g, Fats ${userProfile.macros.fats}g
+
+Generate a detailed daily meal plan with recipes, portions, and nutritional breakdown.`;
+
+    return this.generateContent(prompt);
+  }
+
+  async analyzeProgress(data: { workouts: any[]; nutrition: any[]; measurements: any[] }) {
+    const prompt = `You are a fitness coach analyzing user progress. Provide detailed insights, recommendations, and motivation based on this data:
+
+${JSON.stringify(data, null, 2)}
+
+Analyze trends, identify areas for improvement, celebrate wins, and provide actionable next steps.`;
+
+    return this.generateContent(prompt);
+  }
+}
+
+// ElevenLabs API Integration
+export class ElevenLabsAPI {
+  private apiKey: string;
+  private baseURL = 'https://api.elevenlabs.io/v1';
+
+  constructor(apiKey?: string) {
+    this.apiKey = apiKey || process.env.ELEVENLABS_API_KEY || '';
+  }
+
+  async generateSpeech(
+    text: string,
+    options?: {
+      voiceId?: string;
+      modelId?: string;
+      stability?: number;
+      similarityBoost?: number;
+    },
+  ) {
+    const voiceId = options?.voiceId || '21m00Tcm4TlvDq8ikWAM';
+    const response = await fetch(`${this.baseURL}/text-to-speech/${voiceId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'xi-api-key': this.apiKey,
+      },
+      body: JSON.stringify({
+        text,
+        model_id: options?.modelId || 'eleven_monolingual_v1',
+        voice_settings: {
+          stability: options?.stability || 0.5,
+          similarity_boost: options?.similarityBoost || 0.75,
+        },
+      }),
+    });
+    return response;
+  }
+
+  async getVoices() {
+    const response = await fetch(`${this.baseURL}/voices`, {
+      headers: {
+        'xi-api-key': this.apiKey,
+      },
+    });
+    return response.json();
+  }
+
+  async generateCoachingAudio(message: string, voiceId?: string) {
+    return this.generateSpeech(message, {
+      voiceId: voiceId || process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID,
+      stability: 0.6,
+      similarityBoost: 0.8,
+    });
+  }
 }
 
 // USDA Food Data API Integration
@@ -278,6 +559,9 @@ export class APIManager {
   public pexels: PexelsAPI;
   public unsplash: UnsplashAPI;
   public openai: OpenAIAPI;
+  public gemini: GeminiAPI;
+  public claude: ClaudeAPI;
+  public elevenlabs: ElevenLabsAPI;
   public usda: USDAAPI;
   public openFoodFacts: OpenFoodFactsAPI;
 
@@ -286,8 +570,100 @@ export class APIManager {
     this.pexels = new PexelsAPI();
     this.unsplash = new UnsplashAPI();
     this.openai = new OpenAIAPI();
+    this.gemini = new GeminiAPI();
+    this.claude = new ClaudeAPI();
+    this.elevenlabs = new ElevenLabsAPI();
     this.usda = new USDAAPI();
     this.openFoodFacts = new OpenFoodFactsAPI();
+  }
+
+  // Multi-AI provider fallback for workout plans
+  async generateWorkoutPlan(
+    userProfile: {
+      goals: string[];
+      experience: string;
+      equipment: string[];
+      timeAvailable: number;
+    },
+    preferredProvider?: 'openai' | 'gemini' | 'claude',
+  ) {
+    const providers = preferredProvider
+      ? [preferredProvider, 'openai', 'gemini', 'claude'].filter((p, i, arr) => arr.indexOf(p) === i)
+      : ['openai', 'gemini', 'claude'];
+
+    for (const provider of providers) {
+      try {
+        if (provider === 'openai' && process.env.OPENAI_API_KEY) {
+          return await this.openai.generateWorkoutPlan(userProfile);
+        } else if (provider === 'gemini' && process.env.GEMINI_API_KEY) {
+          return await this.gemini.generateWorkoutPlan(userProfile);
+        } else if (provider === 'claude' && process.env.ANTHROPIC_API_KEY) {
+          return await this.claude.generateWorkoutPlan(userProfile);
+        }
+      } catch (error) {
+        console.error(`Failed to generate workout plan with ${provider}:`, error);
+        continue;
+      }
+    }
+
+    throw new Error('All AI providers failed or no API keys configured');
+  }
+
+  // Multi-AI provider fallback for meal plans
+  async generateMealPlan(
+    userProfile: {
+      goals: string[];
+      dietaryRestrictions: string[];
+      calories: number;
+      macros: { protein: number; carbs: number; fats: number };
+    },
+    preferredProvider?: 'openai' | 'gemini' | 'claude',
+  ) {
+    const providers = preferredProvider
+      ? [preferredProvider, 'openai', 'gemini', 'claude'].filter((p, i, arr) => arr.indexOf(p) === i)
+      : ['openai', 'gemini', 'claude'];
+
+    for (const provider of providers) {
+      try {
+        if (provider === 'openai' && process.env.OPENAI_API_KEY) {
+          return await this.openai.generateMealPlan(userProfile);
+        } else if (provider === 'gemini' && process.env.GEMINI_API_KEY) {
+          return await this.gemini.generateMealPlan(userProfile);
+        } else if (provider === 'claude' && process.env.ANTHROPIC_API_KEY) {
+          return await this.claude.generateMealPlan(userProfile);
+        }
+      } catch (error) {
+        console.error(`Failed to generate meal plan with ${provider}:`, error);
+        continue;
+      }
+    }
+
+    throw new Error('All AI providers failed or no API keys configured');
+  }
+
+  // Generate motivational coaching audio
+  async generateCoachingAudio(message: string, provider?: 'openai' | 'elevenlabs') {
+    if (provider === 'elevenlabs' && process.env.ELEVENLABS_API_KEY) {
+      return await this.elevenlabs.generateCoachingAudio(message);
+    } else if (process.env.OPENAI_API_KEY) {
+      return await this.openai.generateSpeech(message, { voice: 'nova' });
+    } else if (process.env.ELEVENLABS_API_KEY) {
+      return await this.elevenlabs.generateCoachingAudio(message);
+    }
+
+    throw new Error('No speech generation API configured');
+  }
+
+  // Generate workout illustration images
+  async generateWorkoutImage(description: string) {
+    if (!process.env.OPENAI_API_KEY) {
+      throw new Error('OpenAI API key not configured');
+    }
+
+    return await this.openai.generateImage(
+      `Professional fitness photography style: ${description}. High quality, well-lit gym environment, proper form demonstration.`,
+      { quality: 'standard', size: '1024x1024' },
+    );
   }
 
   // Health check for all APIs
@@ -339,6 +715,39 @@ export class APIManager {
       }
     } catch (error: any) {
       results.openai = { status: 'error', message: error.message };
+    }
+
+    // Check Gemini
+    try {
+      if (process.env.GEMINI_API_KEY) {
+        results.gemini = { status: 'ok' };
+      } else {
+        results.gemini = { status: 'error', message: 'No API key configured' };
+      }
+    } catch (error: any) {
+      results.gemini = { status: 'error', message: error.message };
+    }
+
+    // Check Claude
+    try {
+      if (process.env.ANTHROPIC_API_KEY) {
+        results.claude = { status: 'ok' };
+      } else {
+        results.claude = { status: 'error', message: 'No API key configured' };
+      }
+    } catch (error: any) {
+      results.claude = { status: 'error', message: error.message };
+    }
+
+    // Check ElevenLabs
+    try {
+      if (process.env.ELEVENLABS_API_KEY) {
+        results.elevenlabs = { status: 'ok' };
+      } else {
+        results.elevenlabs = { status: 'error', message: 'No API key configured' };
+      }
+    } catch (error: any) {
+      results.elevenlabs = { status: 'error', message: error.message };
     }
 
     // OpenFoodFacts doesn't require auth
