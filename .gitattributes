@@ -1,0 +1,7 @@
+# Test files should have LF line endings
+*.test.ts text eol=lf
+*.test.tsx text eol=lf
+*.test.js text eol=lf
+*.test.jsx text eol=lf
+jest.config.js text eol=lf
+jest.setup.js text eol=lf

@@ -8,9 +8,6 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "test": "jest --watch",
-    "test:ci": "jest --ci --coverage --maxWorkers=2",
-    "test:coverage": "jest --coverage",
     "aggregate": "node scripts/aggregateRepos.js",
     "review": "bash scripts/coderabbit-review.sh",
     "review:plain": "export PATH=\"$HOME/.local/bin:$PATH\" && coderabbit --plain -t uncommitted",
@@ -39,17 +36,12 @@
     "zustand": "^5.0.1"
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^6.1.5",
-    "@testing-library/react": "^14.1.2",
-    "@types/jest": "^29.5.11",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.4.22",
     "eslint": "^8",
     "eslint-config-next": "^15.1.2",
-    "jest": "^29.7.0",
-    "jest-environment-jsdom": "^29.7.0",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
