@@ -291,6 +291,40 @@ export class OpenAIAPI {
     });
     return response.json();
   }
+
+  async analyzeMultipleImages(imageDatas: string[], prompt: string) {
+    const imageContent = imageDatas.map((imageData) => ({
+      type: 'image_url' as const,
+      image_url: {
+        url: imageData.startsWith('data:') ? imageData : `data:image/jpeg;base64,${imageData}`,
+      },
+    }));
+
+    const response = await fetch(`${this.baseURL}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${this.apiKey}`,
+      },
+      body: JSON.stringify({
+        model: 'gpt-4-vision-preview',
+        messages: [
+          {
+            role: 'user',
+            content: [
+              {
+                type: 'text',
+                text: prompt,
+              },
+              ...imageContent,
+            ],
+          },
+        ],
+        max_tokens: 4096,
+      }),
+    });
+    return response.json();
+  }
 }
 
 // Google Gemini API Integration
@@ -380,9 +414,41 @@ Generate a detailed daily meal plan with specific meals, portions, and nutrition
                 {
                   inline_data: {
                     mime_type: 'image/jpeg',
-                    data: imageData,
+                    data: imageData.replace(/^data:image\/[a-z]+;base64,/, ''),
                   },
                 },
+              ],
+            },
+          ],
+        }),
+      },
+    );
+    return response.json();
+  }
+
+  async analyzeMultipleImages(imageDatas: string[], prompt: string) {
+    const imageParts = imageDatas.map((imageData) => ({
+      inline_data: {
+        mime_type: 'image/jpeg',
+        data: imageData.replace(/^data:image\/[a-z]+;base64,/, ''),
+      },
+    }));
+
+    const response = await fetch(
+      `${this.baseURL}/models/gemini-pro-vision:generateContent?key=${this.apiKey}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                {
+                  text: prompt,
+                },
+                ...imageParts,
               ],
             },
           ],
