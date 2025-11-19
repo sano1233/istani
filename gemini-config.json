@@ -1,0 +1,45 @@
+{
+  "enabled": true,
+  "auto_consult": true,
+  "timeout": 300,
+  "model": "gemini-2.0-flash-exp",
+  "max_context_length": 1000000,
+  "rate_limit_delay": 2,
+  "log_consultations": true,
+  "include_history": true,
+  "max_history": 10,
+  "features": {
+    "ui_enhancement": true,
+    "image_generation": true,
+    "code_review": true,
+    "codebase_analysis": true
+  },
+  "ui_enhancement": {
+    "focus_areas": [
+      "accessibility",
+      "performance",
+      "responsive_design",
+      "dark_mode",
+      "animations",
+      "user_experience"
+    ],
+    "generate_mockups": true,
+    "include_code_examples": true
+  },
+  "image_generation": {
+    "default_size": "1024x1024",
+    "default_quality": "standard",
+    "styles": {
+      "workout": "Professional fitness photography style, high quality, well-lit gym environment",
+      "meal": "Professional food photography style, appetizing presentation, nutritious and healthy",
+      "ui": "Modern fitness app UI design, professional, clean, mobile-first interface",
+      "progress": "Fitness progress visualization, clean, modern design, motivational"
+    }
+  },
+  "deployment": {
+    "auto_validate": true,
+    "require_build_success": true,
+    "require_type_check": true,
+    "skip_on_draft": false
+  }
+}
