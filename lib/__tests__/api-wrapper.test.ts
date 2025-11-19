@@ -132,14 +132,11 @@ describe('createApiHandler', () => {
   });
 
   it('should enforce custom validation', async () => {
-    const handler = createApiHandler(
-      async () => NextResponse.json({ ok: true }),
-      {
-        validate: (data: any) => {
-          if (!data.email) throw new ValidationError('Email is required');
-        },
-      }
-    );
+    const handler = createApiHandler(async () => NextResponse.json({ ok: true }), {
+      validate: (data: any) => {
+        if (!data.email) throw new ValidationError('Email is required');
+      },
+    });
 
     const postRequest = {
       ...mockRequest,
@@ -166,10 +163,9 @@ describe('createApiHandler', () => {
     };
     (createClient as any).mockResolvedValue(mockSupabase);
 
-    const handler = createApiHandler(
-      async () => NextResponse.json({ ok: true }),
-      { requireAuth: true }
-    );
+    const handler = createApiHandler(async () => NextResponse.json({ ok: true }), {
+      requireAuth: true,
+    });
 
     const response = await handler(mockRequest);
     const data = await response.json();
@@ -196,7 +192,7 @@ describe('createApiHandler', () => {
         capturedContext = context;
         return NextResponse.json({ ok: true });
       },
-      { requireAuth: true }
+      { requireAuth: true },
     );
 
     await handler(mockRequest);
@@ -227,10 +223,9 @@ describe('createApiHandler', () => {
     };
     (createClient as any).mockResolvedValue(mockSupabase);
 
-    const handler = createApiHandler(
-      async () => NextResponse.json({ ok: true }),
-      { requireAdmin: true }
-    );
+    const handler = createApiHandler(async () => NextResponse.json({ ok: true }), {
+      requireAdmin: true,
+    });
 
     const response = await handler(mockRequest);
     const data = await response.json();
@@ -259,10 +254,9 @@ describe('createApiHandler', () => {
     const { checkRateLimit } = await import('../rate-limit');
     const checkSpy = vi.mocked(checkRateLimit);
 
-    const handler = createApiHandler(
-      async () => NextResponse.json({ ok: true }),
-      { rateLimit: false }
-    );
+    const handler = createApiHandler(async () => NextResponse.json({ ok: true }), {
+      rateLimit: false,
+    });
 
     await handler(mockRequest);
     expect(checkSpy).not.toHaveBeenCalled();
@@ -277,10 +271,9 @@ describe('createApiHandler', () => {
     };
     (createClient as any).mockResolvedValue(mockSupabase);
 
-    const handler = createApiHandler(
-      async () => NextResponse.json({ ok: true }),
-      { requireAuth: true }
-    );
+    const handler = createApiHandler(async () => NextResponse.json({ ok: true }), {
+      requireAuth: true,
+    });
 
     const response = await handler(mockRequest);
     const data = await response.json();
