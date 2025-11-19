@@ -9,13 +9,30 @@ import { StatCard } from '@/components/dashboard/stat-card';
 import { EmptyState } from '@/components/dashboard/empty-state';
 import { motion } from 'framer-motion';
 
+interface ProgressStats {
+  weightChange: number | null;
+  weightDirection: 'up' | 'down' | 'neutral';
+  bodyFatChange: number | null;
+  bodyFatDirection: 'up' | 'down' | 'neutral';
+  daysTracked: number;
+  achievements: number;
+}
+
 export default function ProgressPage() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
+  const [stats, setStats] = useState<ProgressStats>({
+    weightChange: null,
+    weightDirection: 'neutral',
+    bodyFatChange: null,
+    bodyFatDirection: 'neutral',
+    daysTracked: 0,
+    achievements: 0,
+  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const checkUser = async () => {
+    const loadData = async () => {
       const supabase = createClient();
       const {
         data: { user },
@@ -26,11 +43,59 @@ export default function ProgressPage() {
         return;
       }
 
+      // Fetch all body measurements ordered by date
+      const { data: measurements } = await supabase
+        .from('body_measurements')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('measured_at', { ascending: true });
+
+      const daysTracked = measurements?.length || 0;
+
+      // Calculate weight change (first vs latest)
+      let weightChange: number | null = null;
+      let weightDirection: 'up' | 'down' | 'neutral' = 'neutral';
+
+      if (measurements && measurements.length >= 2) {
+        const firstWeight = measurements[0].weight_kg;
+        const latestWeight = measurements[measurements.length - 1].weight_kg;
+        weightChange = latestWeight - firstWeight;
+        weightDirection = weightChange < 0 ? 'down' : weightChange > 0 ? 'up' : 'neutral';
+      }
+
+      // Calculate body fat change (first vs latest)
+      let bodyFatChange: number | null = null;
+      let bodyFatDirection: 'up' | 'down' | 'neutral' = 'neutral';
+
+      const measurementsWithBodyFat = measurements?.filter(m => m.body_fat_percentage != null);
+      if (measurementsWithBodyFat && measurementsWithBodyFat.length >= 2) {
+        const firstBodyFat = measurementsWithBodyFat[0].body_fat_percentage!;
+        const latestBodyFat = measurementsWithBodyFat[measurementsWithBodyFat.length - 1].body_fat_percentage!;
+        bodyFatChange = latestBodyFat - firstBodyFat;
+        bodyFatDirection = bodyFatChange < 0 ? 'down' : bodyFatChange > 0 ? 'up' : 'neutral';
+      }
+
+      // Calculate achievements (simple milestones for now)
+      let achievements = 0;
+      if (daysTracked >= 1) achievements++; // First measurement
+      if (daysTracked >= 7) achievements++; // Week of tracking
+      if (daysTracked >= 30) achievements++; // Month of tracking
+      if (weightChange && weightChange < 0) achievements++; // Weight loss
+      if (bodyFatChange && bodyFatChange < 0) achievements++; // Body fat reduction
+
       setUser(user);
+      setStats({
+        weightChange,
+        weightDirection,
+        bodyFatChange,
+        bodyFatDirection,
+        daysTracked,
+        achievements,
+      });
       setLoading(false);
     };
 
-    checkUser();
+    loadData();
   }, [router]);
 
   if (loading) {
@@ -69,35 +134,57 @@ export default function ProgressPage() {
           </Button>
         </motion.div>
 
-        {/* Stats Overview with Animations */}
+        {/* Stats Overview with Real Data */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <StatCard
             icon="trending_down"
             label="Weight Change"
-            value="-- kg"
-            trend={{ value: '2.5kg', direction: 'down' }}
+            value={
+              stats.weightChange !== null
+                ? `${stats.weightChange >= 0 ? '+' : ''}${stats.weightChange.toFixed(1)} kg`
+                : 'N/A'
+            }
+            trend={
+              stats.weightChange !== null
+                ? {
+                    value: `${Math.abs(stats.weightChange).toFixed(1)}kg`,
+                    direction: stats.weightDirection,
+                  }
+                : undefined
+            }
             delay={0}
           />
 
           <StatCard
             icon="show_chart"
-            label="Body Fat %"
-            value="-- %"
-            trend={{ value: '1.2%', direction: 'down' }}
+            label="Body Fat Change"
+            value={
+              stats.bodyFatChange !== null
+                ? `${stats.bodyFatChange >= 0 ? '+' : ''}${stats.bodyFatChange.toFixed(1)}%`
+                : 'N/A'
+            }
+            trend={
+              stats.bodyFatChange !== null
+                ? {
+                    value: `${Math.abs(stats.bodyFatChange).toFixed(1)}%`,
+                    direction: stats.bodyFatDirection,
+                  }
+                : undefined
+            }
             delay={0.1}
           />
 
           <StatCard
             icon="calendar_month"
             label="Days Tracked"
-            value="0"
+            value={stats.daysTracked}
             delay={0.2}
           />
 
           <StatCard
             icon="workspace_premium"
             label="Achievements"
-            value="0"
+            value={stats.achievements}
             delay={0.3}
           />
         </div>
