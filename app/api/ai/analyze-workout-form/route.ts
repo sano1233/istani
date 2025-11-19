@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { apiManager } from '@/lib/api-integrations';
 
-export const runtime = 'edge';
-export const maxDuration = 300; // 5 minutes for video processing
+// Using Node.js runtime for longer execution time needed for video processing
+export const runtime = 'nodejs';
+export const maxDuration = 60; // 60 seconds for video analysis (Vercel limit)
 
 export async function POST(request: NextRequest) {
   try {
