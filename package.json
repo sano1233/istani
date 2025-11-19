@@ -11,7 +11,11 @@
     "aggregate": "node scripts/aggregateRepos.js",
     "review": "bash scripts/coderabbit-review.sh",
     "review:plain": "export PATH=\"$HOME/.local/bin:$PATH\" && coderabbit --plain -t uncommitted",
-    "review:prompt": "export PATH=\"$HOME/.local/bin:$PATH\" && coderabbit --prompt-only -t uncommitted"
+    "review:prompt": "export PATH=\"$HOME/.local/bin:$PATH\" && coderabbit --prompt-only -t uncommitted",
+    "validate-env": "node scripts/validate-env.js",
+    "test-env": "node scripts/test-env.js",
+    "test-env:quick": "node scripts/test-env.js --mode=quick --iterations=10",
+    "test-env:full": "node scripts/test-env.js --mode=all --iterations=1000"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",
