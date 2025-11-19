@@ -19,7 +19,14 @@ const {
 
 const app = express();
 
-app.use(cors());
+// Configure CORS - update allowed origins for production
+const corsOptions = {
+  origin: process.env.CORS_ORIGIN || '*', // Set CORS_ORIGIN in .env for production
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 /**
@@ -257,6 +264,14 @@ app.post('/api/book', (req, res) => {
 
   if (!name || !slotId) {
     return res.status(400).json({ error: 'Name and slotId are required to book.' });
+  }
+
+  // Basic email validation if provided
+  if (email && email.trim()) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.trim())) {
+      return res.status(400).json({ error: 'Invalid email format.' });
+    }
   }
 
   const booking = {
