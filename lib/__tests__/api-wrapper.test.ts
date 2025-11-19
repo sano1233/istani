@@ -59,13 +59,13 @@ describe('api-wrapper', () => {
 
   describe('createApiHandler', () => {
     const mockUrl = 'https://example.com/api/test';
-    
+
     const createMockRequest = (method: string = 'GET', body?: any): NextRequest => {
       const init: RequestInit = {
         method,
         headers: body ? { 'content-type': 'application/json' } : undefined,
       };
-      
+
       if (body) {
         init.body = JSON.stringify(body);
       }
@@ -104,7 +104,7 @@ describe('api-wrapper', () => {
         async (context: ApiContext) => {
           return NextResponse.json({ success: true });
         },
-        { methods: ['GET', 'POST'] }
+        { methods: ['GET', 'POST'] },
       );
 
       const request = createMockRequest('DELETE');
@@ -131,7 +131,7 @@ describe('api-wrapper', () => {
         async (context: ApiContext) => {
           return NextResponse.json({ success: true });
         },
-        { requireAuth: true }
+        { requireAuth: true },
       );
 
       const request = createMockRequest('GET');
@@ -144,13 +144,13 @@ describe('api-wrapper', () => {
 
     it('should provide user context when authenticated', async () => {
       let capturedContext: ApiContext | null = null;
-      
+
       const handler = createApiHandler(
         async (context: ApiContext) => {
           capturedContext = context;
           return NextResponse.json({ success: true });
         },
-        { requireAuth: true }
+        { requireAuth: true },
       );
 
       const request = createMockRequest('GET');
@@ -186,7 +186,7 @@ describe('api-wrapper', () => {
         async (context: ApiContext) => {
           return NextResponse.json({ success: true });
         },
-        { requireAuth: true, requireAdmin: true }
+        { requireAuth: true, requireAdmin: true },
       );
 
       const request = createMockRequest('GET');
@@ -224,7 +224,7 @@ describe('api-wrapper', () => {
           capturedContext = context;
           return NextResponse.json({ success: true });
         },
-        { requireAuth: true, requireAdmin: true }
+        { requireAuth: true, requireAdmin: true },
       );
 
       const request = createMockRequest('GET');
@@ -263,7 +263,7 @@ describe('api-wrapper', () => {
         async (context: ApiContext) => {
           return NextResponse.json({ success: true });
         },
-        { rateLimit: false }
+        { rateLimit: false },
       );
 
       const request = createMockRequest('GET');
@@ -274,7 +274,7 @@ describe('api-wrapper', () => {
 
     it('should parse JSON request body', async () => {
       let receivedData: any = null;
-      
+
       const handler = createApiHandler(async (context: ApiContext, data: any) => {
         receivedData = data;
         return NextResponse.json({ success: true });
@@ -316,7 +316,7 @@ describe('api-wrapper', () => {
         async (context: ApiContext) => {
           return NextResponse.json({ success: true });
         },
-        { validate }
+        { validate },
       );
 
       const request = createMockRequest('POST', { name: 'John' });
@@ -339,7 +339,7 @@ describe('api-wrapper', () => {
         async (context: ApiContext) => {
           return NextResponse.json({ success: true });
         },
-        { validate }
+        { validate },
       );
 
       const request = createMockRequest('POST', { email: 'test@example.com' });
