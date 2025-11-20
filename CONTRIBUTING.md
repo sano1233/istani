@@ -92,12 +92,14 @@ npm run dev
 #### Submitting a Pull Request
 
 1. Update your branch with the latest main:
+
    ```bash
    git fetch upstream
    git rebase upstream/main
    ```
 
 2. Push your changes:
+
    ```bash
    git push origin your-branch-name
    ```
@@ -272,6 +274,7 @@ const { data, error } = await dbQuery('users', {
 ## Recognition
 
 Contributors will be recognized in:
+
 - README.md contributors section
 - Release notes for significant contributions
 - GitHub contributors page
