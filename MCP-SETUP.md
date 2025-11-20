@@ -5,6 +5,7 @@ This document describes the Model Context Protocol (MCP) server configuration an
 ## Overview
 
 The MCP configuration enables Cursor to interact with various MCP servers including:
+
 - **Hugging Face MCP Server** - Access to 500k+ models, datasets, and inference APIs
 - **Docker MCP Gateway** - Gateway service for MCP protocol communication
 - **Filesystem MCP Server** - File system access within workspace
@@ -19,6 +20,7 @@ The main MCP configuration file located at `.cursor/mcp.json` contains all MCP s
 **Location**: `/workspace/.cursor/mcp.json`
 
 **Configuration**:
+
 ```json
 {
   "mcpServers": {
@@ -55,22 +57,24 @@ The main MCP configuration file located at `.cursor/mcp.json` contains all MCP s
 The following environment variables must be set for the MCP servers to function:
 
 #### `HF_TOKEN`
+
 - **Description**: Hugging Face access token for API authentication
-- **How to get**: 
+- **How to get**:
   1. Visit https://huggingface.co/settings/tokens
   2. Click "New token"
   3. Name: "istani-mcp"
   4. Type: "Read" (or "Write" if uploading models)
-  5. Copy the token (starts with "hf_...")
+  5. Copy the token (starts with "hf\_...")
 - **Usage**: Used by Hugging Face MCP server for model access and inference
 
 #### `GITHUB_TOKEN`
+
 - **Description**: GitHub personal access token for repository access
 - **How to get**:
   1. Visit https://github.com/settings/tokens
   2. Click "Generate new token (classic)"
   3. Select scopes: `repo`, `read:org` (as needed)
-  4. Copy the token (starts with "ghp_...")
+  4. Copy the token (starts with "ghp\_...")
 - **Usage**: Used by GitHub MCP server for repository operations
 
 ### Setting Environment Variables
@@ -106,6 +110,7 @@ The MCP Gateway service runs as a Docker container and provides a gateway interf
 **Location**: `ai-agent/docker-compose.yml`
 
 **Service Details**:
+
 - **Container Name**: `istani-mcp-gateway`
 - **Base Image**: `node:20-alpine`
 - **Port**: `8080`
@@ -132,6 +137,7 @@ docker-compose logs -f mcp-gateway
 ### Health Check
 
 The gateway includes a health check endpoint:
+
 - **URL**: `http://localhost:8080/health`
 - **Check Interval**: 30 seconds
 - **Timeout**: 10 seconds
@@ -145,6 +151,7 @@ The MCP configuration works alongside the Cline unified setup in `ai-brain/unifi
 Once configured, the following MCP tools are available:
 
 #### Hugging Face MCP
+
 - `search_models` - Search Hugging Face models
 - `get_model` - Get model details
 - `search_datasets` - Search datasets
@@ -154,11 +161,13 @@ Once configured, the following MCP tools are available:
 - `download_model` - Download model files
 
 #### GitHub MCP
+
 - Repository access and operations
 - Issue and PR management
 - Code search and analysis
 
 #### Filesystem MCP
+
 - File system operations within `/workspace`
 - File reading and writing
 - Directory navigation
@@ -225,6 +234,7 @@ docker-compose restart mcp-gateway
 ```
 
 **Note**: If `@modelcontextprotocol/gateway` package doesn't exist, you may need to:
+
 - Create a custom Dockerfile for the MCP gateway
 - Use a different MCP gateway implementation
 - Remove the docker-gateway entry from `.cursor/mcp.json` if not needed
@@ -264,6 +274,7 @@ docker network inspect ai-agent_ai-agent-network
 ## Support
 
 For issues or questions:
+
 1. Check the troubleshooting section above
 2. Review MCP server logs in Cursor
 3. Check Docker gateway logs: `docker-compose logs mcp-gateway`
