@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 require('dotenv').config();
 const axios = require('axios');
+const { z } = require('zod');
 const { createClient } = require('@supabase/supabase-js');
 
 const app = express();
@@ -29,6 +30,21 @@ let supabase = null;
 if (process.env.SUPABASE_PROJECT_URL && process.env.SUPABASE_ANON_PUBLIC) {
   supabase = createClient(process.env.SUPABASE_PROJECT_URL, process.env.SUPABASE_ANON_PUBLIC);
 }
+
+const aiChatSchema = z.object({
+  message: z.string().trim().min(1, 'Message is required').max(1000, 'Message is too long'),
+  context: z.string().trim().max(1000, 'Context is too long').optional(),
+});
+
+const progressSchema = z.object({
+  userId: z.string().trim().min(1, 'User ID is required').max(128, 'User ID is too long'),
+  workoutData: z
+    .object({})
+    .passthrough()
+    .or(z.array(z.object({}).passthrough()))
+    .optional()
+    .default({}),
+});
 
 // Security: Sanitize output to prevent API key leakage
 function sanitizeOutput(text) {
@@ -85,11 +101,13 @@ app.get('/api/health', (req, res) => {
 // AI Chat endpoint with OpenRouter
 app.post('/api/ai-chat', async (req, res) => {
   try {
-    const { message, context } = req.body;
+    const parsed = aiChatSchema.safeParse(req.body);
 
-    if (!message) {
-      return res.status(400).json({ error: 'Message is required' });
+    if (!parsed.success) {
+      return res.status(400).json({ error: parsed.error.issues[0].message });
     }
+
+    const { message, context } = parsed.data;
 
     // Security: Check for prompt injection
     if (detectPromptInjection(message)) {
@@ -192,7 +210,13 @@ app.post('/api/users/progress', async (req, res) => {
       return res.status(503).json({ error: 'Database not configured' });
     }
 
-    const { userId, workoutData } = req.body;
+    const parsed = progressSchema.safeParse(req.body);
+
+    if (!parsed.success) {
+      return res.status(400).json({ error: parsed.error.issues[0].message });
+    }
+
+    const { userId, workoutData } = parsed.data;
 
     const { data, error } = await supabase.from('workout_progress').insert([
       {
@@ -237,7 +261,7 @@ app.get('/api/users/:userId/progress', async (req, res) => {
 
 // Demo response function
 function getDemoResponse(message) {
-  const lowerMessage = message.toLowerCase();
+  const lowerMessage = typeof message === 'string' ? message.toLowerCase() : '';
 
   if (lowerMessage.includes('workout') || lowerMessage.includes('plan')) {
     return 'To create your personalized workout plan, I need: 1) Your goal (muscle gain, fat loss, strength, athletic performance), 2) Experience level (beginner, intermediate, advanced), 3) Training frequency (days per week), 4) Available equipment. Share these details and I will design a science-backed program using progressive overload and optimal training volume.';
