@@ -4,18 +4,26 @@
  * Runs periodically via cron jobs or edge functions
  */
 
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+// Lazy initialization of Supabase client to avoid build-time errors
+let supabase: SupabaseClient | null = null;
 
-if (!supabaseUrl || !serviceRoleKey) {
-  throw new Error(
-    'Missing required Supabase environment variables for coaching engine: NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY must be set',
-  );
+function getSupabaseClient(): SupabaseClient {
+  if (supabase) return supabase;
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!supabaseUrl || !serviceRoleKey) {
+    throw new Error(
+      'Missing required Supabase environment variables for coaching engine: NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY must be set',
+    );
+  }
+
+  supabase = createClient(supabaseUrl, serviceRoleKey);
+  return supabase;
 }
-
-const supabase = createClient(supabaseUrl, serviceRoleKey);
 
 interface UserData {
   id: string;
@@ -54,7 +62,7 @@ export async function generateMorningMotivation(userId: string) {
 
   const message = motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)];
 
-  await supabase.from('coaching_messages').insert({
+  await getSupabaseClient().from('coaching_messages').insert({
     user_id: userId,
     message_type: 'motivation',
     title: message.title,
@@ -68,13 +76,13 @@ export async function generateMorningMotivation(userId: string) {
  */
 export async function generateWorkoutRecommendation(userId: string) {
   // Get user profile and recent workouts
-  const { data: profile } = await supabase
+  const { data: profile } = await getSupabaseClient()
     .from('profiles')
     .select('fitness_goals, primary_goal')
     .eq('id', userId)
     .single();
 
-  const { data: recentWorkouts } = await supabase
+  const { data: recentWorkouts } = await getSupabaseClient()
     .from('workouts')
     .select('workout_type, duration_minutes, completed_at')
     .eq('user_id', userId)
@@ -115,7 +123,7 @@ export async function generateWorkoutRecommendation(userId: string) {
   const duration = recommendedType === 'cardio' ? 30 : 45;
 
   // Save recommendation
-  await supabase.from('workout_recommendations').insert({
+  await getSupabaseClient().from('workout_recommendations').insert({
     user_id: userId,
     workout_type: recommendedType,
     exercises: exercises,
@@ -126,7 +134,7 @@ export async function generateWorkoutRecommendation(userId: string) {
   });
 
   // Send coaching message
-  await supabase.from('coaching_messages').insert({
+  await getSupabaseClient().from('coaching_messages').insert({
     user_id: userId,
     message_type: 'tip',
     title: `🎯 Today's Workout Recommendation`,
@@ -187,7 +195,7 @@ export async function analyzeProgressAndSendInsights(userId: string) {
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-  const { data: measurements } = await supabase
+  const { data: measurements } = await getSupabaseClient()
     .from('body_measurements')
     .select('*')
     .eq('user_id', userId)
@@ -216,7 +224,7 @@ export async function analyzeProgressAndSendInsights(userId: string) {
       message = `You've lost ${Math.abs(weightChange).toFixed(1)}kg in the last 30 days! `;
       messageType = 'celebration';
     } else {
-      const { data: profile } = await supabase
+      const { data: profile } = await getSupabaseClient()
         .from('profiles')
         .select('primary_goal')
         .eq('id', userId)
@@ -240,7 +248,7 @@ export async function analyzeProgressAndSendInsights(userId: string) {
       message += `Body fat increased by ${bodyFatChange.toFixed(1)}%. Focus on protein intake and strength training to maintain muscle mass.`;
     }
 
-    await supabase.from('coaching_messages').insert({
+    await getSupabaseClient().from('coaching_messages').insert({
       user_id: userId,
       message_type: messageType,
       title: title,
@@ -250,7 +258,7 @@ export async function analyzeProgressAndSendInsights(userId: string) {
   }
 
   // Workout consistency check
-  const { data: workouts } = await supabase
+  const { data: workouts } = await getSupabaseClient()
     .from('workouts')
     .select('completed_at')
     .eq('user_id', userId)
@@ -259,7 +267,7 @@ export async function analyzeProgressAndSendInsights(userId: string) {
   const workoutsThisMonth = workouts?.length || 0;
 
   if (workoutsThisMonth >= 20) {
-    await supabase.from('coaching_messages').insert({
+    await getSupabaseClient().from('coaching_messages').insert({
       user_id: userId,
       message_type: 'celebration',
       title: '🏆 Consistency Champion!',
@@ -267,7 +275,7 @@ export async function analyzeProgressAndSendInsights(userId: string) {
       priority: 'high',
     });
   } else if (workoutsThisMonth < 8) {
-    await supabase.from('coaching_messages').insert({
+    await getSupabaseClient().from('coaching_messages').insert({
       user_id: userId,
       message_type: 'tip',
       title: "📅 Let's Increase Consistency",
@@ -281,7 +289,7 @@ export async function analyzeProgressAndSendInsights(userId: string) {
  * Generate nutrition recommendations
  */
 export async function generateNutritionRecommendation(userId: string) {
-  const { data: profile } = await supabase.from('profiles').select('*').eq('id', userId).single();
+  const { data: profile } = await getSupabaseClient().from('profiles').select('*').eq('id', userId).single();
 
   if (!profile) return;
 
@@ -337,7 +345,7 @@ export async function generateNutritionRecommendation(userId: string) {
   };
 
   // Save recommendation
-  await supabase.from('nutrition_recommendations').insert({
+  await getSupabaseClient().from('nutrition_recommendations').insert({
     user_id: userId,
     meal_type: 'daily_plan',
     recommended_meals: mealSuggestions,
@@ -350,7 +358,7 @@ export async function generateNutritionRecommendation(userId: string) {
   });
 
   // Send coaching message
-  await supabase.from('coaching_messages').insert({
+  await getSupabaseClient().from('coaching_messages').insert({
     user_id: userId,
     message_type: 'tip',
     title: '🍽️ Your Personalized Meal Plan',
@@ -392,7 +400,7 @@ export async function checkInactiveUsers() {
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
   // Get users who haven't logged a workout in 7 days
-  const { data: inactiveUsers } = await supabase
+  const { data: inactiveUsers } = await getSupabaseClient()
     .from('profiles')
     .select('id, full_name')
     .not(
@@ -406,7 +414,7 @@ export async function checkInactiveUsers() {
     );
 
   for (const user of inactiveUsers || []) {
-    await supabase.from('coaching_messages').insert({
+    await getSupabaseClient().from('coaching_messages').insert({
       user_id: user.id,
       message_type: 'reminder',
       title: '👋 We Miss You!',
@@ -422,7 +430,7 @@ export async function checkInactiveUsers() {
 export async function runDailyCoachingTasks() {
   try {
     // Get all active users
-    const { data: users } = await supabase.from('profiles').select('id').not('id', 'is', null);
+    const { data: users } = await getSupabaseClient().from('profiles').select('id').not('id', 'is', null);
 
     for (const user of users || []) {
       // Morning motivation (6 AM local time would be handled by scheduled function)
@@ -448,7 +456,7 @@ export async function runDailyCoachingTasks() {
     await checkInactiveUsers();
 
     // Log successful run
-    await supabase.from('system_health_logs').insert({
+    await getSupabaseClient().from('system_health_logs').insert({
       check_type: 'coaching_engine',
       status: 'healthy',
       message: 'Daily coaching tasks completed successfully',
@@ -456,7 +464,7 @@ export async function runDailyCoachingTasks() {
     });
   } catch (error: any) {
     // Log error
-    await supabase.from('system_health_logs').insert({
+    await getSupabaseClient().from('system_health_logs').insert({
       check_type: 'coaching_engine',
       status: 'critical',
       message: `Coaching engine error: ${error.message}`,

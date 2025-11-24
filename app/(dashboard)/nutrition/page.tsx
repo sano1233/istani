@@ -69,7 +69,10 @@ export default async function NutritionPage() {
 
   // Calculate today's totals
   const todayTotals = todayMeals?.reduce(
-    (acc, meal) => ({
+    (
+      acc: { calories: number; protein: number; carbs: number; fats: number },
+      meal: any,
+    ) => ({
       calories: acc.calories + (meal.calories || 0),
       protein: acc.protein + (meal.protein_g || 0),
       carbs: acc.carbs + (meal.carbs_g || 0),
