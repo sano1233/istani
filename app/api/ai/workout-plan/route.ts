@@ -33,11 +33,16 @@ export async function POST(request: NextRequest) {
     }
 
     // Get user profile for personalization
-    const { data: profile } = await supabase
+    const { data: profile, error: profileError } = await supabase
       .from('profiles')
       .select('*')
       .eq('id', user.id)
-      .single();
+      .maybeSingle();
+
+    // Log profile fetch error but continue with null profile
+    if (profileError) {
+      console.warn('Could not fetch user profile:', profileError);
+    }
 
     // Build prompt for AI
     const prompt = buildWorkoutPlanPrompt(body, profile);

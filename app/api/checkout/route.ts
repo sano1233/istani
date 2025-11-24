@@ -1,18 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getStripe } from '@/lib/stripe';
 import { createClient } from '@/lib/supabase/server';
+import type { CheckoutRequest, CheckoutResponse, ApiError } from '@/types';
 
 export async function POST(request: NextRequest) {
   try {
-    const { items } = await request.json();
+    const body = (await request.json()) as CheckoutRequest;
+    const { items } = body;
 
     if (!items || items.length === 0) {
-      return NextResponse.json({ error: 'No items provided' }, { status: 400 });
+      return NextResponse.json<ApiError>({ error: 'No items provided' }, { status: 400 });
     }
 
     // Get product details from Supabase
     const supabase = await createClient();
-    const productIds = items.map((item: any) => item.product_id);
+    const productIds = items.map((item) => item.product_id);
 
     const { data: products, error: productsError } = await supabase
       .from('products')
@@ -20,11 +22,11 @@ export async function POST(request: NextRequest) {
       .in('id', productIds);
 
     if (productsError || !products) {
-      return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 });
+      return NextResponse.json<ApiError>({ error: 'Failed to fetch products' }, { status: 500 });
     }
 
     // Create line items for Stripe
-    const lineItems = items.map((item: any) => {
+    const lineItems = items.map((item) => {
       const product = products.find((p) => p.id === item.product_id);
 
       if (!product) {
@@ -64,12 +66,10 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    return NextResponse.json({ sessionId: session.id });
-  } catch (error: any) {
-    console.error('Checkout error:', error);
-    return NextResponse.json(
-      { error: error.message || 'Failed to create checkout session' },
-      { status: 500 },
-    );
+    return NextResponse.json<CheckoutResponse>({ sessionId: session.id, url: session.url || '' });
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Failed to create checkout session';
+    console.error('Checkout error:', errorMessage);
+    return NextResponse.json<ApiError>({ error: errorMessage }, { status: 500 });
   }
 }

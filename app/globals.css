@@ -69,22 +69,253 @@
 
   body {
     @apply bg-background-dark text-white font-display;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Futuristic grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+      linear-gradient(rgba(13, 242, 89, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(13, 242, 89, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Animated gradient orbs in background */
+  body::after {
+    content: '';
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 20% 50%, rgba(13, 242, 89, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 246, 255, 0.06) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(181, 55, 242, 0.05) 0%, transparent 50%);
+    animation: rotate-slow 30s linear infinite;
+    pointer-events: none;
+    z-index: 0;
   }
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar with neon glow */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
   @apply bg-white/5;
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-white/20 rounded-full;
+  @apply bg-neon-green/30 rounded-full;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  transition: all 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-white/30;
+  @apply bg-neon-green/50;
+  box-shadow: 0 0 10px rgba(13, 242, 89, 0.5);
+}
+
+/* Futuristic utility classes */
+@layer components {
+  /* Glass morphism card */
+  .glass-card {
+    @apply backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl shadow-glass;
+    transition: all 0.3s ease;
+  }
+
+  .glass-card:hover {
+    @apply bg-white/10 border-white/20 shadow-glow-md;
+    transform: translateY(-2px);
+  }
+
+  /* Neon button */
+  .neon-button {
+    @apply relative px-6 py-3 rounded-xl font-bold text-white overflow-hidden;
+    background: linear-gradient(135deg, #0df259 0%, #00f6ff 100%);
+    box-shadow: 0 0 20px rgba(13, 242, 89, 0.4);
+    transition: all 0.3s ease;
+  }
+
+  .neon-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s ease;
+  }
+
+  .neon-button:hover::before {
+    left: 100%;
+  }
+
+  .neon-button:hover {
+    box-shadow: 0 0 30px rgba(13, 242, 89, 0.6), 0 0 60px rgba(13, 242, 89, 0.3);
+    transform: translateY(-2px);
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    @apply bg-gradient-neon bg-clip-text text-transparent;
+    background-size: 200% 200%;
+    animation: gradient-shift 3s ease infinite;
+  }
+
+  /* Neon border */
+  .neon-border {
+    @apply border-2 border-neon-green rounded-xl;
+    box-shadow: 0 0 10px rgba(13, 242, 89, 0.3), inset 0 0 10px rgba(13, 242, 89, 0.1);
+  }
+
+  /* Cyber grid */
+  .cyber-grid {
+    background-image:
+      linear-gradient(rgba(13, 242, 89, 0.05) 2px, transparent 2px),
+      linear-gradient(90deg, rgba(13, 242, 89, 0.05) 2px, transparent 2px);
+    background-size: 100px 100px;
+  }
+
+  /* Floating animation */
+  .floating {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  /* Pulse glow animation */
+  .pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  /* Shimmer effect */
+  .shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .shimmer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(13, 242, 89, 0.2), transparent);
+    animation: shimmer 2s infinite;
+  }
+
+  /* Holographic effect */
+  .holographic {
+    background: linear-gradient(135deg,
+      rgba(13, 242, 89, 0.1) 0%,
+      rgba(0, 246, 255, 0.1) 25%,
+      rgba(181, 55, 242, 0.1) 50%,
+      rgba(0, 102, 255, 0.1) 75%,
+      rgba(13, 242, 89, 0.1) 100%);
+    background-size: 400% 400%;
+    animation: gradient-shift 10s ease infinite;
+  }
+
+  /* Neon input */
+  .neon-input {
+    @apply bg-white/5 border-2 border-white/10 rounded-xl px-4 py-3 text-white;
+    @apply focus:border-neon-green focus:outline-none focus:ring-2 focus:ring-neon-green/50;
+    transition: all 0.3s ease;
+  }
+
+  .neon-input:focus {
+    box-shadow: 0 0 20px rgba(13, 242, 89, 0.3);
+  }
+
+  /* Progress bar with glow */
+  .progress-glow {
+    @apply bg-gradient-to-r from-neon-green to-neon-cyan rounded-full;
+    box-shadow: 0 0 20px rgba(13, 242, 89, 0.5);
+  }
+
+  /* Card hover effect */
+  .card-hover-glow {
+    transition: all 0.3s ease;
+  }
+
+  .card-hover-glow:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(13, 242, 89, 0.2), 0 0 30px rgba(13, 242, 89, 0.3);
+  }
+
+  /* Scanline effect */
+  .scanlines {
+    position: relative;
+  }
+
+  .scanlines::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.15),
+      rgba(0, 0, 0, 0.15) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* Neon underline */
+  .neon-underline {
+    @apply relative inline-block;
+  }
+
+  .neon-underline::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, #0df259, #00f6ff);
+    box-shadow: 0 0 10px rgba(13, 242, 89, 0.5);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+  }
+
+  .neon-underline:hover::after {
+    transform: scaleX(1);
+  }
+}
+
+/* Selection styling */
+::selection {
+  background-color: rgba(13, 242, 89, 0.3);
+  color: white;
+}
+
+::-moz-selection {
+  background-color: rgba(13, 242, 89, 0.3);
+  color: white;
+}
+
+/* Smooth transitions */
+* {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
 }
