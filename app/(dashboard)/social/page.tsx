@@ -6,6 +6,15 @@ import { ActivityFeed } from '@/components/social/activity-feed';
 import { AchievementsDisplay } from '@/components/social/achievements-display';
 import { Card } from '@/components/ui/card';
 
+/**
+ * Render the Social Hub page for the authenticated user.
+ *
+ * Ensures the user is authenticated (redirects to `/login` if not), fetches the current
+ * user's points, friend count, and active challenge count, and returns the page UI
+ * composed of stats cards, leaderboard, achievements, activity feed, and active challenges.
+ *
+ * @returns The Social Hub page JSX populated with the current user's social stats and related components.
+ */
 export default async function SocialPage() {
   const supabase = await createClient();
 
