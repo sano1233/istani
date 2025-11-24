@@ -7,11 +7,13 @@
 #### MIDDLEWARE_INVOCATION_FAILED Error
 
 **Symptoms:**
+
 - 500 Internal Server Error
 - Error code: `MIDDLEWARE_INVOCATION_FAILED`
 - Site not loading
 
 **Causes:**
+
 1. Missing environment variables
 2. Middleware crashing
 3. Supabase connection issues
@@ -19,6 +21,7 @@
 **Solutions:**
 
 1. **Check Environment Variables**
+
    ```bash
    # Verify in Vercel dashboard:
    # - NEXT_PUBLIC_SUPABASE_URL
@@ -28,6 +31,7 @@
    ```
 
 2. **Check Middleware Logs**
+
    ```bash
    # In Vercel dashboard:
    # Functions > Middleware > Logs
@@ -36,6 +40,7 @@
    ```
 
 3. **Verify Supabase Connection**
+
    ```bash
    # Test locally first
    curl https://YOUR_PROJECT.supabase.co/rest/v1/
@@ -50,6 +55,7 @@
 #### Build Failures
 
 **Symptoms:**
+
 - Deployment fails during build
 - TypeScript errors in build logs
 - Missing dependencies
@@ -57,6 +63,7 @@
 **Solutions:**
 
 1. **TypeScript Errors**
+
    ```bash
    # Run locally to debug
    npm run typecheck
@@ -69,6 +76,7 @@
    ```
 
 2. **Missing Dependencies**
+
    ```bash
    # Ensure package-lock.json is committed
    git add package-lock.json
@@ -92,6 +100,7 @@
 #### Connection Timeouts
 
 **Symptoms:**
+
 - Slow API responses
 - Database connection errors
 - Timeout errors
@@ -103,6 +112,7 @@
    - Check if your region has issues
 
 2. **Verify Connection Pooling**
+
    ```typescript
    // Ensure using server-side client properly
    import { createClient } from '@/lib/supabase/server';
@@ -111,6 +121,7 @@
    ```
 
 3. **Optimize Queries**
+
    ```typescript
    // Bad - fetching too much data
    const { data } = await supabase.from('users').select('*');
@@ -124,6 +135,7 @@
 #### Row Level Security (RLS) Issues
 
 **Symptoms:**
+
 - "permission denied for table" errors
 - Data not visible to authenticated users
 - Updates failing silently
@@ -131,6 +143,7 @@
 **Solutions:**
 
 1. **Check RLS Policies**
+
    ```sql
    -- In Supabase SQL Editor
    SELECT * FROM pg_policies WHERE tablename = 'your_table';
@@ -139,16 +152,16 @@
    ```
 
 2. **Test with Service Role**
+
    ```typescript
    // Temporarily use service role to verify data exists
-   const { data } = await supabaseAdmin
-     .from('users')
-     .select('*');
+   const { data } = await supabaseAdmin.from('users').select('*');
 
    // If data shows, RLS is the issue
    ```
 
 3. **Fix Missing Policies**
+
    ```sql
    -- Add policy for users to read their own data
    CREATE POLICY "Users can read own data"
@@ -168,6 +181,7 @@
 #### Login Not Working
 
 **Symptoms:**
+
 - Login button doesn't work
 - Redirect loops
 - "Invalid login credentials" errors
@@ -175,6 +189,7 @@
 **Solutions:**
 
 1. **Check Site URL Configuration**
+
    ```bash
    # In Vercel:
    NEXT_PUBLIC_SITE_URL=https://your-domain.com
@@ -185,6 +200,7 @@
    ```
 
 2. **Verify Redirect URLs**
+
    ```bash
    # In Supabase Dashboard:
    # Authentication > URL Configuration
@@ -203,6 +219,7 @@
 #### Session Persistence Issues
 
 **Symptoms:**
+
 - Users logged out randomly
 - Session lost on page refresh
 - "Session expired" errors
@@ -210,12 +227,14 @@
 **Solutions:**
 
 1. **Check Cookie Settings**
+
    ```typescript
    // Ensure middleware is handling cookies correctly
    // Already implemented in lib/supabase/middleware.ts
    ```
 
 2. **Verify Domain**
+
    ```bash
    # Cookies must match domain
    NEXT_PUBLIC_SITE_URL=https://your-exact-domain.com
@@ -233,6 +252,7 @@
 #### Webhook Not Receiving Events
 
 **Symptoms:**
+
 - Payments succeed but orders not created
 - Webhook showing errors in Stripe dashboard
 - 500 errors on webhook endpoint
@@ -240,6 +260,7 @@
 **Solutions:**
 
 1. **Verify Webhook URL**
+
    ```bash
    # In Stripe Dashboard:
    # Developers > Webhooks
@@ -247,6 +268,7 @@
    ```
 
 2. **Check Webhook Secret**
+
    ```bash
    # In Vercel environment variables:
    STRIPE_WEBHOOK_SECRET=whsec_...
@@ -255,6 +277,7 @@
    ```
 
 3. **Test Webhook Locally**
+
    ```bash
    # Install Stripe CLI
    stripe listen --forward-to localhost:3000/api/webhooks/stripe
@@ -268,12 +291,14 @@
 #### Payment Intent Failed
 
 **Symptoms:**
+
 - Payment fails during checkout
 - "Payment intent creation failed" errors
 
 **Solutions:**
 
 1. **Check Stripe API Keys**
+
    ```bash
    # Verify in Vercel:
    STRIPE_SECRET_KEY=sk_live_... (or sk_test_...)
@@ -282,6 +307,7 @@
    ```
 
 2. **Verify Minimum Amount**
+
    ```typescript
    // Stripe has minimum amounts per currency
    // USD: $0.50 minimum
@@ -300,6 +326,7 @@
 #### 429 Too Many Requests
 
 **Symptoms:**
+
 - API returns 429 status
 - "Rate limit exceeded" error
 - Requests blocked
@@ -307,6 +334,7 @@
 **Solutions:**
 
 1. **Check Rate Limit Configuration**
+
    ```typescript
    // In lib/rate-limit.ts
    // Adjust limits based on your needs:
@@ -325,6 +353,7 @@
    ```
 
 2. **Implement Backoff**
+
    ```typescript
    async function fetchWithRetry(url: string, retries = 3) {
      for (let i = 0; i < retries; i++) {
@@ -332,7 +361,7 @@
 
        if (response.status === 429) {
          const retryAfter = response.headers.get('Retry-After');
-         await new Promise(r => setTimeout(r, (retryAfter || 60) * 1000));
+         await new Promise((r) => setTimeout(r, (retryAfter || 60) * 1000));
          continue;
        }
 
@@ -362,6 +391,7 @@
 #### Slow Page Load
 
 **Symptoms:**
+
 - Pages take >5 seconds to load
 - Poor Lighthouse scores
 - Slow Time to Interactive
@@ -369,6 +399,7 @@
 **Solutions:**
 
 1. **Check Bundle Size**
+
    ```bash
    npm run build
 
@@ -379,6 +410,7 @@
    ```
 
 2. **Optimize Images**
+
    ```typescript
    // Use Next.js Image component
    import Image from 'next/image';
@@ -393,6 +425,7 @@
    ```
 
 3. **Implement Code Splitting**
+
    ```typescript
    import dynamic from 'next/dynamic';
 
@@ -416,6 +449,7 @@
 #### Slow Database Queries
 
 **Symptoms:**
+
 - API routes timing out
 - Slow dashboard loading
 - High database CPU usage
@@ -423,6 +457,7 @@
 **Solutions:**
 
 1. **Add Indexes**
+
    ```sql
    -- Check query performance
    EXPLAIN ANALYZE
@@ -433,6 +468,7 @@
    ```
 
 2. **Optimize Queries**
+
    ```typescript
    // Bad - N+1 queries
    const users = await supabase.from('users').select('*');
@@ -441,12 +477,11 @@
    }
 
    // Good - Join
-   const usersWithOrders = await supabase
-     .from('users')
-     .select('*, orders(*)');
+   const usersWithOrders = await supabase.from('users').select('*, orders(*)');
    ```
 
 3. **Use Pagination**
+
    ```typescript
    import { validatePagination } from '@/lib/validation';
 
@@ -468,6 +503,7 @@
 #### Local Development Not Working
 
 **Symptoms:**
+
 - `npm run dev` fails
 - Environment variables not loading
 - Module not found errors
@@ -475,12 +511,14 @@
 **Solutions:**
 
 1. **Reinstall Dependencies**
+
    ```bash
    rm -rf node_modules package-lock.json
    npm install
    ```
 
 2. **Check Node Version**
+
    ```bash
    node --version
    # Should be >= 18.0.0
@@ -490,6 +528,7 @@
    ```
 
 3. **Verify Environment Variables**
+
    ```bash
    # Create .env.local if missing
    cp .env.local.example .env.local
@@ -503,6 +542,7 @@
 #### Hot Reload Not Working
 
 **Symptoms:**
+
 - Changes not reflected in browser
 - Need to restart server for changes
 - Stale cache
@@ -510,6 +550,7 @@
 **Solutions:**
 
 1. **Clear Next.js Cache**
+
    ```bash
    rm -rf .next
    npm run dev
@@ -562,6 +603,7 @@ If none of these solutions work:
 If production is broken:
 
 1. **Revert to Previous Deployment**
+
    ```bash
    # In Vercel dashboard:
    # Deployments > Find last working deployment
@@ -569,6 +611,7 @@ If production is broken:
    ```
 
 2. **Rollback Code**
+
    ```bash
    git revert HEAD
    git push origin main
