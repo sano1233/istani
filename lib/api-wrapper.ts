@@ -63,6 +63,11 @@ export function createApiHandler<T = any>(
     const path = url.pathname;
     const method = request.method;
 
+    // Declare variables outside try block for catch block access
+    let userId: string | undefined;
+    let user: any;
+    let isAdmin = false;
+
     try {
       // Log incoming request
       logger.apiRequest(method, path);
@@ -79,9 +84,6 @@ export function createApiHandler<T = any>(
       }
 
       // Authentication check
-      let userId: string | undefined;
-      let user: any;
-      let isAdmin = false;
 
       if (requireAuth || requireAdmin) {
         try {
