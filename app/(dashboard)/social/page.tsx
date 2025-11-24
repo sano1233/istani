@@ -24,15 +24,15 @@ export default async function SocialPage() {
     .eq('user_id', user.id)
     .single();
 
-  const { data: connections } = await supabase
+  const { count: connectionsCount = 0 } = await supabase
     .from('user_connections')
-    .select('*', { count: 'exact', head: true })
+    .select('id', { count: 'exact', head: true })
     .or(`follower_id.eq.${user.id},following_id.eq.${user.id}`)
     .eq('status', 'accepted');
 
-  const { data: activeChallenges } = await supabase
+  const { count: activeChallengesCount = 0 } = await supabase
     .from('challenge_participants')
-    .select('*', { count: 'exact', head: true })
+    .select('id', { count: 'exact', head: true })
     .eq('user_id', user.id)
     .eq('status', 'active');
 
@@ -81,7 +81,7 @@ export default async function SocialPage() {
               </div>
               <div>
                 <p className="text-white/60 text-sm">Friends</p>
-                <p className="text-2xl font-bold text-white">{connections?.count || 0}</p>
+                <p className="text-2xl font-bold text-white">{connectionsCount}</p>
               </div>
             </div>
           </Card>
@@ -93,7 +93,7 @@ export default async function SocialPage() {
               </div>
               <div>
                 <p className="text-white/60 text-sm">Active Challenges</p>
-                <p className="text-2xl font-bold text-white">{activeChallenges?.count || 0}</p>
+                <p className="text-2xl font-bold text-white">{activeChallengesCount}</p>
               </div>
             </div>
           </Card>
