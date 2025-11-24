@@ -135,7 +135,7 @@ export default async function NutritionPage() {
               <div className="bg-white rounded-lg border p-6">
                 <h2 className="text-xl font-semibold mb-4">Recent Meals (7 Days)</h2>
                 <div className="space-y-2">
-                  {recentMeals.map((meal) => (
+                  {recentMeals.map((meal: any) => (
                     <div
                       key={meal.id}
                       className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50"

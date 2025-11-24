@@ -79,11 +79,11 @@ export function AchievementsDisplay({ userId, compact = false }: AchievementsDis
         // Apply filter
         if (filter === 'completed') {
           filteredAchievements = filteredAchievements.filter(
-            (a) => a.user_achievement?.is_completed,
+            (a: any) => a.user_achievement?.is_completed,
           );
         } else if (filter === 'in-progress') {
           filteredAchievements = filteredAchievements.filter(
-            (a) => a.user_achievement && !a.user_achievement.is_completed,
+            (a: any) => a.user_achievement && !a.user_achievement.is_completed,
           );
         }
 

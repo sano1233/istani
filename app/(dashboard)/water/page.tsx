@@ -134,7 +134,7 @@ export default async function WaterPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {weekData?.map((day) => {
+              {weekData?.map((day: any) => {
                 const percentage = (day.glasses_consumed / day.daily_goal) * 100;
                 return (
                   <div key={day.date} className="space-y-2">

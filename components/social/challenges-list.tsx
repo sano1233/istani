@@ -73,7 +73,7 @@ export function ChallengesList() {
           .in('challenge_id', challengeIds);
 
         const participationMap = new Map(
-          participationData?.map((p) => [
+          participationData?.map((p: any) => [
             p.challenge_id,
             { current_progress: p.current_progress, status: p.status },
           ]),

@@ -75,7 +75,7 @@ export function ActivityFeed({ userId, limit = 20 }: ActivityFeedProps) {
           .eq('user_id', user.id)
           .in('activity_id', activityIds);
 
-        const likedIds = new Set(likesData?.map((l) => l.activity_id) || []);
+        const likedIds = new Set(likesData?.map((l: any) => l.activity_id) || []);
 
         setActivities(
           activitiesData.map((a: any) => ({

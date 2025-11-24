@@ -62,8 +62,8 @@ export async function getWorkoutStats(userId: string, days: number = 30): Promis
     .eq('completed', true)
     .gte('workout_date', startDate.toISOString().split('T')[0]);
 
-  const totalCalories = workoutData?.reduce((sum, w) => sum + (w.calories_burned || 0), 0) || 0;
-  const totalDuration = workoutData?.reduce((sum, w) => sum + (w.duration_minutes || 0), 0) || 0;
+  const totalCalories = workoutData?.reduce((sum: number, w: any) => sum + (w.calories_burned || 0), 0) || 0;
+  const totalDuration = workoutData?.reduce((sum: number, w: any) => sum + (w.duration_minutes || 0), 0) || 0;
   const avgDuration = workoutData?.length ? totalDuration / workoutData.length : 0;
 
   // This week/month
@@ -113,8 +113,8 @@ export async function getWorkoutStats(userId: string, days: number = 30): Promis
     .order('workout_date', { ascending: false })
     .limit(90);
 
-  const currentStreak = calculateStreak(recentWorkouts?.map((w) => w.workout_date) || []);
-  const longestStreak = calculateLongestStreak(recentWorkouts?.map((w) => w.workout_date) || []);
+  const currentStreak = calculateStreak(recentWorkouts?.map((w: any) => w.workout_date) || []);
+  const longestStreak = calculateLongestStreak(recentWorkouts?.map((w: any) => w.workout_date) || []);
 
   return {
     total_workouts: totalWorkouts || 0,
@@ -161,7 +161,7 @@ export async function getNutritionStats(
     { calories: number; protein: number; carbs: number; fat: number }
   >();
 
-  mealsData?.forEach((meal) => {
+  mealsData?.forEach((meal: any) => {
     const existing = dailyTotals.get(meal.meal_date) || {
       calories: 0,
       protein: 0,
@@ -248,7 +248,7 @@ export async function getProgressStats(userId: string): Promise<ProgressStats> {
       ? latest.body_fat_percentage - first.body_fat_percentage
       : 0;
 
-  const photosUploaded = measurements.reduce((count, m) => {
+  const photosUploaded = measurements.reduce((count: number, m: any) => {
     if (m.photos) {
       const photos = typeof m.photos === 'object' ? m.photos : {};
       return count + Object.keys(photos).length;
@@ -288,7 +288,7 @@ export async function getWorkoutTimeSeries(
   // Group by date
   const dailyData = new Map<string, number>();
 
-  workouts?.forEach((workout) => {
+  workouts?.forEach((workout: any) => {
     const existing = dailyData.get(workout.workout_date) || 0;
     dailyData.set(workout.workout_date, existing + (workout.calories_burned || 0));
   });
@@ -340,7 +340,7 @@ export async function getNutritionTimeSeries(
     { calories: number; protein: number; carbs: number; fat: number }
   >();
 
-  meals?.forEach((meal) => {
+  meals?.forEach((meal: any) => {
     const existing = dailyData.get(meal.meal_date) || { calories: 0, protein: 0, carbs: 0, fat: 0 };
     dailyData.set(meal.meal_date, {
       calories: existing.calories + (meal.calories || 0),

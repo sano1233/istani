@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
 
     // Create line items for Stripe
     const lineItems = items.map((item) => {
-      const product = products.find((p) => p.id === item.product_id);
+      const product = products.find((p: any) => p.id === item.product_id);
 
       if (!product) {
         throw new Error(`Product not found: ${item.product_id}`);

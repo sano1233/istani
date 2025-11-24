@@ -65,7 +65,7 @@ export function AchievementToast({ userId }: { userId: string }) {
           table: 'user_achievements',
           filter: `user_id=eq.${userId}`,
         },
-        async (payload) => {
+        async (payload: any) => {
           // Fetch the achievement details
           const { data } = await supabase
             .from('achievements')
