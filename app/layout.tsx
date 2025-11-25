@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import './globals.css';
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://istani.org'),
   title: 'ISTANI - Evidence-Based Fitness Training & Premium Supplements',
   description: 'Transform your fitness with science-backed training programs, premium supplements, and advanced progress tracking. Join thousands achieving real results with evidence-based nutrition and workout plans.',
   keywords: ['fitness', 'training', 'supplements', 'nutrition', 'workout plans', 'evidence-based', 'muscle building', 'strength training', 'hypertrophy', 'sports nutrition'],
