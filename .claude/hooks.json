@@ -1,0 +1,48 @@
+{
+  "hooks": [
+    {
+      "name": "format-on-edit",
+      "description": "Auto-format code with Prettier after edits",
+      "matcher": "Edit|Write",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "npx prettier --write \"$CLAUDE_FILE_PATHS\" 2>/dev/null || echo '⚠️ Prettier not available'"
+        }
+      ]
+    },
+    {
+      "name": "typecheck-on-edit",
+      "description": "Run TypeScript type checking after editing TS/TSX files",
+      "matcher": "Edit",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "if [[ \"$CLAUDE_FILE_PATHS\" =~ \\.(ts|tsx)$ ]]; then npx tsc --noEmit --skipLibCheck \"$CLAUDE_FILE_PATHS\" 2>&1 | head -20 || echo '⚠️ TypeScript errors detected - please review'; fi"
+        }
+      ]
+    },
+    {
+      "name": "lint-on-edit",
+      "description": "Run ESLint after editing JS/TS files",
+      "matcher": "Edit|Write",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "if [[ \"$CLAUDE_FILE_PATHS\" =~ \\.(js|jsx|ts|tsx)$ ]]; then npx eslint \"$CLAUDE_FILE_PATHS\" --fix 2>/dev/null || echo '⚠️ ESLint warnings present'; fi"
+        }
+      ]
+    },
+    {
+      "name": "security-check",
+      "description": "Check for common security issues in code",
+      "matcher": "Edit|Write",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "if grep -q 'eval\\|dangerouslySetInnerHTML\\|innerHTML' \"$CLAUDE_FILE_PATHS\"; then echo '⚠️ SECURITY: Potentially dangerous code detected'; fi"
+        }
+      ]
+    }
+  ]
+}

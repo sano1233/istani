@@ -1,0 +1,114 @@
+# Claude Code Review Configuration
+# Automated PR review settings
+
+direct_prompt: |
+  Please review this code comprehensively and look for:
+
+  1. **Bugs and Logic Errors**
+     - Incorrect conditional logic
+     - Off-by-one errors
+     - Null/undefined handling
+     - Race conditions
+     - Memory leaks
+
+  2. **Security Vulnerabilities**
+     - SQL injection risks
+     - XSS vulnerabilities
+     - CSRF issues
+     - Authentication/authorization flaws
+     - Sensitive data exposure
+     - Unsafe use of eval, innerHTML, dangerouslySetInnerHTML
+     - Missing input validation
+     - Insecure dependencies
+
+  3. **Performance Issues**
+     - Inefficient algorithms (O(n²) when O(n) possible)
+     - Unnecessary re-renders (React)
+     - Missing memoization
+     - Large bundle sizes
+     - Unoptimized database queries
+     - Memory leaks
+
+  4. **Code Quality**
+     - Type safety issues
+     - Missing error handling
+     - Inconsistent naming
+     - Code duplication
+     - Complex functions (> 50 lines)
+     - Missing documentation
+     - Accessibility issues
+
+  5. **Best Practices**
+     - React hooks rules violations
+     - Improper async/await usage
+     - Missing loading/error states
+     - Hardcoded values that should be constants
+     - Missing tests for critical functionality
+
+  For each issue found, provide:
+  - Severity: Critical, High, Medium, Low
+  - Location: File and line number
+  - Description: What's wrong
+  - Recommendation: How to fix
+  - Code example: Show the fix if applicable
+
+  Be concise but thorough. Only report real issues, not style preferences.
+
+review_checklist:
+  security:
+    - Check for injection vulnerabilities
+    - Verify authentication and authorization
+    - Check for exposed secrets or API keys
+    - Verify HTTPS usage
+    - Check CORS configuration
+    - Verify input validation
+    - Check for unsafe dependencies
+
+  performance:
+    - Check for n+1 queries
+    - Verify proper caching
+    - Check bundle size
+    - Verify lazy loading
+    - Check for memory leaks
+    - Verify optimized images
+
+  quality:
+    - TypeScript strict mode compliance
+    - Proper error handling
+    - Comprehensive test coverage
+    - Clear documentation
+    - Consistent code style
+    - Accessibility compliance
+
+  testing:
+    - Unit tests for business logic
+    - Integration tests for APIs
+    - E2E tests for critical paths
+    - Edge cases covered
+    - Error scenarios tested
+    - Mocks properly implemented
+
+severity_levels:
+  critical:
+    - Security vulnerabilities
+    - Data loss risks
+    - Authentication bypasses
+    - Production-breaking bugs
+
+  high:
+    - Performance issues affecting UX
+    - Missing error handling in critical paths
+    - Type safety violations
+    - Accessibility violations
+
+  medium:
+    - Code quality issues
+    - Missing tests
+    - Incomplete documentation
+    - Minor performance issues
+
+  low:
+    - Style inconsistencies
+    - Minor refactoring opportunities
+    - Documentation improvements
+    - Optional optimizations
