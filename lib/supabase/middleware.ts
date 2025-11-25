@@ -1,12 +1,17 @@
 import { NextResponse, type NextRequest } from 'next/server';
 
+let missingEnvLogged = false;
+
 export async function updateSession(request: NextRequest) {
   // Validate environment variables
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   if (!supabaseUrl || !supabaseAnonKey) {
-    console.error('Missing Supabase environment variables');
+    if (!missingEnvLogged) {
+      console.error('Missing Supabase environment variables');
+      missingEnvLogged = true;
+    }
     // Return next response without auth if env vars are missing
     return NextResponse.next({
       request: {

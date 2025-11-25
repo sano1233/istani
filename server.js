@@ -9,6 +9,7 @@ const { createClient } = require('@supabase/supabase-js');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const AI_REQUEST_TIMEOUT_MS = 15000;
 
 // Security: Validate environment variables are loaded
 const requiredEnvVars = ['SUPABASE_PROJECT_URL', 'SUPABASE_ANON_PUBLIC'];
@@ -65,6 +66,16 @@ function sanitizeOutput(text) {
   });
 
   return sanitized;
+}
+
+function formatAiError(error) {
+  if (axios.isAxiosError(error)) {
+    const status = error.response?.status;
+    const detail = error.response?.data?.error || error.message;
+    return { status: status || 502, message: sanitizeOutput(detail || 'AI request failed') };
+  }
+
+  return { status: 500, message: 'AI service temporarily unavailable' };
 }
 
 // Security: Detect prompt injection attempts
@@ -155,6 +166,7 @@ app.post('/api/ai-chat', async (req, res) => {
           'HTTP-Referer': 'https://istani.org',
           'X-Title': 'Istani Fitness',
         },
+        timeout: AI_REQUEST_TIMEOUT_MS,
       },
     );
 
@@ -169,13 +181,14 @@ app.post('/api/ai-chat', async (req, res) => {
       model: 'qwen-2.5-coder-32b',
     });
   } catch (error) {
-    console.error('AI API error:', error.message);
+    const { status, message: errorMessage } = formatAiError(error);
+    console.error('AI API error:', errorMessage);
 
     // Fallback to demo response
-    res.json({
-      response: getDemoResponse(req.body.message),
+    res.status(status).json({
+      response: getDemoResponse(req.body?.message),
       source: 'demo',
-      note: 'AI service temporarily unavailable',
+      note: errorMessage,
     });
   }
 });

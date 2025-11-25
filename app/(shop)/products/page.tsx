@@ -1,15 +1,25 @@
-import { createClient } from '@/lib/supabase/server';
 import { ProductCard } from '@/components/product-card';
+import { SUPABASE_FALLBACK_FLAG } from '@/lib/supabase/fallback';
+import { createClient } from '@/lib/supabase/server';
 import type { Product } from '@/types';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export default async function ProductsPage() {
   const supabase = await createClient();
 
-  const { data: products } = await supabase
-    .from('products')
-    .select('*')
-    .eq('is_active', true)
-    .order('created_at', { ascending: false });
+  const isFallbackClient = Boolean(
+    (supabase as unknown as Record<symbol, boolean>)[SUPABASE_FALLBACK_FLAG],
+  );
+
+  const { data: products } = isFallbackClient
+    ? { data: [] as Product[] }
+    : await supabase
+        .from('products')
+        .select('*')
+        .eq('is_active', true)
+        .order('created_at', { ascending: false });
 
   return (
     <div className="min-h-screen p-8">
