@@ -14,7 +14,7 @@ interface APIConfig {
 interface ImageSearchResult {
   id: string;
   url: string;
-  thumb Url: string;
+  thumbUrl: string;
   photographer: string;
   source: 'pexels' | 'unsplash' | 'placeholder';
 }

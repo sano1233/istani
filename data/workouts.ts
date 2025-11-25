@@ -287,7 +287,7 @@ export const workoutPlans: WorkoutPlan[] = [
   }
 ];
 
-export const fitnessT ips = [
+export const fitnessTips = [
   {
     id: 'nutrition-basics',
     title: 'Nutrition Fundamentals',
