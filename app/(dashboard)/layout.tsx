@@ -6,7 +6,7 @@ import { redirect } from 'next/navigation';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-export default async function DashboardLayout({ children }: { children: React.ReactNode }) { 
+export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
 
   const fallbackMarker = supabase as unknown as Record<symbol, boolean>;
@@ -22,9 +22,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   const userId = user?.id;
 
-  const { data: profile } = isFallbackClient || !userId
-    ? { data: null }
-    : await supabase.from('profiles').select('full_name, avatar_url').eq('id', userId).single();
+  const { data: profile } =
+    isFallbackClient || !userId
+      ? { data: null }
+      : await supabase.from('profiles').select('full_name, avatar_url').eq('id', userId).single();
 
   return (
     <div className="flex w-full min-h-screen">
