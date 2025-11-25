@@ -6,6 +6,9 @@ import { ActivityFeed } from '@/components/social/activity-feed';
 import { AchievementsDisplay } from '@/components/social/achievements-display';
 import { Card } from '@/components/ui/card';
 
+export const dynamic = 'force-dynamic';
+
+
 export default async function SocialPage() {
   const supabase = await createClient();
 

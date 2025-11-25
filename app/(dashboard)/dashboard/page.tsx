@@ -3,6 +3,9 @@ import { redirect } from 'next/navigation';
 import { Card } from '@/components/ui/card';
 import { calculateBMI, calculateBMR, calculateTDEE } from '@/lib/fitness-calculations';
 
+export const dynamic = 'force-dynamic';
+
+
 export default async function DashboardPage() {
   const supabase = await createClient();
 

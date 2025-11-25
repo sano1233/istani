@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <rect width="200" height="200" fill="#102216" rx="20"/>
+  <path d="M70 60h60v20H70z" fill="#0df259"/>
+  <path d="M50 90h100v20H50z" fill="#0df259"/>
+  <path d="M70 120h60v20H70z" fill="#0df259"/>
+  <text x="100" y="170" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#0df259" text-anchor="middle">ISTANI</text>
+</svg>
