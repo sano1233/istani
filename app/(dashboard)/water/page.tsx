@@ -6,7 +6,6 @@ import { calculateWaterIntake } from '@/lib/fitness-calculations';
 
 export const dynamic = 'force-dynamic';
 
-
 export const metadata = {
   title: 'Water Tracking - Istani Fitness',
   description: 'Track your daily water intake',

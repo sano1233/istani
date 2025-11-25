@@ -143,9 +143,9 @@ jobs:
           npm run build
 
           # Verify build output
-          if [ -d "istani-rebuild" ]; then
+          if [ -d ".next" ]; then
             echo "✅ Build output verified"
-            ls -lh istani-rebuild/
+            ls -lh .next/
           else
             echo "❌ Build output missing"
             exit 1
@@ -155,7 +155,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build-output
-          path: istani-rebuild/
+          path: .next/
           retention-days: 7
 
   dependency-review:

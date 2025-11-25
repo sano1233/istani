@@ -12,7 +12,6 @@ import {
 
 export const dynamic = 'force-dynamic';
 
-
 export default async function NutritionPage() {
   const supabase = await createClient();
 

@@ -5,7 +5,6 @@ import { calculateBMI, calculateBMR, calculateTDEE } from '@/lib/fitness-calcula
 
 export const dynamic = 'force-dynamic';
 
-
 export default async function DashboardPage() {
   const supabase = await createClient();
 
