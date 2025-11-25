@@ -47,7 +47,11 @@ const progressSchema = z.object({
     .default({}),
 });
 
-// Security: Sanitize output to prevent API key leakage
+/**
+ * Redacts common API keys and JWT-like tokens from a text string to prevent accidental leakage.
+ * @param {any} text - The input to sanitize; if not a string, the value is returned unchanged.
+ * @returns {any} The sanitized string with detected secrets replaced by `[REDACTED]`, or the original non-string input.
+ */
 function sanitizeOutput(text) {
   if (typeof text !== 'string') return text;
 
@@ -68,6 +72,11 @@ function sanitizeOutput(text) {
   return sanitized;
 }
 
+/**
+ * Normalize an error from AI HTTP requests into a numeric status and a user-facing message.
+ * @param {*} error - The error thrown by an AI request (may be an Axios error or any other error).
+ * @returns {{status: number, message: string}} An object containing an HTTP-style `status` code and a sanitized `message`; Axios errors yield the response status (or `502` if missing) and extracted detail, other errors yield `500` with a generic message.
+ */
 function formatAiError(error) {
   if (axios.isAxiosError(error)) {
     const status = error.response?.status;
@@ -78,7 +87,11 @@ function formatAiError(error) {
   return { status: 500, message: 'AI service temporarily unavailable' };
 }
 
-// Security: Detect prompt injection attempts
+/**
+ * Detects whether an input string contains common prompt-injection phrases or markers.
+ * @param {string} text - Input text to scan for prompt-injection patterns.
+ * @returns {boolean} `true` if any known prompt-injection pattern is present, `false` otherwise.
+ */
 function detectPromptInjection(text) {
   const injectionPatterns = [
     /ignore\s+(previous|above|all)\s+instructions?/i,
@@ -272,7 +285,11 @@ app.get('/api/users/:userId/progress', async (req, res) => {
   }
 });
 
-// Demo response function
+/**
+ * Generate a context-aware demo AI reply based on keywords found in the user's message.
+ * @param {string|any} message - The user's input; non-string values are treated as an empty message.
+ * @returns {string} A short demo response tailored to workouts, nutrition, plateau troubleshooting, or a generic fitness-help prompt.
+ */
 function getDemoResponse(message) {
   const lowerMessage = typeof message === 'string' ? message.toLowerCase() : '';
 

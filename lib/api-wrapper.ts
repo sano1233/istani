@@ -42,7 +42,21 @@ export interface ApiContext {
 export type ApiHandler<T = any> = (context: ApiContext, data?: any) => Promise<NextResponse<T>>;
 
 /**
- * Creates a wrapped API handler with built-in features
+ * Wraps an ApiHandler with standardized authentication, rate limiting, request validation, logging, and error handling.
+ *
+ * The returned handler enforces allowed HTTP methods, optionally verifies authentication and admin status,
+ * applies rate limiting, parses JSON request bodies for mutating methods, runs an optional validation
+ * step, measures performance when enabled, and normalizes success and error responses.
+ *
+ * @param handler - The business-logic function invoked with an ApiContext and optional parsed request data.
+ * @param options - Configuration for the wrapper:
+ *   - `rateLimit`: rate limiting policy ('strict' | 'standard' | 'relaxed' | 'ai' | false)
+ *   - `requireAuth`: whether a valid authenticated user is required
+ *   - `requireAdmin`: whether the authenticated user must be an admin
+ *   - `methods`: allowed HTTP methods (defaults to GET, POST, PUT, PATCH, DELETE)
+ *   - `validate`: optional validator function invoked with the parsed request data
+ *   - `logPerformance`: whether to measure and log request duration
+ * @returns A Next.js request handler that accepts a `NextRequest` and returns a `NextResponse` with standardized JSON shapes for success and error cases.
  */
 export function createApiHandler<T = any>(
   handler: ApiHandler<T>,
