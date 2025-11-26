@@ -2,11 +2,10 @@ import { updateSession } from '@/lib/supabase/middleware';
 import { NextResponse, type NextRequest } from 'next/server';
 
 /**
- * Enterprise-grade middleware with:
- * - Session management
- * - Security headers
- * - Request logging
- * - Error handling
+ * Middleware that updates the Supabase session, injects security and tracing headers, and logs requests.
+ *
+ * @param request - The incoming Next.js request to process and attach session/headers to
+ * @returns A NextResponse with security headers, an `X-Request-ID`, and `X-Response-Time`; on failure returns a fallback NextResponse with minimal security headers set
  */
 export async function middleware(request: NextRequest) {
   const startTime = Date.now();

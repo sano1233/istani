@@ -5,6 +5,13 @@ import { Button } from '@/components/ui/button';
 
 export const dynamic = 'force-dynamic';
 
+/**
+ * Render the Progress page and enforce that a user is authenticated.
+ *
+ * If no authenticated user is found, redirects the client to `/login`.
+ *
+ * @returns The Progress page JSX containing a header with an "Add Entry" action, a stats overview grid, a weight progress chart placeholder, and a recent entries section.
+ */
 export default async function ProgressPage() {
   const supabase = await createClient();
 

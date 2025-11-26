@@ -8,6 +8,13 @@ import { Card } from '@/components/ui/card';
 
 export const dynamic = 'force-dynamic';
 
+/**
+ * Renders the Social Hub page for the authenticated user and their social statistics.
+ *
+ * If no authenticated user is present, redirects to `/login`.
+ *
+ * @returns A React element representing the Social Hub layout populated with the current user's level, points, friends count, active challenges, leaderboard, achievements, activity feed, and challenges list.
+ */
 export default async function SocialPage() {
   const supabase = await createClient();
 

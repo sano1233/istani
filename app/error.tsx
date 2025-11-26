@@ -5,8 +5,16 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
 /**
- * Enterprise-grade global error boundary
- * Catches all unhandled errors in the application
+ * Render a full-page error UI for unhandled application errors.
+ *
+ * Displays a prominent error message, actions to retry or return home, and
+ * (in development) a debug block showing the raw error message and optional
+ * error digest. Logs the error to the console and, in production, is prepared
+ * to forward the error to an external tracking service.
+ *
+ * @param error - The thrown Error object. May include an optional `digest` string to identify the error instance.
+ * @param reset - Callback invoked when the user requests a retry (e.g., "Try Again" button).
+ * @returns The error page JSX element shown to the user.
  */
 export default function Error({
   error,

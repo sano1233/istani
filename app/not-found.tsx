@@ -2,8 +2,9 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
 /**
- * Enterprise-grade 404 page
- * Handles all not-found errors
+ * Renders a styled 404 "Not Found" page for the application.
+ *
+ * @returns A React element containing the enterprise-styled 404 layout with primary actions and quick links.
  */
 export default function NotFound() {
   return (
