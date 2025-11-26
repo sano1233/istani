@@ -17,17 +17,13 @@ export async function createClient() {
     // In production, these env vars must be set
     console.warn('Missing Supabase environment variables. Using mock client for build.');
     const cookieStore = await cookies();
-    return createServerClient(
-      'https://placeholder.supabase.co',
-      'placeholder-anon-key',
-      {
-        cookies: {
-          get(name: string) {
-            return cookieStore.get(name)?.value;
-          },
+    return createServerClient('https://placeholder.supabase.co', 'placeholder-anon-key', {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value;
         },
       },
-    );
+    });
   }
 
   const cookieStore = await cookies();
