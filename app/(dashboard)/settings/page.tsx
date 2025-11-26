@@ -6,6 +6,13 @@ import { Card } from '@/components/ui/card';
 
 export const dynamic = 'force-dynamic';
 
+/**
+ * Render the account settings page for the current authenticated user.
+ *
+ * Retrieves the authenticated user and their profile; if no user is found, redirects to '/login'.
+ *
+ * @returns The JSX for the settings page populated with the user's profile fields.
+ */
 export default async function SettingsPage() {
   const supabase = await createClient();
 

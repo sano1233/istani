@@ -3,6 +3,13 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { neon } from '@neondatabase/serverless';
 
+/**
+ * Persists the submitted comment from the page form into the application's comments table.
+ *
+ * Reads the 'comment' entry from the provided FormData and inserts it into storage.
+ *
+ * @param formData - The form submission containing a `comment` field from the Comments form
+ */
 export default function HomePage() {
   async function create(formData: FormData) {
     'use server';

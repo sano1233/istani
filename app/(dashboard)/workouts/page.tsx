@@ -5,6 +5,13 @@ import { Button } from '@/components/ui/button';
 
 export const dynamic = 'force-dynamic';
 
+/**
+ * Renders the Workouts dashboard page for the authenticated user.
+ *
+ * If no user is authenticated, redirects the request to '/login'.
+ *
+ * @returns The page's JSX layout containing the header, quick-stats cards, and an empty-state card prompting the user to log their first workout.
+ */
 export default async function WorkoutsPage() {
   const supabase = await createClient();
 

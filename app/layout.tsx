@@ -47,6 +47,12 @@ export const metadata: Metadata = {
   },
 };
 
+/**
+ * Defines the application's root HTML layout, including global head elements (favicon, canonical URL, AdSense tags) and the top-level <body>.
+ *
+ * @param children - Content to render inside the document `<body>`
+ * @returns The top-level HTML element for the application with configured `<head>` and rendered `children`
+ */
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">

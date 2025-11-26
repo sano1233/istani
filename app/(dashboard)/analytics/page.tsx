@@ -13,6 +13,15 @@ import {
 
 export const dynamic = 'force-dynamic';
 
+/**
+ * Render the analytics dashboard for the current authenticated user.
+ *
+ * This server component ensures the user is authenticated (redirects to `/login` when not),
+ * loads workout, nutrition, and progress analytics, and returns a dashboard populated with
+ * metrics, charts, and contextual insights based on those analytics.
+ *
+ * @returns A React element containing the analytics dashboard populated with workout, nutrition, and progress metrics and charts.
+ */
 export default async function AnalyticsPage() {
   const supabase = await createClient();
 

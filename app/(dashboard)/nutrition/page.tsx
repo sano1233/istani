@@ -12,6 +12,13 @@ import {
 
 export const dynamic = 'force-dynamic';
 
+/**
+ * Renders the Nutrition dashboard page that shows macro targets, today's progress, meal logging, recent meals, and AI nutrition recommendations.
+ *
+ * Loads the current user (redirects to /login if unauthenticated), fetches the user's profile, today's and recent meals, AI recommendations, and nutrition streak; computes daily calorie and macro targets when profile data is available and passes all data to the page components.
+ *
+ * @returns The React element for the Nutrition page populated with user-specific macro targets, today's totals, recent meals, recommendations, and streak data.
+ */
 export default async function NutritionPage() {
   const supabase = await createClient();
 

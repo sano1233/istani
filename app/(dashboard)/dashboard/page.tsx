@@ -5,6 +5,16 @@ import { calculateBMI, calculateBMR, calculateTDEE } from '@/lib/fitness-calcula
 
 export const dynamic = 'force-dynamic';
 
+/**
+ * Render the user dashboard page showing stats, goals, and recent activity.
+ *
+ * If there is no authenticated user, triggers a redirect to '/login'. Fetches the
+ * user's profile and displays current weight, BMI, daily calories (TDEE), body
+ * fat percentage, and quick action panels; metric values show "N/A" when profile
+ * fields are missing or insufficient for a calculation.
+ *
+ * @returns The dashboard page JSX element containing user stats, goals, and recent activity.
+ */
 export default async function DashboardPage() {
   const supabase = await createClient();
 
