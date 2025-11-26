@@ -8,10 +8,7 @@ export function createClient() {
     // Return a mock client for build time
     // In production, these env vars must be set
     console.warn('Missing Supabase environment variables. Using mock client for build.');
-    return createBrowserClient(
-      'https://placeholder.supabase.co',
-      'placeholder-anon-key',
-    );
+    return createBrowserClient('https://placeholder.supabase.co', 'placeholder-anon-key');
   }
 
   return createBrowserClient(url, key);
