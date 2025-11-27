@@ -78,6 +78,34 @@ services:
     depends_on:
       - prometheus
 
+  # MCP Gateway for Model Context Protocol servers
+  # Note: If the image doesn't exist, you may need to build a custom gateway
+  # or use an alternative MCP gateway implementation
+  mcp-gateway:
+    image: node:20-alpine
+    container_name: istani-mcp-gateway
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - HF_TOKEN=${HF_TOKEN}
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - NODE_ENV=production
+      - PORT=8080
+    command: >
+      sh -c "
+        npm install -g @modelcontextprotocol/gateway &&
+        mcp-gateway --port 8080 --host 0.0.0.0
+      "
+    networks:
+      - ai-agent-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
 networks:
   ai-agent-network:
     driver: bridge
