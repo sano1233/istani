@@ -13,12 +13,14 @@ export function Sidebar({ userName, userAvatar }: SidebarProps) {
   const pathname = usePathname();
 
   const links = [
+    { href: 'https://istani.store', icon: 'home', label: 'Home', external: true },
     { href: '/dashboard', icon: 'dashboard', label: 'Dashboard' },
-    { href: '/settings', icon: 'person', label: 'Profile' },
     { href: '/workouts', icon: 'fitness_center', label: 'Workouts' },
     { href: '/progress', icon: 'trending_up', label: 'Progress' },
-    { href: '/products', icon: 'shopping_bag', label: 'Shop' },
-    { href: '/cart', icon: 'shopping_cart', label: 'Cart' },
+    { href: '/nutrition', icon: 'restaurant', label: 'Nutrition' },
+    { href: '/analytics', icon: 'bar_chart', label: 'Analytics' },
+    { href: '/social', icon: 'groups', label: 'Community' },
+    { href: '/settings', icon: 'settings', label: 'Settings' },
   ];
 
   return (
@@ -39,10 +41,12 @@ export function Sidebar({ userName, userAvatar }: SidebarProps) {
         <nav className="flex flex-col gap-2">
           {links.map((link) => {
             const isActive = pathname === link.href;
+            const LinkComponent = link.external ? 'a' : Link;
             return (
-              <Link
+              <LinkComponent
                 key={link.href}
                 href={link.href}
+                {...(link.external && { target: '_blank', rel: 'noopener noreferrer' })}
                 className={cn(
                   'flex items-center gap-3 px-3 py-2 rounded-lg transition-colors',
                   isActive ? 'bg-primary/20 text-primary' : 'text-white hover:bg-white/10',
@@ -52,7 +56,7 @@ export function Sidebar({ userName, userAvatar }: SidebarProps) {
                   {link.icon}
                 </span>
                 <p className="text-sm font-medium">{link.label}</p>
-              </Link>
+              </LinkComponent>
             );
           })}
         </nav>
