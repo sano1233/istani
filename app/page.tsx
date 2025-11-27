@@ -54,17 +54,24 @@ export default function HomePage() {
             <span className="block text-primary mt-2">FITNESS SCIENCE</span>
           </h1>
           <p className="mb-12 text-xl md:text-2xl text-white/90 max-w-3xl mx-auto leading-relaxed">
-            Transform your body with proven, science-backed training programs.
-            Free tools, expert guidance, and a community dedicated to real results.
+            Transform your body with proven, science-backed training programs. Free tools, expert
+            guidance, and a community dedicated to real results.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link href="/dashboard">
-              <Button size="lg" className="bg-primary hover:bg-primary/90 text-white font-semibold px-8 py-6 text-lg rounded-xl shadow-xl hover:shadow-2xl transition-all">
+              <Button
+                size="lg"
+                className="bg-primary hover:bg-primary/90 text-white font-semibold px-8 py-6 text-lg rounded-xl shadow-xl hover:shadow-2xl transition-all"
+              >
                 Start Training Free
               </Button>
             </Link>
             <Link href="/workouts">
-              <Button size="lg" variant="outline" className="border-2 border-white/20 text-white hover:bg-white/10 font-semibold px-8 py-6 text-lg rounded-xl">
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-2 border-white/20 text-white hover:bg-white/10 font-semibold px-8 py-6 text-lg rounded-xl"
+              >
                 Browse Workouts
               </Button>
             </Link>
@@ -87,7 +94,8 @@ export default function HomePage() {
               </div>
               <h3 className="text-2xl font-bold text-white mb-3">Free Workout Programs</h3>
               <p className="text-white/70 leading-relaxed">
-                Access professionally designed training programs for all fitness levels, completely free.
+                Access professionally designed training programs for all fitness levels, completely
+                free.
               </p>
             </div>
 
@@ -157,10 +165,14 @@ export default function HomePage() {
             Start Your Transformation Today
           </h2>
           <p className="mb-10 text-xl md:text-2xl text-white/90">
-            Join thousands of athletes building strength, muscle, and confidence with science-backed training.
+            Join thousands of athletes building strength, muscle, and confidence with science-backed
+            training.
           </p>
           <Link href="/register">
-            <Button size="lg" className="bg-primary hover:bg-primary/90 text-white font-bold px-12 py-8 text-xl rounded-xl shadow-2xl hover:shadow-primary/50 transition-all">
+            <Button
+              size="lg"
+              className="bg-primary hover:bg-primary/90 text-white font-bold px-12 py-8 text-xl rounded-xl shadow-2xl hover:shadow-primary/50 transition-all"
+            >
               Get Started - It's Free
             </Button>
           </Link>
