@@ -9,11 +9,6 @@ export interface EnvironmentConfig {
   supabaseAnonKey: string;
   supabaseServiceKey?: string;
 
-  // Stripe
-  stripePublishableKey?: string;
-  stripeSecretKey?: string;
-  stripeWebhookSecret?: string;
-
   // Site Configuration
   siteUrl: string;
   nodeEnv: string;
@@ -27,6 +22,9 @@ export interface EnvironmentConfig {
   unsplashAccessKey?: string;
   openaiApiKey?: string;
   usdaApiKey?: string;
+
+  // Database
+  databaseUrl?: string;
 
   // AI Models
   geminiApiKey?: string;
@@ -75,7 +73,6 @@ export function validateRequiredEnvVars(required: string[]): void {
  * @returns Validated environment configuration
  */
 export function getEnvironmentConfig(options?: {
-  requireStripe?: boolean;
   requireOpenAI?: boolean;
   requireCron?: boolean;
 }): EnvironmentConfig {
@@ -86,10 +83,6 @@ export function getEnvironmentConfig(options?: {
   ];
 
   // Add conditional requirements
-  if (options?.requireStripe) {
-    required.push('STRIPE_SECRET_KEY', 'STRIPE_WEBHOOK_SECRET');
-  }
-
   if (options?.requireOpenAI) {
     required.push('OPENAI_API_KEY');
   }
@@ -106,11 +99,6 @@ export function getEnvironmentConfig(options?: {
     supabaseAnonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     supabaseServiceKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
 
-    // Stripe - Optional
-    stripePublishableKey: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
-    stripeSecretKey: process.env.STRIPE_SECRET_KEY,
-    stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
-
     // Site Configuration
     siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://istani.org',
     nodeEnv: process.env.NODE_ENV || 'development',
@@ -124,6 +112,9 @@ export function getEnvironmentConfig(options?: {
     unsplashAccessKey: process.env.UNSPLASH_ACCESS_KEY,
     openaiApiKey: process.env.OPENAI_API_KEY,
     usdaApiKey: process.env.USDA_API_KEY,
+
+    // Database
+    databaseUrl: process.env.DATABASE_URL,
 
     // AI Models
     geminiApiKey: process.env.GEMINI_API_KEY,
@@ -154,10 +145,11 @@ export function checkEnvironment() {
 
   const optional = {
     SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
-    STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
-    STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
+    DATABASE_URL: process.env.DATABASE_URL,
     OPENAI_API_KEY: process.env.OPENAI_API_KEY,
     CRON_SECRET: process.env.CRON_SECRET,
+    PEXELS_API_KEY: process.env.PEXELS_API_KEY,
+    USDA_API_KEY: process.env.USDA_API_KEY,
   };
 
   // Check required variables

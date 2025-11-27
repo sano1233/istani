@@ -111,54 +111,6 @@ export interface MealResponse {
 }
 
 // =============================================================================
-// E-Commerce
-// =============================================================================
-
-export interface Product {
-  id: string;
-  name: string;
-  description?: string;
-  price: number;
-  image_url?: string;
-  category?: string;
-  inventory_count: number;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface CartItem {
-  product_id: string;
-  quantity: number;
-}
-
-export interface CheckoutRequest {
-  items: CartItem[];
-}
-
-export interface CheckoutResponse {
-  sessionId: string;
-}
-
-export interface Order {
-  id: string;
-  user_id?: string;
-  status: 'pending' | 'processing' | 'completed' | 'cancelled';
-  total_amount: number;
-  stripe_payment_intent_id?: string;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface OrderItem {
-  id: string;
-  order_id: string;
-  product_id?: string;
-  quantity: number;
-  price_at_time: number;
-  created_at: string;
-}
-
-// =============================================================================
 // Food & Nutrition
 // =============================================================================
 
@@ -211,7 +163,6 @@ export interface HealthCheckResponse {
   timestamp: string;
   services: {
     supabase: string;
-    stripe: string;
     github?: { status: string; message?: string };
     pexels?: { status: string; message?: string };
     unsplash?: { status: string; message?: string };
@@ -221,23 +172,11 @@ export interface HealthCheckResponse {
   environment: {
     node: string;
     hasSupabaseUrl: boolean;
-    hasStripeKey: boolean;
+    hasDatabaseUrl: boolean;
     hasGitHubToken: boolean;
     hasPexelsKey: boolean;
     hasUnsplashKey: boolean;
     hasOpenAIKey: boolean;
-  };
-}
-
-// =============================================================================
-// Webhooks
-// =============================================================================
-
-export interface StripeWebhookEvent {
-  id: string;
-  type: string;
-  data: {
-    object: any;
   };
 }
 
