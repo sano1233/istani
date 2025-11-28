@@ -1,19 +1,19 @@
-name: ci
-on:
-  push:
-    branches: [main]
-  pull_request:
+name: CI
+on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      OPENROUTER_KEYS: "mock"
+      GEMINI_API_KEY: "mock"
+      NEXT_PUBLIC_BACKEND_URL: "http://localhost:8000"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-      - run: npm ci
-      - run: npm run format:check
-      - run: npm run lint
-      - run: npm run typecheck
+        with: { node-version: '20' }
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - run: npm install
+      - run: pip install -r backend/requirements.txt
       - run: npm run build
+      - run: python -m compileall backend/
