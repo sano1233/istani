@@ -1,4 +1,9 @@
 import Link from 'next/link';
+/**
+ * Render the minimal landing page containing the app title and a link to the builder.
+ *
+ * @returns The JSX element for a centered page with the "Istani Swarm" heading and a "Launch Builder" link to `/builder`.
+ */
 export default function Home() {
   return (
     <div className="flex h-screen items-center justify-center bg-gray-900 p-4 text-center">

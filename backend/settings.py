@@ -12,6 +12,14 @@ class Settings(BaseSettings):
 
     @property
     def openrouter_keys_list(self) -> List[str]:
+        """
+        Parse the comma-separated `openrouter_keys` string into a list of trimmed, non-empty keys.
+        
+        If `openrouter_keys` is empty or falsy, an empty list is returned.
+        
+        Returns:
+            List[str]: Trimmed, non-empty API keys parsed from `openrouter_keys`.
+        """
         if not self.openrouter_keys: return []
         return [k.strip() for k in self.openrouter_keys.split(",") if k.strip()]
 

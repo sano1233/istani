@@ -1,6 +1,13 @@
 'use client';
 import { useState, useEffect } from 'react';
 
+/**
+ * Client-side React component providing a chat-like interface for sending prompts, viewing streamed AI responses, and managing API keys.
+ *
+ * Renders a header with a keys modal, a scrollable message history (user and AI messages), an input form to submit prompts, and a "Thinking..." indicator while awaiting responses. Persists API keys in localStorage under `istani_keys`.
+ *
+ * @returns The component's JSX element.
+ */
 export default function Builder() {
   const [input, setInput] = useState('');
   const [msgs, setMsgs] = useState<any[]>([]);
