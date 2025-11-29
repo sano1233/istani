@@ -15,7 +15,7 @@
 const GOOGLE_STITCH_CONFIG = {
   projectId: '12262529591791741168',
   apiEndpoint: 'https://stitch.withgoogle.com/api',
-  enabled: true
+  enabled: true,
 };
 
 // AI Image Generation Service
@@ -44,7 +44,7 @@ const ImageGenerationAPI = {
         url: imageUrl,
         type: 'progress',
         userId,
-        generated: new Date().toISOString()
+        generated: new Date().toISOString(),
       };
     } catch (error) {
       console.error('Image generation error:', error);
@@ -71,7 +71,7 @@ const ImageGenerationAPI = {
       url: imageUrl,
       exercise: exerciseName,
       muscleGroup,
-      type: 'demonstration'
+      type: 'demonstration',
     };
   },
 
@@ -142,14 +142,14 @@ const ImageGenerationAPI = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Project-ID': GOOGLE_STITCH_CONFIG.projectId
+          'X-Project-ID': GOOGLE_STITCH_CONFIG.projectId,
         },
         body: JSON.stringify({
           prompt,
           style: 'fitness_professional',
           quality: 'high',
-          aspectRatio: '16:9'
-        })
+          aspectRatio: '16:9',
+        }),
       });
 
       const data = await response.json();
@@ -169,10 +169,10 @@ const ImageGenerationAPI = {
       workout_demo: '/images/workout-placeholder.svg',
       motivation: '/images/motivation-placeholder.svg',
       body_comp: '/images/bodycomp-placeholder.svg',
-      meal_prep: '/images/meal-placeholder.svg'
+      meal_prep: '/images/meal-placeholder.svg',
     };
     return fallbacks[imageType] || '/images/default-placeholder.svg';
-  }
+  },
 };
 
 // Intelligent Progress Tracking System
@@ -205,7 +205,11 @@ const IntelligentProgressSystem = {
       goalProgress: this.calculateGoalProgress(userData, measurements),
 
       // AI-powered recommendations
-      recommendations: await this.generateRecommendations(userData, workoutHistory, nutritionHistory)
+      recommendations: await this.generateRecommendations(
+        userData,
+        workoutHistory,
+        nutritionHistory,
+      ),
     };
 
     // Generate progress visualization
@@ -215,8 +219,8 @@ const IntelligentProgressSystem = {
       ...analysis,
       visualizations: {
         progressImage,
-        bodyCompImage: await ImageGenerationAPI.generateBodyCompImage(measurements[0])
-      }
+        bodyCompImage: await ImageGenerationAPI.generateBodyCompImage(measurements[0]),
+      },
     };
   },
 
@@ -236,8 +240,9 @@ const IntelligentProgressSystem = {
     const bodyFatChange = latest.body_fat_percentage - baseline.body_fat_percentage;
 
     // Estimate muscle vs fat changes (science-based calculation)
-    const fatMassChange = (latest.weight_kg * latest.body_fat_percentage / 100) -
-                         (baseline.weight_kg * baseline.body_fat_percentage / 100);
+    const fatMassChange =
+      (latest.weight_kg * latest.body_fat_percentage) / 100 -
+      (baseline.weight_kg * baseline.body_fat_percentage) / 100;
     const muscleMassChange = weightChange - fatMassChange;
 
     return {
@@ -246,7 +251,7 @@ const IntelligentProgressSystem = {
       muscleGained: muscleMassChange.toFixed(2),
       bodyFatChange: bodyFatChange.toFixed(1),
       leanBodyMass: latest.weight_kg * (1 - latest.body_fat_percentage / 100),
-      rating: this.rateProgress(muscleMassChange, fatMassChange)
+      rating: this.rateProgress(muscleMassChange, fatMassChange),
     };
   },
 
@@ -255,12 +260,11 @@ const IntelligentProgressSystem = {
    */
   analyzeTrainingProgress(workoutHistory) {
     // Calculate volume (sets × reps × weight) over time
-    const volumeProgression = workoutHistory.map(workout => {
+    const volumeProgression = workoutHistory.map((workout) => {
       const exercises = workout.exercises || [];
       const totalVolume = exercises.reduce((sum, ex) => {
         const sets = ex.sets || [];
-        const exerciseVolume = sets.reduce((s, set) =>
-          s + (set.reps * set.weight), 0);
+        const exerciseVolume = sets.reduce((s, set) => s + set.reps * set.weight, 0);
         return sum + exerciseVolume;
       }, 0);
 
@@ -274,7 +278,7 @@ const IntelligentProgressSystem = {
       totalWorkouts: workoutHistory.length,
       volumeProgression,
       isProgressiveOverload: isProgressing,
-      effectiveness: isProgressing ? 'excellent' : 'needs_adjustment'
+      effectiveness: isProgressing ? 'excellent' : 'needs_adjustment',
     };
   },
 
@@ -296,7 +300,7 @@ const IntelligentProgressSystem = {
    */
   analyzeNutritionCompliance(nutritionHistory) {
     // Calculate macro adherence to targets
-    const adherence = nutritionHistory.map(day => {
+    const adherence = nutritionHistory.map((day) => {
       const proteinTarget = 150; // From user goals
       const proteinActual = day.protein_g;
       const proteinAdherence = Math.min(100, (proteinActual / proteinTarget) * 100);
@@ -304,7 +308,7 @@ const IntelligentProgressSystem = {
       return {
         date: day.meal_date,
         proteinAdherence,
-        calorieAdherence: this.calculateCalorieAdherence(day)
+        calorieAdherence: this.calculateCalorieAdherence(day),
       };
     });
 
@@ -313,7 +317,7 @@ const IntelligentProgressSystem = {
     return {
       averageAdherence: avgAdherence.toFixed(1),
       rating: avgAdherence >= 80 ? 'excellent' : avgAdherence >= 60 ? 'good' : 'needs_improvement',
-      history: adherence
+      history: adherence,
     };
   },
 
@@ -345,8 +349,12 @@ const IntelligentProgressSystem = {
     return {
       score: Math.max(0, Math.min(100, score)),
       workoutsThisWeek: workoutsPerWeek,
-      recommendation: workoutsPerWeek > 6 ? 'Add rest day' :
-                     workoutsPerWeek < 3 ? 'Increase frequency' : 'Optimal'
+      recommendation:
+        workoutsPerWeek > 6
+          ? 'Add rest day'
+          : workoutsPerWeek < 3
+            ? 'Increase frequency'
+            : 'Optimal',
     };
   },
 
@@ -374,7 +382,7 @@ const IntelligentProgressSystem = {
       expectedProgress: expectedProgress.toFixed(1),
       onTrack: Math.abs(progressPercent - expectedProgress) < 10,
       weeksToGoal: Math.ceil(weeksToGoal),
-      healthyPaceDescription: `${healthyWeeklyLoss.toFixed(1)} lbs per week`
+      healthyPaceDescription: `${healthyWeeklyLoss.toFixed(1)} lbs per week`,
     };
   },
 
@@ -391,20 +399,24 @@ const IntelligentProgressSystem = {
         type: 'training',
         priority: 'high',
         title: 'Increase Training Volume',
-        description: 'Your training volume has plateaued. Try adding 1-2 sets to your main lifts or increasing weight by 5-10 lbs.',
-        science: 'Progressive overload is essential for continued muscle growth and strength gains.'
+        description:
+          'Your training volume has plateaued. Try adding 1-2 sets to your main lifts or increasing weight by 5-10 lbs.',
+        science:
+          'Progressive overload is essential for continued muscle growth and strength gains.',
       });
     }
 
     // Nutrition recommendations
     const proteinIntake = this.getAverageProtein(nutritionHistory);
-    if (proteinIntake < 0.8) { // Less than 0.8g per lb body weight
+    if (proteinIntake < 0.8) {
+      // Less than 0.8g per lb body weight
       recommendations.push({
         type: 'nutrition',
         priority: 'high',
         title: 'Increase Protein Intake',
         description: `Aim for ${(userData.weight * 0.8).toFixed(0)}g protein per day. Add protein shake or Greek yogurt.`,
-        science: 'Research shows 0.8-1g protein per lb body weight optimizes muscle protein synthesis.'
+        science:
+          'Research shows 0.8-1g protein per lb body weight optimizes muscle protein synthesis.',
       });
     }
 
@@ -416,7 +428,8 @@ const IntelligentProgressSystem = {
         priority: 'medium',
         title: 'Prioritize Recovery',
         description: recoveryScore.recommendation,
-        science: 'Muscle growth occurs during rest, not training. Adequate recovery prevents overtraining.'
+        science:
+          'Muscle growth occurs during rest, not training. Adequate recovery prevents overtraining.',
       });
     }
 
@@ -429,15 +442,29 @@ const IntelligentProgressSystem = {
   },
 
   async getWorkoutHistory(userId) {
-    return await window.supabaseClient?.from('workout_sessions').select('*').eq('user_id', userId).order('workout_date', { ascending: false }).limit(30);
+    return await window.supabaseClient
+      ?.from('workout_sessions')
+      .select('*')
+      .eq('user_id', userId)
+      .order('workout_date', { ascending: false })
+      .limit(30);
   },
 
   async getNutritionHistory(userId) {
-    return await window.supabaseClient?.from('meals').select('*').eq('user_id', userId).order('meal_date', { ascending: false }).limit(30);
+    return await window.supabaseClient
+      ?.from('meals')
+      .select('*')
+      .eq('user_id', userId)
+      .order('meal_date', { ascending: false })
+      .limit(30);
   },
 
   async getMeasurements(userId) {
-    return await window.supabaseClient?.from('body_measurements').select('*').eq('user_id', userId).order('measurement_date', { ascending: false });
+    return await window.supabaseClient
+      ?.from('body_measurements')
+      .select('*')
+      .eq('user_id', userId)
+      .order('measurement_date', { ascending: false });
   },
 
   getWeeksElapsed(startDate) {
@@ -472,7 +499,7 @@ const IntelligentProgressSystem = {
     const actual = day.calories || 0;
     const diff = Math.abs(actual - target);
     return Math.max(0, 100 - diff / 10);
-  }
+  },
 };
 
 // Export for use in dashboard
