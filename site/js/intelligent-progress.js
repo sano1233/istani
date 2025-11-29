@@ -385,7 +385,7 @@ const IntelligentProgressSystem = {
     const recommendations = [];
 
     // Training recommendations
-    const volumeTrend = this.analyzeVolumeT rend(workoutHistory);
+    const volumeTrend = this.analyzeVolumeTrend(workoutHistory);
     if (volumeTrend === 'stagnant') {
       recommendations.push({
         type: 'training',
